@@ -248,4 +248,4 @@ ggsave(p_umap_dblclass, file = file.path(imgdir, paste(name, "doublet_class_umap
 
 
 # save preprocessed file
-saveRDS(sce, file.path(outdir, paste0(name, "_filtered.rds")))
+saveRDS(sce, file.path(outdir, paste0(name, ".rds")))

@@ -10,12 +10,11 @@ MEMORY=50G
 MINUTES=120
 TMPDIR=10G
 
-# indir="./sim_data/sim_data"
+datadir="/project/kohl_data/CAdir/data/sim"
+indir="${datadir}/raw"
+outdir="${datadir}/preprocessed"
+logdir=${outdir}/log
 
-indir="../Data/sim_data/raw"
-outdir="../Data/sim_data/preprocessed"
-
-logdir=${outdir}_log
 SCRIPT="./data_preprocessing_splatter.R"
 
 mkdir -p $outdir
@@ -41,17 +40,17 @@ for f in ${files[@]}; do
 
        filename=`basename $f .rds`
 
-       mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-              --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
+       mxqsub --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+              --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
               --group-name="${filename}" \
               --threads=$THREADS \
               --memory=$MEMORY \
               --tmpdir=$TMPDIR \
               -t $MINUTES \
-             Rscript-4.2.1 $SCRIPT   \
+             Rscript-4.4 $SCRIPT   \
               --outdir $resdir \
               --file $f \
-              --name $filename \
+              --name "${filename}_preproc" \
               --pct $pcts \
               --truth $truth \
 
@@ -74,17 +73,17 @@ for f in ${files[@]}; do
 
        filename=`basename $f .rds`
 
-       mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-              --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
+       mxqsub --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+              --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
               --group-name="${filename}" \
               --threads=$THREADS \
               --memory=$MEMORY \
               --tmpdir=$TMPDIR \
               -t $MINUTES \
-             Rscript-4.2.1 $SCRIPT   \
+             Rscript-4.4 $SCRIPT   \
               --outdir $resdir \
               --file $f \
-              --name $filename \
+              --name "${filename}_preproc" \
               --pct $pcts \
               --truth $truth \
 

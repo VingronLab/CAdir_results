@@ -17,7 +17,6 @@ logdir=${outdir}/log
 SCRIPT="./data_preprocessing.R"
 
 mkdir -p $outdir
-
 mkdir -p $logdir
 
 truth='truth'
@@ -42,7 +41,7 @@ suffix="_raw"
 #   --memory=$MEMORY \
 #   --tmpdir=$TMPDIR \
 #   -t $MINUTES \
-#   Rscript-4.2.1 $SCRIPT \
+#   Rscript-4.4 $SCRIPT \
 #   --outdir $outdir \
 #   --file $file \
 #   --name "${filename}_preproc" \
@@ -67,7 +66,7 @@ suffix="_raw"
 #   --memory=$MEMORY \
 #   --tmpdir=$TMPDIR \
 #   -t $MINUTES \
-#   Rscript-4.2.1 $SCRIPT \
+#   Rscript-4.4 $SCRIPT \
 #   --outdir $outdir \
 #   --file $file \
 #   --name "${filename}_preproc" \
@@ -92,7 +91,7 @@ suffix="_raw"
 #   --memory=$MEMORY \
 #   --tmpdir=$TMPDIR \
 #   -t $MINUTES \
-#   Rscript-4.2.1 $SCRIPT \
+#   Rscript-4.4 $SCRIPT \
 #   --outdir $outdir \
 #   --file $file \
 #   --name "${filename}_preproc" \
@@ -117,7 +116,7 @@ suffix="_raw"
 #   --memory=$MEMORY \
 #   --tmpdir=$TMPDIR \
 #   -t $MINUTES \
-#   Rscript-4.2.1 $SCRIPT \
+#   Rscript-4.4 $SCRIPT \
 #   --outdir $outdir \
 #   --file $file \
 #   --name "${filename}_preproc" \
@@ -142,7 +141,7 @@ suffix="_raw"
 #   --memory=$MEMORY \
 #   --tmpdir=$TMPDIR \
 #   -t $MINUTES \
-#   Rscript-4.2.1 $SCRIPT \
+#   Rscript-4.4 $SCRIPT \
 #   --outdir $outdir \
 #   --file $file \
 #   --name "${filename}_preproc" \
@@ -166,7 +165,7 @@ suffix="_raw"
 #   --memory=$MEMORY \
 #   --tmpdir=$TMPDIR \
 #   -t $MINUTES \
-#   Rscript-4.2.1 $SCRIPT \
+#   Rscript-4.4 $SCRIPT \
 #   --outdir $outdir \
 #   --file $file \
 #   --name "${filename}_preproc" \
@@ -191,7 +190,7 @@ suffix="_raw"
 #   --memory=$MEMORY \
 #   --tmpdir=$TMPDIR \
 #   -t $MINUTES \
-#   Rscript-4.2.1 $SCRIPT \
+#   Rscript-4.4 $SCRIPT \
 #   --outdir $outdir \
 #   --file $file \
 #   --name "${filename}_preproc" \
@@ -216,7 +215,7 @@ suffix="_raw"
 #   --memory=$MEMORY \
 #   --tmpdir=$TMPDIR \
 #   -t $MINUTES \
-#   Rscript-4.2.1 $SCRIPT \
+#   Rscript-4.4 $SCRIPT \
 #   --outdir $outdir \
 #   --file $file \
 #   --name "${filename}_preproc" \
@@ -240,7 +239,7 @@ suffix="_raw"
 #   --memory=$MEMORY \
 #   --tmpdir=$TMPDIR \
 #   -t $MINUTES \
-#   Rscript-4.2.1 $SCRIPT \
+#   Rscript-4.4 $SCRIPT \
 #   --outdir $outdir \
 #   --file $file \
 #   --name "${filename}_preproc" \
@@ -265,7 +264,7 @@ suffix="_raw"
 #   --memory=$MEMORY \
 #   --tmpdir=$TMPDIR \
 #   -t $MINUTES \
-#   Rscript-4.2.1 $SCRIPT \
+#   Rscript-4.4 $SCRIPT \
 #   --outdir $outdir \
 #   --file $file \
 #   --name "${filename}_preproc" \
@@ -295,7 +294,7 @@ mxqsub \
   --memory=$MEMORY \
   --tmpdir=$TMPDIR \
   -t $MINUTES \
-  Rscript-4.2.1 $SCRIPT \
+  Rscript-4.4 $SCRIPT \
   --outdir $outdir \
   --file $file \
   --name "${filename}_preproc" \
@@ -322,7 +321,7 @@ mxqsub \
   --memory=$MEMORY \
   --tmpdir=$TMPDIR \
   -t $MINUTES \
-  Rscript-4.2.1 $SCRIPT \
+  Rscript-4.4 $SCRIPT \
   --outdir $outdir \
   --file $file \
   --name "${filename}_preproc" \
@@ -349,7 +348,7 @@ mxqsub \
 #   --memory=$MEMORY \
 #   --tmpdir=$TMPDIR \
 #   -t $MINUTES \
-# Rscript-4.2.1 $BO_SCRIPT   \
+# Rscript-4.4 $BO_SCRIPT   \
 #        --outdir $outdir \
 #        --file $file \
 #        --name "${filename}_preproc" \

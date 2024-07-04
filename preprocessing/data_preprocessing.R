@@ -1,4 +1,4 @@
-
+renv::load("../")
 library(SingleCellExperiment)
 library(scater)
 library(scran)
