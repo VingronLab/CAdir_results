@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 #########################################################################################################
 ## Parameters for mxq-cluster job submission, change it according to your in-house server requirements.##
 #########################################################################################################
@@ -10,10 +9,11 @@ MEMORY=100G
 MINUTES=120
 TMPDIR=80G
 
+datadir="/project/kohl_data/CAdir/data/real"
+indir="${datadir}/raw"
+outdir="${datadir}/preprocessed"
+logdir=${outdir}/log
 
-indir="../Data/real_data/raw"
-outdir="../Data/real_data/preprocessed"
-logdir=${outdir}_log
 SCRIPT="./data_preprocessing.R"
 
 mkdir -p $outdir
@@ -24,238 +24,337 @@ truth='truth'
 pcts=0.01
 ntop=NULL
 
+suffix="_raw"
 
 ###############
 # ZeiselBrain #
 ###############
 
-file="${indir}/ZeiselBrain.rds"
-filename=`basename $file .rds`
-
-mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-       --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
-       --group-name="${filename}" \
-       --threads=$THREADS \
-       --memory=$MEMORY \
-       --tmpdir=$TMPDIR \
-       -t $MINUTES \
-      Rscript-4.2.1 $SCRIPT   \
-       --outdir $outdir \
-       --file $file \
-       --name $filename \
-       --pct $pcts \
-       --truth $truth \
-       --org mm \
-       --mt
-
+# file="${indir}/ZeiselBrain_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.2.1 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth $truth \
+#   --org mm \
+#   --mt
+#
 #################
 # BaronPancreas #
 #################
 
-file="${indir}/BaronPancreas.rds"
-filename=`basename $file .rds`
-
-mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-       --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
-       --group-name="${filename}" \
-       --threads=$THREADS \
-       --memory=$MEMORY \
-       --tmpdir=$TMPDIR \
-       -t $MINUTES \
-      Rscript-4.2.1 $SCRIPT   \
-       --outdir $outdir \
-       --file $file \
-       --name $filename \
-       --pct $pcts \
-       --truth $truth \
-       --org hs \
-       --mt
-
+# file="${indir}/BaronPancreas_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.2.1 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth $truth \
+#   --org hs \
+#   --mt
 
 ############
 # Darmanis #
 ############
 
-file="${indir}/Darmanis.rds"
-filename=`basename $file .rds`
-
-mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-       --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
-       --group-name="${filename}" \
-       --threads=$THREADS \
-       --memory=$MEMORY \
-       --tmpdir=$TMPDIR \
-       -t $MINUTES \
-      Rscript-4.2.1 $SCRIPT   \
-       --outdir $outdir \
-       --file $file \
-       --name $filename \
-       --pct $pcts \
-       --truth $truth \
-       --org hs \
-       --mt
+# file="${indir}/Darmanis_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.2.1 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth $truth \
+#   --org hs \
+#   --mt
 
 ###############
 # FreytagGold #
 ###############
 
-file="${indir}/FreytagGold.rds"
-filename=`basename $file .rds`
-
-mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-       --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
-       --group-name="${filename}" \
-       --threads=$THREADS \
-       --memory=$MEMORY \
-       --tmpdir=$TMPDIR \
-       -t $MINUTES \
-      Rscript-4.2.1 $SCRIPT   \
-       --outdir $outdir \
-       --file $file \
-       --name $filename \
-       --pct $pcts \
-       --truth $truth \
-       --org hs \
-       --mt
+# file="${indir}/FreytagGold_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.2.1 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth $truth \
+#   --org hs \
+#   --mt
 
 ################
 # HeOrganAtlas #
 ################
 
-file="${indir}/HeOrganAtlas.rds"
-filename=`basename $file .rds`
-
-mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-       --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
-       --group-name="${filename}" \
-       --threads=$THREADS \
-       --memory=$MEMORY \
-       --tmpdir=$TMPDIR \
-       -t $MINUTES \
-      Rscript-4.2.1 $SCRIPT   \
-       --outdir $outdir \
-       --file $file \
-       --name $filename \
-       --pct $pcts \
-       --truth $truth \
-       --org hs
+# file="${indir}/HeOrganAtlas_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.2.1 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth $truth \
+#   --org hs
 
 ############
 # PBMC_10X #
 ############
 
-file="${indir}/PBMC_10X.rds"
-filename=`basename $file .rds`
-
-mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-       --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
-       --group-name="${filename}" \
-       --threads=$THREADS \
-       --memory=$MEMORY \
-       --tmpdir=$TMPDIR \
-       -t $MINUTES \
-      Rscript-4.2.1 $SCRIPT   \
-       --outdir $outdir \
-       --file $file \
-       --name $filename \
-       --pct $pcts \
-       --truth $truth \
-       --org hs \
-       --mt
+# file="${indir}/PBMC_10X_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.2.1 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth $truth \
+#   --org hs \
+#   --mt
 
 ########################
 # Tirosh_nonmaglignant #
 ########################
 
-file="${indir}/Tirosh_nonmaglignant.rds"
-filename=`basename $file .rds`
-
-mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-       --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
-       --group-name="${filename}" \
-       --threads=$THREADS \
-       --memory=$MEMORY \
-       --tmpdir=$TMPDIR \
-       -t $MINUTES \
-      Rscript-4.2.1 $SCRIPT   \
-       --outdir $outdir \
-       --file $file \
-       --name $filename \
-       --pct $pcts \
-       --truth $truth \
-       --org hs \
-       --mt
+# file="${indir}/Tirosh_nonmaglignant_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.2.1 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth $truth \
+#   --org hs \
+#   --mt
 
 ###################
 # brain_organoids #
 ###################
 
-file="${indir}/brain_organoids.rds"
-filename=`basename $file .rds`
-
-mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-       --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
-       --group-name="${filename}" \
-       --threads=$THREADS \
-       --memory=$MEMORY \
-       --tmpdir=$TMPDIR \
-       -t $MINUTES \
-      Rscript-4.2.1 $SCRIPT   \
-       --outdir $outdir \
-       --file $file \
-       --name $filename \
-       --pct $pcts \
-       --truth $truth \
-       --org hs
-
+# file="${indir}/brain_organoids_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.2.1 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth $truth \
+#   --org hs
 
 #########################
 # tabula_sapiens_tissue #
 #########################
 
-file="${indir}/tabula_sapiens_tissue.rds"
-filename=`basename $file .rds`
+# file="${indir}/tabula_sapiens_tissue_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.2.1 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth $truth \
+#   --org hs \
+#   --mt
 
-mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-       --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
-       --group-name="${filename}" \
-       --threads=$THREADS \
-       --memory=$MEMORY \
-       --tmpdir=$TMPDIR \
-       -t $MINUTES \
-      Rscript-4.2.1 $SCRIPT   \
-       --outdir $outdir \
-       --file $file \
-       --name $filename \
-       --pct $pcts \
-       --truth $truth \
-       --org hs \
-       --mt
+#########################
+# dnel spatial E14-16h #
+#########################
 
- #########################
- # dnel spatial E14-16h #
- #########################
+# file="${indir}/dmel_E14-16h_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.2.1 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth $truth \
+#   --org hs \
+#   --rmbatch TRUE \
+#   --batchlab 'slice_ID' \
+#   --modpoisson FALSE \
+#   --mt
 
- file="${indir}/dmel_E14-16h.rds"
- filename=`basename $file .rds`
+####################
+# Tabula Muris All #
+####################
 
- mxqsub --stdout="${logdir}/${filename}_filtered${pcts}.stdout.log" \
-        --stderr="${logdir}/${filename}_filtered${pcts}.stderr.log" \
-        --group-name="${filename}" \
-        --threads=$THREADS \
-        --memory=$MEMORY \
-        --tmpdir=$TMPDIR \
-        -t $MINUTES \
-       Rscript-4.2.1 $SCRIPT   \
-        --outdir $outdir \
-        --file $file \
-        --name $filename \
-        --pct $pcts \
-        --truth $truth \
-        --org hs \
-        --rmbatch TRUE \
-        --batchlab 'slice_ID' \
-        --modpoisson FALSE \
-        --mt
+name="tabula_muris"
 
+file="${indir}/${name}_raw.rds"
+filename=$(basename $file .rds)
+filename=${filename%"$suffix"}
 
+mxqsub \
+  --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+  --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+  --group-name="${filename}" \
+  --threads=$THREADS \
+  --memory=$MEMORY \
+  --tmpdir=$TMPDIR \
+  -t $MINUTES \
+  Rscript-4.2.1 $SCRIPT \
+  --outdir $outdir \
+  --file $file \
+  --name "${filename}_preproc" \
+  --pct $pcts \
+  --truth "cell_ontology_class" \
+  --org mm \
+  --mt
+
+#####################
+# Tabula Muris Limb #
+#####################
+
+name="tabula_muris_limb"
+
+file="${indir}/${name}_raw.rds"
+filename=$(basename $file .rds)
+filename=${filename%"$suffix"}
+
+mxqsub \
+  --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+  --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+  --group-name="${filename}" \
+  --threads=$THREADS \
+  --memory=$MEMORY \
+  --tmpdir=$TMPDIR \
+  -t $MINUTES \
+  Rscript-4.2.1 $SCRIPT \
+  --outdir $outdir \
+  --file $file \
+  --name "${filename}_preproc" \
+  --pct $pcts \
+  --truth "cell_ontology_class" \
+  --org mm \
+  --mt
+
+###################
+# Brain Organoids #
+###################
+
+# BO_SCRIPT="./data_preprocessing_brain_organoids.R"
+#
+# file="${indir}/brain_organoids_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+# Rscript-4.2.1 $BO_SCRIPT   \
+#        --outdir $outdir \
+#        --file $file \
+#        --name "${filename}_preproc" \
+#        --pct 0.01 \
+#        --truth "cell_type" \
+#        --org hs \
+#        --mt_perc 40 \
+#        --mt

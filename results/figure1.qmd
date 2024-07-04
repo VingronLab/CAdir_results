@@ -1,20 +1,22 @@
 ---
+title: Figure 1
 jupyter:
   jupytext:
-    formats: 'ipynb,md'
+    formats: 'ipynb,qmd'
     text_representation:
-      extension: .md
-      format_name: markdown
-      format_version: '1.3'
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
       jupytext_version: 1.16.1
   kernelspec:
     display_name: R 4.4
-    language: r
+    language: R
     name: ir44
 ---
+
 # Setup
 
-```r
+```{r}
 source("./utils.R")
 renv::load("/project/kohl_analysis/analysis/CAdir")
 devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
@@ -41,7 +43,7 @@ getwd()
 
 Loading data set and annotate it according to Seurat vignette.
 
-```r
+```{r}
 sce <- sce_pbmc3k()
 ```
 
@@ -49,7 +51,7 @@ sce <- sce_pbmc3k()
 
 After annotating the data according to the Seurat vignette, we cluster the cells and genes using the CAdir package.
 
-```r
+```{r}
 set.seed(1234)
 
 sce_bu <- sce
@@ -71,7 +73,7 @@ ca <- cacomp(
 
 With `cutoff = NULL` CAdir tries to estimate the angle cutoff directly from the data.
 
-```r
+```{r}
 set.seed(2358)
 cak <- dirclust_splitmerge(
     caobj = ca,
@@ -91,7 +93,7 @@ cadir <- rank_genes(cadir = cak, caobj = ca)
 top <- top_genes(cadir)
 ```
 
-```r
+```{r}
 ###########
 ## CAdir ##
 ###########
@@ -114,10 +116,15 @@ ari <- aricode::clustComp(sce$cadir, sce$cell_type)
 p <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
 p
 
-ggsave(plot = p, file = "./img/figure1/umap.png")
+ggsave(
+  plot = p, 
+  file = "./img/figure1/umap.png",
+  width= 900,
+  height = 450
+)
 ```
 
-```r
+```{r}
 sm <- sm_plot(
   cadir = cak,
   caobj = ca,
@@ -130,21 +137,19 @@ sm <- sm_plot(
 )
 sm
 ggsave(plot = sm, file = "./img/figure1/split_merge_plot.pdf")
-
 ```
 
-```r
+```{r}
 pc <- plot_clusters(anncak, ca, show_genes=T, label_genes = T, ntop = 5)
 
 ggsave(plot = pc, file = "./img/figure1/plot_clusters.pdf"  )
-
 ```
 
-```r
+```{r}
 line_plot <- plot_results(anncak, ca)
 line_plot
 ```
 
-```r
+```{r}
 sessionInfo()
 ```
