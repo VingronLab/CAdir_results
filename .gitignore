@@ -1,2 +1,4 @@
 .ipynb_checkpoints
 results/img
+renv
+renv.lock
