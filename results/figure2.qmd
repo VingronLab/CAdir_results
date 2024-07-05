@@ -17,6 +17,7 @@ jupyter:
 
 # Setup
 ```{r}
+setwd("/project/kohl_analysis/analysis/CAdir/results/results/")
 renv::load("/project/kohl_analysis/analysis/CAdir")
 devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
 source("./utils.R")
@@ -36,7 +37,6 @@ suppressPackageStartupMessages({
 })
 
 options(repr.plot.width = 20, repr.plot.height = 15)
-getwd()
 ```
 
 ## Load data
@@ -69,12 +69,13 @@ ca <- cacomp(
 
 With `cutoff = NULL` CAdir tries to estimate the angle cutoff directly from the data.
 
+## Split & Merge Clustering
 ```{r}
 set.seed(2358)
 cak <- dirclust_splitmerge(
     caobj = ca,
-    k = 6,
-    cutoff = 55,
+    k = 15,
+    cutoff = NULL,
     method = "random",
     apl_quant = 0.99,
     counts = NULL,
@@ -88,17 +89,19 @@ cak <- dirclust_splitmerge(
 cadir <- rank_genes(cadir = cak, caobj = ca)
 top <- top_genes(cadir)
 ```
+
+### Annotate clusters
 ```{r}
-anncak <- annotate_biclustering(
+cak <- annotate_biclustering(
     obj = cak,
     universe = rownames(sce),
     org = "hs"
 )
 
-anncak <- rank_genes(cadir = anncak, caobj = ca)
-anncak
+cak <- rank_genes(cadir = cak, caobj = ca)
+cak
 
-sce$cadir <- anncak@cell_clusters
+sce$cadir <- cak@cell_clusters
 
 um1 <- plotUMAP(sce, colour = "cadir")
 um2 <- plotUMAP(sce, colour = "cell_type")
@@ -107,11 +110,37 @@ ari <- aricode::clustComp(sce$cadir, sce$cell_type)
 p <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
 p
 
-ggsave(plot = p, file = "./img/figure2/umap.png")
+ggsave(
+  plot = p,
+  file = "./img/figure2/umap.png",
+  width = 3600,
+  height = 1800,
+  units = "px"
+)
 
 ```
 
+## Association plots of clusters
+```{r}
+pc <- plot_clusters(
+  cak,
+  ca,
+  show_genes=T,
+  label_genes = T,
+  ntop = 5
+)
 
+ggsave(
+  plot = pc,
+  file = "./img/figure2/plot_clusters.pdf",
+  width = 3600,
+  height = 2000,
+  units ="px"
+)
+```
+
+
+## Split & Merge plot
 ```{r}
 sm <- sm_plot(
   cadir = cak,
@@ -124,7 +153,12 @@ sm <- sm_plot(
   org = "hs"
 )
 sm
-ggsave(plot = sm, file = "./img/figure2/split_merge_plot.pdf")
+
+ggsave(plot = sm,
+  file = "./img/figure2/split_merge_plot.pdf",
+  width = 3000,
+  height = 1800,
+  units = "px")
 ```
 
 

@@ -280,55 +280,55 @@ suffix="_raw"
 # Tabula Muris All #
 ####################
 
-name="tabula_muris"
-
-file="${indir}/${name}_raw.rds"
-filename=$(basename $file .rds)
-filename=${filename%"$suffix"}
-
-mxqsub \
-  --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
-  --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
-  --group-name="${filename}" \
-  --threads=$THREADS \
-  --memory=$MEMORY \
-  --tmpdir=$TMPDIR \
-  -t $MINUTES \
-  Rscript-4.4 $SCRIPT \
-  --outdir $outdir \
-  --file $file \
-  --name "${filename}_preproc" \
-  --pct $pcts \
-  --truth "cell_ontology_class" \
-  --org mm \
-  --mt
+# name="tabula_muris"
+#
+# file="${indir}/${name}_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.4 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth "cell_ontology_class" \
+#   --org mm \
+#   --mt
 
 #####################
 # Tabula Muris Limb #
 #####################
 
-name="tabula_muris_limb"
-
-file="${indir}/${name}_raw.rds"
-filename=$(basename $file .rds)
-filename=${filename%"$suffix"}
-
-mxqsub \
-  --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
-  --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
-  --group-name="${filename}" \
-  --threads=$THREADS \
-  --memory=$MEMORY \
-  --tmpdir=$TMPDIR \
-  -t $MINUTES \
-  Rscript-4.4 $SCRIPT \
-  --outdir $outdir \
-  --file $file \
-  --name "${filename}_preproc" \
-  --pct $pcts \
-  --truth "cell_ontology_class" \
-  --org mm \
-  --mt
+# name="tabula_muris_limb"
+#
+# file="${indir}/${name}_raw.rds"
+# filename=$(basename $file .rds)
+# filename=${filename%"$suffix"}
+#
+# mxqsub \
+#   --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+#   --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+#   --group-name="${filename}" \
+#   --threads=$THREADS \
+#   --memory=$MEMORY \
+#   --tmpdir=$TMPDIR \
+#   -t $MINUTES \
+#   Rscript-4.4 $SCRIPT \
+#   --outdir $outdir \
+#   --file $file \
+#   --name "${filename}_preproc" \
+#   --pct $pcts \
+#   --truth "cell_ontology_class" \
+#   --org mm \
+#   --mt
 
 ###################
 # Brain Organoids #
@@ -357,3 +357,33 @@ mxqsub \
 #        --org hs \
 #        --mt_perc 40 \
 #        --mt
+
+
+#######################
+# Tabula Sapiens full #
+#######################
+
+TS_MEMORY=500G
+TS_MINUTES=360
+name="tabula_sapiens"
+
+file="${indir}/${name}_raw.rds"
+filename=$(basename $file .rds)
+filename=${filename%"$suffix"}
+
+mxqsub \
+  --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
+  --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
+  --group-name="${filename}" \
+  --threads=$THREADS \
+  --memory=$TS_MEMORY \
+  --tmpdir=$TMPDIR \
+  -t $TS_MINUTES \
+  Rscript-4.4 $SCRIPT \
+  --outdir $outdir \
+  --file $file \
+  --name "${filename}_preproc" \
+  --pct $pcts \
+  --truth "cell_ontology_class" \
+  --org hs \
+  --mt

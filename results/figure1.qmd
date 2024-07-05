@@ -71,14 +71,14 @@ ca <- cacomp(
 )
 ```
 
-With `cutoff = NULL` CAdir tries to estimate the angle cutoff directly from the data.
+With `cutoff = NULL` CAdir tries to estimate the angle cutoff directly from the data. Here we use a cutoff of 50 degrees.
 
 ```{r}
 set.seed(2358)
 cak <- dirclust_splitmerge(
     caobj = ca,
-    k = 9,
-    cutoff = NULL,
+    k = 10,
+    cutoff = 50,
     method = "random",
     apl_quant = 0.9999,
     counts = NULL,
