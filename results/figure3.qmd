@@ -28,7 +28,7 @@ suppressPackageStartupMessages({
 })
 
 dir <- "/project/kohl_analysis/analysis/CAdir/results/results/"
-imgdir <- file.path(dir, "img/figure2/")
+imgdir <- file.path(dir, "img/figure3/")
 
 setwd(dir)
 dir.create(imgdir, recursive = TRUE)
@@ -152,9 +152,10 @@ ggplot(aes(x=algorithm,
          y = "max ARI cells",
          x = "algorithm") +
     scale_shape_manual(values = seq_len(length(df$simulation))) +
-    ggthemes::scale_fill_tableau(palette = "Tableau 20",
-                              type = "regular",
-                              direction = 1)+
+    # ggthemes::scale_fill_tableau(palette = "Tableau 20",
+    #                           type = "regular",
+    #                           direction = 1)+
+    scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
     theme_bw(base_size = 16) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
@@ -492,13 +493,15 @@ p <- ggplot(df_real, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
     panel.background = element_blank(),
     axis.text.y = element_text(color = "black"),
     axis.text.x = element_text(angle = 30, hjust = 1, color = "black"),
-    text = element_text(size = 16))
+    text = element_text(size = 16),
+    plot.title = element_text(size = 16, face = "plain")) #"bold"
 
 p
 ggsave(plot = p,
        filename = file.path(imgdir, "real_bench_max_ARI_cells.pdf"),
-        width = 4.2,
-        height = 8)
+        width = 2000,
+        height = 1750,
+       units = "px")
 
 ```
 
@@ -697,7 +700,7 @@ geom_line(aes(group = algorithm, color = algorithm, alpha = algorithm, linetype 
                                    '4e+05',
                                    '6e+05'
                                   )) +
-labs(x = 'Number of cells', y = 'Running time (min)') +
+labs(x = 'Number of cells', y = 'Running time (min)', title = "Runtime vs Data Set Size") +
 coord_trans(x="log10") +
 scale_alpha_manual(values = c(
     'CAdir' = 1,
@@ -744,8 +747,8 @@ rt
 ggsave(
   plot = rt,
   filename = file.path(imgdir, "runtime_singleproc.pdf"),
-  width = 1600,
-  height = 800,
+  width = 2400,
+  height = 2100,
   units = "px"
 )
 ```
@@ -774,7 +777,7 @@ log2diff <- ggplot(res, aes(x = nr_cts, y = log2diff, color = k)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(x = "# clusters", y = "log2 diff", title = "Detected clusters") +
   scale_color_mpimg() +
-  theme_bw()
+  theme_bw(base_size = 18)
 
 ggsave(
   filename = file.path(imgdir, "log2diff_ct_detection.pdf"),

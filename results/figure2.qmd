@@ -26,6 +26,7 @@ suppressPackageStartupMessages({
   library(APL)
   library(SingleCellExperiment)
   library(dplyr)
+  library(tidyr)
 
   # To load the data set
   library(TENxPBMCData)
@@ -143,10 +144,49 @@ ggsave(
 )
 ```
 
-### Show that cluster is outlier
+### Angle between clusters - **TO DELETE**
 ```{r}
-which
+ang_rad <- get_angle(cak@directions, cak@directions) 
+ang_deg <- as.data.frame(rad2deg(ang_rad)) %>% tibble::rownames_to_column("cluster")
+
+long_ang <- tidyr::pivot_longer(data = ang_deg, cols = -cluster, values_to = "angle", names_to = "to_cluster" )
+
+p <- ggplot(long_ang, aes(x=cluster, y = to_cluster, fill = angle)) +
+  geom_tile() +
+  viridis::scale_fill_viridis() +
+  theme_bw()+
+theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+p
 ```
+
+```{r}
+idx <- base::which(cak@cell_clusters == "cluster_5")
+
+tmp = colData(sce)
+tmp$coi <- "others"
+tmp$coi[idx] <- "coi"
+tmp$coi <- sort(tmp$coi, decreasing = TRUE)
+ggplot(tmp, aes(x = nCount_RNA, y = nFeature_RNA, color = coi )) +
+  geom_point()
+
+ggplot(tmp, aes(x = cell_type, y = percent.mt, color = coi )) +
+  geom_point()
+
+devtools::load_all("~/gits/ClemensKohl/RUtils/")
+plot_hm(
+  sce = sce,
+  cell_clusters = cak@cell_clusters,
+  gene_clusters = cak@gene_clusters,
+  show_column_title = character(0),
+  show_row_title = character(0),
+  row_title_rot = 90,
+  show_row_names = FALSE
+  )
+
+```
+
+
 
 ## Split & Merge plot
 ```{r}
