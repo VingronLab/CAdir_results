@@ -1,0 +1,795 @@
+---
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4
+    language: R
+    name: ir44
+---
+
+# Setup
+```{r}
+renv::load("/project/kohl_analysis/analysis/CAdir")
+devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
+# source("./utils.R")
+
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(tidyr)
+  library(readr)
+  library(ggplot2)
+  library(ggthemes)
+})
+
+dir <- "/project/kohl_analysis/analysis/CAdir/results/results/"
+imgdir <- file.path(dir, "img/figure2/")
+
+setwd(dir)
+dir.create(imgdir, recursive = TRUE)
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+```
+
+# Cell clustering benchmarking
+
+```{r}
+date <- "20240620"
+base_dir <- file.path("/project/kohl_data/CAdir/benchmarking/results/simulated", date)
+indir = file.path(base_dir, "eval")
+
+```
+
+
+## simulated data
+
+Benchmarking results based on Zeisel Brain data:
+```{r}
+zeisel_eval <- readRDS(
+  file.path(indir,
+  paste0(date, "_zeisel_collated.rds")
+  ))
+
+dfz <- zeisel_eval %>%
+    mutate(dataset = "zeisel") %>%
+    mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep="_")) %>%
+    mutate(simulation = factor(simulation, levels = c('0.02_0.75_0.75',
+                                                      '0.06_0.75_0.75',
+                                                      '0.1_0.75_0.75',
+                                                      '0.02_1.5_1.5',
+                                                      '0.06_1.5_1.5',
+                                                      '0.1_1.5_1.5')))
+
+table(zeisel_eval$algorithm,
+      paste(zeisel_eval$dePROB, zeisel_eval$defacLOC, zeisel_eval$defacSCALE, sep="_"))
+
+```
+
+Benchmarking results based on PBMC3k data:
+```{r}
+pbmc_eval <- readRDS(
+  file.path(indir,
+  paste0(date, "_pbmc3k_collated.rds")
+  ))
+
+dfp <- pbmc_eval %>%
+    mutate(dataset = "pbmc3k") %>%
+    mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep="_")) %>%
+    mutate(simulation = factor(simulation, levels = c('0.02_0.75_0.75',
+                                                      '0.06_0.75_0.75',
+                                                      '0.1_0.75_0.75',
+                                                      '0.02_1.5_1.5',
+                                                      '0.06_1.5_1.5',
+                                                      '0.1_1.5_1.5')))
+
+table(pbmc_eval$algorithm,
+      paste(pbmc_eval$dePROB, pbmc_eval$defacLOC, pbmc_eval$defacSCALE, sep="_"))
+```
+
+Combining the benchmarking resuls:
+```{r}
+df_all <- rbind(dfz, dfp)
+
+df_all$algorithm <- gsub("CAbiNet_igraph", "CAbiNet", df_all$algorithm)
+
+df_all$algorithm <- factor(df_all$algorithm, levels =
+                           c("CAdir",
+                             "kmeans",
+                             "CAbiNet",
+                             "RaceID",
+                             "RaceID_auto",
+                             "Seurat",
+                             "Monocle3",
+                             "SC3",
+                             "SIMLR"))
+
+
+df <- df_all %>% group_by(simulation, algorithm, dataset) %>%
+        mutate(mean_ARI = mean(ARI, na.rm = TRUE)) %>%
+        mutate(mean_NMI = mean(NMI, na.rm = TRUE)) %>%
+        select(dataset, simulation, algorithm, mean_ARI, mean_NMI) %>%
+        distinct() %>%
+        ungroup()
+```
+
+### Simulated data benchmarking - Max Results
+```{r}
+df <- df_all %>%
+    group_by(simulation, algorithm, dataset) %>%
+    mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
+    mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
+    select(dataset, simulation, algorithm, max_ARI, max_NMI) %>%
+    distinct() %>%
+    ungroup()
+
+df$max_ARI[is.infinite(df$max_ARI)] <- 0
+df$max_NMI[is.infinite(df$max_NMI)] <- 0
+
+```
+
+```{r}
+p <- df %>%
+ggplot(aes(x=algorithm,
+           y=max_ARI)) +
+    geom_boxplot(aes(fill = algorithm),
+                 color = "#383e42",
+                 alpha = 1,
+                 outlier.alpha = 0)+
+    geom_jitter(aes(x=algorithm,
+                    y=max_ARI,
+                    color = dataset,
+                    group = dataset,
+                    shape = simulation),
+                    stroke =1.5,
+                    size = 2,
+                    width = 0.2) +
+    labs(title = "max ARI cells on simulated data",
+         y = "max ARI cells",
+         x = "algorithm") +
+    scale_shape_manual(values = seq_len(length(df$simulation))) +
+    ggthemes::scale_fill_tableau(palette = "Tableau 20",
+                              type = "regular",
+                              direction = 1)+
+    scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
+    theme_bw(base_size = 16) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    guides(fill = "none")
+
+p
+
+ggsave(plot = p,
+       filename = file.path(imgdir, "sim_bench_max_ARI_cells.pdf"),
+       width = 3000,
+       height = 2000,
+       units = "px")
+```
+
+```{r}
+p <- df %>%
+ggplot(aes(x=algorithm,
+           y=max_NMI)) +
+    geom_boxplot(aes(fill = algorithm),
+                 color = "#383e42",
+                 alpha = 1,
+                 outlier.alpha = 0)+
+    geom_jitter(aes(x=algorithm,
+                    y=max_NMI,
+                    color = dataset,
+                    group = dataset,
+                    shape = simulation),
+                    stroke =1.5,
+                    size = 2,
+                    width = 0.2) +
+    labs(title = "max NMI on simulated data",
+         y = "max NMI",
+         x = "algorithm") +
+    scale_shape_manual(values = seq_len(length(df$simulation))) +
+    ggthemes::scale_fill_tableau(palette = "Tableau 20",
+                              type = "regular",
+                              direction = 1)+
+    scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
+    theme_bw(base_size = 16) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    guides(fill = "none")
+
+p
+
+ggsave(plot = p,
+       filename = file.path(imgdir, "sim_bench_max_NMI_cells.pdf"),
+       width = 3000,
+       height = 2000,
+       units = "px")
+```
+
+
+### Simulated data benchmarking - Average Results
+```{r}
+df <- df_all %>% group_by(simulation, algorithm, dataset) %>%
+        mutate(mean_ARI = mean(ARI, na.rm = TRUE)) %>%
+        mutate(mean_NMI = mean(NMI, na.rm = TRUE)) %>%
+        select(dataset, simulation, algorithm, mean_ARI, mean_NMI) %>%
+        distinct() %>%
+        ungroup()
+
+```
+
+
+
+```{r}
+p <- df %>%
+ggplot(aes(x=algorithm,
+           y=mean_ARI)) +
+    geom_boxplot(aes(fill = algorithm),
+                 color = "#383e42",
+                 alpha = 1,
+                 outlier.alpha = 0)+
+    geom_jitter(aes(x=algorithm,
+                    y=mean_ARI,
+                    color = dataset,
+                    group = dataset,
+                    shape = simulation),
+                    stroke =1.5,
+                    size = 2,
+                    width = 0.2) +
+    labs(title = "Mean ARI cells",
+         y = "mean ARI",
+         x = "algorithm") +
+    scale_shape_manual(values = seq_len(length(df$simulation))) +
+    ggthemes::scale_fill_tableau(palette = "Tableau 20",
+                              type = "regular",
+                              direction = 1)+
+    scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
+    theme_bw(base_size = 16) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    guides(fill = "none")
+
+p
+
+
+ggsave(plot = p,
+       filename = file.path(imgdir, "sim_bench_mean_ARI_cells.pdf"),
+       width = 2500,
+       height = 1650,
+       units = "px")
+```
+
+```{r}
+p <- df %>%
+ggplot(aes(x=algorithm,
+           y=mean_NMI)) +
+    geom_boxplot(aes(fill = algorithm),
+                 color = "#383e42",
+                 alpha = 1,
+                 outlier.alpha = 0)+
+    geom_jitter(aes(x=algorithm,
+                    y=mean_NMI,
+                    color = dataset,
+                    group = dataset,
+                    shape = simulation),
+                    stroke =1.5,
+                    size = 2,
+                    width = 0.2) +
+    labs(title = "mean NMI on simulated data",
+         y = "mean NMI",
+         x = "algorithm") +
+    scale_shape_manual(values = seq_len(length(df$simulation))) +
+    ggthemes::scale_fill_tableau(palette = "Tableau 20",
+                              type = "regular",
+                              direction = 1)+
+    scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
+    theme_bw(base_size = 16) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    guides(fill = "none")
+
+p
+
+
+ggsave(plot = p,
+       filename = file.path(imgdir, "sim_bench_mean_NMI_cells.pdf"),
+       width = 2500,
+       height = 1650,
+       units = "px")
+```
+
+
+
+## real data
+
+```{r}
+date <- "20240620"
+evldir = file.path("/project/kohl_data/CAdir/benchmarking/results/real", date, "eval")
+
+options(repr.plot.width = 15, repr.plot.height = 10)
+```
+
+```{r}
+### Load the results of real data sets
+files = list.files(evldir, '*.rds', full.names = TRUE)
+
+df = data.frame()
+for (file in files){
+
+  data = readRDS(file)
+  df = bind_rows(df, data)
+
+}
+
+df$dataset = gsub('_filtered', '', df$dataset)
+
+### Simulated data sets
+
+# simdf <- rbind(dfz, dfp)
+simdf <- df_all
+simdf$dataset = paste0(simdf$dataset, '_', simdf$simulation)
+
+# simdf$dataset = paste(simdf$dataset, simdf$dePROB, simdf$defacLOC, simdf$defacSCALE, sep = '_')
+
+commoncols = intersect(colnames(df), colnames(simdf))
+
+### Merge two data frames
+df <- rbind(df[,commoncols], simdf[, commoncols])
+```
+
+```{r}
+df$dataset[df$dataset == 'PBMC_10X'] = 'PBMC10x'
+df$dataset[df$dataset == "Tirosh_nonmaglignant"] = "Tirosh"
+df$dataset[df$dataset == "ZeiselBrain"] = "Zeisel"
+df$dataset[df$dataset == "dmel_E14-16h"] = "DmelSpatial"
+df$dataset[df$dataset == "tabula_sapiens_tissue"] = 'TabulaSapiens'
+df$dataset[df$dataset == "brain_organoids"] = "BrainOrganoids"
+
+df <- df %>%
+        mutate(algorithm = gsub("CAbiNet_igraph", "CAbiNet", algorithm)) %>%
+        mutate(pattern = paste0(algorithm, dataset))
+```
+
+```{r}
+# Filter out combinations where all runs fail.
+test <- df %>%
+        group_by(dataset, algorithm) %>%
+        mutate(fail.n = sum(is.na(ARI)), scsd.n = n()) %>%
+        filter(fail.n == scsd.n | (scsd.n == 0))
+
+## pick 1 algor./dataset combinaton of failed runs
+df_na <- test %>%
+        group_by(algorithm, dataset) %>%
+        arrange(runtime) %>%
+        select(-fail.n, -scsd.n) %>%
+        top_n(n = 1, wt = runtime)
+
+run_stat = table(df$algorithm, df$dataset)
+run_stat
+```
+
+```{r}
+# Find missing runs (no values because crash/error)
+
+# Find row and column indices of cells equal to 0
+zero_indices <- which(run_stat == 0, arr.ind = TRUE)
+
+# Create a data frame with row names and column names
+zero_df <- data.frame(
+  algorithm = rownames(run_stat)[zero_indices[, 1]],
+  dataset = colnames(run_stat)[zero_indices[, 2]]
+)
+
+df_na = dplyr::bind_rows(df_na, zero_df)
+
+```
+
+```{r}
+# Filter out runs which failed
+subdf = df[!(df$pattern %in% test$pattern), ]
+subdf = subdf[!is.na(subdf$ARI),]
+subdf = rbind(subdf, df_na) # add a single instance of failed runs & missing runs.
+
+subdf$algorithm = factor(subdf$algorithm, levels = c(
+    "CAdir",
+    "kmeans",
+    "CAbiNet",
+    "RaceID",
+    "RaceID_auto",
+    "Seurat",
+    "Monocle3",
+    "SC3",
+    "SIMLR"
+))
+
+df_g <- subdf %>%
+    group_by(algorithm, dataset) %>%
+    mutate(Mean_ARI = mean(ARI),
+           Max_ARI = max(ARI),
+           Median_ARI = median(ARI),
+           Mean_NMI = mean(NMI),
+           Max_NMI = max(NMI))
+
+df_g$dataset = factor(df_g$dataset, levels = c(
+    "Darmanis",
+    "FreytagGold",
+    "PBMC10x",
+    "Tirosh",
+    "Zeisel",
+    "BaronPancreas",
+    "DmelSpatial",
+    "TabulaSapiens",
+    "BrainOrganoids",
+    unique(simdf$dataset)
+))
+```
+
+```{r}
+df_m <- df_g %>%
+    group_by(sim, algorithm, dataset) %>%
+    mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
+    mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
+    select(dataset, sim, algorithm, max_NMI, max_ARI) %>%
+    distinct() %>%
+    ungroup()
+
+df_m$max_NMI[is.infinite(df_m$max_NMI)] <- NA
+df_m$max_ARI[is.infinite(df_m$max_ARI)] <- NA
+```
+
+```{r}
+options(repr.plot.width=10, repr.plot.height=5)
+
+# Remove simulated data sets
+df_real <- df_g %>% filter(dataset %in% c("Darmanis",
+                                          "FreytagGold",
+                                          "PBMC10x",
+                                          "Tirosh",
+                                          "Zeisel",
+                                          "BaronPancreas",
+                                          "DmelSpatial",
+                                          "TabulaSapiens",
+                                          "BrainOrganoids") )
+df_real$dataset = droplevels(df_real$dataset)
+df_real <- df_real %>%
+    drop_na(algorithm) %>%
+    droplevels()
+
+na_txt <- df_real[is.na(df_real$Max_ARI), ]
+na_txt$NAs <- as.character("N/A")
+```
+
+```{r}
+
+p <- ggplot(df_real, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
+  geom_tile() +
+  theme_bw() +
+  geom_text(
+    aes(label = round(Max_ARI, 2)),
+    color = "white",
+    size = 3,
+    check_overlap = T
+  ) +
+  geom_text(
+    data = na_txt,
+    aes(x = algorithm, y = dataset, label = NAs),
+    color = "white",
+    size = 3,
+    check_overlap = T
+  ) +
+  scale_fill_gradientn(
+    values = scales::rescale(
+      x=c(min(c(df_g$Max_ARI, 0), na.rm = TRUE), 0, 1),
+      to = c(0,1),
+      from = c(
+        min(df_g$Max_ARI, na.rm = TRUE),
+        max(df_g$Max_ARI, na.rm = TRUE))
+    ),
+    # colors = c("#2b8cbe","#2b8cbe", "#fc9272")) +
+    colors = c("#2b8cbe","#2b8cbe", "#fc9272")) +
+  labs(xlab = 'Dataset', ylab = 'Algorithm', title = "Maximal ARI on experimental data") +
+  theme(panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    axis.text.y = element_text(color = "black"),
+    axis.text.x = element_text(angle = 30, hjust = 1, color = "black"),
+    text = element_text(size = 16))
+
+p
+ggsave(plot = p,
+       filename = file.path(imgdir, "real_bench_max_ARI_cells.pdf"),
+        width = 4.2,
+        height = 8)
+
+```
+
+
+
+
+## Calculate % successful runs
+
+```{r}
+n_param <- 108
+
+stats <- df %>%
+group_by(algorithm, dataset) %>%
+mutate(n_runs = n(),
+       NA_ARI = sum(is.na(ARI)),
+       NA_NMI = sum(is.na(NMI))) %>%
+mutate(perc_ARI_succ = round((n_runs - NA_ARI) / n_param, 2),
+       perc_NMI_succ = round((n_runs - NA_NMI) / n_param, 2),
+       perc_ARI_NA = round(NA_ARI / n_param, 2),
+       perc_NMI_NA = round(NA_NMI / n_param, 2),
+       perc_crash = round((n_param - n_runs) / n_param, 2)) %>%
+select(algorithm, dataset, perc_ARI_succ, perc_NMI_succ, perc_ARI_NA, perc_NMI_NA, perc_crash) %>%
+distinct()
+
+```
+
+```{r}
+stats$algorithm = factor(stats$algorithm, levels = c(
+    "CAdir",
+    "kmeans",
+    "CAbiNet",
+    "RaceID",
+    "RaceID_auto",
+    "Seurat",
+    "Monocle3",
+    "SC3",
+    "SIMLR"
+))
+
+stats$dataset = factor(stats$dataset, levels = c("Darmanis",
+                                                 "FreytagGold",
+                                                 "PBMC10x",
+                                                 "Tirosh",
+                                                 "Zeisel",
+                                                 "BaronPancreas",
+                                                 "DmelSpatial",
+                                                 "TabulaSapiens",
+                                                 "BrainOrganoids",
+                                                 unique(simdf$dataset)))
+
+```
+
+```{r}
+all_comb <- crossing(algorithm = stats$algorithm, dataset = stats$dataset) %>%
+    mutate(comb = paste0(algorithm, "_", dataset))
+
+comb_in_data <- stats %>%
+    mutate(comb = paste0(algorithm, "_", dataset)) %>%
+    pull(comb)
+
+not_in_data <- which(!all_comb$comb %in% comb_in_data)
+
+missing_comb <- all_comb[not_in_data, ]
+missing_comb <- missing_comb %>%
+    select(algorithm, dataset) %>%
+    mutate(perc_ARI_succ = 0,
+           perc_NMI_succ = 0,
+           perc_ARI_NA = 0,
+           perc_NMI_NA = 0,
+           perc_crash = 1)
+
+stats <- bind_rows(stats, missing_comb)
+```
+
+```{r}
+p <- stats %>%
+    distinct() %>%
+    select(-perc_NMI_succ, -perc_NMI_NA) %>%
+    pivot_longer(cols = starts_with("perc"), names_to = "stat", values_to = "perc") %>%
+    mutate(stat = factor(stat, levels = c("perc_ARI_succ", "perc_ARI_NA", "perc_crash"))) %>%
+    ggplot(aes(x = 1, y = perc, fill = stat )) +
+        geom_col(position = "fill") +
+        facet_grid(algorithm ~ dataset, as.table = FALSE, switch = "both") +
+        scale_y_continuous(expand = c(0, 0)) +
+        scale_x_continuous(expand = c(0, 0)) +
+        theme(panel.grid = element_blank(),
+               axis.ticks = element_blank(),
+               axis.text = element_blank(),
+               strip.background = element_blank(),
+               strip.text.x = element_text(angle = 30, hjust = 0.95, vjust = 0.9),
+               strip.text.y.left = element_text(angle = 0, hjust = 0.95),
+               strip.clip = "off",
+               text = element_text(size=16)
+               , panel.spacing = unit(1.5, "pt")
+              ) +
+        scale_fill_manual(values = c("perc_ARI_succ" = "#59A14F", "perc_ARI_NA" = "#F28E2B", "perc_crash" = "#E15759"),
+                          name = "% runs",
+                          labels = c("Success", "N/A", "Crashed") ) +
+        ggtitle("Fraction of successful and failed runs - ARI") +
+        xlab("Dataset") +
+        ylab("Algorithm")
+
+# ggsave(plot = p,
+#        filename = file.path(outdir, "barplots_fraction_successful_runs_ARI.pdf"),
+#        width = 11,
+#        height = 6)
+
+q <- p + theme(text = element_text(size = 11))
+
+ggsave(plot = q,
+       filename = file.path(imgdir, "barplots_fraction_successful_runs_ARI_wide.pdf"),
+       width = 8, height = 4.2)
+q
+```
+
+
+
+
+
+
+# Runtime & Scalability
+```{r}
+mpgGreen = "#006c66"
+mpgDarkGreen = "#005555"
+mpgDarkGrey = "#777777"
+mpgGreenLight = "#c6d325"
+mpgOrange = '#ef7c00'
+mpgGrau = "#a7a7a8" # MPG-Grau
+mpgDarkBlue = "#29485d" # MPG Dunkelblau
+mpgLightBlue = "#00b1ea" # MPG Hellblau
+
+eval_files = list.files(
+  '/project/kohl_data/CAdir/benchmarking/results/scalability/20240515_institute_seminar/out',
+  pattern = '*.csv',
+  full.names = T
+)
+
+
+scal_df = data.frame()
+for (f in eval_files){
+    df = read_csv(f, progress = FALSE, show_col_types = FALSE)
+    suppressWarnings({
+      scal_df <- dplyr::bind_rows(scal_df, df)
+  })
+}
+
+scal_df$dataset = gsub('_ngene-2000', '', scal_df$dataset)
+scal_df$dataset = gsub('ncell-', '', scal_df$dataset)
+scal_df$algorithm = gsub('CAbiNet_igraph', 'CAbiNet', scal_df$algorithm)
+
+scal_df$algorithm <- factor(scal_df$algorithm, levels = c(
+    'CAdir',
+    'CAbiNet',
+    'Monocle3',
+    'RaceID',
+    # 'RaceID_auto',
+    'SC3',
+    'SIMLR',
+    'Seurat',
+    'kmeans'
+))
+
+scal_df$dataset = as.numeric(scal_df$dataset)
+
+scal_df <- scal_df[!is.na(scal_df$algorithm), ]
+
+scal_df$total_runtime <- scal_df$runtime + ifelse(is.na(scal_df$runtime_dimreduc), yes = 0, no = scal_df$runtime_dimreduc)
+table(scal_df$algorithm)
+```
+
+```{r}
+options(repr.plot.width = 10, repr.plot.height = 10)
+
+alph <- 0.6
+rt <- ggplot(scal_df, aes(dataset,  (total_runtime/60))) +
+geom_point(aes(group = algorithm, color = algorithm, alpha = algorithm), size = 2) +
+geom_line(aes(group = algorithm, color = algorithm, alpha = algorithm, linetype = algorithm), linewidth = 1 )+
+    scale_x_continuous(breaks = c( 1000,
+                                  10000,
+                                  20000,
+                                  40000,
+                                  60000,
+                                  80000,
+                                  100000,
+                                  200000,
+                                  400000,
+                                  600000),
+                       labels = c( '1000',
+                                   '10000',
+                                   '20000',
+                                   '40000',
+                                    '60000',
+                                   '80000',
+                                   '1e+05',
+                                   '2e+05',
+                                   '4e+05',
+                                   '6e+05'
+                                  )) +
+labs(x = 'Number of cells', y = 'Running time (min)') +
+coord_trans(x="log10") +
+scale_alpha_manual(values = c(
+    'CAdir' = 1,
+    'CAbiNet' = alph,
+    'Monocle3' = alph,
+    'RaceID' = alph,
+    # 'RaceID_auto' = alph,
+    'SC3' = alph,
+    'SIMLR' = alph,
+    'Seurat' = alph,
+    'kmeans' = alph
+)) +
+scale_colour_manual(values = c(
+    'CAdir' = mpgOrange,
+    'CAbiNet' = mpgDarkGreen,
+    'Monocle3' = mpgDarkBlue,
+    'RaceID' = mpgGrau,
+    # 'RaceID_auto' = alph,
+    'SC3' = mpgLightBlue,
+    'SIMLR' = mpgGrau,
+    'Seurat' = mpgGreenLight,
+    'kmeans' = mpgGreen
+)) +
+# ggthemes::scale_colour_tableau() +
+# ggthemes::scale_fill_tableau(palette = "Tableau 10",
+#                               type = "regular",
+#                               direction = 1)+
+scale_linetype_manual(values = c(
+    'CAdir' = "solid",
+    'CAbiNet' = "solid",
+    'Monocle3' = "solid",
+    'RaceID' = "solid",
+    # 'RaceID_auto' = "solid",
+    'SC3' = "dashed",
+    'SIMLR' = "solid",
+    'Seurat' = "solid",
+    'kmeans' = "solid"
+  )) +
+theme_bw(base_size = 18) +
+theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust=1))
+
+rt
+
+ggsave(
+  plot = rt,
+  filename = file.path(imgdir, "runtime_singleproc.pdf"),
+  width = 1600,
+  height = 800,
+  units = "px"
+)
+```
+
+
+
+# Detection of cluster number
+
+```{r}
+indir <- "/project/kohl_data/CAdir/benchmarking/results/ct_detection"
+res <- read_csv(file.path(indir, "240705_ct_detection.csv"),
+  show_col_types = FALSE,
+  progress = FALSE)
+
+res <- res %>%
+  mutate(diff_abs = cts_found-nr_cts) %>%
+  mutate(diff_perc = cts_found/nr_cts) %>%
+  mutate(log2diff = log2(cts_found/nr_cts)) %>%
+  mutate(k = factor(k))
+```
+
+```{r}
+log2diff <- ggplot(res, aes(x = nr_cts, y = log2diff, color = k)) +
+  geom_point() +
+  geom_line() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "# clusters", y = "log2 diff", title = "Detected clusters") +
+  scale_color_mpimg() +
+  theme_bw()
+
+ggsave(
+  filename = file.path(imgdir, "log2diff_ct_detection.pdf"),
+  plot = log2diff,
+  width = 1800,
+  height = 1800,
+  units = "px"
+)
+```
+
+
+
+# Environment
+```{r}
+sessionInfo()
+```
+
+

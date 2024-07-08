@@ -36,6 +36,10 @@ suppressPackageStartupMessages({
   library(scran)
 })
 
+dir <- "/project/kohl_analysis/analysis/CAdir/results/results/"
+imgdir <- file.path(dir, "img/figure2/")
+dir.create(imgdir, recursive = TRUE)
+
 options(repr.plot.width = 20, repr.plot.height = 15)
 ```
 
@@ -112,7 +116,7 @@ p
 
 ggsave(
   plot = p,
-  file = "./img/figure2/umap.png",
+  file = file.path(imgdir, "umap.png"),
   width = 3600,
   height = 1800,
   units = "px"
@@ -132,13 +136,17 @@ pc <- plot_clusters(
 
 ggsave(
   plot = pc,
-  file = "./img/figure2/plot_clusters.pdf",
-  width = 3600,
+  file = file.path(imgdir, "plot_clusters.pdf"),
+  width = 3400,
   height = 2000,
   units ="px"
 )
 ```
 
+### Show that cluster is outlier
+```{r}
+which
+```
 
 ## Split & Merge plot
 ```{r}
@@ -155,11 +163,12 @@ sm <- sm_plot(
 sm
 
 ggsave(plot = sm,
-  file = "./img/figure2/split_merge_plot.pdf",
+  file = file.path(imgdir, "split_merge_plot.pdf"),
   width = 3000,
   height = 1800,
   units = "px")
 ```
+
 
 
 
