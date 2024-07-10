@@ -101,7 +101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="6e83b238" class="cell" data-execution_count="1">
+<div id="38a177c2" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"/project/kohl_analysis/analysis/CAdir/results/results/"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>(<span class="st">"/project/kohl_analysis/analysis/CAdir"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">"/home/kohl/PhD/gits/ClemensKohl/CAdir"</span>)</span>
@@ -149,7 +149,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 </div>
 <section id="load-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-data">Load data</h2>
-<div id="7314f9ad" class="cell" data-execution_count="2">
+<div id="4c3a5cea" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sce <span class="ot">&lt;-</span> <span class="fu">sce_pbmc3k</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>see ?TENxPBMCData and browseVignettes('TENxPBMCData') for documentation
@@ -170,7 +170,7 @@ This message will be shown once per session”</code></pre>
 </section>
 <section id="cadir" class="level1">
 <h1>CAdir</h1>
-<div id="7619d47a" class="cell" data-execution_count="3">
+<div id="c358057d" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sce_bu <span class="ot">&lt;-</span> sce</span>
@@ -192,7 +192,7 @@ This message will be shown once per session”</code></pre>
 <p>With <code>cutoff = NULL</code> CAdir tries to estimate the angle cutoff directly from the data.</p>
 <section id="split-merge-clustering" class="level2">
 <h2 class="anchored" data-anchor-id="split-merge-clustering">Split &amp; Merge Clustering</h2>
-<div id="30ca4dae" class="cell" data-execution_count="4">
+<div id="a6209bfa" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>cak <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">caobj =</span> ca,</span>
@@ -235,7 +235,7 @@ Iteration 5
 </div>
 <section id="annotate-clusters" class="level3">
 <h3 class="anchored" data-anchor-id="annotate-clusters">Annotate clusters</h3>
-<div id="f2144dde" class="cell" data-execution_count="5">
+<div id="9c376fe2" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cak <span class="ot">&lt;-</span> <span class="fu">annotate_biclustering</span>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">obj =</span> cak,</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">universe =</span> <span class="fu">rownames</span>(sce),</span>
@@ -286,7 +286,7 @@ Clustering results:
 </section>
 <section id="association-plots-of-clusters" class="level2">
 <h2 class="anchored" data-anchor-id="association-plots-of-clusters">Association plots of clusters</h2>
-<div id="090a1421" class="cell" data-execution_count="6">
+<div id="5d1c4be7" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pc <span class="ot">&lt;-</span> <span class="fu">plot_clusters</span>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  cak,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  ca,</span>
@@ -330,7 +330,7 @@ Clustering results:
 </div>
 <section id="identify-outlier-genes-cells" class="level3">
 <h3 class="anchored" data-anchor-id="identify-outlier-genes-cells">Identify outlier genes &amp; cells</h3>
-<div id="182c9216" class="cell" data-execution_count="7">
+<div id="c09fa6f4" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cak <span class="ot">&lt;-</span> <span class="fu">rank_genes</span>(cak, ca)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>rnks <span class="ot">&lt;-</span> cak<span class="sc">@</span>gene_ranks<span class="sc">$</span>cluster_5</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>p_expr <span class="ot">&lt;-</span> scater<span class="sc">::</span><span class="fu">plotExpression</span>(sce, <span class="at">features =</span> <span class="fu">head</span>(rnks<span class="sc">$</span>Rowname, <span class="dv">4</span>), <span class="at">x =</span> <span class="st">"cadir"</span>, <span class="at">colour_by =</span> <span class="st">"cadir"</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
@@ -365,7 +365,7 @@ Adding another scale for colour, which will replace the existing scale.</code></
 </div>
 <section id="correct-outliers" class="level4">
 <h4 class="anchored" data-anchor-id="correct-outliers">Correct outliers</h4>
-<div id="54052c02" class="cell" data-execution_count="8">
+<div id="022f849b" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cell_rnk <span class="ot">&lt;-</span> <span class="fu">get_top_cells</span>(<span class="at">cadir =</span> cak, <span class="at">caobj =</span> ca, <span class="at">cluster =</span> <span class="st">"cluster_5"</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>top_cells <span class="ot">&lt;-</span> cell_rnk<span class="sc">$</span>Colname[cell_rnk<span class="sc">$</span>Score <span class="sc">&gt;=</span> <span class="dv">0</span>]</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cell_rnk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -462,7 +462,7 @@ Adding another scale for colour, which will replace the existing scale.</code></
 </div>
 </div>
 <p>Cells that are strongly associated to the cluster:</p>
-<div id="03ac1895" class="cell" data-execution_count="9">
+<div id="a46f08b4" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p_cl5_cells <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  ca,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  cak,</span>
@@ -505,7 +505,7 @@ Adding another scale for colour, which will replace the existing scale.</code></
 </div>
 </div>
 <p>Remove outliers:</p>
-<div id="c511a953" class="cell" data-execution_count="10">
+<div id="5e4890f5" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>sce_corr <span class="ot">&lt;-</span> sce[(<span class="sc">!</span><span class="fu">rownames</span>(sce) <span class="sc">%in%</span> rnks<span class="sc">$</span>Rowname[rnks<span class="sc">$</span>Score <span class="sc">&gt;=</span> <span class="dv">0</span>]), (<span class="sc">!</span><span class="fu">colnames</span>(sce) <span class="sc">%in%</span> top_cells)]</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>ca_corr <span class="ot">&lt;-</span> <span class="fu">cacomp</span>(</span>
@@ -602,7 +602,7 @@ Clustering results:
 </div>
 </div>
 <p>Sankey plot showing to which clusters the remaining cells from cluster 5 are being clustered.</p>
-<div id="3d3d62f8" class="cell" data-execution_count="11">
+<div id="30444af5" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>sce_corr<span class="sc">$</span>cadir2 <span class="ot">&lt;-</span> cak_corr<span class="sc">@</span>cell_clusters</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>sce_sank <span class="ot">&lt;-</span> sce_corr[,sce_corr<span class="sc">$</span>cadir <span class="sc">==</span> <span class="st">"cluster_5"</span>]</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -696,7 +696,7 @@ Clustering results:
 </section>
 <section id="platelet-cells" class="level3">
 <h3 class="anchored" data-anchor-id="platelet-cells">Platelet cells</h3>
-<div id="145740a4" class="cell" data-execution_count="12">
+<div id="1e326b4b" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cak_corr_mod <span class="ot">&lt;-</span> cak_corr</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>goa_res <span class="ot">&lt;-</span> CAbiNet<span class="sc">::</span><span class="fu">per_cluster_goa</span>(</span>
@@ -817,7 +817,7 @@ Clustering results:
 </div>
 </div>
 <p>Top 5 most highly significant gene sets for cluster “Megakaryocyte”:</p>
-<div id="a21239df" class="cell" data-execution_count="13">
+<div id="7a924d5b" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cl_goa <span class="ot">&lt;-</span> goa_res<span class="sc">$</span>Megakaryocyte</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cl_goa[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ], <span class="fu">aes</span>(<span class="at">x =</span> gene_set, <span class="at">y =</span> <span class="sc">-</span><span class="fu">log10</span>(padj), <span class="at">fill =</span> <span class="sc">-</span><span class="fu">log10</span>(padj))) <span class="sc">+</span></span>
@@ -835,7 +835,7 @@ Clustering results:
 </div>
 </div>
 <p>Gene Set enrichment over all corrected clusters:</p>
-<div id="ffceddfd" class="cell" data-execution_count="14">
+<div id="90613d61" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nclust <span class="ot">&lt;-</span> <span class="fu">length</span>(goa_res)</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>goa_mat <span class="ot">&lt;-</span> <span class="fu">lapply</span>(goa_res, <span class="cf">function</span>(x, <span class="at">nc =</span> nclust) {</span>
@@ -885,7 +885,7 @@ Clustering results:
 </section>
 <section id="split-merge-plot" class="level2">
 <h2 class="anchored" data-anchor-id="split-merge-plot">Split &amp; Merge plot</h2>
-<div id="feb552e0" class="cell" data-execution_count="15">
+<div id="6d648737" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>sm <span class="ot">&lt;-</span> <span class="fu">sm_plot</span>(</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cadir =</span> cak,</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -911,7 +911,7 @@ Clustering results:
 </div>
 </div>
 </div>
-<div id="bae96b7e" class="cell" data-execution_count="16">
+<div id="42b4d646" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>R version 4.4.0 (2024-04-24)
