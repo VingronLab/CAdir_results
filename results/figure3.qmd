@@ -152,9 +152,6 @@ ggplot(aes(x=algorithm,
          y = "max ARI cells",
          x = "algorithm") +
     scale_shape_manual(values = seq_len(length(df$simulation))) +
-    # ggthemes::scale_fill_tableau(palette = "Tableau 20",
-    #                           type = "regular",
-    #                           direction = 1)+
     scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
     theme_bw(base_size = 16) +
@@ -190,9 +187,7 @@ ggplot(aes(x=algorithm,
          y = "max NMI",
          x = "algorithm") +
     scale_shape_manual(values = seq_len(length(df$simulation))) +
-    ggthemes::scale_fill_tableau(palette = "Tableau 20",
-                              type = "regular",
-                              direction = 1)+
+    scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
     theme_bw(base_size = 16) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
@@ -241,9 +236,7 @@ ggplot(aes(x=algorithm,
          y = "mean ARI",
          x = "algorithm") +
     scale_shape_manual(values = seq_len(length(df$simulation))) +
-    ggthemes::scale_fill_tableau(palette = "Tableau 20",
-                              type = "regular",
-                              direction = 1)+
+    scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
     theme_bw(base_size = 16) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
@@ -279,9 +272,7 @@ ggplot(aes(x=algorithm,
          y = "mean NMI",
          x = "algorithm") +
     scale_shape_manual(values = seq_len(length(df$simulation))) +
-    ggthemes::scale_fill_tableau(palette = "Tableau 20",
-                              type = "regular",
-                              direction = 1)+
+    scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
     theme_bw(base_size = 16) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
@@ -596,10 +587,10 @@ p <- stats %>%
                text = element_text(size=16)
                , panel.spacing = unit(1.5, "pt")
               ) +
-        scale_fill_manual(values = c("perc_ARI_succ" = "#59A14F", "perc_ARI_NA" = "#F28E2B", "perc_crash" = "#E15759"),
+        scale_fill_manual(values = c("perc_ARI_succ" = "#006c66", "perc_ARI_NA" = "#ef7c00", "perc_crash" = "#d44a3d"),
                           name = "% runs",
                           labels = c("Success", "N/A", "Crashed") ) +
-        ggtitle("Fraction of successful and failed runs - ARI") +
+        ggtitle("Fraction of successful and failed runs") +
         xlab("Dataset") +
         ylab("Algorithm")
 

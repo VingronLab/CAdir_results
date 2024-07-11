@@ -14,9 +14,11 @@ jupyter:
     name: ir44
 ---
 
+
 # Setup
 
 ```{r}
+setwd("/project/kohl_analysis/analysis/CAdir/results/results/")
 source("./utils.R")
 renv::load("/project/kohl_analysis/analysis/CAdir")
 devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
@@ -36,94 +38,236 @@ suppressPackageStartupMessages({
 })
 
 options(repr.plot.width = 20, repr.plot.height = 15)
-getwd()
+
+dir <- "/project/kohl_analysis/analysis/CAdir/results/results/"
+imgdir <- file.path(dir, "img/figure1/")
+dir.create(imgdir, recursive = TRUE)
 ```
-
-# Pre-process and annotate data
-
-Loading data set and annotate it according to Seurat vignette.
 
 ```{r}
-sce <- sce_pbmc3k()
+data_dir <- "/project/CAclust_scripts/CAclust_paper/2024_NAR_submission_files/Data/"
+
+marker_genes <- readr::read_csv(file.path(data_dir, "discussed_data/tabula_muris_marker_genes.csv"))
+sce <- readRDS(file.path(data_dir, "discussed_data/preprocessed/tabula_muris_preprocessed_filtered.rds"))
+
+genevars <- modelGeneVar(sce, assay.type = "logcounts")
+chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)
+
+# add marker_genes
+expr_markers <- marker_genes[marker_genes$gene %in% rownames(sce), ]
+chosen <- c(chosen, expr_markers$gene)
+chosen <- unique(chosen)
+sce_sub <- sce[chosen, ]
+
+ca <- cacomp(obj = logcounts(sce_sub),
+             princ_coords = 3,
+             dims = 30,
+             top = nrow(sce_sub),
+             residuals = "pearson",
+             python = TRUE)
+
+cell_types <- sce$cell_ontology_class
+cat("Number of cell types:", length(unique(cell_types)), "\n")
 ```
-
-# CAdir on pbmc3k data
-
-After annotating the data according to the Seurat vignette, we cluster the cells and genes using the CAdir package.
-
-```{r}
-set.seed(1234)
-
-sce_bu <- sce
-sce.dec <- scran::modelGeneVar(sce)
-sce.top <- scran::getTopHVGs(sce.dec, prop = 0.2, var.threshold = NULL)
-sce <- sce[sce.top, ]
-sce <- runUMAP(sce, ntop = 2000)
-
-ca <- cacomp(
-    obj = as.matrix(logcounts(sce)),
-    princ_coords = 3,
-    dims = 30,
-    top = nrow(sce),
-    residuals = "pearson",
-    python = TRUE,
-    clip = TRUE
-)
-```
-
-With `cutoff = NULL` CAdir tries to estimate the angle cutoff directly from the data. Here we use a cutoff of 50 degrees.
 
 ```{r}
 set.seed(2358)
 cak <- dirclust_splitmerge(
     caobj = ca,
-    k = 10,
-    cutoff = 50,
+    k = 8,
+    cutoff = 55,
     method = "random",
-    apl_quant = 0.9999,
+    apl_quant = 0.99,
     counts = NULL,
-    min_cells = 30,
+    min_cells = 20,
     reps = 5,
     make_plots = TRUE,
-    apl_cutoff_reps = 100,
-    qcutoff = 0.1
+    qcutoff = 0.8
 )
+```
 
-cadir <- rank_genes(cadir = cak, caobj = ca)
-top <- top_genes(cadir)
+
+```{r}
+cak <- annotate_biclustering(obj = cak,
+                                universe = rownames(sce_sub),
+                                org = "mm")
+
+sce_sub$cadir <- cak@cell_clusters
+
+cak
 ```
 
 ```{r}
-###########
-## CAdir ##
-###########
+cat("ARI:", ari)
 
-anncak <- annotate_biclustering(
-    obj = cak,
-    universe = rownames(sce),
-    org = "hs"
-)
+um1 <- plotUMAP(sce_sub, colour = "cadir")
+um2 <- plotUMAP(sce_sub, colour = "cell_ontology_class")
 
-anncak <- rank_genes(cadir = anncak, caobj = ca)
-anncak
-
-sce$cadir <- anncak@cell_clusters
-
-um1 <- plotUMAP(sce, colour = "cadir")
-um2 <- plotUMAP(sce, colour = "cell_type")
-
-ari <- aricode::clustComp(sce$cadir, sce$cell_type)
-p <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
-p
+ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
+um <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
+um
 
 ggsave(
-  plot = p, 
-  file = "./img/figure1/umap.png",
-  width= 900,
-  height = 450
+  plot = um,
+  filename = file.path(imgdir, "umap.png")
 )
 ```
 
+
+```{r}
+pcl <- plot_clusters(
+  cadir = cak,
+  caobj = ca,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  ntop = 5
+)
+pcl
+
+ggsave(
+  plot = pcl,
+  filename = file.path(imgdir, "cluster_apls.pdf"),
+  width = 3400,
+  height = 2000,
+  units = "px"
+)
+
+```
+
+```{r}
+plot_results(cak, ca)
+```
+
+# Show that B and T cells are close
+
+
+```{r}
+cls <- "B_cell"
+group <- which(cak@cell_clusters == cls)
+direction <- cak@directions[cak@dict[[cls]], ]
+
+model <- apl_model(
+  caobj = ca,
+  direction = direction,
+  group = group
+)
+
+tcs_coords <- model(ca@std_coords_cols)
+tcs_coords <- tcs_coords[cak@cell_clusters == "T_cell", ]
+t_dir <- cak@directions[cak@dict[["T_cell"]], ]
+t_dir <- t_dir / ca@D  # prin_coords to std_coords
+t_dir <- model(t_dir)
+
+ics_coords <- model(ca@std_coords_cols)
+ics_coords <- ics_coords[cak@cell_clusters == "Immune_cell", ]
+i_dir <- cak@directions[cak@dict[["Immune_cell"]], ]
+i_dir <- i_dir / ca@D  # prin_coords to std_coords
+i_dir <- model(i_dir)
+
+```
+
+
+
+```{r}
+p_bt <- cluster_apl(
+  ca,
+  cak,
+  cluster = cls,
+  direction = cak@directions[cls, ],
+  group = which(cak@cell_clusters == cls),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 5
+) +
+  geom_point(data = tcs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
+  ggplot2::geom_abline(
+    intercept = 0,
+    slope = slope(lines = t_dir, dims = 1:2),
+    color = "#d44a3d",
+    linetype = "dashed",
+    size = 1) +
+geom_label(data=as.data.frame(t_dir*3), aes(x, y), label="T_cell", color = "#d44a3d", vjust=-1) +
+  geom_point(data = ics_coords, aes(x=x, y=y), color = "#00b1ea" ) +
+  ggplot2::geom_abline(
+    intercept = 0,
+    slope = slope(lines = i_dir, dims = 1:2),
+    color = "#00b1ea",
+    linetype = "dashed",
+    size = 1) +
+geom_label(data=as.data.frame(i_dir*4), aes(x, y), label="Immune_cell", color = "#00b1ea", vjust=-1)
+
+p_bt
+
+ggsave(
+  plot = p_bt,
+  file = file.path(imgdir, "B_cell_cluster.pdf"),
+  width = "1600",
+  height = "1600"
+)
+```
+
+
+# Show that endothelial cell populations are close
+
+
+```{r}
+cls <- "Vascular_endothelial_cell"
+group <- which(cak@cell_clusters == cls)
+direction <- cak@directions[cak@dict[[cls]], ]
+
+model <- apl_model(
+  caobj = ca,
+  direction = direction,
+  group = group
+)
+
+ecs_coords <- model(ca@std_coords_cols)
+ecs_coords <- ecs_coords[cak@cell_clusters == "Endothelial_cell", ]
+e_dir <- cak@directions[cak@dict[["Endothelial_cell"]], ]
+e_dir <- e_dir / ca@D  # prin_coords to std_coords
+e_dir <- model(e_dir)
+
+```
+
+
+
+```{r}
+p_ecs <- cluster_apl(
+  ca,
+  cak,
+  cluster = cls,
+  direction = cak@directions[cls, ],
+  group = which(cak@cell_clusters == cls),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 5
+) +
+  geom_point(data = ecs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
+  ggplot2::geom_abline(
+    intercept = 0,
+    slope = slope(lines = t_dir, dims = 1:2),
+    color = "#d44a3d",
+    linetype = "dashed",
+    size = 1) +
+geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", color = "#d44a3d", hjust=-1)
+
+p_ecs
+
+ggsave(
+  plot = p_ecs,
+  file = file.path(imgdir, "endothelial_cell_clusters.pdf"),
+  width = "1600",
+  height = "1600"
+)
+```
+
+# SM plot
 ```{r}
 sm <- sm_plot(
   cadir = cak,
@@ -133,23 +277,165 @@ sm <- sm_plot(
   highlight_cluster = TRUE,
   show_genes = F,
   annotate_clusters = TRUE,
-  org = "hs"
+  org = "mm"
 )
 sm
-ggsave(plot = sm, file = "./img/figure1/split_merge_plot.pdf")
+ggsave(
+  plot = sm,
+  filename = file.path(imgdir,"tm_split_merge_plot.pdf"),
+  width = 2000,
+  height = 2500,
+  units = "px"
+)
+```
+# Sankey
+
+```{r}
+library(ggsankey)
+sce_sank <- sce_sub
+
+data <- colData(sce_sank) %>%
+        as.data.frame() %>%
+        rename('CAdir' = "cadir",
+               'Annotation' = "cell_ontology_class")
+
+df <- data %>%
+    make_long(CAdir, Annotation)
+
+info  <-  data.frame(Biclusters = as.factor(data$CAdir),
+                     Truth = as.character(data$Annotation)) %>%
+                as_tibble() %>%
+                group_by(Biclusters, Truth) %>%
+                summarise(n = n()) %>%
+                group_by(Truth) %>%
+                mutate(Partition = n/sum(n)) %>%
+                ungroup() %>%
+                as.data.frame() %>%
+                group_by(Truth) %>%
+                filter(Partition == max(Partition) ) %>%
+                dplyr::select(Biclusters, Truth) %>%
+                distinct(Biclusters, .keep_all = TRUE)
+
+
+pal <- mpi_extend_pal()
+
+cols <- pal(length(unique(sce_sank$cadir)))
+names(cols) <- unique(sce_sank$cadir)
+
+info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
+# info$col <- pal(nrow(info) + 1)[2:3]
+
+cols <- c(cols, info$col)
+
+names(cols) <- c(as.character(unique(sce_sank$cadir)), info$Truth)
+
+
+order <- c(
+  "cluster_1",
+  "Vascular_endothelial_cell",
+  "Endothelial_cell",
+  "Schwalie_et_al.Nature.P1",
+  "Immune_cell",
+  "B_cell",
+  "T_cell",
+
+  "skeletal muscle satellite stem cell",
+  "skeletal muscle satellite cell",
+  "endothelial cell",
+  "mesenchymal stem cell",
+  "macrophage",
+  "B cell",
+  "lymphocyte",
+  "T cell"
+)
+
+
+wrap <- 17
+df$node <- factor(stringr::str_wrap(df$node, wrap), levels = stringr::str_wrap(order, wrap))
+df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::str_wrap(order, wrap))
+
+names(cols) <- stringr::str_wrap(names(cols), wrap)
+
+
+sank <- ggplot(df, aes(x = x,
+               next_x = next_x,
+               node = node,
+               next_node = next_node,
+               fill = node,
+               label = as.character(node))) +
+  geom_sankey(
+    flow.alpha = 0.4,
+    # flow.fill = c("#777777")
+  ) +
+  geom_sankey_label(size = 6) +
+  labs(x = "") +
+  scale_fill_manual(values = cols) +
+  theme_sankey(base_size = 26) +
+  theme(
+    legend.position = "none"
+  )
+
+sank
+
+ggsave(plot = sank,
+       filename = file.path(imgdir, "sankey_plot_TM_clustering.pdf"),
+       width = 2700,
+       height = 2000,
+       units = "px")
 ```
 
 ```{r}
-pc <- plot_clusters(anncak, ca, show_genes=T, label_genes = T, ntop = 5)
+sank <- ggplot(df, aes(x = x,
+               next_x = next_x,
+               node = node,
+               next_node = next_node,
+               fill = node,
+               label = as.character(node))) +
+  geom_sankey(
+    flow.alpha = 0.4,
+    flow.fill = c("#777777")
+  ) +
+  geom_sankey_label(size = 6) +
+  labs(x = "") +
+  scale_fill_manual(values = cols) +
+  theme_sankey(base_size = 26) +
+  theme(
+    legend.position = "none"
+  )
 
-ggsave(plot = pc, file = "./img/figure1/plot_clusters.pdf"  )
+sank
+
+ggsave(plot = sank,
+       filename = file.path(imgdir, "sankey_plot_TM_clustering_no_flow_color.pdf"),
+       width = 2700,
+       height = 2000,
+       units = "px")
 ```
 
+
+
+# Angle between clusters
 ```{r}
-line_plot <- plot_results(anncak, ca)
-line_plot
+ang_rad <- get_angle(cak@directions, cak@directions)
+ang_deg <- as.data.frame(rad2deg(ang_rad)) %>% tibble::rownames_to_column("cluster")
+
+long_ang <- tidyr::pivot_longer(data = ang_deg, cols = -cluster, values_to = "angle", names_to = "to_cluster" )
+
+p <- ggplot(long_ang, aes(x=cluster, y = to_cluster, fill = angle)) +
+  geom_tile() +
+  scale_fill_gradient_mpimg(name = "green", trans = "reverse") +
+  theme_bw()+
+theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+p
+
+ggsave(
+  plot = p,
+  filename = file.path(imgdir, "angle_between_clusters.pdf"),
+  width = 1600,
+  height = 1600,
+  units = "px"
+)
 ```
 
-```{r}
-sessionInfo()
-```
+
