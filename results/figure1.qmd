@@ -156,7 +156,7 @@ ggsave(
 )
 ```
 
-# Show that B and T cells are close
+# B & T cells - standard coordinates APL
 
 
 ```{r}
@@ -216,13 +216,14 @@ geom_label(data=as.data.frame(t_dir*4), aes(x, y), label="T_cell", color = "#d44
     linetype = "dashed",
     size = 1) +
 geom_label(data=as.data.frame(i_dir*7), aes(x, y), label="Immune_cell", color = "#00b1ea", vjust=1) +
-ggtitle("B cell")
+ggtitle("B cell") +
+theme_bw(base_size = 16)
 
 p_bt
 
 ggsave(
   plot = p_bt,
-  file = file.path(imgdir, "B_cell_cluster.pdf"),
+  file = file.path(imgdir, "B_cell_cluster_std_coords.pdf"),
   device = cairo_pdf,
   width = 2000,
   height = 1600,
@@ -231,7 +232,7 @@ ggsave(
 ```
 
 
-# Show that endothelial cell populations are close
+# Endothelial cells - Standard coordinates APL
 
 
 ```{r}
@@ -277,13 +278,148 @@ p_ecs <- cluster_apl(
     linetype = "dashed",
     size = 1) +
 geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", color = "#d44a3d", hjust=-0.5) +
-  ggtitle("Vascular endothelial cell")
+  ggtitle("Vascular endothelial cell") +
+theme_bw(base_size = 16)
 
 p_ecs
 
 ggsave(
   plot = p_ecs,
-  file = file.path(imgdir, "endothelial_cell_clusters.pdf"),
+  file = file.path(imgdir, "endothelial_cell_clusters_std_coords.pdf"),
+  device = cairo_pdf,
+  width = 2000,
+  height = 1600,
+  units = "px"
+)
+```
+
+
+# B & T cells - principal coordinates APL
+
+
+```{r}
+cls <- "B_cell"
+group <- which(cak@cell_clusters == cls)
+direction <- cak@directions[cak@dict[[cls]], ]
+
+model <- apl_model(
+  caobj = ca,
+  direction = direction,
+  group = group
+)
+
+tcs_coords <- model(ca@prin_coords_cols)
+tcs_coords <- tcs_coords[cak@cell_clusters == "T_cell", ]
+t_dir <- cak@directions[cak@dict[["T_cell"]], ]
+t_dir <- model(t_dir)
+
+ics_coords <- model(ca@prin_coords_cols)
+ics_coords <- ics_coords[cak@cell_clusters == "Immune_cell", ]
+i_dir <- cak@directions[cak@dict[["Immune_cell"]], ]
+i_dir <- model(i_dir)
+
+```
+
+
+
+```{r}
+p_bt <- cluster_apl(
+  ca,
+  cak,
+  cluster = cls,
+  direction = cak@directions[cls, ],
+  group = which(cak@cell_clusters == cls),
+  highlight_cluster = TRUE,
+  show_genes = FALSE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 5
+) +
+  geom_point(data = tcs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
+  ggplot2::geom_abline(
+    intercept = 0,
+    slope = slope(lines = t_dir, dims = 1:2),
+    color = "#d44a3d",
+    linetype = "dashed",
+    size = 1) +
+geom_label(data=as.data.frame(t_dir*2), aes(x, y), label="T_cell", color = "#d44a3d", vjust=-1) +
+  geom_point(data = ics_coords, aes(x=x, y=y), color = "#00b1ea" ) +
+  ggplot2::geom_abline(
+    intercept = 0,
+    slope = slope(lines = i_dir, dims = 1:2),
+    color = "#00b1ea",
+    linetype = "dashed",
+    size = 1) +
+geom_label(data=as.data.frame(i_dir*3), aes(x, y), label="Immune_cell", color = "#00b1ea", vjust=1) +
+ggtitle("B cell") +
+theme_bw(base_size = 16)
+
+p_bt
+
+ggsave(
+  plot = p_bt,
+  file = file.path(imgdir, "B_cell_cluster_prin_coords.pdf"),
+  device = cairo_pdf,
+  width = 2000,
+  height = 1600,
+  units = "px"
+)
+```
+
+
+# Endothelial cells - principal coordinates APL
+
+
+```{r}
+cls <- "Vascular_endothelial_cell"
+group <- which(cak@cell_clusters == cls)
+direction <- cak@directions[cak@dict[[cls]], ]
+
+model <- apl_model(
+  caobj = ca,
+  direction = direction,
+  group = group
+)
+
+ecs_coords <- model(ca@prin_coords_cols)
+ecs_coords <- ecs_coords[cak@cell_clusters == "Endothelial_cell", ]
+e_dir <- cak@directions[cak@dict[["Endothelial_cell"]], ]
+e_dir <- model(e_dir)
+
+```
+
+
+```{r}
+p_ecs <- cluster_apl(
+  ca,
+  cak,
+  cluster = cls,
+  direction = cak@directions[cls, ],
+  group = which(cak@cell_clusters == cls),
+  highlight_cluster = TRUE,
+  show_genes = FALSE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 5
+) +
+  geom_point(data = ecs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
+  ggplot2::geom_abline(
+    intercept = 0,
+    slope = slope(lines = t_dir, dims = 1:2),
+    color = "#d44a3d",
+    linetype = "dashed",
+    size = 1) +
+geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", color = "#d44a3d", hjust=-0.3) +
+  ggtitle("Vascular endothelial cell") +
+  theme_bw(base_size = 16)
+
+p_ecs
+
+ggsave(
+  plot = p_ecs,
+  file = file.path(imgdir, "endothelial_cell_clusters_prin_coords.pdf"),
   device = cairo_pdf,
   width = 2000,
   height = 1600,
