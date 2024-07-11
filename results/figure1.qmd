@@ -120,13 +120,24 @@ pcl <- plot_clusters(
   caobj = ca,
   show_genes = TRUE,
   label_genes = TRUE,
-  ntop = 5
+  ntop = 5,
+  title_prefix = ""
+  # text_size = 14
 )
 pcl
 
 ggsave(
   plot = pcl,
   filename = file.path(imgdir, "cluster_apls.pdf"),
+  device = cairo_pdf,
+  width = 3400,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  plot = pcl,
+  filename = file.path(imgdir, "cluster_apls.png"),
   width = 3400,
   height = 2000,
   units = "px"
@@ -135,7 +146,14 @@ ggsave(
 ```
 
 ```{r}
-plot_results(cak, ca)
+pr <- plot_results(cak, ca)
+ggsave(
+  plot = pr,
+  filename = file.path(imgdir, "summary_results.pdf"),
+  width = 3400,
+  height = 3400,
+  units = "px"
+)
 ```
 
 # Show that B and T cells are close
@@ -189,7 +207,7 @@ p_bt <- cluster_apl(
     color = "#d44a3d",
     linetype = "dashed",
     size = 1) +
-geom_label(data=as.data.frame(t_dir*3), aes(x, y), label="T_cell", color = "#d44a3d", vjust=-1) +
+geom_label(data=as.data.frame(t_dir*4), aes(x, y), label="T_cell", color = "#d44a3d", vjust=-1) +
   geom_point(data = ics_coords, aes(x=x, y=y), color = "#00b1ea" ) +
   ggplot2::geom_abline(
     intercept = 0,
@@ -197,15 +215,18 @@ geom_label(data=as.data.frame(t_dir*3), aes(x, y), label="T_cell", color = "#d44
     color = "#00b1ea",
     linetype = "dashed",
     size = 1) +
-geom_label(data=as.data.frame(i_dir*4), aes(x, y), label="Immune_cell", color = "#00b1ea", vjust=-1)
+geom_label(data=as.data.frame(i_dir*7), aes(x, y), label="Immune_cell", color = "#00b1ea", vjust=1) +
+ggtitle("B cell")
 
 p_bt
 
 ggsave(
   plot = p_bt,
   file = file.path(imgdir, "B_cell_cluster.pdf"),
-  width = "1600",
-  height = "1600"
+  device = cairo_pdf,
+  width = 2000,
+  height = 1600,
+  units = "px"
 )
 ```
 
@@ -255,15 +276,18 @@ p_ecs <- cluster_apl(
     color = "#d44a3d",
     linetype = "dashed",
     size = 1) +
-geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", color = "#d44a3d", hjust=-1)
+geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", color = "#d44a3d", hjust=-0.5) +
+  ggtitle("Vascular endothelial cell")
 
 p_ecs
 
 ggsave(
   plot = p_ecs,
   file = file.path(imgdir, "endothelial_cell_clusters.pdf"),
-  width = "1600",
-  height = "1600"
+  device = cairo_pdf,
+  width = 2000,
+  height = 1600,
+  units = "px"
 )
 ```
 
@@ -273,18 +297,27 @@ sm <- sm_plot(
   cadir = cak,
   caobj = ca,
   rm_redund = TRUE,
-  keep_end = TRUE,
+  keep_end = FALSE,
   highlight_cluster = TRUE,
   show_genes = F,
   annotate_clusters = TRUE,
   org = "mm"
 )
-sm
+# sm
 ggsave(
   plot = sm,
   filename = file.path(imgdir,"tm_split_merge_plot.pdf"),
+  device = cairo_pdf
   width = 2000,
-  height = 2500,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  plot = sm,
+  filename = file.path(imgdir,"tm_split_merge_plot.png"),
+  width = 2000,
+  height = 2000,
   units = "px"
 )
 ```
@@ -365,12 +398,11 @@ sank <- ggplot(df, aes(x = x,
                label = as.character(node))) +
   geom_sankey(
     flow.alpha = 0.4,
-    # flow.fill = c("#777777")
   ) +
   geom_sankey_label(size = 6) +
   labs(x = "") +
   scale_fill_manual(values = cols) +
-  theme_sankey(base_size = 26) +
+  theme_sankey(base_size = 26, base_family = "sans") +
   theme(
     legend.position = "none"
   )
@@ -380,7 +412,14 @@ sank
 ggsave(plot = sank,
        filename = file.path(imgdir, "sankey_plot_TM_clustering.pdf"),
        width = 2700,
-       height = 2000,
+       height = 2400,
+       device = cairo_pdf,
+       units = "px")
+
+ggsave(plot = sank,
+       filename = file.path(imgdir, "sankey_plot_TM_clustering.png"),
+       width = 2700,
+       height = 2400,
        units = "px")
 ```
 
@@ -408,7 +447,8 @@ sank
 ggsave(plot = sank,
        filename = file.path(imgdir, "sankey_plot_TM_clustering_no_flow_color.pdf"),
        width = 2700,
-       height = 2000,
+       height = 2400,
+       device = cairo_pdf,
        units = "px")
 ```
 
@@ -423,19 +463,25 @@ long_ang <- tidyr::pivot_longer(data = ang_deg, cols = -cluster, values_to = "an
 
 p <- ggplot(long_ang, aes(x=cluster, y = to_cluster, fill = angle)) +
   geom_tile() +
-  scale_fill_gradient_mpimg(name = "green", trans = "reverse") +
+  scale_fill_gradient_mpimg(name = "orange", trans = "reverse") +
   theme_bw()+
-theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
-
+theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  ggtitle("Angle between clusters")
 p
 
 ggsave(
   plot = p,
   filename = file.path(imgdir, "angle_between_clusters.pdf"),
-  width = 1600,
+  width = 2000,
   height = 1600,
   units = "px"
 )
 ```
+
+# Session Info
+```{r}
+sessionInfo()
+```
+
 
 
