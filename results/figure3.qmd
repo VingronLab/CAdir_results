@@ -665,7 +665,7 @@ table(scal_df$algorithm)
 ```{r}
 options(repr.plot.width = 10, repr.plot.height = 10)
 
-alph <- 0.6
+alph <- 0.8
 rt <- ggplot(scal_df, aes(dataset,  (total_runtime/60))) +
 geom_point(aes(group = algorithm, color = algorithm, alpha = algorithm), size = 2) +
 geom_line(aes(group = algorithm, color = algorithm, alpha = algorithm, linetype = algorithm), linewidth = 1 )+
@@ -737,8 +737,8 @@ rt
 ggsave(
   plot = rt,
   filename = file.path(imgdir, "runtime_singleproc.pdf"),
-  width = 2400,
-  height = 2100,
+  width = 2200,
+  height = 1800,
   units = "px"
 )
 ```
@@ -748,31 +748,98 @@ ggsave(
 # Detection of cluster number
 
 ```{r}
+date = "20240717_subscells"
 indir <- "/project/kohl_data/CAdir/benchmarking/results/ct_detection"
-res <- read_csv(file.path(indir, "240705_ct_detection.csv"),
+res <- read_csv(file.path(indir, date, "eval", "results.csv"),
   show_col_types = FALSE,
   progress = FALSE)
 
 res <- res %>%
   mutate(diff_abs = cts_found-nr_cts) %>%
   mutate(diff_perc = cts_found/nr_cts) %>%
-  mutate(log2diff = log2(cts_found/nr_cts)) %>%
-  mutate(k = factor(k))
+  mutate(log2fc = log2(cts_found/nr_cts)) %>%
+  mutate(apl_q = as.factor(apl_q)) %>%
+  mutate(k = as.factor(k))
+
+res <- res %>%
+  group_by(nr_cts, k, apl_q) %>%
+  mutate(diff_mean = mean(diff_abs)) %>%
+  mutate(diff_sd = sd(diff_abs)) %>%
+  mutate(log2fc_mean = mean(log2fc)) %>%
+  mutate(log2fc_sd = sd(log2fc)) %>%
+  ungroup()
+
 ```
 
 ```{r}
-log2diff <- ggplot(res, aes(x = nr_cts, y = log2diff, color = k)) +
+devp_single <- res %>% 
+  filter(apl_q == 0.9999) %>%
+  ggplot(aes(x = nr_cts, y = diff_mean, color = apl_q)) +
+  facet_wrap(~k, labeller = label_both) +
   geom_point() +
+  geom_errorbar(aes(ymin=diff_mean-diff_sd, ymax=diff_mean+diff_sd)) +
   geom_line() +
   geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(x = "# clusters", y = "log2 diff", title = "Detected clusters") +
+  labs(x = "# clusters", y = "deviation", title = "Detected clusters") +
+  scale_color_mpimg() +
+  theme_bw(base_size = 18) +
+  theme(legend.position = "none")
+
+devp_single
+
+ggsave(
+  filename = file.path(imgdir, "deviation_aplq-09999_detection.pdf"),
+  plot = devp_single,
+  width = 2200,
+  height = 1800,
+  units = "px"
+)
+
+```
+
+```{r}
+devp <- res %>% 
+  ggplot(aes(x = nr_cts, y = diff_mean, color = apl_q)) +
+  facet_wrap(~k, labeller = label_both) +
+  geom_point() +
+  geom_errorbar(aes(ymin=diff_mean-diff_sd, ymax=diff_mean+diff_sd)) +
+  geom_line() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "# clusters", y = "deviation", title = "Detected clusters") +
+  scale_color_mpimg() +
+  theme_bw(base_size = 18) +
+  theme(legend.position = "bottom")
+
+devp
+
+ggsave(
+  filename = file.path(imgdir, "deviation_detection.pdf"),
+  plot = devp,
+  width = 3000,
+  height = 2400,
+  units = "px"
+)
+```
+
+```{r}
+log2fc <- res %>% 
+  # filter(apl_q == 0.9999) %>%
+  ggplot(aes(x = nr_cts, y = log2fc_mean, color = apl_q)) +
+  facet_wrap(~k) +
+  geom_point() +
+  geom_line() +
+  geom_errorbar(aes(ymin=log2fc_mean-log2fc_sd, ymax=log2fc_mean+log2fc_sd)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "# clusters", y = "log2 FC", title = "Detected clusters") +
   scale_color_mpimg() +
   theme_bw(base_size = 18)
 
+log2fc
+
 ggsave(
-  filename = file.path(imgdir, "log2diff_ct_detection.pdf"),
-  plot = log2diff,
-  width = 1800,
+  filename = file.path(imgdir, "log2fc_ct_detection.pdf"),
+  plot = log2fc,
+  width = 2800,
   height = 1800,
   units = "px"
 )

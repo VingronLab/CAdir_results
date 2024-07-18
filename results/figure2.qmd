@@ -275,6 +275,8 @@ cak_corr <- annotate_biclustering(
     org = "hs"
 )
 
+sce_corr$cadir_corr <- cak_corr@cell_clusters
+
 cak_corr <- rank_genes(cadir = cak_corr, caobj = ca_corr)
 
 pc_corr <- plot_clusters(
@@ -282,6 +284,8 @@ pc_corr <- plot_clusters(
   ca_corr,
   show_genes = T,
   label_genes = T,
+  ggncol = 2,
+  ggnrow = 3
   # ntop = 5
 )
 
@@ -291,8 +295,8 @@ pc_corr
 ggsave(
   plot = pc_corr,
   file = file.path(imgdir, "apl_clusters_corrected.pdf"),
-  width = 3400,
-  height = 2000,
+  width = 2800,
+  height = 3200,
   units = "px"
 )
 ```
@@ -424,7 +428,8 @@ p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
   geom_tile() +
   scale_fill_gradientn(
     colours = c("#29485d", "#006c66", "#c6d325", "#ef7c00"),
-    limits = c(0, quantile(-log10(gr$padj), 0.99)),
+    limits = c(0, 30),
+    # limits = c(0, quantile(-log10(gr$padj), 0.99)),
     oob = scales::squish,
     guide = "colourbar_custom"
   ) + 
@@ -468,6 +473,108 @@ ggsave(plot = sm,
   height = 1800,
   units = "px")
 ```
+
+## Annotation - Sankey
+```{r}
+library(ggsankey)
+sce_sank <- sce_corr
+
+data <- colData(sce_sank) %>%
+        as.data.frame() %>%
+        rename('CAdir' = "cadir_corr",
+               'Annotation' = "cell_type")
+
+df <- data %>%
+    make_long(CAdir, Annotation)
+
+info  <-  data.frame(Biclusters = as.factor(data$CAdir),
+                     Truth = as.character(data$Annotation)) %>%
+                as_tibble() %>%
+                group_by(Biclusters, Truth) %>%
+                summarise(n = n()) %>%
+                group_by(Truth) %>%
+                mutate(Partition = n/sum(n)) %>%
+                ungroup() %>%
+                as.data.frame() %>%
+                group_by(Truth) %>%
+                filter(Partition == max(Partition) ) %>%
+                dplyr::select(Biclusters, Truth) %>%
+                distinct(Biclusters, .keep_all = TRUE)
+
+
+pal <- mpi_extend_pal()
+
+cols <- pal(length(unique(sce_sank$cadir)))
+names(cols) <- unique(sce_sank$cadir)
+
+info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
+# info$col <- pal(nrow(info) + 1)[2:3]
+
+cols <- c(cols, info$col)
+
+names(cols) <- c(as.character(unique(sce_sank$cadir)), info$Truth)
+
+
+order <- c(
+  "Naive_CD4+_T_cell",
+  "Natural_killer_cell",
+  "B_cell",
+  "Monocyte",
+  "Megakaryocyte",
+
+  "0 - Naive CD4 T",
+  "2 - Memory CD4 T",
+  "4 - CD8 T",
+  "6 - NK",
+  "3 - B",
+  "1 - CD14+ Mono",
+  "5 - FCGR3A+ Mono",
+  "7 - DC",
+  "8 - Platelet"
+)
+
+
+wrap <- 17
+df$node <- factor(stringr::str_wrap(df$node, wrap), levels = stringr::str_wrap(order, wrap))
+df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::str_wrap(order, wrap))
+
+names(cols) <- stringr::str_wrap(names(cols), wrap)
+
+
+sank <- ggplot(df, aes(x = x,
+               next_x = next_x,
+               node = node,
+               next_node = next_node,
+               fill = node,
+               label = as.character(node))) +
+  geom_sankey(
+    flow.alpha = 0.4,
+  ) +
+  geom_sankey_label(size = 6) +
+  labs(x = "") +
+  scale_fill_manual(values = cols) +
+  theme_sankey(base_size = 26, base_family = "sans") +
+  theme(
+    legend.position = "none"
+  )
+
+sank
+
+ggsave(plot = sank,
+       filename = file.path(imgdir, "sankey_plot_corr_clustering.pdf"),
+       width = 2700,
+       height = 2700,
+       device = cairo_pdf,
+       units = "px")
+
+# ggsave(plot = sank,
+#        filename = file.path(imgdir, "sankey_plot_TM_clustering.png"),
+#        width = 2700,
+#        height = 2400,
+#        units = "px")
+
+```
+
 
 ```{r}
 sessionInfo()

@@ -98,12 +98,13 @@ cak
 ```
 
 ```{r}
-cat("ARI:", ari)
 
 um1 <- plotUMAP(sce_sub, colour = "cadir")
 um2 <- plotUMAP(sce_sub, colour = "cell_ontology_class")
 
 ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
+cat("ARI:", ari$ARI)
+
 um <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
 um
 
@@ -437,23 +438,25 @@ sm <- sm_plot(
   highlight_cluster = TRUE,
   show_genes = F,
   annotate_clusters = TRUE,
-  org = "mm"
+  org = "mm",
+  inlet_side = 0.13
 )
+
 # sm
 ggsave(
   plot = sm,
   filename = file.path(imgdir,"tm_split_merge_plot.pdf"),
-  device = cairo_pdf
-  width = 2000,
-  height = 2000,
+  device = cairo_pdf,
+  width = 2300,
+  height = 2100,
   units = "px"
 )
 
 ggsave(
   plot = sm,
   filename = file.path(imgdir,"tm_split_merge_plot.png"),
-  width = 2000,
-  height = 2000,
+  width = 2300,
+  height = 2100,
   units = "px"
 )
 ```
