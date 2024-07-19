@@ -1,6 +1,5 @@
 .ipynb_checkpoints
-results/img
-!*.svg
+results/img/*/
 renv
 renv.lock
 results/figure2_files
