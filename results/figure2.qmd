@@ -18,7 +18,6 @@ jupyter:
 # Setup
 
 ```{r}
-
 setwd("/project/kohl_analysis/analysis/CAdir/results/results/")
 renv::load("/project/kohl_analysis/analysis/CAdir")
 devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
