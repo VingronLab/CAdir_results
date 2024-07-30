@@ -450,15 +450,44 @@ na_txt$NAs <- as.character("N/A")
 ```
 
 ```{r}
+df_tile <- df_real %>%
+  select(algorithm, dataset, Max_ARI) %>%
+  distinct() %>%
+  group_by(dataset) %>%
+  mutate(ismax = (round(Max_ARI,2) == max(round(pick(Max_ARI),2), na.rm = TRUE))) %>%
+  mutate(is2nd = (round(Max_ARI, 2) == round(
+    sort(Max_ARI, decreasing = TRUE, na.last = NA)[2],
+    2))) %>%
+  ungroup() %>%
+  arrange(desc(ismax))
+
+df_tile$ismax[is.na(df_tile$ismax)] <- FALSE
+df_tile$is2nd[is.na(df_tile$is2nd)] <- FALSE
+
+```
+
+
+
+```{r}
 
 # library(gguidance)
-p <- ggplot(df_real, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
+p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
   geom_tile() +
+  geom_tile(data = df_tile[df_tile$ismax, ],
+    aes(x = algorithm, y = dataset),
+    fill = NA,
+    color = "#d44a3d",
+    size = 1) +
+  # geom_tile(data = df_tile[df_tile$is2nd & !df_tile$ismax, ],
+  #   aes(x = algorithm, y = dataset),
+  #   fill = NA,
+  #   color = "#8c5fa8",
+  #   size = 1) +
   geom_text(
     aes(label = round(Max_ARI, 2)),
     color = "white",
     size = 3,
-    check_overlap = T
+    check_overlap = T,
   ) +
   geom_text(
     data = na_txt,
@@ -475,6 +504,8 @@ p <- ggplot(df_real, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
     na.value="#777777",
     name = "Max ARI"
   ) + 
+  scale_color_manual(values = c("transparent", "red")) +
+  coord_fixed() +
   theme_minimal() +
   theme(panel.border = element_blank(),
     panel.grid.major = element_blank(),
