@@ -39,7 +39,7 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 # Cell clustering benchmarking
 
 ```{r}
-date <- "20240620"
+date <- "20240719"
 base_dir <- file.path("/project/kohl_data/CAdir/benchmarking/results/simulated", date)
 indir = file.path(base_dir, "eval")
 
@@ -293,7 +293,7 @@ ggsave(plot = p,
 ## real data
 
 ```{r}
-date <- "20240620"
+date <- "20240719"
 evldir = file.path("/project/kohl_data/CAdir/benchmarking/results/real", date, "eval")
 
 options(repr.plot.width = 15, repr.plot.height = 10)
