@@ -39,7 +39,7 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 # Cell clustering benchmarking
 
 ```{r}
-date <- "20240719"
+date <- "20240801"
 base_dir <- file.path("/project/kohl_data/CAdir/benchmarking/results/simulated", date)
 indir = file.path(base_dir, "eval")
 
@@ -99,6 +99,7 @@ df_all$algorithm <- gsub("CAbiNet_igraph", "CAbiNet", df_all$algorithm)
 
 df_all$algorithm <- factor(df_all$algorithm, levels =
                            c("CAdir",
+                             "CAdir_auto",
                              "kmeans",
                              "CAbiNet",
                              "RaceID",
@@ -154,7 +155,7 @@ ggplot(aes(x=algorithm,
     scale_shape_manual(values = seq_len(length(df$simulation))) +
     scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
-    theme_bw(base_size = 16) +
+    theme_bw(base_size = 18) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
     guides(fill = "none")
 
@@ -189,7 +190,7 @@ ggplot(aes(x=algorithm,
     scale_shape_manual(values = seq_len(length(df$simulation))) +
     scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
-    theme_bw(base_size = 16) +
+    theme_bw(base_size = 18) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
     guides(fill = "none")
 
@@ -238,7 +239,7 @@ ggplot(aes(x=algorithm,
     scale_shape_manual(values = seq_len(length(df$simulation))) +
     scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
-    theme_bw(base_size = 16) +
+    theme_bw(base_size = 18) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
     guides(fill = "none")
 
@@ -274,7 +275,7 @@ ggplot(aes(x=algorithm,
     scale_shape_manual(values = seq_len(length(df$simulation))) +
     scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
-    theme_bw(base_size = 16) +
+    theme_bw(base_size = 18) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
     guides(fill = "none")
 
@@ -293,7 +294,7 @@ ggsave(plot = p,
 ## real data
 
 ```{r}
-date <- "20240719"
+date <- "20240801"
 evldir = file.path("/project/kohl_data/CAdir/benchmarking/results/real", date, "eval")
 
 options(repr.plot.width = 15, repr.plot.height = 10)
@@ -382,6 +383,7 @@ subdf = rbind(subdf, df_na) # add a single instance of failed runs & missing run
 
 subdf$algorithm = factor(subdf$algorithm, levels = c(
     "CAdir",
+    "CAdir_auto",
     "kmeans",
     "CAbiNet",
     "RaceID",
@@ -477,7 +479,7 @@ p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
     aes(x = algorithm, y = dataset),
     fill = NA,
     color = "#d44a3d",
-    size = 1) +
+    linewidth = 1) +
   # geom_tile(data = df_tile[df_tile$is2nd & !df_tile$ismax, ],
   #   aes(x = algorithm, y = dataset),
   #   fill = NA,
@@ -552,6 +554,7 @@ distinct()
 ```{r}
 stats$algorithm = factor(stats$algorithm, levels = c(
     "CAdir",
+    "CAdir_auto",
     "kmeans",
     "CAbiNet",
     "RaceID",
@@ -674,15 +677,16 @@ scal_df$dataset = gsub('ncell-', '', scal_df$dataset)
 scal_df$algorithm = gsub('CAbiNet_igraph', 'CAbiNet', scal_df$algorithm)
 
 scal_df$algorithm <- factor(scal_df$algorithm, levels = c(
-    'CAdir',
-    'CAbiNet',
-    'Monocle3',
-    'RaceID',
-    # 'RaceID_auto',
-    'SC3',
-    'SIMLR',
-    'Seurat',
-    'kmeans'
+    "CAdir",
+    "CAdir_auto",
+    "kmeans",
+    "CAbiNet",
+    "RaceID",
+    # "RaceID_auto",
+    "Seurat",
+    "Monocle3",
+    "SC3",
+    "SIMLR"
 ))
 
 scal_df$dataset = as.numeric(scal_df$dataset)
