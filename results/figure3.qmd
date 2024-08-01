@@ -446,7 +446,7 @@ df_real <- df_g %>% filter(dataset %in% c(
     "Baron Pancreas",
     "Dmel Spatial",
     "Tabula Sapiens",
-    "Brain Organoids",
+    "Brain Organoids"
 ) )
 df_real$dataset = droplevels(df_real$dataset)
 df_real <- df_real %>%
