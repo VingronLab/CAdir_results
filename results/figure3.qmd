@@ -20,6 +20,7 @@ devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
 # source("./utils.R")
 
 suppressPackageStartupMessages({
+  library(scater)
   library(dplyr)
   library(tidyr)
   library(readr)
@@ -149,7 +150,7 @@ ggplot(aes(x=algorithm,
                     stroke =1.5,
                     size = 2,
                     width = 0.2) +
-    labs(title = "max ARI cells on simulated data",
+    labs(title = "Maximum ARI cells on simulated data",
          y = "max ARI cells",
          x = "algorithm") +
     scale_shape_manual(values = seq_len(length(df$simulation))) +
@@ -184,7 +185,7 @@ ggplot(aes(x=algorithm,
                     stroke =1.5,
                     size = 2,
                     width = 0.2) +
-    labs(title = "max NMI on simulated data",
+    labs(title = "Maximum NMI on simulated data",
          y = "max NMI",
          x = "algorithm") +
     scale_shape_manual(values = seq_len(length(df$simulation))) +
@@ -329,12 +330,14 @@ df <- rbind(df[,commoncols], simdf[, commoncols])
 ```
 
 ```{r}
-df$dataset[df$dataset == 'PBMC_10X'] = 'PBMC10x'
+df$dataset[df$dataset == "FreytagGold"] = "Freytag Gold"
+df$dataset[df$dataset == 'PBMC_10X'] = "PBMC10x"
 df$dataset[df$dataset == "Tirosh_nonmaglignant"] = "Tirosh"
 df$dataset[df$dataset == "ZeiselBrain"] = "Zeisel"
-df$dataset[df$dataset == "dmel_E14-16h"] = "DmelSpatial"
-df$dataset[df$dataset == "tabula_sapiens_tissue"] = 'TabulaSapiens'
-df$dataset[df$dataset == "brain_organoids"] = "BrainOrganoids"
+df$dataset[df$dataset == "BaronPancreas"] = "Baron Pancreas"
+df$dataset[df$dataset == "dmel_E14-16h"] = "Dmel Spatial"
+df$dataset[df$dataset == "tabula_sapiens_tissue"] = "Tabula Sapiens"
+df$dataset[df$dataset == "brain_organoids"] = "Brain Organoids"
 
 df <- df %>%
         mutate(algorithm = gsub("CAbiNet_igraph", "CAbiNet", algorithm)) %>%
@@ -360,6 +363,7 @@ run_stat
 ```
 
 ```{r}
+
 # Find missing runs (no values because crash/error)
 
 # Find row and column indices of cells equal to 0
@@ -404,14 +408,14 @@ df_g <- subdf %>%
 
 df_g$dataset = factor(df_g$dataset, levels = c(
     "Darmanis",
-    "FreytagGold",
+    "Freytag Gold",
     "PBMC10x",
     "Tirosh",
     "Zeisel",
-    "BaronPancreas",
-    "DmelSpatial",
-    "TabulaSapiens",
-    "BrainOrganoids",
+    "Baron Pancreas",
+    "Dmel Spatial",
+    "Tabula Sapiens",
+    "Brain Organoids",
     unique(simdf$dataset)
 ))
 ```
@@ -433,15 +437,17 @@ df_m$max_ARI[is.infinite(df_m$max_ARI)] <- NA
 options(repr.plot.width=10, repr.plot.height=5)
 
 # Remove simulated data sets
-df_real <- df_g %>% filter(dataset %in% c("Darmanis",
-                                          "FreytagGold",
-                                          "PBMC10x",
-                                          "Tirosh",
-                                          "Zeisel",
-                                          "BaronPancreas",
-                                          "DmelSpatial",
-                                          "TabulaSapiens",
-                                          "BrainOrganoids") )
+df_real <- df_g %>% filter(dataset %in% c(
+    "Darmanis",
+    "Freytag Gold",
+    "PBMC10x",
+    "Tirosh",
+    "Zeisel",
+    "Baron Pancreas",
+    "Dmel Spatial",
+    "Tabula Sapiens",
+    "Brain Organoids",
+) )
 df_real$dataset = droplevels(df_real$dataset)
 df_real <- df_real %>%
     drop_na(algorithm) %>%
@@ -517,7 +523,7 @@ p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
     axis.text.x = element_text(angle = 30, hjust = 1, color = "black"),
     text = element_text(size = 16),
     plot.title = element_text(size = 16, face = "plain")) +
-  labs(x = 'Dataset', y = 'Algorithm', title = "Maximal ARI on experimental data")
+  labs(x = 'Dataset', y = 'Algorithm', title = "Maximum ARI on experimental data")
 
 p
 ggsave(plot = p,
@@ -565,16 +571,18 @@ stats$algorithm = factor(stats$algorithm, levels = c(
     "SIMLR"
 ))
 
-stats$dataset = factor(stats$dataset, levels = c("Darmanis",
-                                                 "FreytagGold",
-                                                 "PBMC10x",
-                                                 "Tirosh",
-                                                 "Zeisel",
-                                                 "BaronPancreas",
-                                                 "DmelSpatial",
-                                                 "TabulaSapiens",
-                                                 "BrainOrganoids",
-                                                 unique(simdf$dataset)))
+stats$dataset = factor(stats$dataset, levels = c(
+  "Darmanis",
+  "Freytag Gold",
+  "PBMC10x",
+  "Tirosh",
+  "Zeisel",
+  "Baron Pancreas",
+  "Dmel Spatial",
+  "Tabula Sapiens",
+  "Brain Organoids",
+  unique(simdf$dataset)
+))
 
 ```
 
@@ -879,6 +887,76 @@ ggsave(
   units = "px"
 )
 ```
+
+## Comparison 30 clusters
+```{r}
+source("./cluster_tabula_muris.R")
+
+large_palette <- c(
+                   "#4bcb99",
+                   "#cc3d98",
+                   "#3ca836",
+                   "#8d69e1",
+                   "#8dbf38",
+                   "#9c48b3",
+                   "#5dd06b",
+                   "#e173d6",
+                   "#6ea23f",
+                   "#5967c8",
+                   "#bcaf39",
+                   "#b68ed9",
+                   "#3e7a2f",
+                   "#db4670",
+                   "#64b06f",
+                   "#d4443c",
+                   "#4ab4dd",
+                   "#c55a25",
+                   "#5f80c1",
+                   "#dc9737",
+                   "#994f88",
+                   "#7f882f",
+                   "#de84a8",
+                   "#33815a",
+                   "#a34852",
+                   "#52bbac",
+                   "#e18d6d",
+                   "#606727",
+                   "#afb16c",
+                   "#9b7035"
+)
+
+p1 <- plotUMAP(sce_sub, colour_by = "cadir") +
+  scale_color_manual(values = large_palette) +
+  ggtitle("CAdir") +
+  theme_bw(base_size = 18) +
+  theme(legend.position = "bottom") +
+  theme(legend.title = element_blank())
+p2 <- plotUMAP(sce_sub, colour_by = "tissue") +
+  scale_color_manual(values = large_palette) +
+  ggtitle("Tissue") +
+  theme_bw(base_size = 18) +
+  theme(legend.position = "bottom") +
+  theme(legend.title = element_blank())
+p3 <- plotUMAP(sce_sub, colour_by = "cell_ontology_class") +
+  scale_color_manual(values = large_palette) + 
+  ggtitle("Cell Type") +
+  theme_bw(base_size = 18) +
+  theme(legend.position = "bottom") +
+  theme(legend.title = element_blank())
+
+comb_umap <- p1+p2+p3
+
+ggsave(
+  filename = file.path(imgdir, "tabula_muris_30_clusters.png"),
+  plot = comb_umap,
+  width = 11500,
+  height = 4000,
+  units = "px"
+)
+
+```
+
+
 
 
 
