@@ -122,8 +122,9 @@ pcl <- plot_clusters(
   show_genes = TRUE,
   label_genes = TRUE,
   ntop = 5,
-  title_prefix = ""
-  # text_size = 14
+  title_prefix = "",
+  axis = TRUE,
+  text_size = 18
 )
 pcl
 
@@ -439,10 +440,12 @@ sm <- sm_plot(
   show_genes = F,
   annotate_clusters = TRUE,
   org = "mm",
-  inlet_side = 0.13
+  inlet_side = 0.13,
+  title_size = 12,
+  n_wrap = Inf
 )
 
-# sm
+sm
 ggsave(
   plot = sm,
   filename = file.path(imgdir,"tm_split_merge_plot.pdf"),
@@ -460,6 +463,50 @@ ggsave(
   units = "px"
 )
 ```
+
+# Figure 1 panel
+```{r}
+library(patchwork)
+label_size <- 16
+pw_apl <- wrap_elements(
+  (p_bt | p_ecs) +
+    plot_layout(guides = "collect") +
+    plot_annotation(tag_levels = list(c("b", "c"))) & 
+    theme(plot.tag = element_text(size = label_size))
+)
+pw_cl <- wrap_elements(
+  pcl +
+    plot_annotation(tag_levels = "a") & 
+    theme(plot.tag = element_text(size = label_size))
+)
+pw_sm <- wrap_elements(
+  sm +
+    plot_annotation(tag_levels = list(c("d"))) & 
+    theme(plot.tag = element_text(size = label_size))
+)
+pw <- (pw_cl / pw_apl) | pw_sm
+pw
+
+ggsave(
+  plot = pw,
+  filename = file.path(imgdir,"patchwork_figure1.pdf"),
+  device = cairo_pdf,
+  width = 488.5,
+  height = 300,
+  units = "pt"
+)
+
+ggsave(
+  plot = pw,
+  filename = file.path(imgdir,"patchwork_figure1.png"),
+  width = 17.233194,
+  height = 10,
+  units = "cm"
+)
+
+```
+
+
 # Sankey
 
 ```{r}
