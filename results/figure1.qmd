@@ -35,6 +35,8 @@ suppressPackageStartupMessages({
   library(scater)
   library(scuttle)
   library(scran)
+
+  library(patchwork)
 })
 
 options(repr.plot.width = 20, repr.plot.height = 15)
@@ -106,7 +108,7 @@ ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
 cat("ARI:", ari$ARI)
 
 um <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
-um
+# um
 
 ggsave(
   plot = um,
@@ -124,9 +126,16 @@ pcl <- plot_clusters(
   ntop = 5,
   title_prefix = "",
   axis = TRUE,
-  text_size = 18
+  text_size = 19,
+  legend_pos = "right",
+  return_list = TRUE,
+  gsub_title = "_"
 )
-pcl
+pcl <- wrap_plots(pcl, ncol = 3) +
+  guide_area() +
+  plot_layout(guides = "collect")
+
+# pcl
 
 ggsave(
   plot = pcl,
@@ -221,7 +230,7 @@ geom_label(data=as.data.frame(i_dir*7), aes(x, y), label="Immune_cell", color = 
 ggtitle("B cell") +
 theme_bw(base_size = 16)
 
-p_bt
+# p_bt
 
 ggsave(
   plot = p_bt,
@@ -283,7 +292,7 @@ geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", col
   ggtitle("Vascular endothelial cell") +
 theme_bw(base_size = 16)
 
-p_ecs
+# p_ecs
 
 ggsave(
   plot = p_ecs,
@@ -357,7 +366,7 @@ geom_label(data=as.data.frame(i_dir*3), aes(x, y), label="Immune_cell", color = 
 ggtitle("B cell") +
 theme_bw(base_size = 16)
 
-p_bt
+# p_bt
 
 ggsave(
   plot = p_bt,
@@ -417,7 +426,7 @@ geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", col
   ggtitle("Vascular endothelial cell") +
   theme_bw(base_size = 16)
 
-p_ecs
+# p_ecs
 
 ggsave(
   plot = p_ecs,
@@ -442,10 +451,10 @@ sm <- sm_plot(
   org = "mm",
   inlet_side = 0.13,
   title_size = 12,
-  n_wrap = Inf
+  show_axis = FALSE
 )
 
-sm
+# sm
 ggsave(
   plot = sm,
   filename = file.path(imgdir,"tm_split_merge_plot.pdf"),
@@ -466,44 +475,66 @@ ggsave(
 
 # Figure 1 panel
 ```{r}
-library(patchwork)
-label_size <- 16
-pw_apl <- wrap_elements(
-  (p_bt | p_ecs) +
-    plot_layout(guides = "collect") +
-    plot_annotation(tag_levels = list(c("b", "c"))) & 
-    theme(plot.tag = element_text(size = label_size))
-)
-pw_cl <- wrap_elements(
-  pcl +
-    plot_annotation(tag_levels = "a") & 
-    theme(plot.tag = element_text(size = label_size))
-)
-pw_sm <- wrap_elements(
-  sm +
-    plot_annotation(tag_levels = list(c("d"))) & 
-    theme(plot.tag = element_text(size = label_size))
-)
-pw <- (pw_cl / pw_apl) | pw_sm
-pw
+# pclc <- plot_clusters_custom(
+#   cadir = cak,
+#   caobj = ca,
+#   show_genes = TRUE,
+#   label_genes = TRUE,
+#   ntop = 5,
+#   title_prefix = "",
+#   text_size = 18,
+#   axis = TRUE,
+#   legend_pos = "right",
+#   outlier_cluster = NULL,
+#   return_list = TRUE
+# )
+```
 
-ggsave(
-  plot = pw,
-  filename = file.path(imgdir,"patchwork_figure1.pdf"),
-  device = cairo_pdf,
-  width = 488.5,
-  height = 300,
-  units = "pt"
-)
 
-ggsave(
-  plot = pw,
-  filename = file.path(imgdir,"patchwork_figure1.png"),
-  width = 17.233194,
-  height = 10,
-  units = "cm"
-)
-
+```{r}
+# library(patchwork)
+# label_size <- 16
+# pw_apl <- wrap_elements(
+#   (p_bt | p_ecs) +
+#     plot_layout(guides = "collect") +
+#     plot_annotation(tag_levels = list(c("b", "c"))) & 
+#     theme(plot.tag = element_text(size = label_size))
+# )
+#
+# pw_cl <- wrap_elements(
+#   wrap_plots(pclc, ncol = 3) +
+#     guide_area() +
+#     plot_layout(guides = "collect") &
+#     theme(plot.tag = element_text(size = label_size))
+# ) +
+#   plot_annotation(tag_levels = "a")
+#
+# pw_sm <- wrap_elements(
+#   sm +
+#     plot_annotation(tag_levels = list(c("d"))) & 
+#     theme(plot.tag = element_text(size = label_size))
+# )
+#
+# pw <- (pw_cl / pw_apl) | pw_sm
+# # pw
+#
+# ggsave(
+#   plot = pw,
+#   filename = file.path(imgdir,"patchwork_figure1.pdf"),
+#   device = cairo_pdf,
+#   width = 17.233194,
+#   height = 10,
+#   units = "cm"
+# )
+#
+# ggsave(
+#   plot = pw,
+#   filename = file.path(imgdir,"patchwork_figure1.png"),
+#   width = 4000,
+#   height = 2105,
+#   units = "px"
+# )
+#
 ```
 
 
