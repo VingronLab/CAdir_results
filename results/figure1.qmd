@@ -560,7 +560,7 @@ sank <- ggplot(df, aes(x = x,
     legend.position = "none"
   )
 
-sank
+# sank
 
 ggsave(plot = sank,
        filename = file.path(imgdir, "sankey_plot_TM_clustering.pdf"),
@@ -595,7 +595,7 @@ sank <- ggplot(df, aes(x = x,
     legend.position = "none"
   )
 
-sank
+# sank
 
 ggsave(plot = sank,
        filename = file.path(imgdir, "sankey_plot_TM_clustering_no_flow_color.pdf"),
@@ -620,7 +620,7 @@ p <- ggplot(long_ang, aes(x=cluster, y = to_cluster, fill = angle)) +
   theme_bw()+
 theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   ggtitle("Angle between clusters")
-p
+# p
 
 ggsave(
   plot = p,
