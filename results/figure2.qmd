@@ -85,7 +85,7 @@ With `cutoff = NULL` CAdir tries to estimate the angle cutoff directly from the 
 set.seed(2358)
 cak <- dirclust_splitmerge(
     caobj = ca,
-    k = 15,
+    k = 12,
     cutoff = NULL,
     method = "random",
     apl_quant = 0.99,
@@ -156,8 +156,8 @@ pc_mod <- plot_clusters_custom(
   show_genes = T,
   label_genes = F,
   ntop = 5,
-  axis = TRUE,
-  outlier_cluster = "cluster_6"
+  # axis = TRUE,
+  outlier_cluster = "cluster_5"
 )
 
 pc_mod
@@ -174,7 +174,7 @@ ggsave(
 ### Identify outlier genes & cells
 ```{r}
 cak <- rank_genes(cak, ca)
-rnks <- cak@gene_ranks$cluster_6
+rnks <- cak@gene_ranks$cluster_5
 p_expr <- scater::plotExpression(sce, features = head(rnks$Rowname, 4), x = "cadir", colour_by = "cadir", ncol = 2) +
   scale_color_mpimg() +
   labs(x = "Cluster", title = "Top 4 genes cluster 5") +
@@ -188,7 +188,7 @@ p_expr
 
 ggsave(
   plot = p_expr,
-  file = file.path(imgdir, "cluster_6_top_genes.pdf"),
+  file = file.path(imgdir, "cluster_5_top_genes.pdf"),
   width = 2200,
   height = 2000,
   units = "px"
@@ -199,9 +199,18 @@ ggsave(
 
 #### Correct outliers
 ```{r}
-cell_rnk <- get_top_cells(cadir = cak, caobj = ca, cluster = "cluster_6")
+# cell_rnk_cl6 <- get_top_cells(cadir = cak, caobj = ca, cluster = "cluster_6")
+# cell_rnk_cl3 <- get_top_cells(cadir = cak, caobj = ca, cluster = "cluster_3")
+# cell_rnk <- rbind(cell_rnk_cl6, cell_rnk_cl3)
+cell_rnk <- get_top_cells(cadir = cak, caobj = ca, cluster = "cluster_5")
 top_cells <- cell_rnk$Colname[cell_rnk$Score >= 0]
 head(cell_rnk)
+
+
+# rnks <- rbind(cak@gene_ranks$cluster_5, cak@gene_ranks$cluster_3)
+rnks <- cak@gene_ranks$cluster_5
+top_genes <- unique(rnks$Rowname[rnks$Score >= 0])
+
 ```
 
 Cells that are strongly associated to the cluster:
@@ -209,9 +218,9 @@ Cells that are strongly associated to the cluster:
 p_cl5_cells <- cluster_apl(
   ca,
   cak,
-  cluster = "cluster_6",
-  direction = cak@directions["cluster_6", ],
-  group = which(cak@cell_clusters == "cluster_6"),
+  cluster = "cluster_5",
+  direction = cak@directions["cluster_5", ],
+  group = which(cak@cell_clusters == "cluster_5"),
   highlight_cluster = TRUE,
   show_genes = TRUE,
   label_genes = FALSE,
@@ -234,7 +243,7 @@ ggrepel::geom_label_repel(
 p_cl5_cells
 ggsave(
   plot = p_cl5_cells,
-  file = file.path(imgdir, "cluster_6_cells.pdf"),
+  file = file.path(imgdir, "cluster_5_cells.pdf"),
   width = 1600,
   height = 1600,
   units = "px"
@@ -243,7 +252,7 @@ ggsave(
 
 Remove outliers:
 ```{r}
-sce_corr <- sce[(!rownames(sce) %in% rnks$Rowname[rnks$Score >= 0]), (!colnames(sce) %in% top_cells)]
+sce_corr <- sce[(!rownames(sce) %in% top_genes), (!colnames(sce) %in% top_cells)]
 
 ca_corr <- cacomp(
     obj = as.matrix(logcounts(sce_corr)),
@@ -258,14 +267,14 @@ ca_corr <- cacomp(
 set.seed(2358)
 cak_corr <- dirclust_splitmerge(
     caobj = ca_corr,
-    k = 15,
+    k = 12,
     cutoff = NULL,
     method = "random",
     apl_quant = 0.99,
     counts = NULL,
     min_cells = 30,
     reps = 5,
-    make_plots = TRUE,
+    make_plots = FALSE,
     apl_cutoff_reps = 100,
     qcutoff = 0.6
 )
@@ -305,7 +314,8 @@ ggsave(
 Sankey plot showing to which clusters the remaining cells from cluster 5 are being clustered.
 ```{r}
 sce_corr$cadir2 <- cak_corr@cell_clusters
-sce_sank <- sce_corr[,sce_corr$cadir == "cluster_6"]
+sce_sank <- sce_corr[,sce_corr$cadir == "cluster_5"]
+cadir_cls <- unique(as.character(sce_sank$cadir))
 
 data <- colData(sce_sank) %>%
         as.data.frame() %>%
@@ -332,21 +342,23 @@ info  <-  data.frame(Biclusters = as.factor(data$First),
 
 pal <- mpimg_pal()
 
-cols <- pal(length(unique(sce_sank$cadir)))
-names(cols) <- unique(sce_sank$cadir)
+cols <- pal(length(cadir_cls))
+names(cols) <- cadir_cls
 
 info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
-info$col <- pal(nrow(info) + 1)[2:3]
+info$col <- pal(nrow(info) + 1)[2:(nrow(info)+1)]
 
 cols <- c(cols, info$col)
 
-names(cols) <- c(as.character(unique(sce_sank$cadir)), info$Truth)
+names(cols) <- c(as.character(cadir_cls), info$Truth)
 
 
 order <- c(
-  "cluster_6",
+  "cluster_5",
   "Naive_CD4+_T_cell",
-  "Natural_killer_cell"
+  "Natural_killer_cell",
+  "Megakaryocyte",
+  "B_cell"
 )
 
 
@@ -375,7 +387,7 @@ sank <- ggplot(df, aes(x = x,
 sank
 
 ggsave(plot = sank,
-       filename = file.path(imgdir, "sankey_plot_cluster_6.pdf"),
+       filename = file.path(imgdir, "sankey_plot_cluster_5.pdf"),
        width = 2700,
        height = 2000,
        units = "px")
