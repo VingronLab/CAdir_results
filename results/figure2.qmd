@@ -133,37 +133,31 @@ ggsave(
 
 ## Association plots of clusters
 ```{r}
-pc <- plot_clusters(
+pc_mod <- plot_clusters_custom(
   cak,
   ca,
   show_genes = T,
   label_genes = T,
   ntop = 5,
-  axis = TRUE
-)
-
-ggsave(
-  plot = pc,
-  file = file.path(imgdir, "plot_clusters.pdf"),
-  width = 3400,
-  height = 2000,
-  units ="px"
-)
-
-pc_mod <- plot_clusters_custom(
-  cak,
-  ca,
-  show_genes = T,
-  label_genes = F,
-  ntop = 5,
-  # axis = TRUE,
-  outlier_cluster = "cluster_5"
+  axis = TRUE,
+  title_prefix = "",
+  gsub_title = "_",
+  outlier_cluster = "cluster_5",
+  text_size = 19
 )
 
 pc_mod
 ggsave(
   plot = pc_mod,
   file = file.path(imgdir, "plot_clusters.pdf"),
+  width = 3400,
+  height = 2000,
+  units ="px"
+)
+
+ggsave(
+  plot = pc_mod,
+  file = file.path(imgdir, "plot_clusters.png"),
   width = 3400,
   height = 2000,
   units ="px"
@@ -175,10 +169,13 @@ ggsave(
 ```{r}
 cak <- rank_genes(cak, ca)
 rnks <- cak@gene_ranks$cluster_5
-p_expr <- scater::plotExpression(sce, features = head(rnks$Rowname, 4), x = "cadir", colour_by = "cadir", ncol = 2) +
+sce$cadir_mod <- gsub("_", " ", sce$cadir)
+lvls <- gsub("_", " ", rownames(cak@directions))
+sce$cadir_mod <- factor(sce$cadir_mod, levels = lvls)
+p_expr <- scater::plotExpression(sce, features = head(rnks$Rowname, 4), x = "cadir_mod", colour_by = "cadir_mod", ncol = 2) +
   scale_color_mpimg() +
   labs(x = "Cluster", title = "Top 4 genes cluster 5") +
-  theme_bw(base_size = 16) +
+  theme_bw(base_size = 18) +
   theme(
   axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
   legend.position = "none"
@@ -199,15 +196,10 @@ ggsave(
 
 #### Correct outliers
 ```{r}
-# cell_rnk_cl6 <- get_top_cells(cadir = cak, caobj = ca, cluster = "cluster_6")
-# cell_rnk_cl3 <- get_top_cells(cadir = cak, caobj = ca, cluster = "cluster_3")
-# cell_rnk <- rbind(cell_rnk_cl6, cell_rnk_cl3)
 cell_rnk <- get_top_cells(cadir = cak, caobj = ca, cluster = "cluster_5")
 top_cells <- cell_rnk$Colname[cell_rnk$Score >= 0]
 head(cell_rnk)
 
-
-# rnks <- rbind(cak@gene_ranks$cluster_5, cak@gene_ranks$cluster_3)
 rnks <- cak@gene_ranks$cluster_5
 top_genes <- unique(rnks$Rowname[rnks$Score >= 0])
 
@@ -361,6 +353,11 @@ order <- c(
   "B_cell"
 )
 
+df$node <- gsub("_", " ", df$node)
+df$next_node <- gsub("_", " ", df$next_node)
+names(cols) <- gsub("_", " ", names(cols))
+order <- gsub("_", " ", order)
+
 
 wrap <- 17
 df$node <- factor(stringr::str_wrap(df$node, wrap), levels = stringr::str_wrap(order, wrap))
@@ -388,6 +385,7 @@ sank
 
 ggsave(plot = sank,
        filename = file.path(imgdir, "sankey_plot_cluster_5.pdf"),
+  device = cairo_pdf,
        width = 2700,
        height = 2000,
        units = "px")
@@ -436,6 +434,8 @@ goa_mat <- dplyr::bind_rows(goa_mat, .id = "cluster")
 
 gr <- goa_mat[,c("cluster", "gene_set", "padj")]
 gr <- complete(gr, cluster, gene_set, fill = list(padj = 1))
+gr$gene_set <- gsub("_", " ", gr$gene_set)
+gr$cluster <- gsub("_", " ", gr$cluster)
 
 p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
   geom_tile() +
@@ -446,12 +446,13 @@ p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
     oob = scales::squish,
     guide = "colourbar_custom"
   ) + 
+  coord_fixed() +
   theme_bw() +
   labs(x = "Cluster", y = "Gene Set", title = "Gene Set enrichment") +
   theme(
   axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
   axis.text.y = element_text(color = "black"),
-    text = element_text(size = 16),
+    text = element_text(size = 18),
     plot.title = element_text(size = 16, face = "plain"))  #"bold"
 
 p_gs_enr
@@ -553,6 +554,9 @@ df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::
 
 names(cols) <- stringr::str_wrap(names(cols), wrap)
 
+df$node <- gsub("_", " ", df$node)
+df$next_node <- gsub("_", " ", df$next_node)
+names(cols) <- gsub("_", " ", names(cols))
 
 sank <- ggplot(df, aes(x = x,
                next_x = next_x,
