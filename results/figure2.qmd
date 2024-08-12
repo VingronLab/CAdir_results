@@ -41,6 +41,7 @@ suppressPackageStartupMessages({
   library(ggsankey)
   # devtools::install_github("teunbrand/gguidance")
   library(gguidance)
+  library(patchwork)
 })
 
 dir <- "/project/kohl_analysis/analysis/CAdir/results/results/"
@@ -284,12 +285,20 @@ cak_corr <- rank_genes(cadir = cak_corr, caobj = ca_corr)
 pc_corr <- plot_clusters(
   cak_corr,
   ca_corr,
-  show_genes = T,
-  label_genes = T,
-  ggncol = 3,
-  ggnrow = 3
-  # ntop = 5
+  show_genes = TRUE,
+  label_genes = TRUE,
+  axis = TRUE,
+  ggncol = 2,
+  ggnrow = 3,
+  title_prefix = "",
+  gsub_title = "_",
+  text_size = 19,
+  return_list = TRUE,
+  legend_pos = "right"
 )
+pc_corr <- wrap_plots(pc_corr, ncol = 2, nrow = 3) +
+  guide_area() +
+  plot_layout(guides = "collect")
 
 cak_corr
 pc_corr
@@ -297,8 +306,9 @@ pc_corr
 ggsave(
   plot = pc_corr,
   file = file.path(imgdir, "apl_clusters_corrected.pdf"),
-  width = 2800,
-  height = 3200,
+  device = cairo_pdf,
+  width = 3000,
+  height = 2500,
   units = "px"
 )
 ```
@@ -548,15 +558,16 @@ order <- c(
 )
 
 
+df$node <- gsub("_", " ", df$node)
+df$next_node <- gsub("_", " ", df$next_node)
+names(cols) <- gsub("_", " ", names(cols))
+order <- gsub("_", " ", order)
+
 wrap <- 17
 df$node <- factor(stringr::str_wrap(df$node, wrap), levels = stringr::str_wrap(order, wrap))
 df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::str_wrap(order, wrap))
 
 names(cols) <- stringr::str_wrap(names(cols), wrap)
-
-df$node <- gsub("_", " ", df$node)
-df$next_node <- gsub("_", " ", df$next_node)
-names(cols) <- gsub("_", " ", names(cols))
 
 sank <- ggplot(df, aes(x = x,
                next_x = next_x,
@@ -580,7 +591,7 @@ sank
 ggsave(plot = sank,
        filename = file.path(imgdir, "sankey_plot_corr_clustering.pdf"),
        width = 2700,
-       height = 2700,
+       height = 3200,
        device = cairo_pdf,
        units = "px")
 
