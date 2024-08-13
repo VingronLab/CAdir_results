@@ -147,7 +147,7 @@ ggplot(aes(x=algorithm,
                     color = dataset,
                     group = dataset,
                     shape = simulation),
-                    stroke =1.5,
+                    stroke = 1.5,
                     size = 2,
                     width = 0.2) +
     labs(title = "Maximum ARI on simulated data",
@@ -156,8 +156,15 @@ ggplot(aes(x=algorithm,
     scale_shape_manual(values = seq_len(length(df$simulation))) +
     scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
-    theme_bw(base_size = 18) +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    theme_bw(base_size = 20) +
+    theme(
+      axis.text.x = element_text(
+      color = "black",
+      angle = 45,
+      vjust = 1,
+      hjust=1),
+      text = element_text(size = 20),
+    ) +
     guides(fill = "none")
 
 p
@@ -240,8 +247,15 @@ ggplot(aes(x=algorithm,
     scale_shape_manual(values = seq_len(length(df$simulation))) +
     scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
-    theme_bw(base_size = 18) +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    theme_bw(base_size = 20) +
+    theme(
+      axis.text.x = element_text(
+      color = "black",
+      angle = 45,
+      vjust = 1,
+      hjust=1),
+      text = element_text(size = 20),
+    ) +
     guides(fill = "none")
 
 p
@@ -277,7 +291,14 @@ ggplot(aes(x=algorithm,
     scale_fill_mpimg(name = "mpi_extend") +
     scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
     theme_bw(base_size = 18) +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    theme(
+      axis.text.x = element_text(
+      color = "black",
+      angle = 45,
+      vjust = 1,
+      hjust=1),
+      text = element_text(size = 20),
+    ) +
     guides(fill = "none")
 
 p
@@ -610,43 +631,42 @@ stats <- bind_rows(stats, missing_comb)
 
 ```{r}
 p <- stats %>%
-    distinct() %>%
-    select(-perc_NMI_succ, -perc_NMI_NA) %>%
-    pivot_longer(cols = starts_with("perc"), names_to = "stat", values_to = "perc") %>%
-    mutate(stat = factor(stat, levels = c("perc_ARI_succ", "perc_ARI_NA", "perc_crash"))) %>%
-    ggplot(aes(x = 1, y = perc, fill = stat )) +
-        geom_col(position = "fill") +
-        facet_grid(algorithm ~ dataset, as.table = FALSE, switch = "both") +
-        scale_y_continuous(expand = c(0, 0)) +
-        scale_x_continuous(expand = c(0, 0)) +
-        theme(panel.grid = element_blank(),
-               axis.ticks = element_blank(),
-               axis.text = element_blank(),
-               strip.background = element_blank(),
-               strip.text.x = element_text(angle = 30, hjust = 0.95, vjust = 0.9),
-               strip.text.y.left = element_text(angle = 0, hjust = 0.95),
-               strip.clip = "off",
-               text = element_text(size=16)
-               , panel.spacing = unit(1.5, "pt")
-              ) +
-        scale_fill_manual(values = c("perc_ARI_succ" = "#006c66", "perc_ARI_NA" = "#ef7c00", "perc_crash" = "#d44a3d"),
-                          name = "% runs",
-                          labels = c("Success", "N/A", "Crashed") ) +
-        ggtitle("Fraction of successful and failed runs") +
-        xlab("Dataset") +
-        ylab("Algorithm")
+  distinct() %>%
+  select(-perc_NMI_succ, -perc_NMI_NA) %>%
+  pivot_longer(cols = starts_with("perc"), names_to = "stat", values_to = "perc") %>%
+  mutate(stat = factor(stat, levels = c("perc_ARI_succ", "perc_ARI_NA", "perc_crash"))) %>%
+  ggplot(aes(x = 1, y = perc, fill = stat )) +
+  geom_col(position = "fill") +
+  facet_grid(algorithm ~ dataset, as.table = FALSE, switch = "both") +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  theme(panel.grid = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    strip.background = element_blank(),
+    strip.text.x = element_text(angle = 30,
+      hjust = 0.95,
+      vjust = 0.9,
+      color = "black"),
+    strip.text.y.left = element_text(angle = 0,
+      hjust = 0.95,
+      color = "black"),
+    strip.clip = "off",
+    text = element_text(size=11),
+    panel.spacing = unit(1.5, "pt"),
+    plot.title = element_text(size = 18)
+  ) +
+  scale_fill_manual(values = c("perc_ARI_succ" = "#006c66", "perc_ARI_NA" = "#ef7c00", "perc_crash" = "#d44a3d"),
+    name = "% runs",
+    labels = c("Success", "N/A", "Crashed") ) +
+  ggtitle("Fraction of successful and failed runs") +
+  xlab("Dataset") +
+  ylab("Algorithm")
 
-# ggsave(plot = p,
-#        filename = file.path(outdir, "barplots_fraction_successful_runs_ARI.pdf"),
-#        width = 11,
-#        height = 6)
-
-q <- p + theme(text = element_text(size = 11))
-
-ggsave(plot = q,
+ggsave(plot = p,
        filename = file.path(imgdir, "barplots_fraction_successful_runs_ARI_wide.pdf"),
        width = 8, height = 4.2)
-q
+p
 ```
 
 
@@ -872,8 +892,10 @@ devp <- res %>%
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(x = "# clusters", y = "deviation", title = "Detected clusters") +
   scale_color_mpimg() +
-  theme_bw(base_size = 18) +
-  theme(legend.position = "bottom")
+  theme_bw(base_size = 22) +
+  theme(legend.position = "bottom",
+        plot.title = element_text(size = 28)
+  )
 
 devp
 
@@ -977,9 +999,6 @@ ggsave(
 )
 
 ```
-
-
-
 
 
 # Environment

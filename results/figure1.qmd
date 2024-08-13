@@ -37,6 +37,7 @@ suppressPackageStartupMessages({
   library(scran)
 
   library(patchwork)
+  library(ggtext)
 })
 
 options(repr.plot.width = 20, repr.plot.height = 15)
@@ -156,16 +157,6 @@ ggsave(
 
 ```
 
-```{r}
-pr <- plot_results(cak, ca)
-ggsave(
-  plot = pr,
-  filename = file.path(imgdir, "summary_results.pdf"),
-  width = 3400,
-  height = 3400,
-  units = "px"
-)
-```
 
 # B & T cells - standard coordinates APL
 
@@ -362,9 +353,10 @@ geom_label(data=as.data.frame(t_dir*2), aes(x, y), label="T_cell", color = "#d44
     color = "#00b1ea",
     linetype = "dashed",
     size = 1) +
-geom_label(data=as.data.frame(i_dir*3), aes(x, y), label="Immune_cell", color = "#00b1ea", vjust=1) +
-ggtitle("B cell") +
-theme_bw(base_size = 16)
+  geom_label(data=as.data.frame(i_dir*3), aes(x, y), label="Immune_cell", color = "#00b1ea", vjust=1) +
+  ggtitle("B cell") +
+  theme_bw(base_size = 18) +
+  theme(plot.title = element_text(size = 22))
 
 # p_bt
 
@@ -424,7 +416,8 @@ p_ecs <- cluster_apl(
     size = 1) +
 geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", color = "#d44a3d", hjust=-0.3) +
   ggtitle("Vascular endothelial cell") +
-  theme_bw(base_size = 16)
+  theme_bw(base_size = 18) +
+  theme(plot.title = element_text(size = 22))
 
 # p_ecs
 
@@ -535,7 +528,6 @@ order <- c(
   "T cell"
 )
 
-
 wrap <- 17
 df$node <- factor(stringr::str_wrap(df$node, wrap), levels = stringr::str_wrap(order, wrap))
 df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::str_wrap(order, wrap))
@@ -608,8 +600,11 @@ ggsave(plot = sank,
 
 
 # Angle between clusters
+
 ```{r}
 ang_rad <- get_angle(cak@directions, cak@directions)
+rownames(ang_rad) <- gsub("_|\\.", " ", rownames(ang_rad))
+colnames(ang_rad) <- gsub("_|\\.", " ", colnames(ang_rad))
 ang_deg <- as.data.frame(rad2deg(ang_rad)) %>% tibble::rownames_to_column("cluster")
 
 long_ang <- tidyr::pivot_longer(data = ang_deg, cols = -cluster, values_to = "angle", names_to = "to_cluster" )
@@ -617,8 +612,12 @@ long_ang <- tidyr::pivot_longer(data = ang_deg, cols = -cluster, values_to = "an
 p <- ggplot(long_ang, aes(x=cluster, y = to_cluster, fill = angle)) +
   geom_tile() +
   scale_fill_gradient_mpimg(name = "orange", trans = "reverse") +
-  theme_bw()+
-theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  theme_bw(base_size = 16)+
+theme(
+    axis.text.x = element_text(color = "black", angle = 45, vjust = 1, hjust=1),
+    axis.text.y = element_text(color = "black"),
+    plot.title = element_text(size = 18)
+  ) +
   ggtitle("Angle between clusters")
 # p
 
@@ -631,7 +630,36 @@ ggsave(
 )
 ```
 
+```{r}
+pr <- plot_results(cak, ca, title_prefix = "", gsub_title = "_|\\.", return_list = TRUE)
+
+pr <- lapply(
+  pr,
+  FUN = function(p) {
+    p + theme(
+      plot.title = ggtext::element_textbox_simple(size = 15)
+    )
+  })
+
+pr <- ggpubr::ggarrange(
+  plotlist = pr,
+  nrow = sqrt(length(pr)),
+  ncol = sqrt(length(pr))
+)
+
+ggsave(
+  plot = pr,
+  filename = file.path(imgdir, "summary_results.pdf"),
+  width = 3400,
+  height = 3400,
+  units = "px"
+)
+
+# pr
+```
+
 # Session Info
+
 ```{r}
 sessionInfo()
 ```
