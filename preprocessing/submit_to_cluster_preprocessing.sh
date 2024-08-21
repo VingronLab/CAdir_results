@@ -9,7 +9,7 @@ MEMORY=100G
 MINUTES=120
 TMPDIR=80G
 
-datadir="/project/kohl_data/CAdir/data/real"
+datadir="/project/kohl_analysis/analysis/CAdir/results/data/real"
 indir="${datadir}/raw"
 outdir="${datadir}/preprocessed"
 logdir=${outdir}/log

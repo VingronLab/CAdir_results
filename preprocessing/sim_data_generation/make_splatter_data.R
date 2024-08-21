@@ -15,7 +15,7 @@ dataset <- "zeisel"
 # Uncomment for splatter data based on Pbcm3k data.
 # dataset <- "pbmc3k"
 
-maindir <- paste0("../../Data/sim_data/raw/", dataset, "/")
+maindir <- paste0("../../data/sim/raw/", dataset, "/")
 dir.create(maindir)
 
 if(dataset == "zeisel"){

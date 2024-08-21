@@ -48,10 +48,10 @@ dir.create(imgdir, recursive = TRUE)
 ```
 
 ```{r}
-data_dir <- "/project/CAclust_scripts/CAclust_paper/2024_NAR_submission_files/Data/"
+data_dir <- "/project/kohl_analysis/analysis/CAdir/results/data/real/discussed/"
 
-marker_genes <- readr::read_csv(file.path(data_dir, "discussed_data/tabula_muris_marker_genes.csv"))
-sce <- readRDS(file.path(data_dir, "discussed_data/preprocessed/tabula_muris_preprocessed_filtered.rds"))
+marker_genes <- readr::read_csv(file.path(data_dir, "tabula_muris_marker_genes.csv"))
+sce <- readRDS(file.path(data_dir, "preprocessed/tabula_muris_preprocessed_filtered.rds"))
 
 genevars <- modelGeneVar(sce, assay.type = "logcounts")
 chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)

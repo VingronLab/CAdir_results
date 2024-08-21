@@ -1,6 +1,6 @@
 #!/bin/bash
 
-outdir="/project/kohl_data/CAdir/data/real/raw/"
+outdir="/project/kohl_analysis/analysis/CAdir/results/data/real/raw/"
 mkdir -p $outdir
 
 # https://figshare.com/articles/dataset/Tabula_Sapiens_release_1_0/14267219
