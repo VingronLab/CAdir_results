@@ -47,6 +47,7 @@ imgdir <- file.path(dir, "img/figure1/")
 dir.create(imgdir, recursive = TRUE)
 ```
 
+## Load data
 ```{r}
 data_dir <- "/project/kohl_analysis/analysis/CAdir/results/data/real/discussed/"
 
@@ -73,6 +74,7 @@ cell_types <- sce$cell_ontology_class
 cat("Number of cell types:", length(unique(cell_types)), "\n")
 ```
 
+# CAdir
 ```{r}
 set.seed(2358)
 cak <- dirclust_splitmerge(
@@ -89,7 +91,7 @@ cak <- dirclust_splitmerge(
 )
 ```
 
-
+Annotate biclustering:
 ```{r}
 cak <- annotate_biclustering(obj = cak,
                                 universe = rownames(sce_sub),
@@ -101,7 +103,6 @@ cak
 ```
 
 ```{r}
-
 um1 <- plotUMAP(sce_sub, colour = "cadir")
 um2 <- plotUMAP(sce_sub, colour = "cell_ontology_class")
 
@@ -109,7 +110,7 @@ ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
 cat("ARI:", ari$ARI)
 
 um <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
-# um
+um
 
 ggsave(
   plot = um,
@@ -117,7 +118,7 @@ ggsave(
 )
 ```
 
-
+# Cluster Association Plots
 ```{r}
 pcl <- plot_clusters(
   cadir = cak,
@@ -136,7 +137,7 @@ pcl <- wrap_plots(pcl, ncol = 3) +
   guide_area() +
   plot_layout(guides = "collect")
 
-# pcl
+pcl
 
 ggsave(
   plot = pcl,
@@ -158,9 +159,7 @@ ggsave(
 ```
 
 
-# B & T cells - standard coordinates APL
-
-
+## B & T cells - standard coordinates APL
 ```{r}
 cls <- "B_cell"
 group <- which(cak@cell_clusters == cls)
@@ -185,8 +184,6 @@ i_dir <- i_dir / ca@D  # prin_coords to std_coords
 i_dir <- model(i_dir)
 
 ```
-
-
 
 ```{r}
 p_bt <- cluster_apl(
@@ -221,7 +218,7 @@ geom_label(data=as.data.frame(i_dir*7), aes(x, y), label="Immune_cell", color = 
 ggtitle("B cell") +
 theme_bw(base_size = 16)
 
-# p_bt
+p_bt
 
 ggsave(
   plot = p_bt,
@@ -234,9 +231,7 @@ ggsave(
 ```
 
 
-# Endothelial cells - Standard coordinates APL
-
-
+## Endothelial cells - Standard coordinates APL
 ```{r}
 cls <- "Vascular_endothelial_cell"
 group <- which(cak@cell_clusters == cls)
@@ -255,8 +250,6 @@ e_dir <- e_dir / ca@D  # prin_coords to std_coords
 e_dir <- model(e_dir)
 
 ```
-
-
 
 ```{r}
 p_ecs <- cluster_apl(
@@ -283,7 +276,7 @@ geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", col
   ggtitle("Vascular endothelial cell") +
 theme_bw(base_size = 16)
 
-# p_ecs
+p_ecs
 
 ggsave(
   plot = p_ecs,
@@ -296,9 +289,7 @@ ggsave(
 ```
 
 
-# B & T cells - principal coordinates APL
-
-
+## B & T cells - principal coordinates APL
 ```{r}
 cls <- "B_cell"
 group <- which(cak@cell_clusters == cls)
@@ -321,8 +312,6 @@ i_dir <- cak@directions[cak@dict[["Immune_cell"]], ]
 i_dir <- model(i_dir)
 
 ```
-
-
 
 ```{r}
 p_bt <- cluster_apl(
@@ -358,7 +347,7 @@ geom_label(data=as.data.frame(t_dir*2), aes(x, y), label="T_cell", color = "#d44
   theme_bw(base_size = 18) +
   theme(plot.title = element_text(size = 22))
 
-# p_bt
+p_bt
 
 ggsave(
   plot = p_bt,
@@ -370,10 +359,7 @@ ggsave(
 )
 ```
 
-
-# Endothelial cells - principal coordinates APL
-
-
+## Endothelial cells - principal coordinates APL
 ```{r}
 cls <- "Vascular_endothelial_cell"
 group <- which(cak@cell_clusters == cls)
@@ -391,7 +377,6 @@ e_dir <- cak@directions[cak@dict[["Endothelial_cell"]], ]
 e_dir <- model(e_dir)
 
 ```
-
 
 ```{r}
 p_ecs <- cluster_apl(
@@ -419,7 +404,7 @@ geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", col
   theme_bw(base_size = 18) +
   theme(plot.title = element_text(size = 22))
 
-# p_ecs
+p_ecs
 
 ggsave(
   plot = p_ecs,
@@ -431,7 +416,8 @@ ggsave(
 )
 ```
 
-# SM plot
+# Further Plots
+## SM plot
 ```{r}
 sm <- sm_plot(
   cadir = cak,
@@ -447,7 +433,7 @@ sm <- sm_plot(
   show_axis = FALSE
 )
 
-# sm
+sm
 ggsave(
   plot = sm,
   filename = file.path(imgdir,"tm_split_merge_plot.pdf"),
@@ -466,9 +452,7 @@ ggsave(
 )
 ```
 
-
-# Sankey
-
+## Sankey
 ```{r}
 library(ggsankey)
 sce_sank <- sce_sub
@@ -502,12 +486,10 @@ cols <- pal(length(unique(sce_sank$cadir)))
 names(cols) <- unique(sce_sank$cadir)
 
 info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
-# info$col <- pal(nrow(info) + 1)[2:3]
 
 cols <- c(cols, info$col)
 
 names(cols) <- c(as.character(unique(sce_sank$cadir)), info$Truth)
-
 
 order <- c(
   "cluster_1",
@@ -552,7 +534,7 @@ sank <- ggplot(df, aes(x = x,
     legend.position = "none"
   )
 
-# sank
+sank
 
 ggsave(plot = sank,
        filename = file.path(imgdir, "sankey_plot_TM_clustering.pdf"),
@@ -568,39 +550,8 @@ ggsave(plot = sank,
        units = "px")
 ```
 
-```{r}
-sank <- ggplot(df, aes(x = x,
-               next_x = next_x,
-               node = node,
-               next_node = next_node,
-               fill = node,
-               label = as.character(node))) +
-  geom_sankey(
-    flow.alpha = 0.4,
-    flow.fill = c("#777777")
-  ) +
-  geom_sankey_label(size = 6) +
-  labs(x = "") +
-  scale_fill_manual(values = cols) +
-  theme_sankey(base_size = 26) +
-  theme(
-    legend.position = "none"
-  )
 
-# sank
-
-ggsave(plot = sank,
-       filename = file.path(imgdir, "sankey_plot_TM_clustering_no_flow_color.pdf"),
-       width = 2700,
-       height = 2400,
-       device = cairo_pdf,
-       units = "px")
-```
-
-
-
-# Angle between clusters
-
+## Angle between clusters
 ```{r}
 ang_rad <- get_angle(cak@directions, cak@directions)
 rownames(ang_rad) <- gsub("_|\\.", " ", rownames(ang_rad))
@@ -619,7 +570,8 @@ theme(
     plot.title = element_text(size = 18)
   ) +
   ggtitle("Angle between clusters")
-# p
+
+p
 
 ggsave(
   plot = p,
@@ -655,11 +607,10 @@ ggsave(
   units = "px"
 )
 
-# pr
+pr
 ```
 
 # Session Info
-
 ```{r}
 sessionInfo()
 ```

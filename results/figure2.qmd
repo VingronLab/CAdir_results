@@ -271,7 +271,7 @@ cak_corr <- dirclust_splitmerge(
     apl_cutoff_reps = 100,
     qcutoff = 0.6
 )
-# cak_corr@gene_clusters <- assign_genes(cadir = cak_corr, caobj = ca_corr, qcutoff = 0.8)
+
 cak_corr <- annotate_biclustering(
     obj = cak_corr,
     universe = rownames(sce_corr),
@@ -532,12 +532,10 @@ cols <- pal(length(unique(sce_sank$cadir)))
 names(cols) <- unique(sce_sank$cadir)
 
 info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
-# info$col <- pal(nrow(info) + 1)[2:3]
 
 cols <- c(cols, info$col)
 
 names(cols) <- c(as.character(unique(sce_sank$cadir)), info$Truth)
-
 
 order <- c(
   "Naive_CD4+_T_cell",
@@ -556,7 +554,6 @@ order <- c(
   "7 - DC",
   "8 - Platelet"
 )
-
 
 df$node <- gsub("_", " ", df$node)
 df$next_node <- gsub("_", " ", df$next_node)
@@ -595,15 +592,15 @@ ggsave(plot = sank,
        device = cairo_pdf,
        units = "px")
 
-# ggsave(plot = sank,
-#        filename = file.path(imgdir, "sankey_plot_TM_clustering.png"),
-#        width = 2700,
-#        height = 2400,
-#        units = "px")
+ggsave(plot = sank,
+       filename = file.path(imgdir, "sankey_plot_corr_clustering.png"),
+       width = 2700,
+       height = 3200,
+       units = "px")
 
 ```
 
-
+# sessionInfo
 ```{r}
 sessionInfo()
 ```

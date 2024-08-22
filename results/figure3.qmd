@@ -17,7 +17,6 @@ jupyter:
 ```{r}
 renv::load("/project/kohl_analysis/analysis/CAdir")
 devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
-# source("./utils.R")
 
 suppressPackageStartupMessages({
   library(scater)
@@ -46,9 +45,7 @@ indir = file.path(base_dir, "eval")
 
 ```
 
-
 ## simulated data
-
 Benchmarking results based on Zeisel Brain data:
 ```{r}
 zeisel_eval <- readRDS(
@@ -313,8 +310,7 @@ ggsave(plot = p,
 
 
 
-## real data
-
+## Experimental Data
 ```{r}
 date <- "20240812"
 evldir = file.path("/project/kohl_data/CAdir/benchmarking/results/real", date, "eval")
@@ -338,11 +334,8 @@ df$dataset = gsub('_filtered', '', df$dataset)
 
 ### Simulated data sets
 
-# simdf <- rbind(dfz, dfp)
 simdf <- df_all
 simdf$dataset = paste0(simdf$dataset, '_', simdf$simulation)
-
-# simdf$dataset = paste(simdf$dataset, simdf$dePROB, simdf$defacLOC, simdf$defacSCALE, sep = '_')
 
 commoncols = intersect(colnames(df), colnames(simdf))
 
@@ -384,7 +377,6 @@ run_stat
 ```
 
 ```{r}
-
 # Find missing runs (no values because crash/error)
 
 # Find row and column indices of cells equal to 0
@@ -495,11 +487,7 @@ df_tile$is2nd[is.na(df_tile$is2nd)] <- FALSE
 
 ```
 
-
-
 ```{r}
-
-# library(gguidance)
 p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
   geom_tile() +
   geom_tile(data = df_tile[df_tile$ismax, ],
@@ -528,8 +516,6 @@ p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
   scale_fill_gradientn(
     colours = c("#29485d", "#006c66", "#c6d325", "#ef7c00"),
     limits = c(0, 1),
-    # oob = scales::squish,
-    # guide = "colourbar_custom"
     na.value="#777777",
     name = "Max ARI"
   ) + 
@@ -547,6 +533,7 @@ p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
   labs(x = 'Dataset', y = 'Algorithm', title = "Maximum ARI on experimental data")
 
 p
+
 ggsave(plot = p,
        filename = file.path(imgdir, "real_bench_max_ARI_cells.pdf"),
         width = 2000,
@@ -555,11 +542,7 @@ ggsave(plot = p,
 
 ```
 
-
-
-
 ## Calculate % successful runs
-
 ```{r}
 n_param <- 108
 
@@ -669,11 +652,6 @@ ggsave(plot = p,
 p
 ```
 
-
-
-
-
-
 # Runtime & Scalability
 ```{r}
 date = "20240812"
@@ -778,10 +756,6 @@ scale_colour_manual(values = c(
     'Seurat' = mpgGreenLight,
     'kmeans' = mpgGreen
 )) +
-# ggthemes::scale_colour_tableau() +
-# ggthemes::scale_fill_tableau(palette = "Tableau 10",
-#                               type = "regular",
-#                               direction = 1)+
 scale_linetype_manual(values = c(
     'CAdir' = "solid",
     'CAbiNet' = "solid",
@@ -808,9 +782,7 @@ ggsave(
 ```
 
 
-
 # Detection of cluster number
-
 ```{r}
 date = "20240812"
 indir <- "/project/kohl_data/CAdir/benchmarking/results/ct_detection"
@@ -989,6 +961,7 @@ p3 <- plotUMAP(sce_sub, colour_by = "cell_ontology_class") +
   theme(legend.title = element_blank())
 
 comb_umap <- p1+p2+p3
+comb_umap
 
 ggsave(
   filename = file.path(imgdir, "tabula_muris_30_clusters.png"),
@@ -999,7 +972,6 @@ ggsave(
 )
 
 ```
-
 
 # Environment
 ```{r}
