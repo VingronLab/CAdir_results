@@ -2,7 +2,7 @@
 title: Figure 2
 jupyter:
   jupytext:
-    formats: 'ipynb,qmd'
+    formats: 'ipynb,qmd:quarto'
     text_representation:
       extension: .qmd
       format_name: quarto
@@ -13,7 +13,6 @@ jupyter:
     language: R
     name: ir44
 ---
-
 
 # Setup
 
@@ -82,6 +81,7 @@ ca <- cacomp(
 With `cutoff = NULL` CAdir tries to estimate the angle cutoff directly from the data.
 
 ## Split & Merge Clustering
+
 ```{r}
 set.seed(2358)
 cak <- dirclust_splitmerge(
@@ -103,6 +103,7 @@ top <- top_genes(cak)
 ```
 
 ### Annotate clusters
+
 ```{r}
 cak <- annotate_biclustering(
     obj = cak,
@@ -129,10 +130,10 @@ ggsave(
   height = 1800,
   units = "px"
 )
-
 ```
 
 ## Association plots of clusters
+
 ```{r}
 pc_mod <- plot_clusters_custom(
   cak,
@@ -165,8 +166,8 @@ ggsave(
 )
 ```
 
-
 ### Identify outlier genes & cells
+
 ```{r}
 cak <- rank_genes(cak, ca)
 rnks <- cak@gene_ranks$cluster_5
@@ -191,11 +192,10 @@ ggsave(
   height = 2000,
   units = "px"
 )
-
 ```
 
-
 #### Correct outliers
+
 ```{r}
 cell_rnk <- get_top_cells(cadir = cak, caobj = ca, cluster = "cluster_5")
 top_cells <- cell_rnk$Colname[cell_rnk$Score >= 0]
@@ -203,10 +203,10 @@ head(cell_rnk)
 
 rnks <- cak@gene_ranks$cluster_5
 top_genes <- unique(rnks$Rowname[rnks$Score >= 0])
-
 ```
 
 Cells that are strongly associated to the cluster:
+
 ```{r}
 p_cl5_cells <- cluster_apl(
   ca,
@@ -244,6 +244,7 @@ ggsave(
 ```
 
 Remove outliers:
+
 ```{r}
 sce_corr <- sce[(!rownames(sce) %in% top_genes), (!colnames(sce) %in% top_cells)]
 
@@ -314,6 +315,7 @@ ggsave(
 ```
 
 Sankey plot showing to which clusters the remaining cells from cluster 5 are being clustered.
+
 ```{r}
 sce_corr$cadir2 <- cak_corr@cell_clusters
 sce_sank <- sce_corr[,sce_corr$cadir == "cluster_5"]
@@ -401,7 +403,6 @@ ggsave(plot = sank,
        units = "px")
 ```
 
-
 ### Platelet cells
 
 ```{r}
@@ -416,10 +417,10 @@ goa_res <- CAbiNet::per_cluster_goa(
   max_size = 500
 )
 head(goa_res$Megakaryocyte)
-
 ```
 
 Top 5 most highly significant gene sets for cluster "Megakaryocyte":
+
 ```{r}
 cl_goa <- goa_res$Megakaryocyte
 
@@ -432,6 +433,7 @@ ggplot(cl_goa[1:5, ], aes(x = gene_set, y = -log10(padj), fill = -log10(padj))) 
 ```
 
 Gene Set enrichment over all corrected clusters:
+
 ```{r}
 nclust <- length(goa_res)
 
@@ -476,8 +478,8 @@ ggsave(
 )
 ```
 
-
 ## Split & Merge plot
+
 ```{r}
 sm <- sm_plot(
   cadir = cak,
@@ -499,6 +501,7 @@ ggsave(plot = sm,
 ```
 
 ## Annotation - Sankey
+
 ```{r}
 library(ggsankey)
 sce_sank <- sce_corr
@@ -597,12 +600,10 @@ ggsave(plot = sank,
        width = 2700,
        height = 3200,
        units = "px")
-
 ```
 
 # sessionInfo
+
 ```{r}
 sessionInfo()
 ```
-
-

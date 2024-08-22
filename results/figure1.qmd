@@ -2,7 +2,7 @@
 title: Figure 1
 jupyter:
   jupytext:
-    formats: 'ipynb,qmd'
+    formats: 'ipynb,qmd:quarto'
     text_representation:
       extension: .qmd
       format_name: quarto
@@ -13,7 +13,6 @@ jupyter:
     language: R
     name: ir44
 ---
-
 
 # Setup
 
@@ -48,6 +47,7 @@ dir.create(imgdir, recursive = TRUE)
 ```
 
 ## Load data
+
 ```{r}
 data_dir <- "/project/kohl_analysis/analysis/CAdir/results/data/real/discussed/"
 
@@ -75,6 +75,7 @@ cat("Number of cell types:", length(unique(cell_types)), "\n")
 ```
 
 # CAdir
+
 ```{r}
 set.seed(2358)
 cak <- dirclust_splitmerge(
@@ -92,6 +93,7 @@ cak <- dirclust_splitmerge(
 ```
 
 Annotate biclustering:
+
 ```{r}
 cak <- annotate_biclustering(obj = cak,
                                 universe = rownames(sce_sub),
@@ -119,6 +121,7 @@ ggsave(
 ```
 
 # Cluster Association Plots
+
 ```{r}
 pcl <- plot_clusters(
   cadir = cak,
@@ -155,11 +158,10 @@ ggsave(
   height = 2000,
   units = "px"
 )
-
 ```
 
-
 ## B & T cells - standard coordinates APL
+
 ```{r}
 cls <- "B_cell"
 group <- which(cak@cell_clusters == cls)
@@ -182,7 +184,6 @@ ics_coords <- ics_coords[cak@cell_clusters == "Immune_cell", ]
 i_dir <- cak@directions[cak@dict[["Immune_cell"]], ]
 i_dir <- i_dir / ca@D  # prin_coords to std_coords
 i_dir <- model(i_dir)
-
 ```
 
 ```{r}
@@ -230,8 +231,8 @@ ggsave(
 )
 ```
 
-
 ## Endothelial cells - Standard coordinates APL
+
 ```{r}
 cls <- "Vascular_endothelial_cell"
 group <- which(cak@cell_clusters == cls)
@@ -248,7 +249,6 @@ ecs_coords <- ecs_coords[cak@cell_clusters == "Endothelial_cell", ]
 e_dir <- cak@directions[cak@dict[["Endothelial_cell"]], ]
 e_dir <- e_dir / ca@D  # prin_coords to std_coords
 e_dir <- model(e_dir)
-
 ```
 
 ```{r}
@@ -288,8 +288,8 @@ ggsave(
 )
 ```
 
-
 ## B & T cells - principal coordinates APL
+
 ```{r}
 cls <- "B_cell"
 group <- which(cak@cell_clusters == cls)
@@ -310,7 +310,6 @@ ics_coords <- model(ca@prin_coords_cols)
 ics_coords <- ics_coords[cak@cell_clusters == "Immune_cell", ]
 i_dir <- cak@directions[cak@dict[["Immune_cell"]], ]
 i_dir <- model(i_dir)
-
 ```
 
 ```{r}
@@ -360,6 +359,7 @@ ggsave(
 ```
 
 ## Endothelial cells - principal coordinates APL
+
 ```{r}
 cls <- "Vascular_endothelial_cell"
 group <- which(cak@cell_clusters == cls)
@@ -375,7 +375,6 @@ ecs_coords <- model(ca@prin_coords_cols)
 ecs_coords <- ecs_coords[cak@cell_clusters == "Endothelial_cell", ]
 e_dir <- cak@directions[cak@dict[["Endothelial_cell"]], ]
 e_dir <- model(e_dir)
-
 ```
 
 ```{r}
@@ -418,6 +417,7 @@ ggsave(
 
 # Further Plots
 ## SM plot
+
 ```{r}
 sm <- sm_plot(
   cadir = cak,
@@ -453,6 +453,7 @@ ggsave(
 ```
 
 ## Sankey
+
 ```{r}
 library(ggsankey)
 sce_sank <- sce_sub
@@ -550,8 +551,8 @@ ggsave(plot = sank,
        units = "px")
 ```
 
-
 ## Angle between clusters
+
 ```{r}
 ang_rad <- get_angle(cak@directions, cak@directions)
 rownames(ang_rad) <- gsub("_|\\.", " ", rownames(ang_rad))
@@ -611,9 +612,7 @@ pr
 ```
 
 # Session Info
+
 ```{r}
 sessionInfo()
 ```
-
-
-

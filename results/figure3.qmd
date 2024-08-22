@@ -1,7 +1,8 @@
 ---
+title: Figure 3
 jupyter:
   jupytext:
-    formats: 'ipynb,qmd'
+    formats: 'ipynb,qmd:quarto'
     text_representation:
       extension: .qmd
       format_name: quarto
@@ -14,6 +15,7 @@ jupyter:
 ---
 
 # Setup
+
 ```{r}
 renv::load("/project/kohl_analysis/analysis/CAdir")
 devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
@@ -42,11 +44,11 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 date <- "20240812"
 base_dir <- file.path("/project/kohl_data/CAdir/benchmarking/results/simulated", date)
 indir = file.path(base_dir, "eval")
-
 ```
 
 ## simulated data
 Benchmarking results based on Zeisel Brain data:
+
 ```{r}
 zeisel_eval <- readRDS(
   file.path(indir,
@@ -65,10 +67,10 @@ dfz <- zeisel_eval %>%
 
 table(zeisel_eval$algorithm,
       paste(zeisel_eval$dePROB, zeisel_eval$defacLOC, zeisel_eval$defacSCALE, sep="_"))
-
 ```
 
 Benchmarking results based on PBMC3k data:
+
 ```{r}
 pbmc_eval <- readRDS(
   file.path(indir,
@@ -90,6 +92,7 @@ table(pbmc_eval$algorithm,
 ```
 
 Combining the benchmarking resuls:
+
 ```{r}
 df_all <- rbind(dfz, dfp)
 
@@ -117,6 +120,7 @@ df <- df_all %>% group_by(simulation, algorithm, dataset) %>%
 ```
 
 ### Simulated data benchmarking - Max Results
+
 ```{r}
 df <- df_all %>%
     group_by(simulation, algorithm, dataset) %>%
@@ -128,7 +132,6 @@ df <- df_all %>%
 
 df$max_ARI[is.infinite(df$max_ARI)] <- 0
 df$max_NMI[is.infinite(df$max_NMI)] <- 0
-
 ```
 
 ```{r}
@@ -208,8 +211,8 @@ ggsave(plot = p,
        units = "px")
 ```
 
-
 ### Simulated data benchmarking - Average Results
+
 ```{r}
 df <- df_all %>% group_by(simulation, algorithm, dataset) %>%
         mutate(mean_ARI = mean(ARI, na.rm = TRUE)) %>%
@@ -217,10 +220,7 @@ df <- df_all %>% group_by(simulation, algorithm, dataset) %>%
         select(dataset, simulation, algorithm, mean_ARI, mean_NMI) %>%
         distinct() %>%
         ungroup()
-
 ```
-
-
 
 ```{r}
 p <- df %>%
@@ -308,9 +308,8 @@ ggsave(plot = p,
        units = "px")
 ```
 
-
-
 ## Experimental Data
+
 ```{r}
 date <- "20240812"
 evldir = file.path("/project/kohl_data/CAdir/benchmarking/results/real", date, "eval")
@@ -389,7 +388,6 @@ zero_df <- data.frame(
 )
 
 df_na = dplyr::bind_rows(df_na, zero_df)
-
 ```
 
 ```{r}
@@ -484,7 +482,6 @@ df_tile <- df_real %>%
 
 df_tile$ismax[is.na(df_tile$ismax)] <- FALSE
 df_tile$is2nd[is.na(df_tile$is2nd)] <- FALSE
-
 ```
 
 ```{r}
@@ -539,10 +536,10 @@ ggsave(plot = p,
         width = 2000,
         height = 1750,
        units = "px")
-
 ```
 
 ## Calculate % successful runs
+
 ```{r}
 n_param <- 108
 
@@ -558,7 +555,6 @@ mutate(perc_ARI_succ = round((n_runs - NA_ARI) / n_param, 2),
        perc_crash = round((n_param - n_runs) / n_param, 2)) %>%
 select(algorithm, dataset, perc_ARI_succ, perc_NMI_succ, perc_ARI_NA, perc_NMI_NA, perc_crash) %>%
 distinct()
-
 ```
 
 ```{r}
@@ -587,7 +583,6 @@ stats$dataset = factor(stats$dataset, levels = c(
   "Brain Organoids",
   unique(simdf$dataset)
 ))
-
 ```
 
 ```{r}
@@ -653,6 +648,7 @@ p
 ```
 
 # Runtime & Scalability
+
 ```{r}
 date = "20240812"
 mpgGreen = "#006c66"
@@ -781,8 +777,8 @@ ggsave(
 )
 ```
 
-
 # Detection of cluster number
+
 ```{r}
 date = "20240812"
 indir <- "/project/kohl_data/CAdir/benchmarking/results/ct_detection"
@@ -807,7 +803,6 @@ if (file.exists(file.path(indir, date, "eval", "results.csv"))) {
   write_csv(res, file = file.path(indir, date, "eval", "results.csv"))
 
 }
-
 ```
 
 ```{r}
@@ -825,7 +820,6 @@ res <- res %>%
   mutate(log2fc_mean = mean(log2fc)) %>%
   mutate(log2fc_sd = sd(log2fc)) %>%
   ungroup()
-
 ```
 
 ```{r}
@@ -851,7 +845,6 @@ ggsave(
   height = 1800,
   units = "px"
 )
-
 ```
 
 ```{r}
@@ -905,6 +898,7 @@ ggsave(
 ```
 
 ## Comparison 30 clusters
+
 ```{r}
 source("./cluster_tabula_muris.R")
 
@@ -970,12 +964,10 @@ ggsave(
   height = 4000,
   units = "px"
 )
-
 ```
 
 # Environment
+
 ```{r}
 sessionInfo()
 ```
-
-
