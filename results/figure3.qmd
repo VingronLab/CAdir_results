@@ -650,7 +650,7 @@ p
 # Runtime & Scalability
 
 ```{r}
-date = "20240812"
+date = "20240822"
 mpgGreen = "#006c66"
 mpgDarkGreen = "#005555"
 mpgDarkGrey = "#777777"
@@ -745,7 +745,7 @@ scale_colour_manual(values = c(
     'CAdir' = mpgOrange,
     'CAbiNet' = mpgDarkGreen,
     'Monocle3' = mpgDarkBlue,
-    'RaceID' = mpgGrau,
+    'RaceID' = mpgDarkGrey,
     # 'RaceID_auto' = alph,
     'SC3' = mpgLightBlue,
     'SIMLR' = mpgGrau,
@@ -971,3 +971,5 @@ ggsave(
 ```{r}
 sessionInfo()
 ```
+
+
