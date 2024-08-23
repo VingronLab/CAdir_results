@@ -1,5 +1,5 @@
 algorithm <- "CAbiNet"
-source("./setup_split.R")
+source("./benchmarking/setup_split.R")
 
 algorithm <- "CAbiNet_igraph"
 

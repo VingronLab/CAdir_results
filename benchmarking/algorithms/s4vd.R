@@ -1,6 +1,6 @@
 
 
-source("./setup.R")
+source("./benchmarking/setup.R")
 
 algorithm <- "sv4d"
 

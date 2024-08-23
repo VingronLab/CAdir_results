@@ -1,5 +1,5 @@
 algorithm <- "SIMLR"
-source("./setup_split.R")
+source("./benchmarking/setup_split.R")
 
 cat("\nStarting SIMLR.\n")
 t <- Sys.time()

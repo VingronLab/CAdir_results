@@ -1,4 +1,4 @@
-devtools::load_all("/project/kohl_analysis/analysis/CAdir/CAdir/")
+library(CAdir)
 library(APL)
 library(CAbiNet)
 

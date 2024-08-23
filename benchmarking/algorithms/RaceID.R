@@ -1,5 +1,5 @@
 algorithm <- "RaceID"
-source("./setup_split.R")
+source("./benchmarking/setup_split.R")
 
 if (isTRUE(auto_mode)) {
   algorithm <- "RaceID_auto"

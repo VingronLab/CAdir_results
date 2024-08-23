@@ -1,4 +1,4 @@
-source("./helpers/custom_pca.R")
+source("./benchmarking/helpers/custom_pca.R")
 
 alg_option_list <- list(
   make_option(c("--dims"),

@@ -16,7 +16,7 @@ set.seed(12345)
 # Uncomment for splatter data based on Pbcm3k data.
 dataset = "pbmc3k"
 
-maindir <- '/project/kohl_data/CAdir/data/sim/preprocessed/scalability/'
+maindir <- "./data/sim/preprocessed/scalability/"
 dir.create(maindir)
 
 if(dataset == "zeisel"){

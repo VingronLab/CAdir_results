@@ -9,12 +9,12 @@ MEMORY=100G
 MINUTES=120
 TMPDIR=80G
 
-datadir="/project/kohl_analysis/analysis/CAdir/results/data/real"
+datadir="./data/real"
 indir="${datadir}/raw"
 outdir="${datadir}/preprocessed"
 logdir=${outdir}/log
 
-SCRIPT="./data_preprocessing.R"
+SCRIPT="./preprocessing/data_preprocessing.R"
 
 mkdir -p $outdir
 mkdir -p $logdir

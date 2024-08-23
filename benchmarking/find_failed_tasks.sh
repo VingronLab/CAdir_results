@@ -5,7 +5,7 @@
 ############
 
 date="20240812"
-OUTDIR="/project/kohl_data/CAdir/benchmarking/results/simulated/${date}"
+OUTDIR="./results/benchmarking/results/simulated/${date}"
 
 dataset_list=("zeisel" "pbmc3k")
 

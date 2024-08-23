@@ -1,5 +1,5 @@
 algorithm <- "BackSPIN"
-source("./setup_split.R")
+source("./benchmarking/setup_split.R")
 
 ##################################
 cat("\nStarting backSPIN.\n")
@@ -167,7 +167,7 @@ cat("\nFinished benchmarking!\n")
 
 # cef.dat = cnts
 
-# # based on https://www.researchgate.net/publication/327258862_Supplementary_Information/data/5b849c604585151fd1370297/sdata2018160-s2.pdf
+# # based on https://www.researchgate.net/publication/327258862_Supplementary_Informati./data/5b849c604585151fd1370297/sdata2018160-s2.pdf
 # tmp_dir = "/scratch/local/kohl/"
 # output.cef = file.path(tmp_dir, paste0(algorithm, "_", name, '.cef'))
 # clust_res.cef = file.path(tmp_dir, paste0(algorithm, "_", name, '_clusters.cef'))

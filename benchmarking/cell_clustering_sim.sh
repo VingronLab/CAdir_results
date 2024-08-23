@@ -8,15 +8,12 @@ THREADS=6
 MEMORY=15G
 MINUTES=60
 
-LD_LIBRARY_VAR=/home/kohl/.local/lib:/home/kohl/.local/bin:/home/kohl/.local/include
-GDAL_DATA_VAR=/home/kohl/.local/share/gdal
-
 datasets=("zeisel" "pbmc3k")
 for dataset in "${datasets[@]}"; do
 
-	scripts_path="./algorithms/"
+	scripts_path="./benchmarking/algorithms/"
 
-	outdir="/project/kohl_data/CAdir/benchmarking/results/simulated/${date}"
+	outdir="./results/benchmarking/results/simulated/${date}"
 
 	logdir="${outdir}/log/${dataset}"
 	here_dir="${outdir}/sh/${dataset}"
@@ -29,7 +26,7 @@ for dataset in "${datasets[@]}"; do
 	OUTDIR="${outdir}/out/${dataset}"
 	mkdir -p "$OUTDIR"
 
-	files="/project/kohl_data/CAdir/data/sim/preprocessed/${dataset}/*.rds"
+	files="./data/sim/preprocessed/${dataset}/*.rds"
 
 	ntop=(2000 4000 6000)
 	# nclust=6
@@ -57,17 +54,17 @@ for dataset in "${datasets[@]}"; do
 			###########
 			# CAbiNet #
 			###########
-			# source ./submit_scripts/CAbiNet.sh
+			source ./submit_scripts/CAbiNet.sh
 
 			##########
 			# Seurat #
 			##########
-			# source ./submit_scripts/Seurat.sh
+			source ./submit_scripts/Seurat.sh
 
 			############
 			# Monocle3 #
 			############
-			# source ./submit_scripts/Monocle3.sh
+			source ./submit_scripts/Monocle3.sh
 
 			###########
 			# CAdir   #
@@ -77,22 +74,22 @@ for dataset in "${datasets[@]}"; do
 			############
 			# kmeans   #
 			############
-			# source ./submit_scripts/kmeans.sh
+			source ./submit_scripts/kmeans.sh
 
 			############
 			# RaceID   #
 			############
-			# source ./submit_scripts/RaceID.sh
+			source ./submit_scripts/RaceID.sh
 
 			########
 			# SC3  #
 			########
-			# source ./submit_scripts/SC3.sh
+			source ./submit_scripts/SC3.sh
 
 			##########
 			# SIMLR  #
 			##########
-			# source ./submit_scripts/SIMLR.sh
+			source ./submit_scripts/SIMLR.sh
 
 			if [ "$test_run" = true ]; then
 				break 3

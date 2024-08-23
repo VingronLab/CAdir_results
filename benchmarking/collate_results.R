@@ -71,5 +71,5 @@ saveRDS(df_eval, paste0(outdir, "/", opt$name, ".rds"))
 # Example usage:
 
 # Rscript-4.2.1 collate_results.R --name "pbmc3k_splatter_sim_results" \
-#                             --indir "/project/kohl_data/CAdir/benchmarking/results/simulated/out/pbmc3k/" \
-#                             --outdir "/project/kohl_data/CAdir/benchmarking/results/simulated/collated_results/"
+#                             --indir "./results/benchmarking/results/simulated/out/pbmc3k/" \
+#                             --outdir "./results/benchmarking/results/simulated/collated_results/"

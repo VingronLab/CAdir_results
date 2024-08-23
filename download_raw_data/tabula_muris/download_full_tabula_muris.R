@@ -6,7 +6,7 @@ sce <- sce[, !is.na(sce$cell_ontology_class)]
 sce <- sce[, !is.na(sce$tissue)]
 
 
-outdir <- "/project/kohl_analysis/analysis/CAdir/results/data/real/raw/"
+outdir <- "./data/real/raw/"
 # outdir <- "../../data/raw/"
 
 dir.create(path = outdir, recursive = TRUE)

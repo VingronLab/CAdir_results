@@ -7,14 +7,14 @@
 #########################################################################################################
 
 
-cd /project/kohl_analysis/analysis/CAdir/benchmarking/ || exit
+cd ./benchmarking/ || exit
 
 # date=$(date '+%Y%m%d')
 date="20240822"
 
-scripts_path="/project/kohl_analysis/analysis/CAdir/benchmarking/algorithms"
+scripts_path="./benchmarking/algorithms"
 
-outdir="/project/kohl_data/CAdir/benchmarking/results/scalability/${date}"
+outdir="./results/benchmarking/results/scalability/${date}"
 
 logdir="${outdir}/log/${dataset}"
 here_dir="${outdir}/sh/${dataset}"
@@ -29,7 +29,7 @@ mkdir -p $OUTDIR
 
 ###########3
 
-indir='/project/kohl_data/CAdir/data/sim/preprocessed/scalability/'
+indir="./data/sim/preprocessed/scalability/"
 datasets=$(ls -d ${indir}/*)
 
 for dataset in ${datasets[@]}; do

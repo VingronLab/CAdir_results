@@ -10,12 +10,12 @@ MEMORY=50G
 MINUTES=120
 TMPDIR=10G
 
-datadir="/project/kohl_analysis/analysis/CAdir/results/data/sim"
+datadir="./data/sim"
 indir="${datadir}/raw"
 outdir="${datadir}/preprocessed"
 logdir=${outdir}/log
 
-SCRIPT="./data_preprocessing_splatter.R"
+SCRIPT="./preprocessing/data_preprocessing_splatter.R"
 
 mkdir -p $outdir
 mkdir -p $logdir

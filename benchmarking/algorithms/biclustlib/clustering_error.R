@@ -1,6 +1,6 @@
 library(reticulate)
 
-source_python("./algorithms/biclustlib/subspace.py")
+source_python("./benchmarking/algorithms/biclustlib/subspace.py")
 
 
 bic2list <- function(biclusters){

@@ -1,7 +1,7 @@
 library(SingleCellExperiment)
 library(zellkonverter)
 
-sce <- readH5AD("../../discussed_data/raw/brain_organoids_adata_merged_RAW.h5ad")
+sce <- readH5AD("./data/real/raw/brain_organoids_adata_merged_RAW.h5ad")
 
 names(assays(sce)) <- "counts"
 colnames(sce) <- sce$cell_id
@@ -13,4 +13,4 @@ sce <- sce[, which(sce$protocol == "Triple-i")]
 sce <- sce[, which(sce$cell_type != "doublet" & sce$cell_type != "Unknown")]
 
 # save
-saveRDS(sce, file.path("../../discussed_data/raw/brain_organoids_RAW.rds"))
+saveRDS(sce, file.path("./data/real/raw/brain_organoids_RAW.rds"))

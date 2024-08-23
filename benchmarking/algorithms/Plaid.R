@@ -1,8 +1,7 @@
 
-source("./setup.R")
+source("./benchmarking/setup.R")
 
 algorithm <- "Plaid"
-
 
 ## PLAID
 cat("\nStarting PLAID\n")

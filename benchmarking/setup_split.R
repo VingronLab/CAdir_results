@@ -1,4 +1,3 @@
-renv::load("/project/kohl_analysis/analysis/CAdir")
 library(optparse)
 
 library(biclust)
@@ -10,10 +9,10 @@ library(tibble)
 
 set.seed(2358)
 
-source("./helpers/sim_eval.R")
-source("./helpers/cell_clustering_eval.R")
-source("./helpers/utils.R")
-source("./algorithms/biclustlib/clustering_error.R")
+source("./benchmarking/helpers/sim_eval.R")
+source("./benchmarking/helpers/cell_clustering_eval.R")
+source("./benchmarking/helpers/utils.R")
+source("./benchmarking/algorithms/biclustlib/clustering_error.R")
 
 # Set to false unless set to TRUE by CAbiNet
 graph_select_by_prop <- FALSE

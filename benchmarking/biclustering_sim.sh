@@ -10,15 +10,12 @@ THREADS=6
 MEMORY=4G
 MINUTES=240
 
-LD_LIBRARY_VAR=/home/kohl/.local/lib:/home/kohl/.local/bin:/home/kohl/.local/include
-GDAL_DATA_VAR=/home/kohl/.local/share/gdal
-
 dataset="pbmc3k"
 # dataset="zeisel"
 
-scripts_path="./algorithms/"
+scripts_path="./benchmarking/algorithms/"
 
-outdir="/project/kohl_data/CAdir/benchmarking/results/simulated/${date}"
+outdir="./results/benchmarking/results/simulated/${date}"
 
 logdir="${outdir}/log/${dataset}"
 here_dir="${outdir}/sh/${dataset}"
@@ -31,7 +28,7 @@ mkdir -p "$here_dir/.done/"
 OUTDIR="${outdir}/out/${dataset}"
 mkdir -p "$OUTDIR"
 
-files="/project/kohl_data/CAdir/data/sim/preprocessed/${dataset}/*.rds"
+files="./data/sim/preprocessed/${dataset}/*.rds"
 
 ntop=(2000 4000 6000)
 nclust=6

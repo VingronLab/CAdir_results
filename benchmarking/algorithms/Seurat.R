@@ -1,5 +1,5 @@
 algorithm <- "Seurat"
-source("./setup_split.R")
+source("./benchmarking/setup_split.R")
 
 rownames(data_old) <- gsub("_", "-", rownames(data_old))
 
