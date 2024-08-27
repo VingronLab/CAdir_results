@@ -650,7 +650,7 @@ p
 # Runtime & Scalability
 
 ```{r}
-date = "20240822"
+date = "20240823"
 mpgGreen = "#006c66"
 mpgDarkGreen = "#005555"
 mpgDarkGrey = "#777777"
@@ -706,7 +706,7 @@ options(repr.plot.width = 10, repr.plot.height = 10)
 alph <- 0.8
 rt <- ggplot(scal_df, aes(dataset,  (total_runtime/60))) +
 geom_point(aes(group = algorithm, color = algorithm, alpha = algorithm), size = 2) +
-geom_line(aes(group = algorithm, color = algorithm, alpha = algorithm, linetype = algorithm), linewidth = 1 )+
+geom_line(aes(group = algorithm, color = algorithm, alpha = algorithm, linetype = algorithm), linewidth = 1 ) +
     scale_x_continuous(breaks = c( 1000,
                                   10000,
                                   20000,
@@ -743,11 +743,11 @@ scale_alpha_manual(values = c(
 )) +
 scale_colour_manual(values = c(
     'CAdir' = mpgOrange,
-    'CAbiNet' = mpgDarkGreen,
+    'CAbiNet' = mpgLightBlue,
     'Monocle3' = mpgDarkBlue,
     'RaceID' = mpgDarkGrey,
     # 'RaceID_auto' = alph,
-    'SC3' = mpgLightBlue,
+    'SC3' = mpgDarkGreen,
     'SIMLR' = mpgGrau,
     'Seurat' = mpgGreenLight,
     'kmeans' = mpgGreen
