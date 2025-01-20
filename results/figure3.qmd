@@ -170,11 +170,11 @@ ggplot(aes(x=algorithm,
 
 p
 
-# ggsave(plot = p,
-#        filename = file.path(imgdir, "sim_bench_max_ARI_cells.pdf"),
-#        width = 3000,
-#        height = 2000,
-#        units = "px")
+ggsave(plot = p,
+       filename = file.path(imgdir, "sim_bench_max_ARI_cells.pdf"),
+       width = 3000,
+       height = 2000,
+       units = "px")
 ```
 
 ```{r}
@@ -205,11 +205,11 @@ ggplot(aes(x=algorithm,
 
 p
 
-# ggsave(plot = p,
-#        filename = file.path(imgdir, "sim_bench_max_NMI_cells.pdf"),
-#        width = 3000,
-#        height = 2000,
-#        units = "px")
+ggsave(plot = p,
+       filename = file.path(imgdir, "sim_bench_max_NMI_cells.pdf"),
+       width = 3000,
+       height = 2000,
+       units = "px")
 ```
 
 ### Simulated data benchmarking - Average Results
@@ -259,11 +259,11 @@ ggplot(aes(x=algorithm,
 p
 
 
-# ggsave(plot = p,
-#        filename = file.path(imgdir, "sim_bench_mean_ARI_cells.pdf"),
-#        width = 2500,
-#        height = 1650,
-#        units = "px")
+ggsave(plot = p,
+       filename = file.path(imgdir, "sim_bench_mean_ARI_cells.pdf"),
+       width = 2500,
+       height = 1650,
+       units = "px")
 ```
 
 ```{r}
@@ -302,11 +302,11 @@ ggplot(aes(x=algorithm,
 p
 
 
-# ggsave(plot = p,
-#        filename = file.path(imgdir, "sim_bench_mean_NMI_cells.pdf"),
-#        width = 2500,
-#        height = 1650,
-#        units = "px")
+ggsave(plot = p,
+       filename = file.path(imgdir, "sim_bench_mean_NMI_cells.pdf"),
+       width = 2500,
+       height = 1650,
+       units = "px")
 ```
 
 ## Experimental Data
@@ -533,11 +533,11 @@ p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
 
 p
 
-# ggsave(plot = p,
-#        filename = file.path(imgdir, "real_bench_max_ARI_cells.pdf"),
-#         width = 2000,
-#         height = 1750,
-#        units = "px")
+ggsave(plot = p,
+       filename = file.path(imgdir, "real_bench_max_ARI_cells.pdf"),
+        width = 2000,
+        height = 1750,
+       units = "px")
 ```
 
 ## Calculate % successful runs
@@ -643,9 +643,9 @@ p <- stats %>%
   xlab("Dataset") +
   ylab("Algorithm")
 
-# ggsave(plot = p,
-#        filename = file.path(imgdir, "barplots_fraction_successful_runs_ARI_wide.pdf"),
-#        width = 8, height = 4.2)
+ggsave(plot = p,
+       filename = file.path(imgdir, "barplots_fraction_successful_runs_ARI_wide.pdf"),
+       width = 8, height = 4.2)
 p
 ```
 
@@ -770,13 +770,13 @@ theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust=1))
 
 rt
 
-# ggsave(
-#   plot = rt,
-#   filename = file.path(imgdir, "runtime_singleproc.pdf"),
-#   width = 2200,
-#   height = 1800,
-#   units = "px"
-# )
+ggsave(
+  plot = rt,
+  filename = file.path(imgdir, "runtime_singleproc.pdf"),
+  width = 2200,
+  height = 1800,
+  units = "px"
+)
 ```
 
 # Detection of cluster number
@@ -840,13 +840,13 @@ devp_single <- res %>%
 
 devp_single
 
-# ggsave(
-#   filename = file.path(imgdir, "deviation_aplq-09999_detection.pdf"),
-#   plot = devp_single,
-#   width = 2200,
-#   height = 1800,
-#   units = "px"
-# )
+ggsave(
+  filename = file.path(imgdir, "deviation_aplq-09999_detection.pdf"),
+  plot = devp_single,
+  width = 2200,
+  height = 1800,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -866,13 +866,13 @@ devp <- res %>%
 
 devp
 
-# ggsave(
-#   filename = file.path(imgdir, "deviation_detection.pdf"),
-#   plot = devp,
-#   width = 3000,
-#   height = 2400,
-#   units = "px"
-# )
+ggsave(
+  filename = file.path(imgdir, "deviation_detection.pdf"),
+  plot = devp,
+  width = 3000,
+  height = 2400,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -890,13 +890,13 @@ log2fc <- res %>%
 
 log2fc
 
-# ggsave(
-#   filename = file.path(imgdir, "log2fc_ct_detection.pdf"),
-#   plot = log2fc,
-#   width = 2800,
-#   height = 1800,
-#   units = "px"
-# )
+ggsave(
+  filename = file.path(imgdir, "log2fc_ct_detection.pdf"),
+  plot = log2fc,
+  width = 2800,
+  height = 1800,
+  units = "px"
+)
 ```
 
 ## Comparison 30 clusters
@@ -959,13 +959,13 @@ p3 <- plotUMAP(sce_sub, colour_by = "cell_ontology_class") +
 comb_umap <- p1+p2+p3
 comb_umap
 
-# ggsave(
-#   filename = file.path(imgdir, "tabula_muris_30_clusters.png"),
-#   plot = comb_umap,
-#   width = 11500,
-#   height = 4000,
-#   units = "px"
-# )
+ggsave(
+  filename = file.path(imgdir, "tabula_muris_30_clusters.png"),
+  plot = comb_umap,
+  width = 11500,
+  height = 4000,
+  units = "px"
+)
 ```
 
 # Environment
