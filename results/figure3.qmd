@@ -1,5 +1,5 @@
 ---
-title: Figure 2
+title: Figure 3
 jupyter:
   jupytext:
     formats: 'ipynb,qmd:quarto'
@@ -44,7 +44,7 @@ suppressPackageStartupMessages({
 })
 
 dir <- "/project/kohl_analysis/analysis/CAdir/results/results/"
-imgdir <- file.path(dir, "img/figure2/")
+imgdir <- file.path(dir, "img/figure3/")
 dir.create(imgdir, recursive = TRUE)
 
 options(repr.plot.width = 20, repr.plot.height = 15)

@@ -1,5 +1,5 @@
 ---
-title: Figure 3
+title: Figure 4
 jupyter:
   jupytext:
     formats: 'ipynb,qmd:quarto'
@@ -30,7 +30,7 @@ suppressPackageStartupMessages({
 })
 
 dir <- "/project/kohl_analysis/analysis/CAdir/results/results/"
-imgdir <- file.path(dir, "img/figure3/")
+imgdir <- file.path(dir, "img/figure4/")
 
 setwd(dir)
 dir.create(imgdir, recursive = TRUE)
