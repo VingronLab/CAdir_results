@@ -1,5 +1,5 @@
 ---
-title: Figure 3
+title: Figure 2
 jupyter:
   jupytext:
     formats: 'ipynb,qmd:quarto'
@@ -17,958 +17,592 @@ jupyter:
 # Setup
 
 ```{r}
+setwd("/project/kohl_analysis/analysis/CAdir/results/results/")
 renv::load("/project/kohl_analysis/analysis/CAdir")
 devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
+source("./utils.R")
 
 suppressPackageStartupMessages({
-  library(scater)
+  library(APL)
+  library(SingleCellExperiment)
   library(dplyr)
   library(tidyr)
-  library(readr)
-  library(ggplot2)
-  library(ggthemes)
+
+  # To load the data set
+  library(TENxPBMCData)
+  library(Seurat)
+  library(SeuratObject)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  # Plotting
+  library(ggsankey)
+  # devtools::install_github("teunbrand/gguidance")
+  library(gguidance)
+  library(patchwork)
 })
 
 dir <- "/project/kohl_analysis/analysis/CAdir/results/results/"
-imgdir <- file.path(dir, "img/figure3/")
-
-setwd(dir)
+imgdir <- file.path(dir, "img/figure2/")
 dir.create(imgdir, recursive = TRUE)
 
 options(repr.plot.width = 20, repr.plot.height = 15)
 ```
 
-# Cell clustering benchmarking
+## Load data
 
 ```{r}
-# date <- "20240812"
-date <- "20250116"
-base_dir <- file.path("/project/kohl_data/CAdir/benchmarking/results/simulated", date)
-indir = file.path(base_dir, "eval")
+sce <- sce_pbmc3k()
 ```
 
-## simulated data
-Benchmarking results based on Zeisel Brain data:
+# CAdir
 
 ```{r}
-zeisel_eval <- readRDS(
-  file.path(indir,
-  paste0(date, "_zeisel_collated.rds")
-  ))
+set.seed(1234)
 
-dfz <- zeisel_eval %>%
-    mutate(dataset = "zeisel") %>%
-    mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep="_")) %>%
-    mutate(simulation = factor(simulation, levels = c('0.02_0.75_0.75',
-                                                      '0.06_0.75_0.75',
-                                                      '0.1_0.75_0.75',
-                                                      '0.02_1.5_1.5',
-                                                      '0.06_1.5_1.5',
-                                                      '0.1_1.5_1.5')))
+sce_bu <- sce
+sce.dec <- scran::modelGeneVar(sce)
+sce.top <- scran::getTopHVGs(sce.dec, prop = 0.2, var.threshold = NULL)
+sce <- sce[sce.top, ]
+sce <- runUMAP(sce, ntop = 2000)
 
-table(zeisel_eval$algorithm,
-      paste(zeisel_eval$dePROB, zeisel_eval$defacLOC, zeisel_eval$defacSCALE, sep="_"))
+ca <- cacomp(
+    obj = as.matrix(logcounts(sce)),
+    princ_coords = 3,
+    dims = 30,
+    top = nrow(sce),
+    residuals = "pearson",
+    python = TRUE,
+    clip = TRUE
+)
 ```
 
-Benchmarking results based on PBMC3k data:
+With `cutoff = NULL` CAdir tries to estimate the angle cutoff directly from the data.
+
+## Split & Merge Clustering
 
 ```{r}
-pbmc_eval <- readRDS(
-  file.path(indir,
-  paste0(date, "_pbmc3k_collated.rds")
-  ))
-
-dfp <- pbmc_eval %>%
-    mutate(dataset = "pbmc3k") %>%
-    mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep="_")) %>%
-    mutate(simulation = factor(simulation, levels = c('0.02_0.75_0.75',
-                                                      '0.06_0.75_0.75',
-                                                      '0.1_0.75_0.75',
-                                                      '0.02_1.5_1.5',
-                                                      '0.06_1.5_1.5',
-                                                      '0.1_1.5_1.5')))
-
-table(pbmc_eval$algorithm,
-      paste(pbmc_eval$dePROB, pbmc_eval$defacLOC, pbmc_eval$defacSCALE, sep="_"))
-```
-
-Combining the benchmarking resuls:
-
-```{r}
-df_all <- rbind(dfz, dfp)
-
-df_all$algorithm <- gsub("CAbiNet_igraph", "CAbiNet", df_all$algorithm)
-
-df_all$algorithm <- factor(df_all$algorithm, levels =
-                           c("CAdir",
-                             "CAdir_auto",
-                             "kmeans",
-                             "CAbiNet",
-                             "RaceID",
-                             "RaceID_auto",
-                             "Seurat",
-                             "Monocle3",
-                             "SC3",
-                             "SIMLR"))
-
-
-df <- df_all %>% group_by(simulation, algorithm, dataset) %>%
-        mutate(mean_ARI = mean(ARI, na.rm = TRUE)) %>%
-        mutate(mean_NMI = mean(NMI, na.rm = TRUE)) %>%
-        select(dataset, simulation, algorithm, mean_ARI, mean_NMI) %>%
-        distinct() %>%
-        ungroup()
-```
-
-### Simulated data benchmarking - Max Results
-
-```{r}
-df <- df_all %>%
-    group_by(simulation, algorithm, dataset) %>%
-    mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
-    mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
-    select(dataset, simulation, algorithm, max_ARI, max_NMI) %>%
-    distinct() %>%
-    ungroup()
-
-df$max_ARI[is.infinite(df$max_ARI)] <- 0
-df$max_NMI[is.infinite(df$max_NMI)] <- 0
-```
-
-```{r}
-p <- df %>%
-ggplot(aes(x=algorithm,
-           y=max_ARI)) +
-    geom_boxplot(aes(fill = algorithm),
-                 color = "#383e42",
-                 alpha = 1,
-                 outlier.alpha = 0)+
-    geom_jitter(aes(x=algorithm,
-                    y=max_ARI,
-                    color = dataset,
-                    group = dataset,
-                    shape = simulation),
-                    stroke = 1.5,
-                    size = 2,
-                    width = 0.2) +
-    labs(title = "Maximum ARI on simulated data",
-         y = "max ARI",
-         x = "algorithm") +
-    scale_shape_manual(values = seq_len(length(df$simulation))) +
-    scale_fill_mpimg(name = "mpi_extend") +
-    scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
-    theme_bw(base_size = 20) +
-    theme(
-      axis.text.x = element_text(
-      color = "black",
-      angle = 45,
-      vjust = 1,
-      hjust=1),
-      text = element_text(size = 20),
-    ) +
-    guides(fill = "none")
-
-p
-
-ggsave(plot = p,
-       filename = file.path(imgdir, "sim_bench_max_ARI_cells.pdf"),
-       width = 3000,
-       height = 2000,
-       units = "px")
-```
-
-```{r}
-p <- df %>%
-ggplot(aes(x=algorithm,
-           y=max_NMI)) +
-    geom_boxplot(aes(fill = algorithm),
-                 color = "#383e42",
-                 alpha = 1,
-                 outlier.alpha = 0)+
-    geom_jitter(aes(x=algorithm,
-                    y=max_NMI,
-                    color = dataset,
-                    group = dataset,
-                    shape = simulation),
-                    stroke =1.5,
-                    size = 2,
-                    width = 0.2) +
-    labs(title = "Maximum NMI on simulated data",
-         y = "max NMI",
-         x = "algorithm") +
-    scale_shape_manual(values = seq_len(length(df$simulation))) +
-    scale_fill_mpimg(name = "mpi_extend") +
-    scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
-    theme_bw(base_size = 18) +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
-    guides(fill = "none")
-
-p
-
-ggsave(plot = p,
-       filename = file.path(imgdir, "sim_bench_max_NMI_cells.pdf"),
-       width = 3000,
-       height = 2000,
-       units = "px")
-```
-
-### Simulated data benchmarking - Average Results
-
-```{r}
-df <- df_all %>% group_by(simulation, algorithm, dataset) %>%
-        mutate(mean_ARI = mean(ARI, na.rm = TRUE)) %>%
-        mutate(mean_NMI = mean(NMI, na.rm = TRUE)) %>%
-        select(dataset, simulation, algorithm, mean_ARI, mean_NMI) %>%
-        distinct() %>%
-        ungroup()
-```
-
-```{r}
-p <- df %>%
-ggplot(aes(x=algorithm,
-           y=mean_ARI)) +
-    geom_boxplot(aes(fill = algorithm),
-                 color = "#383e42",
-                 alpha = 1,
-                 outlier.alpha = 0)+
-    geom_jitter(aes(x=algorithm,
-                    y=mean_ARI,
-                    color = dataset,
-                    group = dataset,
-                    shape = simulation),
-                    stroke =1.5,
-                    size = 2,
-                    width = 0.2) +
-    labs(title = "Mean ARI on simulated data",
-         y = "mean ARI",
-         x = "algorithm") +
-    scale_shape_manual(values = seq_len(length(df$simulation))) +
-    scale_fill_mpimg(name = "mpi_extend") +
-    scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
-    theme_bw(base_size = 20) +
-    theme(
-      axis.text.x = element_text(
-      color = "black",
-      angle = 45,
-      vjust = 1,
-      hjust=1),
-      text = element_text(size = 20),
-    ) +
-    guides(fill = "none")
-
-p
-
-
-ggsave(plot = p,
-       filename = file.path(imgdir, "sim_bench_mean_ARI_cells.pdf"),
-       width = 2500,
-       height = 1650,
-       units = "px")
-```
-
-```{r}
-p <- df %>%
-ggplot(aes(x=algorithm,
-           y=mean_NMI)) +
-    geom_boxplot(aes(fill = algorithm),
-                 color = "#383e42",
-                 alpha = 1,
-                 outlier.alpha = 0)+
-    geom_jitter(aes(x=algorithm,
-                    y=mean_NMI,
-                    color = dataset,
-                    group = dataset,
-                    shape = simulation),
-                    stroke =1.5,
-                    size = 2,
-                    width = 0.2) +
-    labs(title = "Mean NMI on simulated data",
-         y = "mean NMI",
-         x = "algorithm") +
-    scale_shape_manual(values = seq_len(length(df$simulation))) +
-    scale_fill_mpimg(name = "mpi_extend") +
-    scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
-    theme_bw(base_size = 18) +
-    theme(
-      axis.text.x = element_text(
-      color = "black",
-      angle = 45,
-      vjust = 1,
-      hjust=1),
-      text = element_text(size = 20),
-    ) +
-    guides(fill = "none")
-
-p
-
-
-ggsave(plot = p,
-       filename = file.path(imgdir, "sim_bench_mean_NMI_cells.pdf"),
-       width = 2500,
-       height = 1650,
-       units = "px")
-```
-
-## Experimental Data
-
-```{r}
-# date <- "20240812"
-date <- "20250116"
-evldir = file.path("/project/kohl_data/CAdir/benchmarking/results/real", date, "eval")
-
-options(repr.plot.width = 15, repr.plot.height = 10)
-```
-
-```{r}
-### Load the results of real data sets
-files = list.files(evldir, '*.rds', full.names = TRUE)
-
-df = data.frame()
-for (file in files){
-
-  data = readRDS(file)
-  df = bind_rows(df, data)
-
-}
-
-df$dataset = gsub('_filtered', '', df$dataset)
-
-### Simulated data sets
-
-simdf <- df_all
-simdf$dataset = paste0(simdf$dataset, '_', simdf$simulation)
-
-commoncols = intersect(colnames(df), colnames(simdf))
-
-### Merge two data frames
-df <- rbind(df[,commoncols], simdf[, commoncols])
-```
-
-```{r}
-df$dataset[df$dataset == "FreytagGold"] = "Freytag Gold"
-df$dataset[df$dataset == 'PBMC_10X'] = "PBMC10x"
-df$dataset[df$dataset == "Tirosh_nonmaglignant"] = "Tirosh"
-df$dataset[df$dataset == "ZeiselBrain"] = "Zeisel"
-df$dataset[df$dataset == "BaronPancreas"] = "Baron Pancreas"
-df$dataset[df$dataset == "dmel_E14-16h"] = "Dmel Spatial"
-df$dataset[df$dataset == "tabula_sapiens_tissue"] = "Tabula Sapiens"
-df$dataset[df$dataset == "brain_organoids"] = "Brain Organoids"
-
-df <- df %>%
-        mutate(algorithm = gsub("CAbiNet_igraph", "CAbiNet", algorithm)) %>%
-        mutate(pattern = paste0(algorithm, dataset))
-```
-
-```{r}
-# Filter out combinations where all runs fail.
-test <- df %>%
-        group_by(dataset, algorithm) %>%
-        mutate(fail.n = sum(is.na(ARI)), scsd.n = n()) %>%
-        filter(fail.n == scsd.n | (scsd.n == 0))
-
-## pick 1 algor./dataset combinaton of failed runs
-df_na <- test %>%
-        group_by(algorithm, dataset) %>%
-        arrange(runtime) %>%
-        select(-fail.n, -scsd.n) %>%
-        top_n(n = 1, wt = runtime)
-
-run_stat = table(df$algorithm, df$dataset)
-run_stat
-```
-
-```{r}
-# Find missing runs (no values because crash/error)
-
-# Find row and column indices of cells equal to 0
-zero_indices <- which(run_stat == 0, arr.ind = TRUE)
-
-# Create a data frame with row names and column names
-zero_df <- data.frame(
-  algorithm = rownames(run_stat)[zero_indices[, 1]],
-  dataset = colnames(run_stat)[zero_indices[, 2]]
+set.seed(2358)
+cak <- dirclust_splitmerge(
+    caobj = ca,
+    k = 12,
+    cutoff = NULL,
+    method = "random",
+    apl_quant = 0.99,
+    counts = NULL,
+    min_cells = 30,
+    reps = 5,
+    make_plots = TRUE,
+    apl_cutoff_reps = 100,
+    qcutoff = 0.6 # 0.1
 )
 
-df_na = dplyr::bind_rows(df_na, zero_df)
+cak <- rank_genes(cadir = cak, caobj = ca)
+top <- top_genes(cak)
 ```
 
-```{r}
-# Filter out runs which failed
-subdf = df[!(df$pattern %in% test$pattern), ]
-subdf = subdf[!is.na(subdf$ARI),]
-subdf = rbind(subdf, df_na) # add a single instance of failed runs & missing runs.
-
-subdf$algorithm = factor(subdf$algorithm, levels = c(
-    "CAdir",
-    "CAdir_auto",
-    "kmeans",
-    "CAbiNet",
-    "RaceID",
-    "RaceID_auto",
-    "Seurat",
-    "Monocle3",
-    "SC3",
-    "SIMLR"
-))
-
-df_g <- subdf %>%
-    group_by(algorithm, dataset) %>%
-    mutate(Mean_ARI = mean(ARI),
-           Max_ARI = max(ARI),
-           Median_ARI = median(ARI),
-           Mean_NMI = mean(NMI),
-           Max_NMI = max(NMI))
-
-df_g$dataset = factor(df_g$dataset, levels = c(
-    "Darmanis",
-    "Freytag Gold",
-    "PBMC10x",
-    "Tirosh",
-    "Zeisel",
-    "Baron Pancreas",
-    "Dmel Spatial",
-    "Tabula Sapiens",
-    "Brain Organoids",
-    unique(simdf$dataset)
-))
-```
+### Annotate clusters
 
 ```{r}
-df_m <- df_g %>%
-    group_by(sim, algorithm, dataset) %>%
-    mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
-    mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
-    select(dataset, sim, algorithm, max_NMI, max_ARI) %>%
-    distinct() %>%
-    ungroup()
-
-df_m$max_NMI[is.infinite(df_m$max_NMI)] <- NA
-df_m$max_ARI[is.infinite(df_m$max_ARI)] <- NA
-```
-
-```{r}
-options(repr.plot.width=10, repr.plot.height=5)
-
-# Remove simulated data sets
-df_real <- df_g %>% filter(dataset %in% c(
-    "Darmanis",
-    "Freytag Gold",
-    "PBMC10x",
-    "Tirosh",
-    "Zeisel",
-    "Baron Pancreas",
-    "Dmel Spatial",
-    "Tabula Sapiens",
-    "Brain Organoids"
-) )
-df_real$dataset = droplevels(df_real$dataset)
-df_real <- df_real %>%
-    drop_na(algorithm) %>%
-    droplevels()
-
-na_txt <- df_real[is.na(df_real$Max_ARI), ]
-na_txt$NAs <- as.character("N/A")
-```
-
-```{r}
-df_tile <- df_real %>%
-  select(algorithm, dataset, Max_ARI) %>%
-  distinct() %>%
-  group_by(dataset) %>%
-  mutate(ismax = (round(Max_ARI,2) == max(round(pick(Max_ARI),2), na.rm = TRUE))) %>%
-  mutate(is2nd = (round(Max_ARI, 2) == round(
-    sort(Max_ARI, decreasing = TRUE, na.last = NA)[2],
-    2))) %>%
-  ungroup() %>%
-  arrange(desc(ismax))
-
-df_tile$ismax[is.na(df_tile$ismax)] <- FALSE
-df_tile$is2nd[is.na(df_tile$is2nd)] <- FALSE
-```
-
-```{r}
-p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
-  geom_tile() +
-  geom_tile(data = df_tile[df_tile$ismax, ],
-    aes(x = algorithm, y = dataset),
-    fill = NA,
-    color = "#d44a3d",
-    linewidth = 1) +
-  # geom_tile(data = df_tile[df_tile$is2nd & !df_tile$ismax, ],
-  #   aes(x = algorithm, y = dataset),
-  #   fill = NA,
-  #   color = "#8c5fa8",
-  #   size = 1) +
-  geom_text(
-    aes(label = round(Max_ARI, 2)),
-    color = "white",
-    size = 3,
-    check_overlap = T,
-  ) +
-  geom_text(
-    data = na_txt,
-    aes(x = algorithm, y = dataset, label = NAs),
-    color = "white",
-    size = 3,
-    check_overlap = T
-  ) +
-  scale_fill_gradientn(
-    colours = c("#29485d", "#006c66", "#c6d325", "#ef7c00"),
-    limits = c(0, 1),
-    na.value="#777777",
-    name = "Max ARI"
-  ) + 
-  scale_color_manual(values = c("transparent", "red")) +
-  coord_fixed() +
-  theme_minimal() +
-  theme(panel.border = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.background = element_blank(),
-    axis.text.y = element_text(color = "black"),
-    axis.text.x = element_text(angle = 30, hjust = 1, color = "black"),
-    text = element_text(size = 16),
-    plot.title = element_text(size = 16, face = "plain")) +
-  labs(x = 'Dataset', y = 'Algorithm', title = "Maximum ARI on experimental data")
-
-p
-
-ggsave(plot = p,
-       filename = file.path(imgdir, "real_bench_max_ARI_cells.pdf"),
-        width = 2000,
-        height = 1750,
-       units = "px")
-```
-
-## Calculate % successful runs
-
-```{r}
-n_param <- 108
-
-stats <- df %>%
-group_by(algorithm, dataset) %>%
-mutate(n_runs = n(),
-       NA_ARI = sum(is.na(ARI)),
-       NA_NMI = sum(is.na(NMI))) %>%
-mutate(perc_ARI_succ = round((n_runs - NA_ARI) / n_param, 2),
-       perc_NMI_succ = round((n_runs - NA_NMI) / n_param, 2),
-       perc_ARI_NA = round(NA_ARI / n_param, 2),
-       perc_NMI_NA = round(NA_NMI / n_param, 2),
-       perc_crash = round((n_param - n_runs) / n_param, 2)) %>%
-select(algorithm, dataset, perc_ARI_succ, perc_NMI_succ, perc_ARI_NA, perc_NMI_NA, perc_crash) %>%
-distinct()
-```
-
-```{r}
-stats$algorithm = factor(stats$algorithm, levels = c(
-    "CAdir",
-    "CAdir_auto",
-    "kmeans",
-    "CAbiNet",
-    "RaceID",
-    "RaceID_auto",
-    "Seurat",
-    "Monocle3",
-    "SC3",
-    "SIMLR"
-))
-
-stats$dataset = factor(stats$dataset, levels = c(
-  "Darmanis",
-  "Freytag Gold",
-  "PBMC10x",
-  "Tirosh",
-  "Zeisel",
-  "Baron Pancreas",
-  "Dmel Spatial",
-  "Tabula Sapiens",
-  "Brain Organoids",
-  unique(simdf$dataset)
-))
-```
-
-```{r}
-all_comb <- crossing(algorithm = stats$algorithm, dataset = stats$dataset) %>%
-    mutate(comb = paste0(algorithm, "_", dataset))
-
-comb_in_data <- stats %>%
-    mutate(comb = paste0(algorithm, "_", dataset)) %>%
-    pull(comb)
-
-not_in_data <- which(!all_comb$comb %in% comb_in_data)
-
-missing_comb <- all_comb[not_in_data, ]
-missing_comb <- missing_comb %>%
-    select(algorithm, dataset) %>%
-    mutate(perc_ARI_succ = 0,
-           perc_NMI_succ = 0,
-           perc_ARI_NA = 0,
-           perc_NMI_NA = 0,
-           perc_crash = 1)
-
-stats <- bind_rows(stats, missing_comb)
-```
-
-```{r}
-p <- stats %>%
-  distinct() %>%
-  select(-perc_NMI_succ, -perc_NMI_NA) %>%
-  pivot_longer(cols = starts_with("perc"), names_to = "stat", values_to = "perc") %>%
-  mutate(stat = factor(stat, levels = c("perc_ARI_succ", "perc_ARI_NA", "perc_crash"))) %>%
-  ggplot(aes(x = 1, y = perc, fill = stat )) +
-  geom_col(position = "fill") +
-  facet_grid(algorithm ~ dataset, as.table = FALSE, switch = "both") +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0)) +
-  theme(panel.grid = element_blank(),
-    axis.ticks = element_blank(),
-    axis.text = element_blank(),
-    strip.background = element_blank(),
-    strip.text.x = element_text(angle = 30,
-      hjust = 0.95,
-      vjust = 0.9,
-      color = "black"),
-    strip.text.y.left = element_text(angle = 0,
-      hjust = 0.95,
-      color = "black"),
-    strip.clip = "off",
-    text = element_text(size=11),
-    panel.spacing = unit(1.5, "pt"),
-    plot.title = element_text(size = 18)
-  ) +
-  scale_fill_manual(values = c("perc_ARI_succ" = "#006c66", "perc_ARI_NA" = "#ef7c00", "perc_crash" = "#d44a3d"),
-    name = "% runs",
-    labels = c("Success", "N/A", "Crashed") ) +
-  ggtitle("Fraction of successful and failed runs") +
-  xlab("Dataset") +
-  ylab("Algorithm")
-
-ggsave(plot = p,
-       filename = file.path(imgdir, "barplots_fraction_successful_runs_ARI_wide.pdf"),
-       width = 8, height = 4.2)
-p
-```
-
-# Runtime & Scalability
-
-```{r}
-date = "20240823"
-mpgGreen = "#006c66"
-mpgDarkGreen = "#005555"
-mpgDarkGrey = "#777777"
-mpgGreenLight = "#c6d325"
-mpgOrange = '#ef7c00'
-mpgGrau = "#a7a7a8" # MPG-Grau
-mpgDarkBlue = "#29485d" # MPG Dunkelblau
-mpgLightBlue = "#00b1ea" # MPG Hellblau
-
-eval_files = list.files(
-  file.path("/project/kohl_data/CAdir/benchmarking/results/scalability", date, "out"),
-  pattern = '*.csv',
-  full.names = T
+cak <- annotate_biclustering(
+    obj = cak,
+    universe = rownames(sce),
+    org = "hs"
 )
 
+cak <- rank_genes(cadir = cak, caobj = ca)
+cak
 
-scal_df = data.frame()
-for (f in eval_files){
-    df = read_csv(f, progress = FALSE, show_col_types = FALSE)
-    suppressWarnings({
-      scal_df <- dplyr::bind_rows(scal_df, df)
-  })
-}
+sce$cadir <- cak@cell_clusters
 
-scal_df$dataset = gsub('_ngene-2000', '', scal_df$dataset)
-scal_df$dataset = gsub('ncell-', '', scal_df$dataset)
-scal_df$algorithm = gsub('CAbiNet_igraph', 'CAbiNet', scal_df$algorithm)
+um1 <- plotUMAP(sce, colour = "cadir")
+um2 <- plotUMAP(sce, colour = "cell_type")
 
-scal_df$algorithm <- factor(scal_df$algorithm, levels = c(
-    "CAdir",
-    "CAdir_auto",
-    "kmeans",
-    "CAbiNet",
-    "RaceID",
-    # "RaceID_auto",
-    "Seurat",
-    "Monocle3",
-    "SC3",
-    "SIMLR"
-))
-
-scal_df$dataset = as.numeric(scal_df$dataset)
-
-scal_df <- scal_df[!is.na(scal_df$algorithm), ]
-
-scal_df$total_runtime <- scal_df$runtime + ifelse(is.na(scal_df$runtime_dimreduc), yes = 0, no = scal_df$runtime_dimreduc)
-table(scal_df$algorithm)
-```
-
-```{r}
-options(repr.plot.width = 10, repr.plot.height = 10)
-
-alph <- 0.8
-rt <- ggplot(scal_df, aes(dataset,  (total_runtime/60))) +
-geom_point(aes(group = algorithm, color = algorithm, alpha = algorithm), size = 2) +
-geom_line(aes(group = algorithm, color = algorithm, alpha = algorithm, linetype = algorithm), linewidth = 1 ) +
-    scale_x_continuous(breaks = c( 1000,
-                                  10000,
-                                  20000,
-                                  40000,
-                                  60000,
-                                  80000,
-                                  100000,
-                                  200000,
-                                  400000,
-                                  600000),
-                       labels = c( '1000',
-                                   '10000',
-                                   '20000',
-                                   '40000',
-                                    '60000',
-                                   '80000',
-                                   '1e+05',
-                                   '2e+05',
-                                   '4e+05',
-                                   '6e+05'
-                                  )) +
-labs(x = 'Number of cells', y = 'Running time (min)', title = "Runtime vs Data Set Size") +
-coord_trans(x="log10") +
-scale_alpha_manual(values = c(
-    'CAdir' = 1,
-    'CAbiNet' = alph,
-    'Monocle3' = alph,
-    'RaceID' = alph,
-    # 'RaceID_auto' = alph,
-    'SC3' = alph,
-    'SIMLR' = alph,
-    'Seurat' = alph,
-    'kmeans' = alph
-)) +
-scale_colour_manual(values = c(
-    'CAdir' = mpgOrange,
-    'CAbiNet' = mpgLightBlue,
-    'Monocle3' = mpgDarkBlue,
-    'RaceID' = mpgDarkGrey,
-    # 'RaceID_auto' = alph,
-    'SC3' = mpgDarkGreen,
-    'SIMLR' = mpgGrau,
-    'Seurat' = mpgGreenLight,
-    'kmeans' = mpgGreen
-)) +
-scale_linetype_manual(values = c(
-    'CAdir' = "solid",
-    'CAbiNet' = "solid",
-    'Monocle3' = "solid",
-    'RaceID' = "solid",
-    # 'RaceID_auto' = "solid",
-    'SC3' = "dashed",
-    'SIMLR' = "solid",
-    'Seurat' = "solid",
-    'kmeans' = "solid"
-  )) +
-theme_bw(base_size = 18) +
-theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust=1))
-
-rt
+ari <- aricode::clustComp(sce$cadir, sce$cell_type)
+p <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
+p
 
 ggsave(
-  plot = rt,
-  filename = file.path(imgdir, "runtime_singleproc.pdf"),
-  width = 2200,
+  plot = p,
+  file = file.path(imgdir, "umap.png"),
+  width = 3600,
   height = 1800,
   units = "px"
 )
 ```
 
-# Detection of cluster number
+## Association plots of clusters
 
 ```{r}
-date = "20240812"
-indir <- "/project/kohl_data/CAdir/benchmarking/results/ct_detection"
+pc_mod <- plot_clusters_custom(
+  cak,
+  ca,
+  show_genes = T,
+  label_genes = T,
+  ntop = 5,
+  axis = TRUE,
+  title_prefix = "",
+  gsub_title = "_",
+  outlier_cluster = "cluster_5",
+  text_size = 19
+)
 
-if (file.exists(file.path(indir, date, "eval", "results.csv"))) {
-  # If only a single file:
-  res <- read_csv(file.path(indir, date, "eval", "results.csv"),
-    show_col_types = FALSE,
-    progress = FALSE)
-} else {
-  # For multiple split files.
-  files <- list.files(path = file.path(indir, date, "out"), pattern = "*.csv", full.names = TRUE)
+pc_mod
+ggsave(
+  plot = pc_mod,
+  file = file.path(imgdir, "plot_clusters.pdf"),
+  width = 3400,
+  height = 2000,
+  units ="px"
+)
 
-  res <- tibble()
-  for (f in files) {
-    tmp <- read_csv(file = f, show_col_types = FALSE, progress = FALSE)
-    tmp$file <- basename(f)
-    res <- bind_rows(res, tmp)
-  }
-
-  dir.create(file.path(indir, date, "eval"), recursive = TRUE)
-  write_csv(res, file = file.path(indir, date, "eval", "results.csv"))
-
-}
+ggsave(
+  plot = pc_mod,
+  file = file.path(imgdir, "plot_clusters.png"),
+  width = 3400,
+  height = 2000,
+  units ="px"
+)
 ```
 
-```{r}
-res <- res %>%
-  mutate(diff_abs = cts_found-nr_cts) %>%
-  mutate(diff_perc = cts_found/nr_cts) %>%
-  mutate(log2fc = log2(cts_found/nr_cts)) %>%
-  mutate(apl_q = as.factor(apl_q)) %>%
-  mutate(k = as.factor(k))
-
-res <- res %>%
-  group_by(nr_cts, k, apl_q) %>%
-  mutate(diff_mean = mean(diff_abs)) %>%
-  mutate(diff_sd = sd(diff_abs)) %>%
-  mutate(log2fc_mean = mean(log2fc)) %>%
-  mutate(log2fc_sd = sd(log2fc)) %>%
-  ungroup()
-```
+### Identify outlier genes & cells
 
 ```{r}
-devp_single <- res %>% 
-  filter(apl_q == 0.9999) %>%
-  ggplot(aes(x = nr_cts, y = diff_mean, color = apl_q)) +
-  facet_wrap(~k, labeller = label_both) +
-  geom_point() +
-  geom_errorbar(aes(ymin=diff_mean-diff_sd, ymax=diff_mean+diff_sd)) +
-  geom_line() +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(x = "# clusters", y = "deviation", title = "Detected clusters") +
+cak <- rank_genes(cak, ca)
+rnks <- cak@gene_ranks$cluster_5
+sce$cadir_mod <- gsub("_", " ", sce$cadir)
+lvls <- gsub("_", " ", rownames(cak@directions))
+sce$cadir_mod <- factor(sce$cadir_mod, levels = lvls)
+p_expr <- scater::plotExpression(sce, features = head(rnks$Rowname, 4), x = "cadir_mod", colour_by = "cadir_mod", ncol = 2) +
   scale_color_mpimg() +
+  labs(x = "Cluster", title = "Top 4 genes cluster 5") +
   theme_bw(base_size = 18) +
-  theme(legend.position = "none")
+  theme(
+  axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
+  legend.position = "none"
+ )
 
-devp_single
+p_expr
 
 ggsave(
-  filename = file.path(imgdir, "deviation_aplq-09999_detection.pdf"),
-  plot = devp_single,
+  plot = p_expr,
+  file = file.path(imgdir, "cluster_5_top_genes.pdf"),
   width = 2200,
-  height = 1800,
+  height = 2000,
   units = "px"
 )
 ```
 
+#### Correct outliers
+
 ```{r}
-devp <- res %>% 
-  ggplot(aes(x = nr_cts, y = diff_mean, color = apl_q)) +
-  facet_wrap(~k, labeller = label_both) +
-  geom_point() +
-  geom_errorbar(aes(ymin=diff_mean-diff_sd, ymax=diff_mean+diff_sd)) +
-  geom_line() +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(x = "# clusters", y = "deviation", title = "Detected clusters") +
-  scale_color_mpimg() +
-  theme_bw(base_size = 22) +
-  theme(legend.position = "bottom",
-        plot.title = element_text(size = 28)
+cell_rnk <- get_top_cells(cadir = cak, caobj = ca, cluster = "cluster_5")
+top_cells <- cell_rnk$Colname[cell_rnk$Score >= 0]
+head(cell_rnk)
+
+rnks <- cak@gene_ranks$cluster_5
+top_genes <- unique(rnks$Rowname[rnks$Score >= 0])
+```
+
+Cells that are strongly associated to the cluster:
+
+```{r}
+p_cl5_cells <- cluster_apl(
+  ca,
+  cak,
+  cluster = "cluster_5",
+  direction = cak@directions["cluster_5", ],
+  group = which(cak@cell_clusters == "cluster_5"),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = FALSE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 5
+  ) +
+ggrepel::geom_label_repel(
+    data = cell_rnk[cell_rnk$Score >= 0,],
+  ggplot2::aes(
+    x = x,
+    y = y,
+    label = Colname
+  ),
+  color = "#c6d325",
+  box.padding = 1,
+  max.overlaps = Inf
+)
+
+p_cl5_cells
+ggsave(
+  plot = p_cl5_cells,
+  file = file.path(imgdir, "cluster_5_cells.pdf"),
+  width = 1600,
+  height = 1600,
+  units = "px"
+)
+```
+
+Remove outliers:
+
+```{r}
+sce_corr <- sce[(!rownames(sce) %in% top_genes), (!colnames(sce) %in% top_cells)]
+
+ca_corr <- cacomp(
+    obj = as.matrix(logcounts(sce_corr)),
+    princ_coords = 3,
+    dims = 30,
+    top = nrow(sce_corr),
+    residuals = "pearson",
+    python = TRUE,
+    clip = TRUE
+)
+
+set.seed(2358)
+cak_corr <- dirclust_splitmerge(
+    caobj = ca_corr,
+    k = 12,
+    cutoff = NULL,
+    method = "random",
+    apl_quant = 0.99,
+    counts = NULL,
+    min_cells = 30,
+    reps = 5,
+    make_plots = FALSE,
+    apl_cutoff_reps = 100,
+    qcutoff = 0.6
+)
+
+cak_corr <- annotate_biclustering(
+    obj = cak_corr,
+    universe = rownames(sce_corr),
+    org = "hs"
+)
+
+sce_corr$cadir_corr <- cak_corr@cell_clusters
+
+cak_corr <- rank_genes(cadir = cak_corr, caobj = ca_corr)
+
+pc_corr <- plot_clusters(
+  cak_corr,
+  ca_corr,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  axis = TRUE,
+  ggncol = 2,
+  ggnrow = 3,
+  title_prefix = "",
+  gsub_title = "_",
+  text_size = 19,
+  return_list = TRUE,
+  legend_pos = "right"
+)
+pc_corr <- wrap_plots(pc_corr, ncol = 2, nrow = 3) +
+  guide_area() +
+  plot_layout(guides = "collect")
+
+cak_corr
+pc_corr
+
+ggsave(
+  plot = pc_corr,
+  file = file.path(imgdir, "apl_clusters_corrected.pdf"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 2500,
+  units = "px"
+)
+```
+
+Sankey plot showing to which clusters the remaining cells from cluster 5 are being clustered.
+
+```{r}
+sce_corr$cadir2 <- cak_corr@cell_clusters
+sce_sank <- sce_corr[,sce_corr$cadir == "cluster_5"]
+cadir_cls <- unique(as.character(sce_sank$cadir))
+
+data <- colData(sce_sank) %>%
+        as.data.frame() %>%
+        rename('First' = "cadir",
+               'Second' = "cadir2")
+
+df <- data %>%
+    make_long(First, Second)
+
+info  <-  data.frame(Biclusters = as.factor(data$First),
+                     Truth = as.character(data$Second)) %>%
+                as_tibble() %>%
+                group_by(Biclusters, Truth) %>%
+                summarise(n = n()) %>%
+                group_by(Truth) %>%
+                mutate(Partition = n/sum(n)) %>%
+                ungroup() %>%
+                as.data.frame() %>%
+                group_by(Truth) %>%
+                filter(Partition == max(Partition) ) %>%
+                dplyr::select(Biclusters, Truth) %>%
+                distinct(Biclusters, .keep_all = TRUE)
+
+
+pal <- mpimg_pal()
+
+cols <- pal(length(cadir_cls))
+names(cols) <- cadir_cls
+
+info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
+info$col <- pal(nrow(info) + 1)[2:(nrow(info)+1)]
+
+cols <- c(cols, info$col)
+
+names(cols) <- c(as.character(cadir_cls), info$Truth)
+
+
+order <- c(
+  "cluster_5",
+  "Naive_CD4+_T_cell",
+  "Natural_killer_cell",
+  "Megakaryocyte",
+  "B_cell"
+)
+
+df$node <- gsub("_", " ", df$node)
+df$next_node <- gsub("_", " ", df$next_node)
+names(cols) <- gsub("_", " ", names(cols))
+order <- gsub("_", " ", order)
+
+
+wrap <- 17
+df$node <- factor(stringr::str_wrap(df$node, wrap), levels = stringr::str_wrap(order, wrap))
+df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::str_wrap(order, wrap))
+
+names(cols) <- stringr::str_wrap(names(cols), wrap)
+
+
+sank <- ggplot(df, aes(x = x,
+               next_x = next_x,
+               node = node,
+               next_node = next_node,
+               fill = node,
+               label = as.character(node))) +
+  geom_sankey(flow.alpha = 0.6, flow.fill = c("#777777") ) +
+  geom_sankey_label(size = 6) +
+  labs(x = "") +
+  scale_fill_manual(values = cols) +
+  theme_sankey(base_size = 26) +
+  theme(
+    legend.position = "none"
   )
 
-devp
+sank
+
+ggsave(plot = sank,
+       filename = file.path(imgdir, "sankey_plot_cluster_5.pdf"),
+  device = cairo_pdf,
+       width = 2700,
+       height = 2000,
+       units = "px")
+```
+
+### Platelet cells
+
+```{r}
+cak_corr_mod <- cak_corr
+
+goa_res <- CAbiNet::per_cluster_goa(
+  cabic = cak_corr_mod,
+  universe = rownames(sce_corr),
+  set = "CellMarker",
+  org = "hs",
+  min_size = 10,
+  max_size = 500
+)
+head(goa_res$Megakaryocyte)
+```
+
+Top 5 most highly significant gene sets for cluster "Megakaryocyte":
+
+```{r}
+cl_goa <- goa_res$Megakaryocyte
+
+ggplot(cl_goa[1:5, ], aes(x = gene_set, y = -log10(padj), fill = -log10(padj))) +
+  geom_col() +
+  scale_fill_gradientn(
+    colours = c("#29485d", "#006c66", "#c6d325", "#ef7c00"),
+  ) + 
+  theme_bw()
+```
+
+Gene Set enrichment over all corrected clusters:
+
+```{r}
+nclust <- length(goa_res)
+
+goa_mat <- lapply(goa_res, function(x, nc = nclust) {
+  subs <- min(nrow(x), nc)
+  x[seq_len(subs), ]
+})
+
+goa_mat <- dplyr::bind_rows(goa_mat, .id = "cluster")
+
+gr <- goa_mat[,c("cluster", "gene_set", "padj")]
+gr <- complete(gr, cluster, gene_set, fill = list(padj = 1))
+gr$gene_set <- gsub("_", " ", gr$gene_set)
+gr$cluster <- gsub("_", " ", gr$cluster)
+
+p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
+  geom_tile() +
+  scale_fill_gradientn(
+    colours = c("#29485d", "#006c66", "#c6d325", "#ef7c00"),
+    limits = c(0, 30),
+    # limits = c(0, quantile(-log10(gr$padj), 0.99)),
+    oob = scales::squish,
+    guide = "colourbar_custom"
+  ) + 
+  coord_fixed() +
+  theme_bw() +
+  labs(x = "Cluster", y = "Gene Set", title = "Gene Set enrichment") +
+  theme(
+  axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
+  axis.text.y = element_text(color = "black"),
+    text = element_text(size = 18),
+    plot.title = element_text(size = 16, face = "plain"))  #"bold"
+
+p_gs_enr
 
 ggsave(
-  filename = file.path(imgdir, "deviation_detection.pdf"),
-  plot = devp,
+  plot = p_gs_enr,
+  file = file.path(imgdir, "gene_set_enr_hm.pdf"),
+  width = 2000,
+  height = 3000,
+  units = "px"
+)
+```
+
+## Split & Merge plot
+
+```{r}
+sm <- sm_plot(
+  cadir = cak,
+  caobj = ca,
+  rm_redund = TRUE,
+  keep_end = TRUE,
+  highlight_cluster = TRUE,
+  show_genes = F,
+  annotate_clusters = TRUE,
+  org = "hs"
+)
+sm
+
+ggsave(plot = sm,
+  file = file.path(imgdir, "split_merge_plot.pdf"),
   width = 3000,
-  height = 2400,
-  units = "px"
-)
-```
-
-```{r}
-log2fc <- res %>% 
-  # filter(apl_q == 0.9999) %>%
-  ggplot(aes(x = nr_cts, y = log2fc_mean, color = apl_q)) +
-  facet_wrap(~k) +
-  geom_point() +
-  geom_line() +
-  geom_errorbar(aes(ymin=log2fc_mean-log2fc_sd, ymax=log2fc_mean+log2fc_sd)) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(x = "# clusters", y = "log2 FC", title = "Detected clusters") +
-  scale_color_mpimg() +
-  theme_bw(base_size = 18)
-
-log2fc
-
-ggsave(
-  filename = file.path(imgdir, "log2fc_ct_detection.pdf"),
-  plot = log2fc,
-  width = 2800,
   height = 1800,
-  units = "px"
-)
+  units = "px")
 ```
 
-## Comparison 30 clusters
+## Annotation - Sankey
 
 ```{r}
-source("./cluster_tabula_muris.R")
+library(ggsankey)
+sce_sank <- sce_corr
 
-large_palette <- c(
-                   "#4bcb99",
-                   "#cc3d98",
-                   "#3ca836",
-                   "#8d69e1",
-                   "#8dbf38",
-                   "#9c48b3",
-                   "#5dd06b",
-                   "#e173d6",
-                   "#6ea23f",
-                   "#5967c8",
-                   "#bcaf39",
-                   "#b68ed9",
-                   "#3e7a2f",
-                   "#db4670",
-                   "#64b06f",
-                   "#d4443c",
-                   "#4ab4dd",
-                   "#c55a25",
-                   "#5f80c1",
-                   "#dc9737",
-                   "#994f88",
-                   "#7f882f",
-                   "#de84a8",
-                   "#33815a",
-                   "#a34852",
-                   "#52bbac",
-                   "#e18d6d",
-                   "#606727",
-                   "#afb16c",
-                   "#9b7035"
+data <- colData(sce_sank) %>%
+        as.data.frame() %>%
+        rename('CAdir' = "cadir_corr",
+               'Annotation' = "cell_type")
+
+df <- data %>%
+    make_long(CAdir, Annotation)
+
+info  <-  data.frame(Biclusters = as.factor(data$CAdir),
+                     Truth = as.character(data$Annotation)) %>%
+                as_tibble() %>%
+                group_by(Biclusters, Truth) %>%
+                summarise(n = n()) %>%
+                group_by(Truth) %>%
+                mutate(Partition = n/sum(n)) %>%
+                ungroup() %>%
+                as.data.frame() %>%
+                group_by(Truth) %>%
+                filter(Partition == max(Partition) ) %>%
+                dplyr::select(Biclusters, Truth) %>%
+                distinct(Biclusters, .keep_all = TRUE)
+
+
+pal <- mpi_extend_pal()
+
+cols <- pal(length(unique(sce_sank$cadir)))
+names(cols) <- unique(sce_sank$cadir)
+
+info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
+
+cols <- c(cols, info$col)
+
+names(cols) <- c(as.character(unique(sce_sank$cadir)), info$Truth)
+
+order <- c(
+  "Naive_CD4+_T_cell",
+  "Natural_killer_cell",
+  "B_cell",
+  "Monocyte",
+  "Megakaryocyte",
+
+  "0 - Naive CD4 T",
+  "2 - Memory CD4 T",
+  "4 - CD8 T",
+  "6 - NK",
+  "3 - B",
+  "1 - CD14+ Mono",
+  "5 - FCGR3A+ Mono",
+  "7 - DC",
+  "8 - Platelet"
 )
 
-p1 <- plotUMAP(sce_sub, colour_by = "cadir") +
-  scale_color_manual(values = large_palette) +
-  ggtitle("CAdir") +
-  theme_bw(base_size = 18) +
-  theme(legend.position = "bottom") +
-  theme(legend.title = element_blank())
-p2 <- plotUMAP(sce_sub, colour_by = "tissue") +
-  scale_color_manual(values = large_palette) +
-  ggtitle("Tissue") +
-  theme_bw(base_size = 18) +
-  theme(legend.position = "bottom") +
-  theme(legend.title = element_blank())
-p3 <- plotUMAP(sce_sub, colour_by = "cell_ontology_class") +
-  scale_color_manual(values = large_palette) + 
-  ggtitle("Cell Type") +
-  theme_bw(base_size = 18) +
-  theme(legend.position = "bottom") +
-  theme(legend.title = element_blank())
+df$node <- gsub("_", " ", df$node)
+df$next_node <- gsub("_", " ", df$next_node)
+names(cols) <- gsub("_", " ", names(cols))
+order <- gsub("_", " ", order)
 
-comb_umap <- p1+p2+p3
-comb_umap
+wrap <- 17
+df$node <- factor(stringr::str_wrap(df$node, wrap), levels = stringr::str_wrap(order, wrap))
+df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::str_wrap(order, wrap))
 
-ggsave(
-  filename = file.path(imgdir, "tabula_muris_30_clusters.png"),
-  plot = comb_umap,
-  width = 11500,
-  height = 4000,
-  units = "px"
-)
+names(cols) <- stringr::str_wrap(names(cols), wrap)
+
+sank <- ggplot(df, aes(x = x,
+               next_x = next_x,
+               node = node,
+               next_node = next_node,
+               fill = node,
+               label = as.character(node))) +
+  geom_sankey(
+    flow.alpha = 0.4,
+  ) +
+  geom_sankey_label(size = 6) +
+  labs(x = "") +
+  scale_fill_manual(values = cols) +
+  theme_sankey(base_size = 26, base_family = "sans") +
+  theme(
+    legend.position = "none"
+  )
+
+sank
+
+ggsave(plot = sank,
+       filename = file.path(imgdir, "sankey_plot_corr_clustering.pdf"),
+       width = 2700,
+       height = 3200,
+       device = cairo_pdf,
+       units = "px")
+
+ggsave(plot = sank,
+       filename = file.path(imgdir, "sankey_plot_corr_clustering.png"),
+       width = 2700,
+       height = 3200,
+       units = "px")
 ```
 
-# Environment
+# sessionInfo
 
 ```{r}
 sessionInfo()
