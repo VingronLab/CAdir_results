@@ -1,10 +1,7 @@
 #!/bin/bash
-# TODO: Move to more sensible number than 108 parameter choices. Best divisible number.
-# -> 120 is a good choice.
 
 # add date to output folder
 date=$(date '+%Y%m%d')
-# date="20240322"
 
 THREADS=6
 MEMORY=4G
@@ -34,6 +31,18 @@ ntop=(2000 4000 6000)
 nclust=6
 truth='Group'
 cc=0 #set is_cell_clustering to FALSE
+sim=1 # set simulation to TRUE
+
+test_run=false
+
+if [[ $sim -eq 0 ]]; then
+	mode="real"
+elif [[ $sim -eq 1 ]]; then
+	mode="sim"
+else
+	echo "UNCLEAR IF SIM OR NOT"
+	exit 0
+fi
 
 for f in ${files[@]}; do
 

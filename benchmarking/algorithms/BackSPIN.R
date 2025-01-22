@@ -110,6 +110,10 @@ res <- CAbiNet::rm_monoclusters(res)
 
 #########
 
+if (isTRUE(is_cell_clustering)) {
+  stop("Not a cell clutering algorithm.")
+}
+
 if (isTRUE(sim)) {
   eval_res <- evaluate_sim(
     sce = data_old,
@@ -153,7 +157,10 @@ if (isTRUE(sim)) {
 }
 
 
-write_csv(eval_res, file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv")))
+write_csv(
+  eval_res,
+  file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv"))
+)
 
 
 cat("\nFinished benchmarking!\n")
@@ -167,7 +174,7 @@ cat("\nFinished benchmarking!\n")
 
 # cef.dat = cnts
 
-# # based on https://www.researchgate.net/publication/327258862_Supplementary_Informati./data/5b849c604585151fd1370297/sdata2018160-s2.pdf
+# # based on https://www.researchgate.net/publication/327258862_Supplementary_Information/data/5b849c604585151fd1370297/sdata2018160-s2.pdf
 # tmp_dir = "/scratch/local/kohl/"
 # output.cef = file.path(tmp_dir, paste0(algorithm, "_", name, '.cef'))
 # clust_res.cef = file.path(tmp_dir, paste0(algorithm, "_", name, '_clusters.cef'))

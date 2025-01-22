@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # add date to output folder
-# date=$(date '+%Y%m%d')
-date="20240812"
+date=$(date '+%Y%m%d')
 
 THREADS=6
 MEMORY=50G
@@ -28,7 +27,7 @@ for dataset in "${datasets[@]}"; do
 	if [[ " ${small_ds[*]} " =~ " $dataset " ]]; then
 		echo "$dataset is a small dataset."
 		THREADS=6
-		MEMORY=20G
+		MEMORY=30G
 		MINUTES=120
 	elif [[ " ${medium_ds[*]} " =~ " $dataset " ]]; then
 		echo "$dataset is a medium dataset."

@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # add date to output folder
-# date=$(date '+%Y%m%d')
-date="20240812"
+date=$(date '+%Y%m%d')
 
 THREADS=6
 MEMORY=15G

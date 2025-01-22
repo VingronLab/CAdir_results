@@ -29,6 +29,7 @@ cadir <- dirclust_splitmerge(
   cutoff = angle,
   method = "random",
   apl_quant = apl_quant,
+  qcutoff = qcut_param,
   counts = NULL,
   min_cells = 20,
   reps = 5,

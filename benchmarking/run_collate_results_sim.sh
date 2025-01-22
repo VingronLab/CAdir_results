@@ -4,7 +4,7 @@ THREADS=6
 MEMORY=3G
 MINUTES=500
 
-date="20240812"
+date=$(date '+%Y%m%d')
 outdir="./results/benchmarking/results/simulated/${date}/eval"
 indir="./results/benchmarking/results/simulated/${date}/out/"
 

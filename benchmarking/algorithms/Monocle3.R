@@ -1,5 +1,5 @@
 algorithm <- "Monocle3"
-source("./setup_split.R")
+source("./benchmarking/setup_split.R")
 
 
 cds <- new_cell_data_set(counts(data),

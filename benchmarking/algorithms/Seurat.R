@@ -165,7 +165,10 @@ if (isTRUE(is_cell_clustering)) {
 }
 
 eval_res <- bind_cols(eval_res, tibble::as_tibble(opt))
-write_csv(eval_res, file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv")))
+write_csv(
+  eval_res,
+  file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv"))
+)
 
 print("All done!")
 cat("\nFinished benchmarking!\n")
