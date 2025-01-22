@@ -9,8 +9,7 @@
 
 cd ./benchmarking/ || exit
 
-# date=$(date '+%Y%m%d')
-date="20240822"
+date=$(date '+%Y%m%d')
 
 scripts_path="./benchmarking/algorithms"
 
