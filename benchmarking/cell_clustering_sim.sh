@@ -4,7 +4,7 @@
 date=$(date '+%Y%m%d')
 
 THREADS=6
-MEMORY=15G
+MEMORY=30G
 MINUTES=60
 
 datasets=("zeisel" "pbmc3k")

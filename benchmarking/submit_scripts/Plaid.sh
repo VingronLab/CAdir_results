@@ -34,7 +34,6 @@ Rscript-4.2.2 $SCRIPT   \\
    --sim $sim \\
    --cell_clustering $cc \\
    --truth $truth \\
-   --nclust $nclust \\
    --rrelease $rr \\
    --crelease $cr \\
 && mv $tmp_sh $here_dir/.done/
