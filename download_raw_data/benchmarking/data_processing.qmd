@@ -30,7 +30,7 @@ set.seed(1)
 # Tirosh Data
 
 ```{r}
-data <- read.csv(file.path(datadir, "Tirosh_nonmaglignant_raw.txt", sep = '\t'))
+data <- read.csv(file.path(datadir, "Tirosh_nonmaglignant_raw.txt"), sep = '\t')
 dupid  <- which(duplicated(data[,1]))
 data[dupid, 1] <- paste0(data[dupid,1], ".1")
 
@@ -61,6 +61,7 @@ genes <- read.table(file.path(datadir, "PBMC10x/genes.read.txt"), sep = '\t')
 cells <- read.csv(file.path(datadir, "PBMC10x/meta.counts.new.txt"), sep = '\t')
 meta <- read.csv(file.path(datadir, "PBMC10x/meta.txt"), sep = '\t')
 
+mat <- as.matrix(mat)
 rownames(mat) <- genes$V1
 colnames(mat) <- cells$Name
 
@@ -77,11 +78,13 @@ data <- submat[,idx]
 genembl <- stringr::word(rownames(data), 1 ,  2, sep = '_' )
 rownames(data) <- genembl
 
-sce <- SingleCellExperiment(list(counts = data),
-colData <- meta[idx,],
-metadata <-list(study = "pbmc_10x Chromium"))
+sce <- SingleCellExperiment(
+  assays = list(counts = data)
+)
+colData(sce) <- DataFrame(meta[idx, ])
+sce$metadata = "pbmc_10x Chromium"
 
-saveRDS(sce, "./data/raw/benchmarking/PBMC_10X_raw.rds")
+saveRDS(sce, file.path(datadir, "PBMC_10X_raw.rds"))
 ```
 
 # Tabula Sapiens Endothelial Data
@@ -127,20 +130,18 @@ saveRDS(sce, file.path(datadir, "Darmanis_raw.rds"))
 # PBMC3k Data
 
 ```{r}
-sce <- TENxPBMCData(dataset = "pbmc3k")
-rownames(sce) <- rowData(sce)$Symbol_TENx
-colnames(sce) <- colData(sce)$Barcode
+sce <- TENxPBMCData::TENxPBMCData(dataset = "pbmc3k")
+rownames(sce) <- make.unique(SummarizedExperiment::rowData(sce)$Symbol_TENx)
+colnames(sce) <- SummarizedExperiment::colData(sce)$Barcode
 
-# For pre-processing we used Seurat.
-pbmc <- CreateSeuratObject(
-  counts = as.matrix(counts(sce)),
+pbmc <- SeuratObject::CreateSeuratObject(
+  counts = as.matrix(SingleCellExperiment::counts(sce)),
   assay = "RNA",
   project = "pbmc3k",
   min.cells = 3,
   min.features = 200,
-  meta.data = as.data.frame(colData(sce))
+  meta.data = as.data.frame(SingleCellExperiment::colData(sce))
 )
-
 
 pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT-")
 
