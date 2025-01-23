@@ -6,3 +6,4 @@ results/img/*/
 benchmarking/eval
 benchmarking/test
 benchmarking/algorithms/.bu
+wget-log

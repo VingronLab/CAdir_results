@@ -1,0 +1,213 @@
+---
+title: Data Processing
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.1
+    language: R
+    name: ir41
+---
+
+```{r}
+suppressPackageStartupMessages({
+  library(SingleCellExperiment)
+  library(Matrix)
+  library(dplyr)
+  library(scRNAseq)
+  library(TENxPBMCData)
+  library(Seurat)
+})
+
+datadir <- "./data/real/raw"
+set.seed(1)
+```
+
+# Tirosh Data
+
+```{r}
+data <- read.csv(file.path(datadir, "Tirosh_nonmaglignant_raw.txt", sep = '\t'))
+dupid  <- which(duplicated(data[,1]))
+data[dupid, 1] <- paste0(data[dupid,1], ".1")
+
+rownames(data) <- data[,1]
+idx <- as.character(data[3,]) %in% as.character(c(1,2,3,4,5,6))
+subdata <- data[, idx]
+subdata <- as.matrix(subdata)
+
+values <- c("T", "B", "Macro", "Endo", "CAF", "NK")
+celltypes <- values[as.factor(subdata[3,])]
+subdata <- subdata[4:nrow(subdata), ]
+
+
+sce <- SingleCellExperiment(
+  list(counts = subdata),
+  colData = DataFrame(cells = colnames(subdata), truth = celltypes),
+  metadata = list(study = "GSE72056")
+)
+
+saveRDS(sce, file.path(datadir, "Tirosh_nonmaglignant_raw.rds"))
+```
+
+# PBMC10x Data
+
+```{r}
+mat <- readMM(file.path(datadir, "PBMC10x/counts.read.txt"))
+genes <- read.table(file.path(datadir, "PBMC10x/genes.read.txt"), sep = '\t')
+cells <- read.csv(file.path(datadir, "PBMC10x/meta.counts.new.txt"), sep = '\t')
+meta <- read.csv(file.path(datadir, "PBMC10x/meta.txt"), sep = '\t')
+
+rownames(mat) <- genes$V1
+colnames(mat) <- cells$Name
+
+meta <- meta[2:nrow(meta),]
+submat <- mat[,colnames(mat) %in% meta$NAME]
+
+meta$Sample <- paste0(meta$Experiment, '_', meta$Method)
+samples <- unique(meta$Sample)
+meta$truth <- meta$CellType
+
+idx <- meta$Sample == "pbmc2_10x Chromium (v2)"
+data <- submat[,idx]
+
+genembl <- stringr::word(rownames(data), 1 ,  2, sep = '_' )
+rownames(data) <- genembl
+
+sce <- SingleCellExperiment(list(counts = data),
+colData <- meta[idx,],
+metadata <-list(study = "pbmc_10x Chromium"))
+
+saveRDS(sce, "./data/raw/benchmarking/PBMC_10X_raw.rds")
+```
+
+# Tabula Sapiens Endothelial Data
+
+```{r}
+data = readRDS(file.path(datadir, "tabula_sapiens_tissue_raw.rds"))
+data$truth <- data$tissue
+saveRDS(data, file.path(datadir, "tabula_sapiens_tissue_raw.rds"))
+```
+
+# DmelSpatial Data
+
+```{r}
+data = readRDS(file.path(datadir, "dmel_E14-16h_raw.rds"))
+colData(data)$truth = colData(data)$annotation
+saveRDS(data, file.path(datadir, "dmel_E14-16h_raw.rds"))
+```
+
+# Freytag Gold
+
+```{r}
+load(file.path(datadir, "FreytagGold_raw.RData"))
+sce$truth <- sce$Truth
+saveRDS(sce, file.path(datadir, "FreytagGold_raw.rds"))
+```
+
+# Zeisel Data
+
+```{r}
+sce <- ZeiselBrainData()
+sce$truth <- sce$level1class
+saveRDS(sce, file.path(datadir, "ZeiselBrain_raw.rds"))
+```
+
+# Darmanis Data
+
+```{r}
+sce <- DarmanisBrainData()
+sce$truth <- sce$cell.type
+saveRDS(sce, file.path(datadir, "Darmanis_raw.rds"))
+```
+
+# PBMC3k Data
+
+```{r}
+sce <- TENxPBMCData(dataset = "pbmc3k")
+rownames(sce) <- rowData(sce)$Symbol_TENx
+colnames(sce) <- colData(sce)$Barcode
+
+# For pre-processing we used Seurat.
+pbmc <- CreateSeuratObject(
+  counts = as.matrix(counts(sce)),
+  assay = "RNA",
+  project = "pbmc3k",
+  min.cells = 3,
+  min.features = 200,
+  meta.data = as.data.frame(colData(sce))
+)
+
+
+pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT-")
+
+# Filter data
+pbmc <- subset(pbmc, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5)
+no_zeros_rows <- rowSums(pbmc, slot = "counts") > 0
+pbmc <- pbmc[no_zeros_rows, ]
+
+# Normalization
+pbmc <- NormalizeData(pbmc,
+  normalization.method = "LogNormalize",
+  scale.factor = 10000,
+  verbose = FALSE
+)
+
+pbmc <- FindVariableFeatures(pbmc,
+  nfeatures = 2000,
+  verbose = FALSE
+)
+
+# Scaling
+all.genes <- rownames(pbmc)
+pbmc <- ScaleData(pbmc,
+  features = all.genes,
+  verbose = FALSE
+)
+
+# Run PCA
+pbmc <- RunPCA(pbmc,
+  features = VariableFeatures(object = pbmc),
+  verbose = FALSE
+)
+
+# Cell clustering
+pbmc <- FindNeighbors(pbmc, dims = 1:10, verbose = FALSE)
+pbmc <- FindClusters(pbmc, resolution = 0.5, verbose = FALSE)
+
+pbmc <- RunUMAP(pbmc, dims = 1:10, verbose = FALSE)
+
+new.cluster.ids <- c(
+  "naive_CD4_Tcell",
+  "CD14_monocyte",
+  "memory_CD4_Tcell",
+  "Bcell",
+  "CD8_Tcell",
+  "FCGR3A_monocyte",
+  "NKcell",
+  "DC",
+  "platelet"
+)
+
+names(new.cluster.ids) <- levels(pbmc)
+pbmc <- RenameIdents(pbmc, new.cluster.ids)
+pbmc$cell_type <- Idents(pbmc)
+
+sce <- as.SingleCellExperiment(pbmc)
+logcounts(sce) <- as.matrix(logcounts(sce))
+counts(sce) <- as.matrix(counts(sce))
+sce$truth <- sce$cell_type
+saveRDS(sce, file.path(datadir, "PBMC3k_raw.rds"))
+```
+
+# BaronPancreas Data
+
+```{r}
+sce <- BaronPancreasData(which = "human")
+saveRDS(sce, file.path(datadir, "BaronPancreas_raw.rds"))
+```
+
+
