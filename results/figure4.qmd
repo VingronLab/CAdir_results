@@ -17,10 +17,8 @@ jupyter:
 # Setup
 
 ```{r}
-renv::load("/project/kohl_analysis/analysis/CAdir")
-devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
-
 suppressPackageStartupMessages({
+  library(CAdir)
   library(scater)
   library(dplyr)
   library(tidyr)
@@ -29,7 +27,7 @@ suppressPackageStartupMessages({
   library(ggthemes)
 })
 
-dir <- "/project/kohl_analysis/analysis/CAdir/results/results/"
+dir <- "./results/"
 imgdir <- file.path(dir, "img/figure4/")
 
 setwd(dir)
@@ -41,9 +39,8 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 # Cell clustering benchmarking
 
 ```{r}
-# date <- "20240812"
 date <- "20250116"
-base_dir <- file.path("/project/kohl_data/CAdir/benchmarking/results/simulated", date)
+base_dir <- file.path("./results/benchmarking/results/simulated", date)
 indir = file.path(base_dir, "eval")
 ```
 
@@ -312,9 +309,8 @@ ggsave(plot = p,
 ## Experimental Data
 
 ```{r}
-# date <- "20240812"
 date <- "20250116"
-evldir = file.path("/project/kohl_data/CAdir/benchmarking/results/real", date, "eval")
+evldir = file.path("./results/benchmarking/results/real/", date, "eval")
 
 options(repr.plot.width = 15, repr.plot.height = 10)
 ```
@@ -663,7 +659,7 @@ mpgDarkBlue = "#29485d" # MPG Dunkelblau
 mpgLightBlue = "#00b1ea" # MPG Hellblau
 
 eval_files = list.files(
-  file.path("/project/kohl_data/CAdir/benchmarking/results/scalability", date, "out"),
+  file.path("./results/benchmarking/results/scalability", date, "out"),
   pattern = '*.csv',
   full.names = T
 )
@@ -783,7 +779,7 @@ ggsave(
 
 ```{r}
 date = "20240812"
-indir <- "/project/kohl_data/CAdir/benchmarking/results/ct_detection"
+indir <- "./results/benchmarking/results/ct_detection/"
 
 if (file.exists(file.path(indir, date, "eval", "results.csv"))) {
   # If only a single file:

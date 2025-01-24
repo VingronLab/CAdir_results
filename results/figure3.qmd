@@ -17,12 +17,11 @@ jupyter:
 # Setup
 
 ```{r}
-setwd("/project/kohl_analysis/analysis/CAdir/results/results/")
-renv::load("/project/kohl_analysis/analysis/CAdir")
-devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
+setwd("./results/")
 source("./utils.R")
 
 suppressPackageStartupMessages({
+  library(CAdir)
   library(APL)
   library(SingleCellExperiment)
   library(dplyr)
@@ -43,7 +42,7 @@ suppressPackageStartupMessages({
   library(patchwork)
 })
 
-dir <- "/project/kohl_analysis/analysis/CAdir/results/results/"
+dir <- "./results/"
 imgdir <- file.path(dir, "img/figure3/")
 dir.create(imgdir, recursive = TRUE)
 

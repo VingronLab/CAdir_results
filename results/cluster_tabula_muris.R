@@ -1,5 +1,4 @@
-renv::load("/project/kohl_analysis/analysis/CAdir/")
-devtools::load_all("~/gits/ClemensKohl/CAdir/")
+library(CAdir)
 library(APL)
 library(aricode)
 library(SingleCellExperiment)
@@ -18,7 +17,7 @@ cellpcl <- 200
 # cell types from single-cell RNA-sequencing data.
 # Genome Biology 23, 49 (2022).
 
-datadir <- "/project/kohl_analysis/analysis/CAdir/results/data/real/preprocessed"
+datadir <- "./data/real/preprocessed"
 
 sce <- readRDS(file.path(
   datadir,

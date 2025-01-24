@@ -17,12 +17,11 @@ jupyter:
 # Setup
 
 ```{r}
-setwd("/project/kohl_analysis/analysis/CAdir/results/results/")
+setwd("./results/")
 source("./utils.R")
-renv::load("/project/kohl_analysis/analysis/CAdir")
-devtools::load_all("/home/kohl/PhD/gits/ClemensKohl/CAdir")
 
 suppressPackageStartupMessages({
+  library(CAdir)
   library(APL)
   library(SingleCellExperiment)
   library(dplyr)
@@ -41,7 +40,7 @@ suppressPackageStartupMessages({
 
 options(repr.plot.width = 20, repr.plot.height = 15)
 
-dir <- "/project/kohl_analysis/analysis/CAdir/results/results/"
+dir <- "./results/"
 imgdir <- file.path(dir, "img/figure2/")
 dir.create(imgdir, recursive = TRUE)
 ```
@@ -49,7 +48,7 @@ dir.create(imgdir, recursive = TRUE)
 ## Load data
 
 ```{r}
-data_dir <- "/project/kohl_analysis/analysis/CAdir/results/data/real/discussed/"
+data_dir <- "./data/real/discussed/"
 
 marker_genes <- readr::read_csv(file.path(data_dir, "tabula_muris_marker_genes.csv"))
 sce <- readRDS(file.path(data_dir, "preprocessed/tabula_muris_preprocessed_filtered.rds"))
