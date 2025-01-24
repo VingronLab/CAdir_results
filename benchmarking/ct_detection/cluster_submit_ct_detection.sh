@@ -4,7 +4,7 @@ THREADS=12
 MEMORY=30G
 MINUTES=420
 
-date="20240812"
+date=$(date '+%Y%m%d')
 outdir="./results/benchmarking/results/ct_detection/${date}"
 logdir="${outdir}/log/"
 resdir="${outdir}/out/"
