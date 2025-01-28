@@ -1,0 +1,12 @@
+#!/bin/bash
+
+
+OUTDIR="./data/real/raw/"
+
+wget "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE189nnn/GSE189981/suppl/GSE189981%5Fd50%5Forganoids%5Fcnt%5Fmatrix%2Etxt%2Egz" -P $OUTDIR
+wget "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE189nnn/GSE189981/suppl/GSE189981%5Fd50%5Forganoids%5Fmetadata%2Etxt%2Egz" -P $OUTDIR
+
+python "./download_raw_data/brain_organoids/convert_to_h5ad.py"
+
+Rscript-4.2.1 "./download_raw_data/brain_organoids/convert_h5ad_to_sce.R"
+
