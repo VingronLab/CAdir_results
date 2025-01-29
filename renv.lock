@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.4.0",
+    "Version": "4.4.1",
     "Repositories": [
       {
         "Name": "BioCsoft",
@@ -273,22 +273,6 @@
       ],
       "Hash": "9d2e9fbd803f4eddfeb307b1ee376aad"
     },
-    "BiocStyle": {
-      "Package": "BiocStyle",
-      "Version": "2.32.0",
-      "Source": "Bioconductor",
-      "Repository": "Bioconductor 3.19",
-      "Requirements": [
-        "BiocManager",
-        "bookdown",
-        "knitr",
-        "rmarkdown",
-        "stats",
-        "utils",
-        "yaml"
-      ],
-      "Hash": "d93773e50f3776f134734d8320bec61f"
-    },
     "BiocVersion": {
       "Package": "BiocVersion",
       "Version": "3.19.1",
@@ -364,14 +348,14 @@
     },
     "CAdir": {
       "Package": "CAdir",
-      "Version": "0.1.0",
+      "Version": "0.0.99",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteUsername": "ClemensKohl",
       "RemoteRepo": "CAdir",
       "RemoteRef": "main",
-      "RemoteSha": "6ed658adeeacaa7452f1c3e231c69a923c12fae6",
+      "RemoteSha": "4e77c3a24a10daf6d0e2d99116ec1748221b12ee",
       "Remotes": "davidsjoberg/ggsankey",
       "Requirements": [
         "APL",
@@ -379,6 +363,7 @@
         "ggplot2",
         "ggpubr",
         "ggraph",
+        "ggrepel",
         "ggsankey",
         "gtable",
         "igraph",
@@ -386,9 +371,10 @@
         "methods",
         "networkD3",
         "patchwork",
+        "rlang",
         "scales"
       ],
-      "Hash": "a976c804b5b92be6e3fccfb77fafb6bf"
+      "Hash": "f1239792ab8bdecbc8b250f36ac95dce"
     },
     "Cairo": {
       "Package": "Cairo",
@@ -1131,18 +1117,6 @@
       ],
       "Hash": "6b5ab997fd5ff6d46a5f1d9f8b76961c"
     },
-    "RUtils": {
-      "Package": "RUtils",
-      "Version": "0.0.0.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "ClemensKohl",
-      "RemoteRepo": "RUtils",
-      "RemoteRef": "main",
-      "RemoteSha": "f1acb22e0663e0211e7252636955a4fbedf4dec2",
-      "Hash": "ca3e690e14ca902e31526740ee19acfc"
-    },
     "RaceID": {
       "Package": "RaceID",
       "Version": "0.3.5",
@@ -1701,19 +1675,6 @@
       ],
       "Hash": "0a347b0c06e87ad505699b7a6290abd2"
     },
-    "VennDiagram": {
-      "Package": "VennDiagram",
-      "Version": "1.7.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "futile.logger",
-        "grid",
-        "methods"
-      ],
-      "Hash": "6b628f0aee185fdb5d6ce2b5eb477e52"
-    },
     "WriteXLS": {
       "Package": "WriteXLS",
       "Version": "6.6.0",
@@ -2192,23 +2153,6 @@
       ],
       "Hash": "ed9597168d850071aa9abbbef7be7204"
     },
-    "bookdown": {
-      "Package": "bookdown",
-      "Version": "0.39",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "htmltools",
-        "jquerylib",
-        "knitr",
-        "rmarkdown",
-        "tinytex",
-        "xfun",
-        "yaml"
-      ],
-      "Hash": "cb4f7066855b6f936e8d25edc9a9cff9"
-    },
     "boot": {
       "Package": "boot",
       "Version": "1.3-30",
@@ -2508,22 +2452,6 @@
         "R"
       ],
       "Hash": "61e097f35917d342622f21cdc79c256e"
-    },
-    "colorout": {
-      "Package": "colorout",
-      "Version": "1.3-0.2",
-      "Source": "GitHub",
-      "OS_type": "unix",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "jalvesaq",
-      "RemoteRepo": "colorout",
-      "RemoteRef": "master",
-      "RemoteSha": "c6113a2defd96b6653c7e9f7e4c18f311023430f",
-      "Requirements": [
-        "utils"
-      ],
-      "Hash": "53e2104ed9323e0af23e5efec3dbdd39"
     },
     "colorspace": {
       "Package": "colorspace",
@@ -3740,6 +3668,21 @@
       ],
       "Hash": "a57f0f5dbcfd0d77ad4ff33032f5dc79"
     },
+    "ggtext": {
+      "Package": "ggtext",
+      "Version": "0.1.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "ggplot2",
+        "grid",
+        "gridtext",
+        "rlang",
+        "scales"
+      ],
+      "Hash": "c5ba8f5056487403a299b91984be86ca"
+    },
     "ggthemes": {
       "Package": "ggthemes",
       "Version": "5.1.0",
@@ -3866,32 +3809,6 @@
         "stats"
       ],
       "Hash": "71173258033324618dc8a09b3e27269e"
-    },
-    "glmGamPoi": {
-      "Package": "glmGamPoi",
-      "Version": "1.16.0",
-      "Source": "Bioconductor",
-      "Repository": "Bioconductor 3.19",
-      "Requirements": [
-        "BiocGenerics",
-        "DelayedArray",
-        "DelayedMatrixStats",
-        "HDF5Array",
-        "MatrixGenerics",
-        "Rcpp",
-        "RcppArmadillo",
-        "SingleCellExperiment",
-        "SummarizedExperiment",
-        "beachmat",
-        "matrixStats",
-        "methods",
-        "rlang",
-        "splines",
-        "stats",
-        "utils",
-        "vctrs"
-      ],
-      "Hash": "21e305cf5faebb13bee698a5a1c4bced"
     },
     "globals": {
       "Package": "globals",
@@ -5205,16 +5122,6 @@
         "mvtnorm"
       ],
       "Hash": "55e85f05d479f9c8644f94900bbefd56"
-    },
-    "pdist": {
-      "Package": "pdist",
-      "Version": "1.2.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "methods"
-      ],
-      "Hash": "bf3987702285f4e68c270e8498801194"
     },
     "permute": {
       "Package": "permute",

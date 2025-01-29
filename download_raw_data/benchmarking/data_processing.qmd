@@ -2,6 +2,7 @@
 title: Data Processing
 jupyter:
   jupytext:
+    formats: 'qmd:quarto,ipynb'
     text_representation:
       extension: .qmd
       format_name: quarto
@@ -210,5 +211,3 @@ saveRDS(sce, file.path(datadir, "PBMC3k_raw.rds"))
 sce <- BaronPancreasData(which = "human")
 saveRDS(sce, file.path(datadir, "BaronPancreas_raw.rds"))
 ```
-
-

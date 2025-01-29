@@ -17,8 +17,10 @@ jupyter:
 # Setup
 
 ```{r}
-setwd("./results/")
-source("./utils.R")
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
 
 suppressPackageStartupMessages({
   library(CAdir)

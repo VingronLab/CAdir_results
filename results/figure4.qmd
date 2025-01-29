@@ -17,6 +17,10 @@ jupyter:
 # Setup
 
 ```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+
 suppressPackageStartupMessages({
   library(CAdir)
   library(scater)
