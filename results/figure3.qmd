@@ -9,9 +9,9 @@ jupyter:
       format_version: '1.0'
       jupytext_version: 1.16.1
   kernelspec:
-    display_name: R 4.4
+    display_name: R 4.4.1
     language: R
-    name: ir44
+    name: ir441
 ---
 
 # Setup
