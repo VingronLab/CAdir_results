@@ -34,7 +34,6 @@ suppressPackageStartupMessages({
 dir <- "./results/"
 imgdir <- file.path(dir, "img/figure4/")
 
-setwd(dir)
 dir.create(imgdir, recursive = TRUE)
 
 options(repr.plot.width = 20, repr.plot.height = 15)
