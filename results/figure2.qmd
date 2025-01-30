@@ -204,7 +204,7 @@ p_bt <- cluster_apl(
   geom_point(data = tcs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
   ggplot2::geom_abline(
     intercept = 0,
-    slope = slope(lines = t_dir, dims = 1:2),
+    slope = CAdir:::slope(lines = t_dir, dims = 1:2),
     color = "#d44a3d",
     linetype = "dashed",
     size = 1) +
@@ -212,7 +212,7 @@ geom_label(data=as.data.frame(t_dir*4), aes(x, y), label="T_cell", color = "#d44
   geom_point(data = ics_coords, aes(x=x, y=y), color = "#00b1ea" ) +
   ggplot2::geom_abline(
     intercept = 0,
-    slope = slope(lines = i_dir, dims = 1:2),
+    slope = CAdir:::slope(lines = i_dir, dims = 1:2),
     color = "#00b1ea",
     linetype = "dashed",
     size = 1) +
@@ -269,7 +269,7 @@ p_ecs <- cluster_apl(
   geom_point(data = ecs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
   ggplot2::geom_abline(
     intercept = 0,
-    slope = slope(lines = t_dir, dims = 1:2),
+    slope = CAdir:::slope(lines = t_dir, dims = 1:2),
     color = "#d44a3d",
     linetype = "dashed",
     size = 1) +
@@ -330,7 +330,7 @@ p_bt <- cluster_apl(
   geom_point(data = tcs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
   ggplot2::geom_abline(
     intercept = 0,
-    slope = slope(lines = t_dir, dims = 1:2),
+    slope = CAdir:::slope(lines = t_dir, dims = 1:2),
     color = "#d44a3d",
     linetype = "dashed",
     size = 1) +
@@ -338,7 +338,7 @@ geom_label(data=as.data.frame(t_dir*2), aes(x, y), label="T_cell", color = "#d44
   geom_point(data = ics_coords, aes(x=x, y=y), color = "#00b1ea" ) +
   ggplot2::geom_abline(
     intercept = 0,
-    slope = slope(lines = i_dir, dims = 1:2),
+    slope = CAdir:::slope(lines = i_dir, dims = 1:2),
     color = "#00b1ea",
     linetype = "dashed",
     size = 1) +
@@ -395,7 +395,7 @@ p_ecs <- cluster_apl(
   geom_point(data = ecs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
   ggplot2::geom_abline(
     intercept = 0,
-    slope = slope(lines = t_dir, dims = 1:2),
+    slope = CAdir:::slope(lines = t_dir, dims = 1:2),
     color = "#d44a3d",
     linetype = "dashed",
     size = 1) +
@@ -555,16 +555,16 @@ ggsave(plot = sank,
 ## Angle between clusters
 
 ```{r}
-ang_rad <- get_angle(cak@directions, cak@directions)
+ang_rad <- CAdir:::get_angle(cak@directions, cak@directions)
 rownames(ang_rad) <- gsub("_|\\.", " ", rownames(ang_rad))
 colnames(ang_rad) <- gsub("_|\\.", " ", colnames(ang_rad))
-ang_deg <- as.data.frame(rad2deg(ang_rad)) %>% tibble::rownames_to_column("cluster")
+ang_deg <- as.data.frame(CAdir:::rad2deg(ang_rad)) %>% tibble::rownames_to_column("cluster")
 
 long_ang <- tidyr::pivot_longer(data = ang_deg, cols = -cluster, values_to = "angle", names_to = "to_cluster" )
 
 p <- ggplot(long_ang, aes(x=cluster, y = to_cluster, fill = angle)) +
   geom_tile() +
-  scale_fill_gradient_mpimg(name = "orange", trans = "reverse") +
+  CAdir:::scale_fill_gradient_mpimg(name = "orange", trans = "reverse") +
   theme_bw(base_size = 16)+
 theme(
     axis.text.x = element_text(color = "black", angle = 45, vjust = 1, hjust=1),
