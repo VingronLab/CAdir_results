@@ -7,3 +7,6 @@ benchmarking/eval
 benchmarking/test
 benchmarking/algorithms/.bu
 wget-log
+
+/.quarto/
+results/benchmarking
