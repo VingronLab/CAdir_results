@@ -87,9 +87,10 @@ cak <- dirclust_splitmerge(
     apl_quant = 0.99,
     counts = NULL,
     min_cells = 20,
-    reps = 5,
+    reps = NULL,
     make_plots = TRUE,
-    qcutoff = 0.8
+    qcutoff = 0.8,
+    convergence_thr = 0.001
 )
 ```
 

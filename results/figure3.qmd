@@ -93,10 +93,11 @@ cak <- dirclust_splitmerge(
     apl_quant = 0.99,
     counts = NULL,
     min_cells = 30,
-    reps = 5,
+    reps = NULL,
     make_plots = TRUE,
     apl_cutoff_reps = 100,
-    qcutoff = 0.6 # 0.1
+    qcutoff = 0.6,
+    convergence_thr = 0.001
 )
 
 cak <- rank_genes(cadir = cak, caobj = ca)

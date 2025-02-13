@@ -355,7 +355,7 @@
       "RemoteUsername": "ClemensKohl",
       "RemoteRepo": "CAdir",
       "RemoteRef": "main",
-      "RemoteSha": "12a466f4da0476ced7b8f84c0de75fbb56a70e91",
+      "RemoteSha": "ff7b035a3ba3b418862e79c7f0afa5606a9b01ae",
       "Remotes": "davidsjoberg/ggsankey",
       "Requirements": [
         "APL",
@@ -374,7 +374,7 @@
         "rlang",
         "scales"
       ],
-      "Hash": "8699098747d37d73d6492451926c8b28"
+      "Hash": "799cf04df3253cd47e61167d15a45a73"
     },
     "Cairo": {
       "Package": "Cairo",
