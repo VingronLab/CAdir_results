@@ -1,0 +1,52 @@
+---
+title: Batch
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  library(CAdir)
+  library(APL)
+
+  library(SingleCellExperiment)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(dplyr)
+
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/figure2/")
+dir.create(imgdir, recursive = TRUE)
+
+```
+
+<https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968?file=24539828>
+
+```{r} 
+
+
+```
