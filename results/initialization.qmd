@@ -204,7 +204,7 @@ for (i in seq(nreps)) {
 
 # Evaluate
 
-```{r} 
+```{r}
 df <- data.frame(
   "kmeanspp" = kpp,
   "kmeanspp_sub" = sub_kpp,
