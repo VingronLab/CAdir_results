@@ -39,14 +39,133 @@ suppressPackageStartupMessages({
 options(repr.plot.width = 20, repr.plot.height = 15)
 
 dir <- "./results/"
-imgdir <- file.path(dir, "img/figure2/")
+imgdir <- file.path(dir, "img/bench/")
 dir.create(imgdir, recursive = TRUE)
 
 ```
 
+
+## Load data
 <https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968?file=24539828>
+```{r}
+data_dir <- "./data/real/raw/"
+
+sce <- readRDS(file.path(data_dir, "human_pancreas_norm_complexBatch.rds"))
+
+genevars <- modelGeneVar(sce, assay.type = "logcounts")
+chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)
+sce_sub <- sce[chosen, ]
+
+# sce_sub <- fixedPCA(sce_sub, rank = 50, subset.row = chosen)
+# sce_sub <- runUMAP(sce_sub, dimred = "PCA")
+```
+
+
+
+# CA 
+```{r}
+ca <- cacomp(
+  obj = logcounts(sce_sub),
+  princ_coords = 3,
+  dims = 50,
+  top = nrow(sce_sub),
+  residuals = "pearson"
+)
+
+cell_types <- sce$celltype
+cat("Number of cell types:", length(unique(cell_types)), "\n")
+```
+
+# CAdir
+
+```{r}
+set.seed(2358)
+cabic <- dirclust_splitmerge(
+  caobj = ca,
+  k = 14,
+  cutoff = NULL,
+  method = "random",
+  apl_quant = 0.99,
+  counts = NULL,
+  min_cells = 20,
+  reps = NULL,
+  make_plots = TRUE,
+  qcutoff = 0.8,
+  convergence_thr = 0.001
+)
+```
+
+Annotate biclustering:
+
+```{r}
+cabic <- annotate_biclustering(
+  obj = cabic,
+  universe = rownames(sce_sub),
+  org = "hs"
+)
+
+sce_sub$cadir <- cabic@cell_clusters
+
+cabic
+```
 
 ```{r} 
-
-
 ```
+
+```{r}
+um1 <- plotUMAP(sce_sub, colour = "cadir")
+um2 <- plotUMAP(sce_sub, colour = "celltype")
+um3 <- plotUMAP(sce_sub, colour = "tech")
+
+ari <- aricode::clustComp(sce_sub$cadir, sce_sub$celltype)
+cat("ARI:", ari$ARI, "\n")
+
+um <- (um2 / um3) + (um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))))
+um
+
+ggsave(
+  plot = um,
+  filename = file.path(imgdir, "umap.png")
+)
+```
+
+# Cluster Association Plots
+
+```{r}
+pcl <- plot_clusters(
+  cadir = cabic,
+  caobj = ca,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  ntop = 5,
+  title_prefix = "",
+  axis = TRUE,
+  text_size = 19,
+  legend_pos = "right",
+  return_list = TRUE,
+  gsub_title = "_"
+)
+pcl <- wrap_plots(pcl, ncol = 3) +
+  guide_area() +
+  plot_layout(guides = "collect")
+
+pcl
+
+ggsave(
+  plot = pcl,
+  filename = file.path(imgdir, "cluster_apls.pdf"),
+  device = cairo_pdf,
+  width = 3400,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  plot = pcl,
+  filename = file.path(imgdir, "cluster_apls.png"),
+  width = 3400,
+  height = 2000,
+  units = "px"
+)
+```
+

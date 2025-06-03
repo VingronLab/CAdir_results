@@ -1,0 +1,223 @@
+---
+title: Initialization
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  library(CAdir)
+  library(APL)
+
+  library(SingleCellExperiment)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(dplyr)
+  library(tidyr)
+
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/init_comp/")
+dir.create(imgdir, recursive = TRUE)
+```
+
+## Load data
+
+```{r}
+data_dir <- "./data/real/discussed/"
+
+marker_genes <- readr::read_csv(file.path(data_dir, "tabula_muris_marker_genes.csv"))
+sce <- readRDS(file.path(data_dir, "preprocessed/tabula_muris_preprocessed_filtered.rds"))
+
+genevars <- modelGeneVar(sce, assay.type = "logcounts")
+chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)
+
+# add marker_genes
+expr_markers <- marker_genes[marker_genes$gene %in% rownames(sce), ]
+chosen <- c(chosen, expr_markers$gene)
+chosen <- unique(chosen)
+sce_sub <- sce[chosen, ]
+```
+
+```{r}
+ca <- cacomp(obj = logcounts(sce_sub),
+             princ_coords = 3,
+             dims = 30,
+             top = nrow(sce_sub),
+             residuals = "pearson",
+             python = TRUE)
+
+cell_types <- sce$cell_ontology_class
+cat("Number of cell types:", length(unique(cell_types)), "\n")
+```
+
+# Compare initializations
+```{r} 
+rlang::local_options(CAdir.verbose = "quiet")
+nreps <- 100
+```
+
+## kmeans++
+```{r}
+set.seed(2358)
+kpp <- vector(mode = "numeric", length = nreps)
+
+for (i in seq(nreps)) {
+
+  t <- Sys.time()
+  cabic <- dirclust_splitmerge(
+    caobj = ca,
+    k = 8,
+    cutoff = NULL,
+    method = "random",
+    apl_quant = 0.99,
+    counts = NULL,
+    min_cells = 20,
+    reps = NULL,
+    make_plots = TRUE,
+    qcutoff = 0.8,
+    convergence_thr = 0.001,
+    init = "kmeanspp"
+  )
+  tdiff <- difftime(Sys.time(), t, units = "secs")
+  sce_sub$cadir <- cabic@cell_clusters
+  ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
+  kpp[i] <- ari$ARI
+}
+```
+
+## rand
+```{r}
+set.seed(2358)
+
+krnd <- vector(mode = "numeric", length = nreps)
+
+for (i in seq(nreps)) {
+
+  t <- Sys.time()
+  cabic <- dirclust_splitmerge(
+    caobj = ca,
+    k = 8,
+    cutoff = NULL,
+    method = "random",
+    apl_quant = 0.99,
+    counts = NULL,
+    min_cells = 20,
+    reps = NULL,
+    make_plots = TRUE,
+    qcutoff = 0.8,
+    convergence_thr = 0.001,
+    init = "rand"
+  )
+  tdiff <- difftime(Sys.time(), t, units = "secs")
+  sce_sub$cadir <- cabic@cell_clusters
+  ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
+  krnd[i] <- ari$ARI
+}
+
+```
+
+### sub-optimal k
+
+
+#### kmeans++
+```{r}
+set.seed(2358)
+sub_kpp <- vector(mode = "numeric", length = nreps)
+
+for (i in seq(nreps)) {
+
+  t <- Sys.time()
+  cabic <- dirclust_splitmerge(
+    caobj = ca,
+    k = 5,
+    cutoff = NULL,
+    method = "random",
+    apl_quant = 0.99,
+    counts = NULL,
+    min_cells = 20,
+    reps = NULL,
+    make_plots = TRUE,
+    qcutoff = 0.8,
+    convergence_thr = 0.001,
+    init = "kmeanspp"
+  )
+  tdiff <- difftime(Sys.time(), t, units = "secs")
+  sce_sub$cadir <- cabic@cell_clusters
+  ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
+  sub_kpp[i] <- ari$ARI
+}
+```
+
+#### rand
+```{r}
+set.seed(2358)
+
+sub_krnd <- vector(mode = "numeric", length = nreps)
+
+for (i in seq(nreps)) {
+
+  t <- Sys.time()
+  cabic <- dirclust_splitmerge(
+    caobj = ca,
+    k = 5,
+    cutoff = NULL,
+    method = "random",
+    apl_quant = 0.99,
+    counts = NULL,
+    min_cells = 20,
+    reps = NULL,
+    make_plots = TRUE,
+    qcutoff = 0.8,
+    convergence_thr = 0.001,
+    init = "rand"
+  )
+  tdiff <- difftime(Sys.time(), t, units = "secs")
+  sce_sub$cadir <- cabic@cell_clusters
+  ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
+  sub_krnd[i] <- ari$ARI
+}
+```
+
+# Evaluate
+
+```{r} 
+df <- data.frame(
+  "kmeanspp" = kpp,
+  "kmeanspp_sub" = sub_kpp,
+  "rand" = krnd,
+  "rand_sub" = sub_krnd
+)
+df <- df %>%
+  pivot_longer(cols = colnames(df), names_to = "method", values_to = "ARI")
+
+p <- ggplot(df, aes(x = method, y = ARI, fill = method)) +
+  geom_boxplot() +
+  scale_fill_mpimg() +
+  theme_bw()
+
+ggsave(filename = file.path(imgdir, "init_bench_boxplot.pdf"), plot = p)
+```

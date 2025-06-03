@@ -352,10 +352,10 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteUsername": "VingronLab",
+      "RemoteUsername": "ClemensKohl",
       "RemoteRepo": "CAdir",
       "RemoteRef": "main",
-      "RemoteSha": "62417eb7ad37709d5d69ca92018b1c9181e96e18",
+      "RemoteSha": "b36607843c55a2ed92dc6538751c7e5e948a91fb",
       "Remotes": "davidsjoberg/ggsankey",
       "Requirements": [
         "APL",
@@ -374,7 +374,7 @@
         "rlang",
         "scales"
       ],
-      "Hash": "ee3d255505a7225462c54165cb8a23ce"
+      "Hash": "15cd8a2d40f3518ac841f8919e98a9d3"
     },
     "Cairo": {
       "Package": "Cairo",
