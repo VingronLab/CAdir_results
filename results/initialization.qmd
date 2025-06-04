@@ -211,11 +211,13 @@ df <- data.frame(
   "rand" = krnd,
   "rand_sub" = sub_krnd
 )
+
 df <- df %>%
   pivot_longer(cols = colnames(df), names_to = "method", values_to = "ARI")
 
 p <- ggplot(df, aes(x = method, y = ARI, fill = method)) +
   geom_boxplot() +
+  ylim(c(0.6, 0.7)) +
   scale_fill_mpimg() +
   theme_bw()
 

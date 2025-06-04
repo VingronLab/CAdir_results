@@ -1,0 +1,124 @@
+---
+title: Marker Genes
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  library(CAdir)
+  library(APL)
+
+  library(SingleCellExperiment)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(dplyr)
+  library(tidyr)
+
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/marker_genes/")
+dir.create(imgdir, recursive = TRUE)
+```
+
+## Load data
+
+```{r}
+sce <- sce_pbmc3k()
+```
+
+# CAdir
+
+```{r}
+set.seed(1234)
+
+sce_bu <- sce
+sce.dec <- scran::modelGeneVar(sce)
+sce.top <- scran::getTopHVGs(sce.dec, prop = 0.2, var.threshold = NULL)
+sce <- sce[sce.top, ]
+sce <- runUMAP(sce, ntop = 2000)
+
+ca <- cacomp(
+  obj = as.matrix(logcounts(sce)),
+  princ_coords = 3,
+  dims = 30,
+  top = nrow(sce),
+  residuals = "pearson",
+  python = TRUE,
+  clip = TRUE
+)
+```
+
+## Split & Merge Clustering
+
+```{r}
+set.seed(2358)
+cabic <- dirclust_splitmerge(
+  caobj = ca,
+  k = 9,
+  cutoff = NULL,
+  method = "random",
+  apl_quant = 0.99,
+  min_cells = 30,
+  make_plots = TRUE,
+  apl_cutoff_reps = 100,
+  qcutoff = 0.8,
+  convergence_thr = 0.001
+)
+
+cabic <- rank_genes(cadir = cabic, caobj = ca)
+top <- top_genes(cabic)
+```
+
+### Annotate clusters
+
+```{r}
+cabic <- annotate_biclustering(
+  obj = cabic,
+  universe = rownames(sce),
+  org = "hs"
+)
+
+cabic <- rank_genes(cadir = cabic, caobj = ca)
+cabic
+
+sce$cadir <- cabic@cell_clusters
+
+um1 <- plotUMAP(sce, colour = "cadir")
+um2 <- plotUMAP(sce, colour = "cell_type")
+
+ari <- aricode::clustComp(sce$cadir, sce$cell_type)
+p <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
+p
+
+ggsave(
+  plot = p,
+  file = file.path(imgdir, "umap.png"),
+  width = 3600,
+  height = 1800,
+  units = "px"
+)
+```
