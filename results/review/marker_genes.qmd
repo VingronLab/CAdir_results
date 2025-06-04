@@ -56,15 +56,15 @@ sce <- sce_pbmc3k()
 set.seed(1234)
 
 sce_bu <- sce
-sce.dec <- scran::modelGeneVar(sce)
-sce.top <- scran::getTopHVGs(sce.dec, prop = 0.2, var.threshold = NULL)
-sce <- sce[sce.top, ]
+sce_var <- scran::modelGeneVar(sce)
+sce_top <- scran::getTopHVGs(sce_var, prop = 0.4)
+sce <- sce[sce_top, ]
 sce <- runUMAP(sce, ntop = 2000)
 
 ca <- cacomp(
   obj = as.matrix(logcounts(sce)),
   princ_coords = 3,
-  dims = 30,
+  dims = 20,
   top = nrow(sce),
   residuals = "pearson",
   python = TRUE,
@@ -75,7 +75,7 @@ ca <- cacomp(
 ## Split & Merge Clustering
 
 ```{r}
-set.seed(2358)
+set.seed(1)
 cabic <- dirclust_splitmerge(
   caobj = ca,
   k = 9,
@@ -85,12 +85,10 @@ cabic <- dirclust_splitmerge(
   min_cells = 30,
   make_plots = TRUE,
   apl_cutoff_reps = 100,
-  qcutoff = 0.8,
+  qcutoff = 0.9,
   convergence_thr = 0.001
 )
 
-cabic <- rank_genes(cadir = cabic, caobj = ca)
-top <- top_genes(cabic)
 ```
 
 ### Annotate clusters
@@ -104,6 +102,8 @@ cabic <- annotate_biclustering(
 
 cabic <- rank_genes(cadir = cabic, caobj = ca)
 cabic
+
+topg <- top_genes(cabic)
 
 sce$cadir <- cabic@cell_clusters
 
@@ -121,4 +121,49 @@ ggsave(
   height = 1800,
   units = "px"
 )
+```
+
+# Plot clusters
+
+```{r}
+b_cells <- cluster_apl(
+  ca,
+  cabic,
+  cluster = "B_cell",
+  direction = cabic@directions["B_cell", ],
+  group = which(cabic@cell_clusters == "B_cell"),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 10
+)
+
+ggsave(
+  plot = b_cells,
+  file = file.path(imgdir, "b_cells_apl.pdf"),
+  width = 1600,
+  height = 1600,
+  units = "px"
+)
+```
+
+```{r}
+top_b <- cabic@gene_ranks$B_cell %>%
+  filter(Score > 0)
+
+marker <- c("MS4A1")
+```
+
+```{r}
+gs <- CAbiNet:::load_gene_set(set = "CellMarker", org = "hs")
+gs_bcells <- gs %>%
+  filter(cell_type == "B cell") %>%
+  pull(gene) %>%
+  unique()
+```
+
+```{r}
+mean(top_b$Rowname %in% gs_bcells)
 ```
