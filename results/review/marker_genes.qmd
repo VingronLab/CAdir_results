@@ -94,7 +94,7 @@ cabic <- dirclust_splitmerge(
 ### Annotate clusters
 
 ```{r}
-cabic <- annotate_biclustering(
+cabic <- CAdir::annotate_biclustering(
   obj = cabic,
   universe = rownames(sce),
   org = "hs"
@@ -150,20 +150,184 @@ ggsave(
 ```
 
 ```{r}
+
 top_b <- cabic@gene_ranks$B_cell %>%
   filter(Score > 0)
-
-marker <- c("MS4A1")
-```
-
-```{r}
 gs <- CAbiNet:::load_gene_set(set = "CellMarker", org = "hs")
 gs_bcells <- gs %>%
   filter(cell_type == "B cell") %>%
   pull(gene) %>%
   unique()
+
+cat("% of B cell marker genes:", mean(top_b$Rowname %in% gs_bcells), "\n")
 ```
 
 ```{r}
-mean(top_b$Rowname %in% gs_bcells)
+top_m <- cabic@gene_ranks$Monocyte %>%
+  filter(Score > 0)
+gs <- CAbiNet:::load_gene_set(set = "CellMarker", org = "hs")
+gs_mono <- gs %>%
+  filter(cell_type == "Monocyte") %>%
+  pull(gene) %>%
+  unique()
+
+cat("% of Monocyte marker genes:", mean(top_m$Rowname %in% gs_mono), "\n")
+```
+
+```{r}
+top_t <- cabic@gene_ranks$`CD8+_T_cell` %>%
+  filter(Score > 0)
+gs <- CAbiNet:::load_gene_set(set = "CellMarker", org = "hs")
+gs_tcells <- gs %>%
+  filter(cell_type == "CD8+ T cell") %>%
+  pull(gene) %>%
+  unique()
+
+cat("% of CD8+ T cells marker genes:", mean(top_t$Rowname %in% gs_tcells), "\n")
+```
+
+```{r}
+top_t <- cabic@gene_ranks$`CD8+_T_cell` %>%
+  filter(Score > 0)
+gs <- CAbiNet:::load_gene_set(set = "CellMarker", org = "hs")
+gs_tcells <- gs %>%
+  filter(cell_type == "T cell") %>%
+  pull(gene) %>%
+  unique()
+
+cat("% of T cells marker genes:", mean(top_t$Rowname %in% gs_tcells), "\n")
+```
+
+```{r}
+top_nk <- cabic@gene_ranks$Natural_killer_cell %>%
+  filter(Score > 0)
+
+gs <- CAbiNet:::load_gene_set(set = "CellMarker", org = "hs")
+gs_nkcells <- gs %>%
+  filter(cell_type == "Natural killer cell") %>%
+  pull(gene) %>%
+  unique()
+
+cat("% of NK cells marker genes:", mean(top_nk$Rowname %in% gs_nkcells), "\n")
+```
+
+```{r}
+top_mega <- cabic@gene_ranks$Megakaryocyte %>%
+  filter(Score > 0)
+
+gs <- CAbiNet:::load_gene_set(set = "CellMarker", org = "hs")
+gs_mkcells <- gs %>%
+  filter(cell_type == "Megakaryocyte") %>%
+  pull(gene) %>%
+  unique()
+
+cat("% of Megakaryocyte marker genes:", mean(top_mega$Rowname %in% gs_mkcells), "\n")
+```
+
+```{r}
+unique(gs$cell_type)[grep("T cell", unique(gs$cell_type))]
+
+```
+
+```{r}
+cm <- CAbiNet::cellmarker_v2
+cm <- cm[cm$species == "Human",]
+cm <- cm[cm$cell_name == "B cell",]
+```
+
+# Pie charts
+
+```{r}
+perc1 <- mean(top_b$Rowname %in% gs_bcells)
+p1 <- pie(c(perc1, 1 - perc1), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
+
+perc2 <- mean(top_t$Rowname %in% gs_tcells)
+p2 <- pie(c(perc2, 1 - perc2), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
+
+perc3 <- mean(top_m$Rowname %in% gs_mono)
+p3 <- pie(c(perc3, 1 - perc3), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
+
+perc4 <- mean(top_nk$Rowname %in% gs_nkcells)
+p4 <- pie(c(perc4, 1 - perc4), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
+
+perc5 <- mean(top_mega$Rowname %in% gs_mkcells)
+p5 <- pie(c(perc5, 1 - perc5), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
+
+
+p <- p1 + p2 + p3 + p4 + p5 + plot_layout(ncol = 3)
+
+```
+
+```{r}
+library(gridGraphics)
+
+
+wrap_elements(
+  panel = ~ pie(c(perc1, 1 - perc1), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2))) +
+    ggtitle("B cells")
+) +
+wrap_elements(
+  panel = ~ pie(c(perc2, 1 - perc2), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2))) +
+    ggtitle("T cells")
+) +
+wrap_elements(
+  panel = ~ pie(c(perc3, 1 - perc3), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2))) +
+    ggtitle("Monocytes")
+) +
+wrap_elements(
+  panel = ~ pie(c(perc4, 1 - perc4), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2))) +
+    ggtitle("NK-cells")
+) +
+  wrap_elements(
+    panel = wrap_elements(
+      full = ~ pie(c(perc5, 1 - perc5), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2))) +
+        ) +
+        ggtitle("Megakaryocytes")
+    )
+  plot_layout(ncol = 3)
+
+
+```
+
+```{r}
+
+pie1 <- wrap_elements(full = ~ pie(
+  x = c(perc1, 1 - perc1),
+  labels = c("Markers", "Other"),
+  col = rev(CAdir::mpimg_pal()(2)),
+  main = "B cells"
+))
+pie2 <- wrap_elements(full = ~ pie(
+  x = c(perc2, 1 - perc2),
+  labels = c("Markers", "Other"),
+  col = rev(CAdir::mpimg_pal()(2)),
+  main = "T cells"
+))
+pie3 <- wrap_elements(full = ~ pie(
+  x = c(perc3, 1 - perc3),
+  labels = c("Markers", "Other"),
+  col = rev(CAdir::mpimg_pal()(2)),
+  main = "Monocytes"
+))
+pie4 <- wrap_elements(full = ~ pie(
+  x = c(perc4, 1 - perc4),
+  labels = c("Markers", "Other"),
+  col = rev(CAdir::mpimg_pal()(2)),
+  main = "NK cells"
+))
+pie5 <- wrap_elements(full = ~ pie(
+  x = c(perc5, 1 - perc5),
+  labels = c("Markers", "Other"),
+  col = rev(CAdir::mpimg_pal()(2)),
+  main = "Megakaryocytes"
+))
+
+pdf(file = file.path(imgdir, "pies.pdf"), width = 9, height = 6)
+(pie1 + pie2 + pie3 + pie4 + pie5) + plot_layout(ncol = 3)
+dev.off()
+
+png(file = file.path(imgdir, "pies.png"), width = 900, height = 600, units = "px")
+(pie1 + pie2 + pie3 + pie4 + pie5) + plot_layout(ncol = 3)
+dev.off()
+
 ```
