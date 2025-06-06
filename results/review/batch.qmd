@@ -30,6 +30,7 @@ suppressPackageStartupMessages({
   library(scater)
   library(scuttle)
   library(scran)
+  library(batchelor)
 
   library(dplyr)
 
@@ -51,6 +52,7 @@ dir.create(imgdir, recursive = TRUE)
 data_dir <- "./data/real/raw/"
 
 sce <- readRDS(file.path(data_dir, "human_pancreas_norm_complexBatch.rds"))
+
 
 genevars <- modelGeneVar(sce, assay.type = "logcounts")
 chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)
@@ -83,7 +85,7 @@ set.seed(2358)
 cabic <- dirclust_splitmerge(
   caobj = ca,
   k = 14,
-  cutoff = NULL,
+  cutoff = 55,
   method = "random",
   apl_quant = 0.99,
   counts = NULL,
@@ -120,12 +122,17 @@ um3 <- plotUMAP(sce_sub, colour = "tech")
 ari <- aricode::clustComp(sce_sub$cadir, sce_sub$celltype)
 cat("ARI:", ari$ARI, "\n")
 
-um <- (um2 / um3) + (um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))))
+um <- (um2 | um3) /
+  (um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))))
+
 um
 
 ggsave(
   plot = um,
-  filename = file.path(imgdir, "umap.png")
+  filename = file.path(imgdir, "batch_umap.png"),
+  width = 2400,
+  height = 1600,
+  units = "px"
 )
 ```
 
@@ -168,4 +175,14 @@ ggsave(
   units = "px"
 )
 ```
+# Batch correction
 
+```{r}
+sce_corr <- quickCorrect(
+  sce_sub,
+  batch = "tech",
+  PARAM = FastMnnParam(BSPARAM = BiocSingular::RandomParam()),
+  hvg.args = list(n = 5000)
+)
+
+```

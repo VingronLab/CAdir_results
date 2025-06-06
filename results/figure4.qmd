@@ -42,7 +42,7 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 # Cell clustering benchmarking
 
 ```{r}
-date <- "20250116"
+date <- "20250528"
 base_dir <- file.path("./results/benchmarking/results/simulated", date)
 indir = file.path(base_dir, "eval")
 ```
@@ -100,16 +100,18 @@ df_all <- rbind(dfz, dfp)
 df_all$algorithm <- gsub("CAbiNet_igraph", "CAbiNet", df_all$algorithm)
 
 df_all$algorithm <- factor(df_all$algorithm, levels =
-                           c("CAdir",
-                             "CAdir_auto",
-                             "kmeans",
-                             "CAbiNet",
-                             "RaceID",
-                             "RaceID_auto",
-                             "Seurat",
-                             "Monocle3",
-                             "SC3",
-                             "SIMLR"))
+  c("CAdir",
+    "CAdir_auto",
+    "kmeans",
+    "CAbiNet",
+    "RaceID",
+    "RaceID_auto",
+    "Seurat",
+    "Monocle3",
+    "SC3",
+    "SIMLR",
+    "scDeepCluster",
+    "scG-cluster"))
 
 
 df <- df_all %>% group_by(simulation, algorithm, dataset) %>%
@@ -137,44 +139,56 @@ df$max_NMI[is.infinite(df$max_NMI)] <- 0
 
 ```{r}
 p <- df %>%
-ggplot(aes(x=algorithm,
-           y=max_ARI)) +
-    geom_boxplot(aes(fill = algorithm),
-                 color = "#383e42",
-                 alpha = 1,
-                 outlier.alpha = 0)+
-    geom_jitter(aes(x=algorithm,
-                    y=max_ARI,
-                    color = dataset,
-                    group = dataset,
-                    shape = simulation),
-                    stroke = 1.5,
-                    size = 2,
-                    width = 0.2) +
-    labs(title = "Maximum ARI on simulated data",
-         y = "max ARI",
-         x = "algorithm") +
-    scale_shape_manual(values = seq_len(length(df$simulation))) +
-    scale_fill_mpimg(name = "mpi_extend") +
-    scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
-    theme_bw(base_size = 20) +
-    theme(
-      axis.text.x = element_text(
+  ggplot(aes(
+    x = algorithm,
+    y = max_ARI
+  )) +
+  geom_boxplot(aes(fill = algorithm),
+    color = "#383e42",
+    alpha = 1,
+    outlier.alpha = 0
+  ) +
+  geom_jitter(
+    aes(
+      x = algorithm,
+      y = max_ARI,
+      color = dataset,
+      group = dataset,
+      shape = simulation
+    ),
+    stroke = 1.5,
+    size = 2,
+    width = 0.2
+  ) +
+  labs(
+    title = "Maximum ARI on simulated data",
+    y = "max ARI",
+    x = "algorithm"
+  ) +
+  scale_shape_manual(values = seq_len(length(df$simulation))) +
+  scale_fill_mpimg(name = "mpi_extend") +
+  scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
+  theme_bw(base_size = 20) +
+  theme(
+    axis.text.x = element_text(
       color = "black",
       angle = 45,
       vjust = 1,
-      hjust=1),
-      text = element_text(size = 20),
-    ) +
-    guides(fill = "none")
+      hjust = 1
+    ),
+    text = element_text(size = 20),
+  ) +
+  guides(fill = "none")
 
 p
 
-ggsave(plot = p,
-       filename = file.path(imgdir, "sim_bench_max_ARI_cells.pdf"),
-       width = 3000,
-       height = 2000,
-       units = "px")
+ggsave(
+  plot = p,
+  filename = file.path(imgdir, "sim_bench_max_ARI_cells.pdf"),
+  width = 3000,
+  height = 2000,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -312,7 +326,7 @@ ggsave(plot = p,
 ## Experimental Data
 
 ```{r}
-date <- "20250116"
+date <- "20250528"
 evldir = file.path("./results/benchmarking/results/real/", date, "eval")
 
 options(repr.plot.width = 15, repr.plot.height = 10)
