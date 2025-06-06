@@ -239,58 +239,24 @@ cm <- cm[cm$cell_name == "B cell",]
 
 ```{r}
 perc1 <- mean(top_b$Rowname %in% gs_bcells)
-p1 <- pie(c(perc1, 1 - perc1), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
+# pie(c(perc1, 1 - perc1), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
 
 perc2 <- mean(top_t$Rowname %in% gs_tcells)
-p2 <- pie(c(perc2, 1 - perc2), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
+# pie(c(perc2, 1 - perc2), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
 
 perc3 <- mean(top_m$Rowname %in% gs_mono)
-p3 <- pie(c(perc3, 1 - perc3), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
+# pie(c(perc3, 1 - perc3), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
 
 perc4 <- mean(top_nk$Rowname %in% gs_nkcells)
-p4 <- pie(c(perc4, 1 - perc4), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
+# pie(c(perc4, 1 - perc4), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
 
 perc5 <- mean(top_mega$Rowname %in% gs_mkcells)
-p5 <- pie(c(perc5, 1 - perc5), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
-
-
-p <- p1 + p2 + p3 + p4 + p5 + plot_layout(ncol = 3)
+# pie(c(perc5, 1 - perc5), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
 
 ```
 
 ```{r}
 library(gridGraphics)
-
-
-wrap_elements(
-  panel = ~ pie(c(perc1, 1 - perc1), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2))) +
-    ggtitle("B cells")
-) +
-wrap_elements(
-  panel = ~ pie(c(perc2, 1 - perc2), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2))) +
-    ggtitle("T cells")
-) +
-wrap_elements(
-  panel = ~ pie(c(perc3, 1 - perc3), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2))) +
-    ggtitle("Monocytes")
-) +
-wrap_elements(
-  panel = ~ pie(c(perc4, 1 - perc4), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2))) +
-    ggtitle("NK-cells")
-) +
-  wrap_elements(
-    panel = wrap_elements(
-      full = ~ pie(c(perc5, 1 - perc5), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2))) +
-        ) +
-        ggtitle("Megakaryocytes")
-    )
-  plot_layout(ncol = 3)
-
-
-```
-
-```{r}
-
 pie1 <- wrap_elements(full = ~ pie(
   x = c(perc1, 1 - perc1),
   labels = c("Markers", "Other"),
@@ -329,5 +295,12 @@ dev.off()
 png(file = file.path(imgdir, "pies.png"), width = 900, height = 600, units = "px")
 (pie1 + pie2 + pie3 + pie4 + pie5) + plot_layout(ncol = 3)
 dev.off()
+
+```
+
+# B cell discussion
+```{r}
+top_b
+top_m
 
 ```
