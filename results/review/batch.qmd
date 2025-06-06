@@ -180,9 +180,10 @@ ggsave(
 ```{r}
 sce_corr <- quickCorrect(
   sce_sub,
-  batch = "tech",
+  batch = sce_sub$tech,
   PARAM = FastMnnParam(BSPARAM = BiocSingular::RandomParam()),
   hvg.args = list(n = 5000)
 )
-
+sce_corr <- runUMAP()
+um3 <- plotUMAP(sce_sub, colour = "tech")
 ```
