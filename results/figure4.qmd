@@ -28,6 +28,7 @@ suppressPackageStartupMessages({
   library(tidyr)
   library(readr)
   library(ggplot2)
+  library(patchwork)
   library(ggthemes)
 })
 
@@ -138,7 +139,7 @@ df$max_NMI[is.infinite(df$max_NMI)] <- 0
 ```
 
 ```{r}
-p <- df %>%
+p_max_ari <- df %>%
   ggplot(aes(
     x = algorithm,
     y = max_ARI
@@ -180,10 +181,10 @@ p <- df %>%
   ) +
   guides(fill = "none")
 
-p
+p_max_ari
 
 ggsave(
-  plot = p,
+  plot = p_max_ari,
   filename = file.path(imgdir, "sim_bench_max_ARI_cells.pdf"),
   width = 3000,
   height = 2000,
@@ -192,7 +193,7 @@ ggsave(
 ```
 
 ```{r}
-p <- df %>%
+p_max_nmi <- df %>%
 ggplot(aes(x=algorithm,
            y=max_NMI)) +
     geom_boxplot(aes(fill = algorithm),
@@ -217,9 +218,9 @@ ggplot(aes(x=algorithm,
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
     guides(fill = "none")
 
-p
+p_max_nmi
 
-ggsave(plot = p,
+ggsave(plot = p_max_nmi,
        filename = file.path(imgdir, "sim_bench_max_NMI_cells.pdf"),
        width = 3000,
        height = 2000,
@@ -238,7 +239,7 @@ df <- df_all %>% group_by(simulation, algorithm, dataset) %>%
 ```
 
 ```{r}
-p <- df %>%
+p_mean_ari <- df %>%
 ggplot(aes(x=algorithm,
            y=mean_ARI)) +
     geom_boxplot(aes(fill = algorithm),
@@ -270,10 +271,10 @@ ggplot(aes(x=algorithm,
     ) +
     guides(fill = "none")
 
-p
+p_mean_ari
 
 
-ggsave(plot = p,
+ggsave(plot = p_mean_ari,
        filename = file.path(imgdir, "sim_bench_mean_ARI_cells.pdf"),
        width = 2500,
        height = 1650,
@@ -281,7 +282,7 @@ ggsave(plot = p,
 ```
 
 ```{r}
-p <- df %>%
+p_mean_nmi <- df %>%
 ggplot(aes(x=algorithm,
            y=mean_NMI)) +
     geom_boxplot(aes(fill = algorithm),
@@ -313,21 +314,32 @@ ggplot(aes(x=algorithm,
     ) +
     guides(fill = "none")
 
-p
+p_mean_nmi
 
 
-ggsave(plot = p,
+ggsave(plot = p_mean_nmi,
        filename = file.path(imgdir, "sim_bench_mean_NMI_cells.pdf"),
        width = 2500,
        height = 1650,
        units = "px")
 ```
 
+```{r}
+fig1 <- p_max_ari + p_mean_ari + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a")
+
+ggsave(plot = fig1,
+       filename = file.path(imgdir, "sim_ARI_panel.pdf"),
+       width = 3800,
+       height = 1600,
+       units = "px")
+
+```
+
 ## Experimental Data
 
 ```{r}
 date <- "20250528"
-evldir = file.path("./results/benchmarking/results/real/", date, "eval")
+evldir <- file.path("./results/benchmarking/results/real/", date, "eval")
 
 options(repr.plot.width = 15, repr.plot.height = 10)
 ```
