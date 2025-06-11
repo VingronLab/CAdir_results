@@ -142,10 +142,272 @@ cl_apl <- cluster_apl(
 
 ggsave(
   plot = cl_apl,
-  file = file.path(imgdir, "megakaryocyte_apl.pdf"),
+  file = file.path(imgdir, "pbmc_megakaryocyte_apl.pdf"),
   width = 1600,
   height = 1600,
   units = "px"
 )
 ```
 
+```{r}
+cluster <- "CD8+_T_cell"
+cl_apl <- cluster_apl(
+  ca,
+  cabic,
+  cluster = cluster,
+  direction = cabic@directions[cluster, ],
+  group = which(cabic@cell_clusters == cluster),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 10
+)
+
+ggsave(
+  plot = cl_apl,
+  file = file.path(imgdir, "pbmc_cd8tcell_apl.pdf"),
+  width = 1600,
+  height = 1600,
+  units = "px"
+)
+```
+
+```{r}
+cluster <- "Monocyte"
+cl_apl <- cluster_apl(
+  ca,
+  cabic,
+  cluster = cluster,
+  direction = cabic@directions[cluster, ],
+  group = which(cabic@cell_clusters == cluster),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 10
+)
+
+ggsave(
+  plot = cl_apl,
+  file = file.path(imgdir, "pbmc_monocyte_apl.pdf"),
+  width = 1600,
+  height = 1600,
+  units = "px"
+)
+```
+
+```{r}
+cluster <- "cluster_6"
+cl_apl <- cluster_apl(
+  ca,
+  cabic,
+  cluster = cluster,
+  direction = cabic@directions[cluster, ],
+  group = which(cabic@cell_clusters == cluster),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 10
+)
+
+ggsave(
+  plot = cl_apl,
+  file = file.path(imgdir, "pbmc_cluster_6_apl.pdf"),
+  width = 1600,
+  height = 1600,
+  units = "px"
+)
+```
+
+# Brain organoids
+
+```{r}
+sce <- readRDS("./data/real/preprocessed/benchmarking/brain_organoids_filtered.rds")
+```
+
+```{r}
+set.seed(1234)
+
+sce_bu <- sce
+sce_var <- scran::modelGeneVar(sce)
+sce_top <- scran::getTopHVGs(sce_var, prop = 0.4)
+sce <- sce[sce_top, ]
+sce <- runUMAP(sce, ntop = 2000)
+
+ca <- cacomp(
+  obj = as.matrix(logcounts(sce)),
+  princ_coords = 3,
+  dims = 40,
+  top = nrow(sce),
+  residuals = "pearson",
+  python = TRUE,
+  clip = TRUE
+)
+
+cat("Number of cell types:", length(unique(sce$truth)), "\n")
+```
+
+```{r}
+set.seed(1)
+cabic <- dirclust_splitmerge(
+  caobj = ca,
+  k = 10,
+  cutoff = NULL,
+  method = "random",
+  apl_quant = 0.99,
+  min_cells = 30,
+  make_plots = FALSE,
+  apl_cutoff_reps = 100,
+  qcutoff = 0.9,
+  convergence_thr = 0.001
+)
+```
+
+```{r}
+# cabic <- CAdir::annotate_biclustering(
+#   obj = cabic,
+#   universe = rownames(sce),
+#   org = "hs"
+# )
+
+cabic <- rank_genes(cadir = cabic, caobj = ca)
+cabic
+
+topg <- top_genes(cabic)
+
+sce$cadir <- cabic@cell_clusters
+
+um1 <- plotUMAP(sce, colour = "cadir") + cowplot::theme_cowplot()
+um2 <- plotUMAP(sce, colour = "truth") + cowplot::theme_cowplot()
+
+ari <- aricode::clustComp(sce$cadir, sce$cell_type)
+p <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
+p
+
+ggsave(
+  plot = p,
+  file = file.path(imgdir, "brain_org_umap.png"),
+  width = 3200,
+  height = 1600,
+  units = "px"
+)
+```
+
+
+```{r}
+plot_clusters(cabic, ca)
+
+```
+
+```{r}
+cluster <- "cluster_9"
+cl_apl_cl9 <- cluster_apl(
+  ca,
+  cabic,
+  cluster = cluster,
+  direction = cabic@directions[cluster, ],
+  group = which(cabic@cell_clusters == cluster),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 10
+) +
+  ggtitle("Cluster 9") +
+  cowplot::theme_cowplot()
+
+
+ggsave(
+  plot = cl_apl_cl9,
+  file = file.path(imgdir, "brain_org_cluster_9_apl.pdf"),
+  width = 1600,
+  height = 1600,
+  units = "px"
+)
+```
+
+```{r}
+cluster <- "cluster_7"
+cl_apl_cl7 <- cluster_apl(
+  ca,
+  cabic,
+  cluster = cluster,
+  direction = cabic@directions[cluster, ],
+  group = which(cabic@cell_clusters == cluster),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 10
+) + 
+  ggtitle("Cluster 7") +
+  cowplot::theme_cowplot()
+
+
+ggsave(
+  plot = cl_apl_cl7,
+  file = file.path(imgdir, "brain_org_cluster_7_apl.pdf"),
+  width = 1600,
+  height = 1600,
+  units = "px"
+)
+```
+
+```{r}
+cluster <- "cluster_6"
+cl_apl_cl6 <- cluster_apl(
+  ca,
+  cabic,
+  cluster = cluster,
+  direction = cabic@directions[cluster, ],
+  group = which(cabic@cell_clusters == cluster),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 10
+)+
+  ggtitle("Cluster 6") +
+  cowplot::theme_cowplot()
+
+
+ggsave(
+  plot = cl_apl_cl6,
+  file = file.path(imgdir, "brain_org_cluster_6_apl.pdf"),
+  width = 1600,
+  height = 1600,
+  units = "px"
+)
+```
+
+```{r}
+um1 <- um1 + ggtitle(paste0("CAdir clustering, ARI: ", round(ari$ARI, 2)))
+um2 <- um2 + ggtitle("Annotation")
+
+patch <- (um1 | um2) /
+  (cl_apl_cl6 + cl_apl_cl7 + plot_layout(guides = "collect")) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 12))
+
+ggsave(
+  filename = file.path(imgdir, "brain_panel.png"),
+  plot = patch,
+  width = 3600,
+  height = 3200,
+  units = "px"
+)
+
+
+```
+
+```{r}
+sessionInfo()
+```

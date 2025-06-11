@@ -40,7 +40,7 @@ suppressPackageStartupMessages({
 options(repr.plot.width = 20, repr.plot.height = 15)
 
 dir <- "./results/"
-imgdir <- file.path(dir, "img/bench/")
+imgdir <- file.path(dir, "img/batch/")
 dir.create(imgdir, recursive = TRUE)
 
 ```
@@ -175,15 +175,101 @@ ggsave(
   units = "px"
 )
 ```
+
 # Batch correction
 
 ```{r}
-sce_corr <- quickCorrect(
+batch_corr <- quickCorrect(
   sce_sub,
   batch = sce_sub$tech,
   PARAM = FastMnnParam(BSPARAM = BiocSingular::RandomParam()),
   hvg.args = list(n = 5000)
 )
-sce_corr <- runUMAP()
-um3 <- plotUMAP(sce_sub, colour = "tech")
+
+sce_corr <- batch_corr$corrected
 ```
+
+```{r}
+stopifnot(identical(rownames(colData(sce_corr)), rownames(colData(sce_sub))))
+sce_corr$celltype <- sce_sub$celltype
+
+sce_corr <- runUMAP(sce_corr, dimred = "corrected")
+um4 <- plotUMAP(sce_corr, colour = "batch")
+um5 <- plotUMAP(sce_corr, colour = "celltype")
+```
+
+```{r}
+
+reconstr <- as.matrix(assay(sce_corr, "reconstructed"))
+reconstr <- reconstr + abs(min(reconstr))
+
+ca_corr <- cacomp(
+  obj = reconstr,
+  princ_coords = 3,
+  dims = 50,
+  top = nrow(sce_corr),
+  residuals = "pearson"
+)
+
+cell_types <- sce$celltype
+cat("Number of cell types:", length(unique(cell_types)), "\n")
+```
+
+# CAdir
+
+```{r}
+set.seed(2358)
+cabic_corr <- dirclust_splitmerge(
+  caobj = ca_corr,
+  k = 14,
+  cutoff = 55,
+  method = "random",
+  apl_quant = 0.99,
+  counts = NULL,
+  min_cells = 20,
+  reps = NULL,
+  make_plots = TRUE,
+  qcutoff = 0.8,
+  convergence_thr = 0.001
+)
+```
+
+```{r}
+sce_corr$cadir <- cabic_corr@cell_clusters
+ari <- aricode::clustComp(sce_corr$cadir, sce_corr$celltype)
+cat("ARI:", ari$ARI, "\n")
+
+```
+
+```{r}
+cabic_corr <- annotate_biclustering(
+  obj = cabic_corr,
+  universe = rownames(sce_corr),
+  org = "hs"
+)
+
+sce_corr$cadir <- cabic_corr@cell_clusters
+cabic
+```
+
+```{r}
+um6 <- plotUMAP(sce_corr, colour = "cadir")
+
+um <- (um4 | um5) /
+  (um6 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))))
+um
+
+ggsave(
+  plot = um,
+  filename = file.path(imgdir, "batch_corr_umap.png"),
+  width = 2400,
+  height = 1600,
+  units = "px"
+)
+
+```
+
+```{r}
+sessionInfo()
+```
+

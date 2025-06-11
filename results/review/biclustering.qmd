@@ -1,0 +1,540 @@
+---
+title: Figure 4
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+
+suppressPackageStartupMessages({
+  library(CAdir)
+  library(scater)
+  library(dplyr)
+  library(tidyr)
+  library(readr)
+  library(ggplot2)
+  library(patchwork)
+  library(ggthemes)
+})
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/biclustering/")
+
+dir.create(imgdir, recursive = TRUE)
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+```
+
+# Cell clustering benchmarking
+
+```{r}
+date <- "20250403"
+base_dir <- file.path("./results/benchmarking/results/biclustering", date)
+indir <- file.path(base_dir, "eval")
+```
+
+## simulated data
+Benchmarking results based on Zeisel Brain data:
+
+```{r}
+zeisel_eval <- readRDS(
+  file.path(
+    indir,
+    paste0(date, "_zeisel_collated.rds")
+  )
+)
+
+dfz <- zeisel_eval %>%
+  mutate(dataset = "zeisel") %>%
+  mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep = "_")) %>%
+  mutate(simulation = factor(simulation, levels = c(
+    "0.02_0.75_0.75",
+    "0.06_0.75_0.75",
+    "0.1_0.75_0.75",
+    "0.02_1.5_1.5",
+    "0.06_1.5_1.5",
+    "0.1_1.5_1.5"
+  )))
+
+table(
+  zeisel_eval$algorithm,
+  paste(zeisel_eval$dePROB, zeisel_eval$defacLOC, zeisel_eval$defacSCALE, sep = "_")
+)
+```
+
+Benchmarking results based on PBMC3k data:
+
+```{r}
+pbmc_eval <- readRDS(
+  file.path(
+    indir,
+    paste0(date, "_pbmc3k_collated.rds")
+  )
+)
+
+dfp <- pbmc_eval %>%
+  mutate(dataset = "pbmc3k") %>%
+  mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep = "_")) %>%
+  mutate(simulation = factor(simulation, levels = c(
+    "0.02_0.75_0.75",
+    "0.06_0.75_0.75",
+    "0.1_0.75_0.75",
+    "0.02_1.5_1.5",
+    "0.06_1.5_1.5",
+    "0.1_1.5_1.5"
+  )))
+
+table(
+  pbmc_eval$algorithm,
+  paste(pbmc_eval$dePROB, pbmc_eval$defacLOC, pbmc_eval$defacSCALE, sep = "_")
+)
+```
+
+Combining the benchmarking resuls:
+
+```{r}
+df_all <- rbind(dfz, dfp)
+
+df_all$algorithm <- gsub("CAbiNet_igraph", "CAbiNet", df_all$algorithm)
+df_all <- df_all %>% filter(algorithm != "kmeans")
+
+df_all$algorithm <- factor(df_all$algorithm,
+  levels =
+    c(
+      "CAdir",
+      "CAdir_auto",
+      # "kmeans",
+      "CAbiNet",
+      "Seurat",
+      "Monocle3",
+      "BackSPIN",
+      "CCA",
+      "Plaid",
+      "QUBIC",
+      "s4vd"
+    )
+)
+df_mean <- df_all %>%
+  group_by(simulation, algorithm, dataset) %>%
+  mutate(mean_CE = mean(clustering_error, na.rm = TRUE)) %>%
+  mutate(mean_ARI_cells = mean(ARI_cells, na.rm = TRUE)) %>%
+  mutate(mean_ARI_genes = mean(ARI_genes, na.rm = TRUE)) %>%
+  select(
+    dataset,
+    simulation,
+    algorithm,
+    mean_CE,
+    mean_ARI_cells,
+    mean_ARI_genes
+  ) %>%
+  distinct() %>%
+  ungroup()
+
+
+df_max <- df_all %>%
+  group_by(simulation, algorithm, dataset) %>%
+  mutate(max_CE = max(clustering_error, na.rm = TRUE)) %>%
+  mutate(max_ARI_cells = max(ARI_cells, na.rm = TRUE)) %>%
+  mutate(max_ARI_genes = max(ARI_genes, na.rm = TRUE)) %>%
+  select(
+    dataset,
+    simulation,
+    algorithm,
+    max_CE,
+    max_ARI_cells,
+    max_ARI_genes
+  ) %>%
+  distinct() %>%
+  ungroup()
+
+df_max$max_CE[is.infinite(df_max$max_CE)] <- 0
+df_max$max_ARI_cells[is.infinite(df_max$max_ARI_cells)] <- 0
+df_max$max_ARI_cells[is.infinite(df_max$max_ARI_genes)] <- 0
+```
+
+### Biclustering - Max Results
+
+```{r}
+p_max_ari <- df_max %>%
+  ggplot(aes(
+    x = algorithm,
+    y = max_ARI_cells
+  )) +
+  geom_boxplot(aes(fill = algorithm),
+    color = "#383e42",
+    alpha = 1,
+    outlier.alpha = 0
+  ) +
+  geom_jitter(
+    aes(
+      x = algorithm,
+      y = max_ARI_cells,
+      color = dataset,
+      group = dataset,
+      shape = simulation
+    ),
+    stroke = 1.5,
+    size = 2,
+    width = 0.2
+  ) +
+  labs(
+    title = "Maximum ARI",
+    y = "max ARI",
+    x = "algorithm"
+  ) +
+  scale_shape_manual(values = seq_len(length(df_max$simulation))) +
+  scale_fill_mpimg(name = "mpi_extend") +
+  scale_color_manual(values = list(
+    "zeisel" = "#60636a",
+    "pbmc3k" = "#a5acaf"
+  )) +
+  theme_bw(base_size = 18) +
+  theme(
+    axis.text.x = element_text(
+      color = "black",
+      angle = 45,
+      vjust = 1,
+      hjust = 1
+    ),
+    text = element_text(size = 20),
+  ) +
+  guides(fill = "none")
+
+p_max_ari
+
+ggsave(
+  plot = p_max_ari,
+  filename = file.path(imgdir, "bicl_max_ARI_cells.pdf"),
+  width = 3000,
+  height = 2000,
+  units = "px"
+)
+```
+
+```{r}
+p_max_ce <- df_max %>%
+  ggplot(aes(
+    x = algorithm,
+    y = max_CE
+  )) +
+  geom_boxplot(aes(fill = algorithm),
+    color = "#383e42",
+    alpha = 1,
+    outlier.alpha = 0
+  ) +
+  geom_jitter(
+    aes(
+      x = algorithm,
+      y = max_CE,
+      color = dataset,
+      group = dataset,
+      shape = simulation
+    ),
+    stroke = 1.5,
+    size = 2,
+    width = 0.2
+  ) +
+  labs(
+    title = "Maximum CE",
+    y = "max CE",
+    x = "algorithm"
+  ) +
+  scale_shape_manual(values = seq_len(length(df_max$simulation))) +
+  scale_fill_mpimg(name = "mpi_extend") +
+  scale_color_manual(values = list(
+    "zeisel" = "#60636a",
+    "pbmc3k" = "#a5acaf"
+  )) +
+  theme_bw(base_size = 18) +
+  theme(
+    axis.text.x = element_text(
+      color = "black",
+      angle = 45,
+      vjust = 1,
+      hjust = 1
+    ),
+    text = element_text(size = 20),
+  ) +
+  guides(fill = "none")
+
+p_max_ce
+
+ggsave(plot = p_max_ce,
+       filename = file.path(imgdir, "bicl_max_CE.pdf"),
+       width = 3000,
+       height = 2000,
+       units = "px")
+```
+
+### Biclustering - Average Results
+
+```{r}
+p_mean_ari <- df_mean %>%
+  ggplot(aes(
+    x = algorithm,
+    y = mean_ARI_cells
+  )) +
+  geom_boxplot(aes(fill = algorithm),
+    color = "#383e42",
+    alpha = 1,
+    outlier.alpha = 0
+  ) +
+  geom_jitter(
+    aes(
+      x = algorithm,
+      y = mean_ARI_cells,
+      color = dataset,
+      group = dataset,
+      shape = simulation
+    ),
+    stroke = 1.5,
+    size = 2,
+    width = 0.2
+  ) +
+  labs(
+    title = "Mean ARI",
+    y = "mean ARI",
+    x = "algorithm"
+  ) +
+  scale_shape_manual(values = seq_len(length(df_mean$simulation))) +
+  scale_fill_mpimg(name = "mpi_extend") +
+  scale_color_manual(values = list(
+    "zeisel" = "#60636a",
+    "pbmc3k" = "#a5acaf"
+  )) +
+  theme_bw(base_size = 20) +
+  theme(
+    axis.text.x = element_text(
+      color = "black",
+      angle = 45,
+      vjust = 1,
+      hjust = 1
+    ),
+    text = element_text(size = 20),
+  ) +
+  guides(fill = "none")
+
+p_mean_ari
+
+
+ggsave(
+  plot = p_mean_ari,
+  filename = file.path(imgdir, "bicl_mean_ARI_cells.pdf"),
+  width = 2500,
+  height = 1650,
+  units = "px"
+)
+```
+
+```{r}
+p_mean_ce <- df_mean %>%
+  ggplot(aes(
+    x = algorithm,
+    y = mean_CE
+  )) +
+  geom_boxplot(aes(fill = algorithm),
+    color = "#383e42",
+    alpha = 1,
+    outlier.alpha = 0
+  ) +
+  geom_jitter(
+    aes(
+      x = algorithm,
+      y = mean_CE,
+      color = dataset,
+      group = dataset,
+      shape = simulation
+    ),
+    stroke = 1.5,
+    size = 2,
+    width = 0.2
+  ) +
+  labs(
+    title = "Mean CE",
+    y = "mean CE",
+    x = "algorithm"
+  ) +
+  scale_shape_manual(values = seq_len(length(df_mean$simulation))) +
+  scale_fill_mpimg(name = "mpi_extend") +
+  scale_color_manual(values = list(
+    "zeisel" = "#60636a",
+    "pbmc3k" = "#a5acaf"
+  )) +
+  theme_bw(base_size = 18) +
+  theme(
+    axis.text.x = element_text(
+      color = "black",
+      angle = 45,
+      vjust = 1,
+      hjust = 1
+    ),
+    text = element_text(size = 20),
+  ) +
+  guides(fill = "none")
+
+p_mean_ce
+
+
+ggsave(plot = p_mean_ce,
+       filename = file.path(imgdir, "bicl_mean_CE.pdf"),
+       width = 2500,
+       height = 1650,
+       units = "px")
+```
+
+# Gene evaluation
+
+## max ARI
+```{r}
+p_max_ari_g <- df_max %>%
+  ggplot(aes(
+    x = algorithm,
+    y = max_ARI_genes
+  )) +
+  geom_boxplot(aes(fill = algorithm),
+    color = "#383e42",
+    alpha = 1,
+    outlier.alpha = 0
+  ) +
+  geom_jitter(
+    aes(
+      x = algorithm,
+      y = max_ARI_genes,
+      color = dataset,
+      group = dataset,
+      shape = simulation
+    ),
+    stroke = 1.5,
+    size = 2,
+    width = 0.2
+  ) +
+  labs(
+    title = "Max ARI genes",
+    y = "max ARI",
+    x = "algorithm"
+  ) +
+  scale_shape_manual(values = seq_len(length(df_max$simulation))) +
+  scale_fill_mpimg(name = "mpi_extend") +
+  scale_color_manual(values = list(
+    "zeisel" = "#60636a",
+    "pbmc3k" = "#a5acaf"
+  )) +
+  theme_bw(base_size = 18) +
+  theme(
+    axis.text.x = element_text(
+      color = "black",
+      angle = 45,
+      vjust = 1,
+      hjust = 1
+    ),
+    text = element_text(size = 20),
+  ) +
+  guides(fill = "none")
+
+p_max_ari_g
+
+
+ggsave(plot = p_max_ari_g,
+       filename = file.path(imgdir, "bicl_max_ARI_genes.pdf"),
+       width = 2500,
+       height = 1650,
+       units = "px")
+```
+
+```{r}
+p_mean_ari_g <- df_mean %>%
+  ggplot(aes(
+    x = algorithm,
+    y = mean_ARI_genes
+  )) +
+  geom_boxplot(aes(fill = algorithm),
+    color = "#383e42",
+    alpha = 1,
+    outlier.alpha = 0
+  ) +
+  geom_jitter(
+    aes(
+      x = algorithm,
+      y = mean_ARI_genes,
+      color = dataset,
+      group = dataset,
+      shape = simulation
+    ),
+    stroke = 1.5,
+    size = 2,
+    width = 0.2
+  ) +
+  labs(
+    title = "Mean ARI genes",
+    y = "Mean ARI",
+    x = "algorithm"
+  ) +
+  scale_shape_manual(values = seq_len(length(df_mean$simulation))) +
+  scale_fill_mpimg(name = "mpi_extend") +
+  scale_color_manual(values = list(
+    "zeisel" = "#60636a",
+    "pbmc3k" = "#a5acaf"
+  )) +
+  theme_bw(base_size = 18) +
+  theme(
+    axis.text.x = element_text(
+      color = "black",
+      angle = 45,
+      vjust = 1,
+      hjust = 1
+    ),
+    text = element_text(size = 20),
+  ) +
+  guides(fill = "none")
+
+p_mean_ari_g
+
+
+ggsave(plot = p_mean_ari_g,
+       filename = file.path(imgdir, "bicl_mean_ARI_genes.pdf"),
+       width = 2500,
+       height = 1650,
+       units = "px")
+```
+
+
+# Figure panels
+
+```{r}
+fig <- (p_max_ce + p_max_ari_g + p_mean_ce + p_mean_ari_g) + plot_layout(guides = "collect") +
+  scale_shape_manual(values = seq_len(length(df_all$simulation))) +
+  scale_fill_mpimg(name = "mpi_extend") +
+  scale_color_manual(values = list(
+    "zeisel" = "#60636a",
+    "pbmc3k" = "#a5acaf"
+  )) +
+  plot_annotation(tag_levels = "a")
+
+ggsave(plot = fig,
+       filename = file.path(imgdir, "bicl_panel.pdf"),
+       width = 3800,
+       height = 3200,
+       units = "px")
+
+```
+
+# Environment
+
+```{r}
+sessionInfo()
+```
+
