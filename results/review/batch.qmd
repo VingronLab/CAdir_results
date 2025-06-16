@@ -115,15 +115,20 @@ cabic
 ```
 
 ```{r}
-um1 <- plotUMAP(sce_sub, colour = "cadir")
-um2 <- plotUMAP(sce_sub, colour = "celltype")
-um3 <- plotUMAP(sce_sub, colour = "tech")
+um1 <- plotUMAP(sce_sub, colour_by = "cadir") +
+  guides(colour = guide_legend(title = "CAdir"))
+um2 <- plotUMAP(sce_sub, colour_by = "celltype") +
+  guides(colour = guide_legend(title = "Cell Type"))
+um3 <- plotUMAP(sce_sub, colour_by = "tech") +
+  guides(colour = guide_legend(title = "Technology"))
 
 ari <- aricode::clustComp(sce_sub$cadir, sce_sub$celltype)
 cat("ARI:", ari$ARI, "\n")
 
 um <- (um2 | um3) /
-  (um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))))
+  (um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2)))) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 12))
 
 um
 
@@ -194,8 +199,10 @@ stopifnot(identical(rownames(colData(sce_corr)), rownames(colData(sce_sub))))
 sce_corr$celltype <- sce_sub$celltype
 
 sce_corr <- runUMAP(sce_corr, dimred = "corrected")
-um4 <- plotUMAP(sce_corr, colour = "batch")
-um5 <- plotUMAP(sce_corr, colour = "celltype")
+um4 <- plotUMAP(sce_corr, colour = "batch") +
+  guides(colour = guide_legend(title = "Batch"))
+um5 <- plotUMAP(sce_corr, colour = "celltype") +
+  guides(colour = guide_legend(title = "Cell Type"))
 ```
 
 ```{r}
@@ -253,10 +260,13 @@ cabic
 ```
 
 ```{r}
-um6 <- plotUMAP(sce_corr, colour = "cadir")
+um6 <- plotUMAP(sce_corr, colour = "cadir") +
+  guides(colour = guide_legend(title = "CAdir"))
 
 um <- (um4 | um5) /
-  (um6 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))))
+  (um6 + ggtitle(paste0("ARI: ", round(ari$ARI, 2)))) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 12))
 um
 
 ggsave(
