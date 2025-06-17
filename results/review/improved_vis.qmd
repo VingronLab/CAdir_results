@@ -1,0 +1,253 @@
+---
+title: Improved Visualizations.
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  devtools::load_all("~/gits/ClemensKohl/CAdir")
+  library(APL)
+  library(SingleCellExperiment)
+  library(dplyr)
+
+  # To load the data set
+  library(TENxPBMCData)
+  library(Seurat)
+  library(SeuratObject)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(patchwork)
+  library(ggtext)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review/improved_vis/")
+dir.create(imgdir, recursive = TRUE)
+```
+
+## Load data
+
+```{r}
+data_dir <- "./data/real/discussed/"
+
+marker_genes <- readr::read_csv(file.path(data_dir, "tabula_muris_marker_genes.csv"))
+sce <- readRDS(file.path(data_dir, "preprocessed/tabula_muris_preprocessed_filtered.rds"))
+
+genevars <- modelGeneVar(sce, assay.type = "logcounts")
+chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)
+
+# add marker_genes
+expr_markers <- marker_genes[marker_genes$gene %in% rownames(sce), ]
+chosen <- c(chosen, expr_markers$gene)
+chosen <- unique(chosen)
+sce_sub <- sce[chosen, ]
+
+ca <- cacomp(obj = logcounts(sce_sub),
+             princ_coords = 3,
+             dims = 30,
+             top = nrow(sce_sub),
+             residuals = "pearson",
+             python = TRUE)
+
+cell_types <- sce$cell_ontology_class
+cat("Number of cell types:", length(unique(cell_types)), "\n")
+```
+
+# CAdir
+
+```{r}
+set.seed(2358)
+cak <- dirclust_splitmerge(
+    caobj = ca,
+    k = 8,
+    cutoff = 55,
+    method = "random",
+    apl_quant = 0.99,
+    counts = NULL,
+    min_cells = 20,
+    reps = NULL,
+    make_plots = TRUE,
+    qcutoff = 0.8,
+    convergence_thr = 0.001
+)
+```
+
+Annotate biclustering:
+
+```{r}
+cak <- annotate_biclustering(
+  obj = cak,
+  universe = rownames(sce_sub),
+  org = "mm"
+)
+
+sce_sub$cadir <- cak@cell_clusters
+
+cak
+```
+
+```{r}
+um1 <- plotUMAP(sce_sub, colour = "cadir")
+um2 <- plotUMAP(sce_sub, colour = "cell_ontology_class")
+
+ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
+cat("ARI:", ari$ARI)
+
+um <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
+um
+
+ggsave(
+  plot = um,
+  filename = file.path(imgdir, "umap.png")
+)
+```
+
+# Improved Graph plot
+
+## graph
+```{r}
+sm <- sm_plot(
+  cadir = cak,
+  caobj = ca,
+  rm_redund = TRUE,
+  keep_end = FALSE,
+  highlight_cluster = TRUE,
+  show_genes = FALSE,
+  annotate_clusters = FALSE,
+  org = "mm",
+  inlet_side = 0.12,
+  title_size = 12,
+  show_axis = FALSE
+)
+
+sm
+ggsave(
+  plot = sm,
+  filename = file.path(imgdir, "tm_split_merge_plot.pdf"),
+  device = cairo_pdf,
+  width = 2300,
+  height = 2100,
+  units = "px"
+)
+
+ggsave(
+  plot = sm,
+  filename = file.path(imgdir,"tm_split_merge_plot.png"),
+  width = 2300,
+  height = 2100,
+  units = "px"
+)
+```
+
+## APLs
+
+### large genes
+```{r}
+cls <- "B_cell"
+p_bt1 <- cluster_apl(
+  ca,
+  cak,
+  cluster = cls,
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 2,
+  point_size = 1,
+  ntop = 1
+)
+
+p_bt1
+
+```
+## small genes
+
+```{r}
+cls <- "B_cell"
+p_bt2 <- cluster_apl(
+  ca,
+  cak,
+  cluster = cls,
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = FALSE,
+  show_lines = FALSE,
+  size_factor = 0.1,
+  point_size = 3,
+  ntop = 5
+)
+
+p_bt2
+
+```
+
+## Panel
+
+```{r}
+library(patchwork)
+
+fig <- (wrap_elements(sm)) + (p_bt1 / p_bt2) +
+  plot_layout(widths = c(2, 1)) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 18))
+fig
+
+ggsave(
+  plot = fig,
+  filename = file.path(imgdir, "new_vis_panel.png"),
+  width = 3200,
+  height = 1600,
+  units = "px"
+)
+
+```
+
+### Interactive APL
+```{r}
+cls <- "B_cell"
+p_bt3 <- cluster_apl(
+  ca,
+  cak,
+  cluster = cls,
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 1,
+  point_size = 2,
+  ntop = Inf,
+  interactive = TRUE
+)
+
+htmlwidgets::saveWidget(
+  p_bt3,
+  file = file.path(imgdir, "interactive_bcells.html")
+)
+```
+
+# Session Info
+```{r}
+sessionInfo()
+```

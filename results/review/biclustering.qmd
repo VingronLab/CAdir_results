@@ -32,7 +32,7 @@ suppressPackageStartupMessages({
 })
 
 dir <- "./results/"
-imgdir <- file.path(dir, "img/biclustering/")
+imgdir <- file.path(dir, "img/review/biclustering/")
 
 dir.create(imgdir, recursive = TRUE)
 

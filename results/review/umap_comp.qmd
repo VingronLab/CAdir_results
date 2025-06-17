@@ -40,7 +40,7 @@ suppressPackageStartupMessages({
 options(repr.plot.width = 20, repr.plot.height = 15)
 
 dir <- "./results/"
-imgdir <- file.path(dir, "img/umap_comp/")
+imgdir <- file.path(dir, "img/review/umap_comp/")
 dir.create(imgdir, recursive = TRUE)
 ```
 
