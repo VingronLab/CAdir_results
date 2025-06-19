@@ -23,7 +23,7 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  library(CAdir)
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
   library(APL)
 
   library(SingleCellExperiment)
@@ -122,13 +122,13 @@ um2 <- plotUMAP(sce_sub, colour_by = "celltype") +
 um3 <- plotUMAP(sce_sub, colour_by = "tech") +
   guides(colour = guide_legend(title = "Technology"))
 
-ari <- aricode::clustComp(sce_sub$cadir, sce_sub$celltype)
-cat("ARI:", ari$ARI, "\n")
+ari1 <- aricode::clustComp(sce_sub$cadir, sce_sub$celltype)
+cat("ARI:", ari1$ARI, "\n")
 
 um <- (um2 | um3) /
-  (um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2)))) +
+  (um1 + ggtitle(paste0("ARI: ", round(ari1$ARI, 2)))) +
   plot_annotation(tag_levels = "a") &
-  theme(plot.tag = element_text(size = 12))
+  theme(plot.tag = element_text(face = "bold", size = 12))
 
 um
 
@@ -179,6 +179,35 @@ ggsave(
   height = 2000,
   units = "px"
 )
+```
+
+```{r}
+cact <- cabic
+cact@cell_clusters <- sce_sub$celltype
+names(cact@cell_clusters) <- names(cabic@cell_clusters)
+
+dirs <- list()
+for (c in unique(sce_sub$celltype)){
+  grp <- which(sce_sub$celltype == c)
+  dir <- colMeans(ca@prin_coords_cols[grp, ])
+  dirs[[c]] <- dir
+}
+dirs <- do.call("rbind", dirs)
+cact@directions <- dirs
+cact@gene_clusters <- CAdir::assign_genes(ca, cact, qcutoff = 0.8)
+
+capl1 <- cluster_apl(
+  cadir = cact,
+  caobj = ca,
+  cluster = "beta",
+  direction = cact@directions["beta",],
+  group = which(cact@cell_clusters == "beta"),
+  highlight_cluster = TRUE,
+  show_genes = TRUE
+) + ggtitle("beta - no batch correction")
+
+# cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")
+
 ```
 
 # Batch correction
@@ -243,8 +272,8 @@ cabic_corr <- dirclust_splitmerge(
 
 ```{r}
 sce_corr$cadir <- cabic_corr@cell_clusters
-ari <- aricode::clustComp(sce_corr$cadir, sce_corr$celltype)
-cat("ARI:", ari$ARI, "\n")
+ari2 <- aricode::clustComp(sce_corr$cadir, sce_corr$celltype)
+cat("ARI:", ari2$ARI, "\n")
 
 ```
 
@@ -264,7 +293,7 @@ um6 <- plotUMAP(sce_corr, colour = "cadir") +
   guides(colour = guide_legend(title = "CAdir"))
 
 um <- (um4 | um5) /
-  (um6 + ggtitle(paste0("ARI: ", round(ari$ARI, 2)))) +
+  (um6 + ggtitle(paste0("ARI: ", round(ari2$ARI, 2)))) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 12))
 um
@@ -277,6 +306,92 @@ ggsave(
   units = "px"
 )
 
+```
+
+```{r}
+cact <- cabic_corr
+cact@cell_clusters <- sce_corr$celltype
+names(cact@cell_clusters) <- names(cabic_corr@cell_clusters)
+
+dirs <- list()
+for (c in unique(sce_corr$celltype)){
+  grp <- which(sce_corr$celltype == c)
+  dir <- colMeans(ca_corr@prin_coords_cols[grp, ])
+  dirs[[c]] <- dir
+}
+dirs <- do.call("rbind", dirs)
+cact@directions <- dirs
+cact@gene_clusters <- CAdir::assign_genes(ca_corr, cact, qcutoff = 0.8)
+
+capl2 <- cluster_apl(
+  cadir = cact,
+  caobj = ca_corr,
+  cluster = "beta",
+  direction = cact@directions["beta",],
+  group = which(cact@cell_clusters == "beta"),
+  highlight_cluster = TRUE,
+  show_genes = TRUE
+) +
+ggtitle("beta - batch corrected")
+# cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")
+
+```
+
+```{r}
+capl3 <- cluster_apl(cadir = cabic, caobj = ca, cluster = "Beta_cell(β_cell)") + ggtitle("Beta_cell(β_cell) - no batch correction")
+capl4 <- cluster_apl(cadir = cabic_corr, caobj = ca_corr, cluster = "Beta_cell(β_cell)") + ggtitle("Beta_cell(β_cell) - batch correction")
+
+# capl3 <- cluster_apl(cadir = cabic, caobj = ca, cluster = "Acinar_cell")
+# capl4 <- cluster_apl(cadir = cabic_corr, caobj = ca_corr, cluster = "Acinar_cell")
+capl3 + capl4
+```
+
+```{r}
+um_batch <- (um2 | um3) /
+  (um1 + ggtitle(paste0("ARI: ", round(ari1$ARI, 2))) + capl1) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(face = "bold", size = 12))
+
+um_no_batch <- (um4 | um5) /
+  (um6 + ggtitle(paste0("ARI: ", round(ari2$ARI, 2))) + capl2) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(face = "bold", size = 12))
+
+ggsave(
+  plot = um_batch,
+  filename = file.path(imgdir, "fig1_batch_umap.png"),
+  width = 2400,
+  height = 1600,
+  units = "px"
+)
+ggsave(
+  plot = um_no_batch,
+  filename = file.path(imgdir, "fig2_no_batch_umap.png"),
+  width = 2400,
+  height = 1600,
+  units = "px"
+)
+```
+
+
+```{r}
+all <- ((
+  (um2 | um3) /
+    (um1 + ggtitle(paste0("ARI: ", round(ari1$ARI, 2))) + capl1)
+) | (
+  (um4 | um5) /
+    (um6 + ggtitle(paste0("ARI: ", round(ari2$ARI, 2))) + capl2)
+)) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(face = "bold", size = 12))
+
+ggsave(
+  plot = all,
+  filename = file.path(imgdir, "all_fig_umap.png"),
+  width = 4800,
+  height = 1600,
+  units = "px"
+)
 ```
 
 ```{r}
