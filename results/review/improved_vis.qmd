@@ -177,7 +177,8 @@ p_bt1 <- cluster_apl(
   size_factor = 2,
   point_size = 1,
   ntop = 1
-)
+) +
+  ggtitle("Large cells, small genes with label")
 
 p_bt1
 
@@ -197,11 +198,54 @@ p_bt2 <- cluster_apl(
   size_factor = 0.1,
   point_size = 3,
   ntop = 5
-)
+) +
+  ggtitle("Large cells, small genes")
 
 p_bt2
 
 ```
+
+```{r}
+cls <- "B_cell"
+p_bt3 <- cluster_apl(
+  ca,
+  cak,
+  cluster = cls,
+  highlight_cluster = FALSE,
+  show_genes = TRUE,
+  show_cells = FALSE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 1,
+  point_size = 2,
+  ntop = 10
+) +
+  ggtitle("genes colored by cluster")
+
+p_bt3
+
+```
+
+```{r}
+cls <- "B_cell"
+p_bt4 <- cluster_apl(
+  ca,
+  cak,
+  cluster = cls,
+  highlight_cluster = FALSE,
+  show_genes = FALSE,
+  label_genes = FALSE,
+  show_lines = FALSE,
+  size_factor = 0.1,
+  point_size = 2,
+  ntop = 5
+) +
+  ggtitle("cells colored by cluster")
+
+p_bt4
+
+```
+
 
 ## Panel
 
@@ -224,6 +268,23 @@ ggsave(
 
 ```
 
+```{r}
+
+fig1 <- (p_bt4 / p_bt3) | (p_bt1 / p_bt2) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 18))
+fig1
+
+
+ggsave(
+  plot = fig,
+  filename = file.path(imgdir, "new_vis_panel2.png"),
+  width = 3200,
+  height = 1600,
+  units = "px"
+)
+
+```
 ### Interactive APL
 ```{r}
 cls <- "B_cell"
@@ -246,6 +307,8 @@ htmlwidgets::saveWidget(
   file = file.path(imgdir, "interactive_bcells.html")
 )
 ```
+
+
 
 # Session Info
 ```{r}

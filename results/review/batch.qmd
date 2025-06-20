@@ -203,13 +203,45 @@ capl1 <- cluster_apl(
   direction = cact@directions["beta",],
   group = which(cact@cell_clusters == "beta"),
   highlight_cluster = TRUE,
-  show_genes = TRUE
-) + ggtitle("beta - no batch correction")
+  show_genes = TRUE,
+  point_size = 1
+) + ggtitle("beta - no batch correction") +
+  theme(legend.position = "none")
 
 # cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")
 
 ```
 
+```{r}
+cact2 <- cabic
+cact2@cell_clusters <- sce_sub$tech
+names(cact2@cell_clusters) <- names(cabic@cell_clusters)
+
+dirs <- list()
+for (c in unique(sce_sub$tech)){
+  grp <- which(sce_sub$tech == c)
+  dir <- colMeans(ca@prin_coords_cols[grp, ])
+  dirs[[c]] <- dir
+}
+dirs <- do.call("rbind", dirs)
+cact2@directions <- dirs
+cact2@gene_clusters <- CAdir::assign_genes(ca, cact2, qcutoff = 0.8)
+
+capl12 <- cluster_apl(
+  cadir = cact2,
+  caobj = ca,
+  cluster = "smartseq2",
+  direction = cact2@directions["smartseq2",],
+  group = which(cact2@cell_clusters == "smartseq2"),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  point_size = 1
+) + ggtitle("smartseq2 - no batch correction") +
+  theme(legend.position = "none")
+
+# cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")
+
+```
 # Batch correction
 
 ```{r}
@@ -330,13 +362,45 @@ capl2 <- cluster_apl(
   direction = cact@directions["beta",],
   group = which(cact@cell_clusters == "beta"),
   highlight_cluster = TRUE,
-  show_genes = TRUE
+  show_genes = TRUE,
+  point_size = 1
 ) +
-ggtitle("beta - batch corrected")
+ggtitle("beta - batch corrected") +
+  theme(legend.position = "none")
 # cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")
 
 ```
 
+```{r}
+cact2 <- cabic_corr
+cact2@cell_clusters <- as.factor(sce_corr$batch)
+names(cact2@cell_clusters) <- names(cabic_corr@cell_clusters)
+
+dirs <- list()
+for (c in unique(sce_corr$batch)){
+  grp <- which(sce_corr$batch == c)
+  dir <- colMeans(ca_corr@prin_coords_cols[grp, ])
+  dirs[[c]] <- dir
+}
+dirs <- do.call("rbind", dirs)
+cact2@directions <- dirs
+cact2@gene_clusters <- CAdir::assign_genes(ca_corr, cact2, qcutoff = 0.8)
+
+capl22 <- cluster_apl(
+  cadir = cact2,
+  caobj = ca_corr,
+  cluster = "smartseq2",
+  direction = cact2@directions["smartseq2",],
+  group = which(cact2@cell_clusters == "smartseq2"),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  point_size = 1
+) +
+ggtitle("smartseq2 - batch corrected") +
+  theme(legend.position = "none")
+# cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")
+
+```
 ```{r}
 capl3 <- cluster_apl(cadir = cabic, caobj = ca, cluster = "Beta_cell(β_cell)") + ggtitle("Beta_cell(β_cell) - no batch correction")
 capl4 <- cluster_apl(cadir = cabic_corr, caobj = ca_corr, cluster = "Beta_cell(β_cell)") + ggtitle("Beta_cell(β_cell) - batch correction")
@@ -348,27 +412,27 @@ capl3 + capl4
 
 ```{r}
 um_batch <- (um2 | um3) /
-  (um1 + ggtitle(paste0("ARI: ", round(ari1$ARI, 2))) + capl1) +
+  (um1 + ggtitle(paste0("ARI: ", round(ari1$ARI, 2))) + (capl1 / capl12)) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(face = "bold", size = 12))
 
-um_no_batch <- (um4 | um5) /
-  (um6 + ggtitle(paste0("ARI: ", round(ari2$ARI, 2))) + capl2) +
+um_no_batch <- (um5 | um4) /
+  (um6 + ggtitle(paste0("ARI: ", round(ari2$ARI, 2))) + (capl2 / capl22)) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(face = "bold", size = 12))
 
 ggsave(
   plot = um_batch,
   filename = file.path(imgdir, "fig1_batch_umap.png"),
-  width = 2400,
-  height = 1600,
+  width = 2600,
+  height = 2000,
   units = "px"
 )
 ggsave(
   plot = um_no_batch,
   filename = file.path(imgdir, "fig2_no_batch_umap.png"),
-  width = 2400,
-  height = 1600,
+  width = 2600,
+  height = 2000,
   units = "px"
 )
 ```
@@ -392,6 +456,17 @@ ggsave(
   height = 1600,
   units = "px"
 )
+```
+
+
+```{r}
+cabic <- rank_genes(cabic, ca)
+top <- cabic@gene_ranks$"Beta_cell(β_cell)"
+nrow(top[top$Score >= 0, ])
+
+cabic_corr <- rank_genes(cabic_corr, ca_corr)
+top_corr <- cabic_corr@gene_ranks$"Beta_cell(β_cell)"
+nrow(top_corr[top_corr$Score >= 0, ])
 ```
 
 ```{r}
