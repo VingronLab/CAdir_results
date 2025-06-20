@@ -124,6 +124,7 @@ ggsave(
 )
 ```
 
+
 # Improved Graph plot
 
 ## graph
@@ -172,7 +173,7 @@ p_bt1 <- cluster_apl(
   cluster = cls,
   highlight_cluster = TRUE,
   show_genes = TRUE,
-  label_genes = TRUE,
+  label_genes = FALSE,
   show_lines = FALSE,
   size_factor = 2,
   point_size = 1,
@@ -194,7 +195,6 @@ p_bt2 <- cluster_apl(
   highlight_cluster = TRUE,
   show_genes = TRUE,
   label_genes = FALSE,
-  show_lines = FALSE,
   size_factor = 0.1,
   point_size = 3,
   ntop = 5
@@ -211,7 +211,7 @@ p_bt3 <- cluster_apl(
   ca,
   cak,
   cluster = cls,
-  highlight_cluster = FALSE,
+  highlight_cluster = TRUE,
   show_genes = TRUE,
   show_cells = FALSE,
   label_genes = TRUE,
@@ -220,7 +220,7 @@ p_bt3 <- cluster_apl(
   point_size = 2,
   ntop = 10
 ) +
-  ggtitle("genes colored by cluster")
+  ggtitle("genes colored by cluster, top 10 labelled")
 
 p_bt3
 
@@ -235,7 +235,7 @@ p_bt4 <- cluster_apl(
   highlight_cluster = FALSE,
   show_genes = FALSE,
   label_genes = FALSE,
-  show_lines = FALSE,
+  show_lines = c("T_cell", "Immune_cell"),
   size_factor = 0.1,
   point_size = 2,
   ntop = 5
@@ -270,21 +270,21 @@ ggsave(
 
 ```{r}
 
-fig1 <- (p_bt4 / p_bt3) | (p_bt1 / p_bt2) +
+fig1 <- ((p_bt4 / p_bt3) | (p_bt1 / p_bt2)) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 18))
 fig1
 
 
 ggsave(
-  plot = fig,
+  plot = fig1,
   filename = file.path(imgdir, "new_vis_panel2.png"),
   width = 3200,
   height = 1600,
   units = "px"
 )
-
 ```
+
 ### Interactive APL
 ```{r}
 cls <- "B_cell"
