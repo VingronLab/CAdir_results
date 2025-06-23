@@ -87,10 +87,10 @@ get_top_cells <- function(cadir, caobj, cluster) {
     )
   }
   group <- which(cadir@cell_clusters == cluster)
-  direction <- cadir@directions[cadir@dict[[cluster]], ]
+  direction <- cadir@directions[cadir@dict[[cluster]], ] / caobj@D
 
   model <- apl_model(
-    caobj = caobj,
+    coords = caobj@std_coords_cols,
     direction = direction,
     group = group
   )
@@ -215,7 +215,7 @@ plot_clusters_custom <- function(cadir,
       p <- p +
         geom_point(
           data = cell_rnk[cell_rnk$Score >= 0, ],
-          aes(x = x, y = y),
+          aes(x = x, y = y, text = NULL),
           color = "#d44a3d",
         )
     }

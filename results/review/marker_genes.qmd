@@ -437,3 +437,8 @@ top_b
 top_m
 
 ```
+
+# Session Info
+```{r}
+sessionInfo()
+```

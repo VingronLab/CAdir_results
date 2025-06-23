@@ -229,16 +229,15 @@ p_bt3
 ```{r}
 cls <- "B_cell"
 p_bt4 <- cluster_apl(
-  ca,
-  cak,
+  caobj = ca,
+  cadir = cak,
   cluster = cls,
   highlight_cluster = FALSE,
   show_genes = FALSE,
   label_genes = FALSE,
   show_lines = c("T_cell", "Immune_cell"),
   size_factor = 0.1,
-  point_size = 2,
-  ntop = 5
+  point_size = 2
 ) +
   ggtitle("cells colored by cluster")
 
@@ -314,3 +313,4 @@ htmlwidgets::saveWidget(
 ```{r}
 sessionInfo()
 ```
+

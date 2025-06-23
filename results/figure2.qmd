@@ -23,7 +23,8 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  library(CAdir)
+  devtools::load_all("~/gits/ClemensKohl/CAdir")
+  #library(CAdir)
   library(APL)
   library(SingleCellExperiment)
   library(dplyr)
@@ -169,10 +170,10 @@ ggsave(
 ```{r}
 cls <- "B_cell"
 group <- which(cak@cell_clusters == cls)
-direction <- cak@directions[cak@dict[[cls]], ]
+direction <- cak@directions[cak@dict[[cls]], ] / ca@D
 
 model <- apl_model(
-  caobj = ca,
+  coords = ca@std_coords_cols,
   direction = direction,
   group = group
 )
@@ -204,24 +205,46 @@ p_bt <- cluster_apl(
   size_factor = 0.5,
   ntop = 5
 ) +
-  geom_point(data = tcs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
+  geom_point(
+    data = tcs_coords,
+    aes(x = x, y = y, text = NULL),
+    color = "#d44a3d"
+  ) +
   ggplot2::geom_abline(
     intercept = 0,
     slope = CAdir:::slope(lines = t_dir, dims = 1:2),
     color = "#d44a3d",
     linetype = "dashed",
-    size = 1) +
-geom_label(data=as.data.frame(t_dir*4), aes(x, y), label="T_cell", color = "#d44a3d", vjust=-1) +
-  geom_point(data = ics_coords, aes(x=x, y=y), color = "#00b1ea" ) +
+    linewidth = 1
+  ) +
+  geom_label(
+    data = as.data.frame(t_dir * 4),
+    aes(x, y, text = NULL),
+    label = "T_cell",
+    color = "#d44a3d",
+    vjust = -1
+  ) +
+  geom_point(
+    data = ics_coords,
+    aes(x = x, y = y, text = NULL),
+    color = "#00b1ea"
+  ) +
   ggplot2::geom_abline(
     intercept = 0,
     slope = CAdir:::slope(lines = i_dir, dims = 1:2),
     color = "#00b1ea",
     linetype = "dashed",
-    size = 1) +
-geom_label(data=as.data.frame(i_dir*7), aes(x, y), label="Immune_cell", color = "#00b1ea", vjust=1) +
-ggtitle("B cell") +
-theme_bw(base_size = 16)
+    linewidth = 1
+  ) +
+  geom_label(
+    data = as.data.frame(i_dir * 7),
+    aes(x, y, text = NULL),
+    label = "Immune_cell",
+    color = "#00b1ea",
+    vjust = 1
+  ) +
+  ggtitle("B cell") +
+  theme_bw(base_size = 16)
 
 p_bt
 
@@ -240,10 +263,10 @@ ggsave(
 ```{r}
 cls <- "Vascular_endothelial_cell"
 group <- which(cak@cell_clusters == cls)
-direction <- cak@directions[cak@dict[[cls]], ]
+direction <- cak@directions[cak@dict[[cls]], ] / ca@D
 
 model <- apl_model(
-  caobj = ca,
+  coords = ca@std_coords_cols,
   direction = direction,
   group = group
 )
@@ -269,16 +292,27 @@ p_ecs <- cluster_apl(
   size_factor = 0.5,
   ntop = 5
 ) +
-  geom_point(data = ecs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
+  geom_point(
+    data = ecs_coords,
+    aes(x = x, y = y, text = NULL),
+    color = "#d44a3d"
+  ) +
   ggplot2::geom_abline(
     intercept = 0,
-    slope = CAdir:::slope(lines = t_dir, dims = 1:2),
+    slope = CAdir:::slope(lines = e_dir, dims = 1:2),
     color = "#d44a3d",
     linetype = "dashed",
-    size = 1) +
-geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", color = "#d44a3d", hjust=-0.5) +
+    size = 1
+  ) +
+  geom_label(
+    data = as.data.frame(e_dir * 2),
+    aes(x, y, text = NULL),
+    label = "Endothelial_cell",
+    color = "#d44a3d",
+    hjust = -0.5
+  ) +
   ggtitle("Vascular endothelial cell") +
-theme_bw(base_size = 16)
+  theme_bw(base_size = 16)
 
 p_ecs
 
@@ -300,7 +334,7 @@ group <- which(cak@cell_clusters == cls)
 direction <- cak@directions[cak@dict[[cls]], ]
 
 model <- apl_model(
-  caobj = ca,
+  coords = ca@prin_coords_cols,
   direction = direction,
   group = group
 )
@@ -330,22 +364,44 @@ p_bt <- cluster_apl(
   size_factor = 0.5,
   ntop = 5
 ) +
-  geom_point(data = tcs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
+  geom_point(
+    data = tcs_coords,
+    aes(x = x, y = y, text = NULL),
+    color = "#d44a3d"
+  ) +
   ggplot2::geom_abline(
     intercept = 0,
     slope = CAdir:::slope(lines = t_dir, dims = 1:2),
     color = "#d44a3d",
     linetype = "dashed",
-    size = 1) +
-geom_label(data=as.data.frame(t_dir*2), aes(x, y), label="T_cell", color = "#d44a3d", vjust=-1) +
-  geom_point(data = ics_coords, aes(x=x, y=y), color = "#00b1ea" ) +
+    size = 1
+  ) +
+  geom_label(
+    data = as.data.frame(t_dir * 2),
+    aes(x, y, text = NULL),
+    label = "T_cell",
+    color = "#d44a3d",
+    vjust = -1
+  ) +
+  geom_point(
+    data = ics_coords,
+    aes(x = x, y = y, text = NULL),
+    color = "#00b1ea"
+  ) +
   ggplot2::geom_abline(
     intercept = 0,
     slope = CAdir:::slope(lines = i_dir, dims = 1:2),
     color = "#00b1ea",
     linetype = "dashed",
-    size = 1) +
-  geom_label(data=as.data.frame(i_dir*3), aes(x, y), label="Immune_cell", color = "#00b1ea", vjust=1) +
+    size = 1
+  ) +
+  geom_label(
+    data = as.data.frame(i_dir * 3),
+    aes(x, y, text = NULL),
+    label = "Immune_cell",
+    color = "#00b1ea",
+    vjust = 1
+  ) +
   ggtitle("B cell") +
   theme_bw(base_size = 18) +
   theme(plot.title = element_text(size = 22))
@@ -370,7 +426,7 @@ group <- which(cak@cell_clusters == cls)
 direction <- cak@directions[cak@dict[[cls]], ]
 
 model <- apl_model(
-  caobj = ca,
+  coords = ca@prin_coords_cols,
   direction = direction,
   group = group
 )
@@ -395,14 +451,25 @@ p_ecs <- cluster_apl(
   size_factor = 0.5,
   ntop = 5
 ) +
-  geom_point(data = ecs_coords, aes(x=x, y=y), color = "#d44a3d" ) +
+  geom_point(
+    data = ecs_coords,
+    aes(x = x, y = y, text = NULL),
+    color = "#d44a3d"
+  ) +
   ggplot2::geom_abline(
     intercept = 0,
-    slope = CAdir:::slope(lines = t_dir, dims = 1:2),
+    slope = CAdir:::slope(lines = e_dir, dims = 1:2),
     color = "#d44a3d",
     linetype = "dashed",
-    size = 1) +
-geom_label(data=as.data.frame(e_dir*2), aes(x, y), label="Endothelial_cell", color = "#d44a3d", hjust=-0.3) +
+    size = 1
+  ) +
+  geom_label(
+    data = as.data.frame(e_dir * 2),
+    aes(x, y, text = NULL),
+    label = "Endothelial_cell",
+    color = "#d44a3d",
+    hjust = -0.3
+  ) +
   ggtitle("Vascular endothelial cell") +
   theme_bw(base_size = 18) +
   theme(plot.title = element_text(size = 22))
@@ -463,26 +530,30 @@ library(ggsankey)
 sce_sank <- sce_sub
 
 data <- colData(sce_sank) %>%
-        as.data.frame() %>%
-        rename('CAdir' = "cadir",
-               'Annotation' = "cell_ontology_class")
+  as.data.frame() %>%
+  rename(
+    "CAdir" = "cadir",
+    "Annotation" = "cell_ontology_class"
+  )
 
 df <- data %>%
-    make_long(CAdir, Annotation)
+  make_long(CAdir, Annotation)
 
-info  <-  data.frame(Biclusters = as.factor(data$CAdir),
-                     Truth = as.character(data$Annotation)) %>%
-                as_tibble() %>%
-                group_by(Biclusters, Truth) %>%
-                summarise(n = n()) %>%
-                group_by(Truth) %>%
-                mutate(Partition = n/sum(n)) %>%
-                ungroup() %>%
-                as.data.frame() %>%
-                group_by(Truth) %>%
-                filter(Partition == max(Partition) ) %>%
-                dplyr::select(Biclusters, Truth) %>%
-                distinct(Biclusters, .keep_all = TRUE)
+info <- data.frame(
+  Biclusters = as.factor(data$CAdir),
+  Truth = as.character(data$Annotation)
+) %>%
+  as_tibble() %>%
+  group_by(Biclusters, Truth) %>%
+  summarise(n = n()) %>%
+  group_by(Truth) %>%
+  mutate(Partition = n / sum(n)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  group_by(Truth) %>%
+  filter(Partition == max(Partition)) %>%
+  dplyr::select(Biclusters, Truth) %>%
+  distinct(Biclusters, .keep_all = TRUE)
 
 
 pal <- mpi_extend_pal()
@@ -504,7 +575,6 @@ order <- c(
   "Immune_cell",
   "B_cell",
   "T_cell",
-
   "skeletal muscle satellite stem cell",
   "skeletal muscle satellite cell",
   "endothelial cell",
@@ -522,12 +592,14 @@ df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::
 names(cols) <- stringr::str_wrap(names(cols), wrap)
 
 
-sank <- ggplot(df, aes(x = x,
-               next_x = next_x,
-               node = node,
-               next_node = next_node,
-               fill = node,
-               label = as.character(node))) +
+sank <- ggplot(df, aes(
+  x = x,
+  next_x = next_x,
+  node = node,
+  next_node = next_node,
+  fill = node,
+  label = as.character(node)
+)) +
   geom_sankey(
     flow.alpha = 0.4,
   ) +
@@ -541,18 +613,22 @@ sank <- ggplot(df, aes(x = x,
 
 sank
 
-ggsave(plot = sank,
-       filename = file.path(imgdir, "sankey_plot_TM_clustering.pdf"),
-       width = 2700,
-       height = 2400,
-       device = cairo_pdf,
-       units = "px")
+ggsave(
+  plot = sank,
+  filename = file.path(imgdir, "sankey_plot_TM_clustering.pdf"),
+  width = 2700,
+  height = 2400,
+  device = cairo_pdf,
+  units = "px"
+)
 
-ggsave(plot = sank,
-       filename = file.path(imgdir, "sankey_plot_TM_clustering.png"),
-       width = 2700,
-       height = 2400,
-       units = "px")
+ggsave(
+  plot = sank,
+  filename = file.path(imgdir, "sankey_plot_TM_clustering.png"),
+  width = 2700,
+  height = 2400,
+  units = "px"
+)
 ```
 
 ## Angle between clusters
@@ -588,7 +664,14 @@ ggsave(
 ```
 
 ```{r}
-pr <- plot_results(cak, ca, title_prefix = "", gsub_title = "_|\\.", return_list = TRUE)
+pr <- plot_results(
+  cak,
+  ca,
+  highlight_cluster = TRUE,
+  title_prefix = "",
+  gsub_title = "_|\\.",
+  return_list = TRUE
+)
 
 pr <- lapply(
   pr,
@@ -620,3 +703,4 @@ pr
 ```{r}
 sessionInfo()
 ```
+

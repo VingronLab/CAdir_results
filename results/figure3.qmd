@@ -23,7 +23,8 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  library(CAdir)
+  devtools::load_all("~/gits/ClemensKohl/CAdir")
+  # library(CAdir)
   library(APL)
   library(SingleCellExperiment)
   library(dplyr)
@@ -140,8 +141,8 @@ ggsave(
 pc_mod <- plot_clusters_custom(
   cak,
   ca,
-  show_genes = T,
-  label_genes = T,
+  show_genes = TRUE,
+  label_genes = TRUE,
   ntop = 5,
   axis = TRUE,
   title_prefix = "",
@@ -177,7 +178,13 @@ rnks <- cak@gene_ranks$cluster_5
 sce$cadir_mod <- gsub("_", " ", sce$cadir)
 lvls <- gsub("_", " ", rownames(cak@directions))
 sce$cadir_mod <- factor(sce$cadir_mod, levels = lvls)
-p_expr <- scater::plotExpression(sce, features = head(rnks$Rowname, 4), x = "cadir_mod", colour_by = "cadir_mod", ncol = 2) +
+p_expr <- scater::plotExpression(
+  sce,
+  features = head(rnks$Rowname, 4),
+  x = "cadir_mod",
+  colour_by = "cadir_mod",
+  ncol = 2
+) +
   scale_color_mpimg() +
   labs(x = "Cluster", title = "Top 4 genes cluster 5") +
   theme_bw(base_size = 18) +
@@ -223,18 +230,19 @@ p_cl5_cells <- cluster_apl(
   show_lines = FALSE,
   size_factor = 0.5,
   ntop = 5
-  ) +
-ggrepel::geom_label_repel(
-    data = cell_rnk[cell_rnk$Score >= 0,],
-  ggplot2::aes(
-    x = x,
-    y = y,
-    label = Colname
-  ),
-  color = "#c6d325",
-  box.padding = 1,
-  max.overlaps = Inf
-)
+) +
+  ggrepel::geom_label_repel(
+    data = cell_rnk[cell_rnk$Score >= 0, ],
+    ggplot2::aes(
+      x = x,
+      y = y,
+      label = Colname,
+      text = NULL
+    ),
+    color = "#c6d325",
+    box.padding = 1,
+    max.overlaps = Inf
+  )
 
 p_cl5_cells
 ggsave(
@@ -252,34 +260,34 @@ Remove outliers:
 sce_corr <- sce[(!rownames(sce) %in% top_genes), (!colnames(sce) %in% top_cells)]
 
 ca_corr <- cacomp(
-    obj = as.matrix(logcounts(sce_corr)),
-    princ_coords = 3,
-    dims = 30,
-    top = nrow(sce_corr),
-    residuals = "pearson",
-    python = TRUE,
-    clip = TRUE
+  obj = as.matrix(logcounts(sce_corr)),
+  princ_coords = 3,
+  dims = 30,
+  top = nrow(sce_corr),
+  residuals = "pearson",
+  python = TRUE,
+  clip = TRUE
 )
 
 set.seed(2358)
 cak_corr <- dirclust_splitmerge(
-    caobj = ca_corr,
-    k = 12,
-    cutoff = NULL,
-    method = "random",
-    apl_quant = 0.99,
-    counts = NULL,
-    min_cells = 30,
-    reps = 5,
-    make_plots = FALSE,
-    apl_cutoff_reps = 100,
-    qcutoff = 0.6
+  caobj = ca_corr,
+  k = 12,
+  cutoff = NULL,
+  method = "random",
+  apl_quant = 0.99,
+  counts = NULL,
+  min_cells = 30,
+  reps = 5,
+  make_plots = FALSE,
+  apl_cutoff_reps = 100,
+  qcutoff = 0.6
 )
 
 cak_corr <- annotate_biclustering(
-    obj = cak_corr,
-    universe = rownames(sce_corr),
-    org = "hs"
+  obj = cak_corr,
+  universe = rownames(sce_corr),
+  org = "hs"
 )
 
 sce_corr$cadir_corr <- cak_corr@cell_clusters
@@ -321,30 +329,34 @@ Sankey plot showing to which clusters the remaining cells from cluster 5 are bei
 
 ```{r}
 sce_corr$cadir2 <- cak_corr@cell_clusters
-sce_sank <- sce_corr[,sce_corr$cadir == "cluster_5"]
+sce_sank <- sce_corr[, sce_corr$cadir == "cluster_5"]
 cadir_cls <- unique(as.character(sce_sank$cadir))
 
 data <- colData(sce_sank) %>%
-        as.data.frame() %>%
-        rename('First' = "cadir",
-               'Second' = "cadir2")
+  as.data.frame() %>%
+  rename(
+    "First" = "cadir",
+    "Second" = "cadir2"
+  )
 
 df <- data %>%
-    make_long(First, Second)
+  make_long(First, Second)
 
-info  <-  data.frame(Biclusters = as.factor(data$First),
-                     Truth = as.character(data$Second)) %>%
-                as_tibble() %>%
-                group_by(Biclusters, Truth) %>%
-                summarise(n = n()) %>%
-                group_by(Truth) %>%
-                mutate(Partition = n/sum(n)) %>%
-                ungroup() %>%
-                as.data.frame() %>%
-                group_by(Truth) %>%
-                filter(Partition == max(Partition) ) %>%
-                dplyr::select(Biclusters, Truth) %>%
-                distinct(Biclusters, .keep_all = TRUE)
+info <- data.frame(
+  Biclusters = as.factor(data$First),
+  Truth = as.character(data$Second)
+) %>%
+  as_tibble() %>%
+  group_by(Biclusters, Truth) %>%
+  summarise(n = n()) %>%
+  group_by(Truth) %>%
+  mutate(Partition = n / sum(n)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  group_by(Truth) %>%
+  filter(Partition == max(Partition)) %>%
+  dplyr::select(Biclusters, Truth) %>%
+  distinct(Biclusters, .keep_all = TRUE)
 
 
 pal <- mpimg_pal()
@@ -353,7 +365,7 @@ cols <- pal(length(cadir_cls))
 names(cols) <- cadir_cls
 
 info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
-info$col <- pal(nrow(info) + 1)[2:(nrow(info)+1)]
+info$col <- pal(nrow(info) + 1)[2:(nrow(info) + 1)]
 
 cols <- c(cols, info$col)
 
@@ -381,13 +393,15 @@ df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::
 names(cols) <- stringr::str_wrap(names(cols), wrap)
 
 
-sank <- ggplot(df, aes(x = x,
-               next_x = next_x,
-               node = node,
-               next_node = next_node,
-               fill = node,
-               label = as.character(node))) +
-  geom_sankey(flow.alpha = 0.6, flow.fill = c("#777777") ) +
+sank <- ggplot(df, aes(
+  x = x,
+  next_x = next_x,
+  node = node,
+  next_node = next_node,
+  fill = node,
+  label = as.character(node)
+)) +
+  geom_sankey(flow.alpha = 0.6, flow.fill = c("#777777")) +
   geom_sankey_label(size = 6) +
   labs(x = "") +
   scale_fill_manual(values = cols) +
@@ -398,12 +412,14 @@ sank <- ggplot(df, aes(x = x,
 
 sank
 
-ggsave(plot = sank,
-       filename = file.path(imgdir, "sankey_plot_cluster_5.pdf"),
+ggsave(
+  plot = sank,
+  filename = file.path(imgdir, "sankey_plot_cluster_5.pdf"),
   device = cairo_pdf,
-       width = 2700,
-       height = 2000,
-       units = "px")
+  width = 2700,
+  height = 2000,
+  units = "px"
+)
 ```
 
 ### Platelet cells
@@ -460,15 +476,16 @@ p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
     # limits = c(0, quantile(-log10(gr$padj), 0.99)),
     oob = scales::squish,
     guide = "colourbar_custom"
-  ) + 
+  ) +
   coord_fixed() +
   theme_bw() +
   labs(x = "Cluster", y = "Gene Set", title = "Gene Set enrichment") +
   theme(
-  axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
-  axis.text.y = element_text(color = "black"),
+    axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
+    axis.text.y = element_text(color = "black"),
     text = element_text(size = 18),
-    plot.title = element_text(size = 16, face = "plain"))  #"bold"
+    plot.title = element_text(size = 16, face = "plain")
+  ) # "bold"
 
 p_gs_enr
 
@@ -490,7 +507,7 @@ sm <- sm_plot(
   rm_redund = TRUE,
   keep_end = TRUE,
   highlight_cluster = TRUE,
-  show_genes = F,
+  show_genes = FALSE,
   annotate_clusters = TRUE,
   org = "hs"
 )
