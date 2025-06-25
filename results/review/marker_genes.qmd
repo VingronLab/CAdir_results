@@ -23,7 +23,8 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  library(CAdir)
+  # library(CAdir)
+  devtools::load_all("~/gits/ClemensKohl/CAdir")
   library(APL)
 
   library(SingleCellExperiment)
@@ -435,6 +436,29 @@ dev.off()
 ```{r}
 top_b
 top_m
+
+```
+
+# Top genes table
+
+```{r}
+library(xtable)
+tbl <- top_genes(cabic,  cutoff = 0)
+
+top_table <- list()
+n <- 3
+for (c in unique(tbl$Cluster)){
+  cat(c)
+  sub_tbl <- tbl[tbl$Cluster == c, ] %>%
+    dplyr::arrange(desc(Score))
+  top_table[[c]] <- sub_tbl[seq(n), ]
+}
+top_table <- do.call("rbind", top_table)
+top_table <- top_table[, c(1, 2, 4)]
+colnames(top_table) <- c("Gene", "Score", "Cluster")
+top_table <- top_table[, c("Cluster", "Gene", "Score")]
+rownames(top_table) <- NULL
+print(xtable(top_table, type = "latex"), file = file.path(imgdir, "top_genes.tex"))
 
 ```
 
