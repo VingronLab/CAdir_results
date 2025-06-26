@@ -179,7 +179,7 @@ p_bt1 <- cluster_apl(
   point_size = 1,
   ntop = 1
 ) +
-  ggtitle("Large cells, small genes with label")
+  ggtitle("Large genes, small cells")
 
 p_bt1
 
@@ -220,7 +220,7 @@ p_bt3 <- cluster_apl(
   point_size = 2,
   ntop = 10
 ) +
-  ggtitle("genes colored by cluster, top 10 labelled")
+  ggtitle("genes only, top 10 labelled")
 
 p_bt3
 
@@ -239,7 +239,7 @@ p_bt4 <- cluster_apl(
   size_factor = 0.1,
   point_size = 2
 ) +
-  ggtitle("cells colored by cluster")
+  ggtitle("cells only, colored by cluster")
 
 p_bt4
 

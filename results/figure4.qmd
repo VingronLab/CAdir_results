@@ -22,7 +22,8 @@ jupyter:
 renv::load()
 
 suppressPackageStartupMessages({
-  library(CAdir)
+  # library(CAdir)
+  devtools::load_all("~/gits/ClemensKohl/CAdir")
   library(scater)
   library(dplyr)
   library(tidyr)
@@ -394,8 +395,7 @@ ggsave(
 ## Experimental Data
 
 ```{r}
-# date <- "20250528_cpu"
-date <- "20250116"
+date <- "20250528_cpu"
 evldir <- file.path("./results/benchmarking/results/real/", date, "eval")
 
 options(repr.plot.width = 15, repr.plot.height = 10)
@@ -406,14 +406,6 @@ options(repr.plot.width = 15, repr.plot.height = 10)
 files <- list.files(evldir, "*.rds", full.names = TRUE)
 
 df <- data.frame()
-for (file in files) {
-  data <- readRDS(file)
-  df <- bind_rows(df, data)
-}
-
-date <- "20250528_cpu"
-evldir <- file.path("./results/benchmarking/results/real/", date, "eval")
-files <- list.files(evldir, "*.rds", full.names = TRUE)
 for (file in files) {
   data <- readRDS(file)
   df <- bind_rows(df, data)
@@ -580,7 +572,7 @@ df_tile$is2nd[is.na(df_tile$is2nd)] <- FALSE
 ```
 
 ```{r}
-p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
+p_tile <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
   geom_tile() +
   geom_tile(
     data = df_tile[df_tile$ismax, ],
@@ -597,14 +589,18 @@ p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
   geom_text(
     aes(label = round(Max_ARI, 2)),
     color = "white",
-    size = 3,
+    # size = 3,
+    size = 12,
+    size.unit = "pt",
     check_overlap = TRUE,
   ) +
   geom_text(
     data = na_txt,
     aes(x = algorithm, y = dataset, label = NAs),
     color = "white",
-    size = 3,
+    # size = 3,
+    size = 12,
+    size.unit = "pt",
     check_overlap = TRUE
   ) +
   scale_fill_gradientn(
@@ -633,14 +629,13 @@ p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
   )
 
 ggsave(
-  plot = p,
+  plot = p_tile,
   filename = file.path(imgdir, "real_bench_max_ARI_cells.pdf"),
   width = 2000,
   height = 1750,
   units = "px"
 )
-
-p
+p_tile
 ```
 
 ## Calculate % successful runs
@@ -721,7 +716,7 @@ stats <- bind_rows(stats, missing_comb)
 ```
 
 ```{r}
-p <- stats %>%
+p_succ <- stats %>%
   distinct() %>%
   select(-perc_NMI_succ, -perc_NMI_NA) %>%
   pivot_longer(
@@ -737,6 +732,7 @@ p <- stats %>%
   facet_grid(algorithm ~ dataset, as.table = FALSE, switch = "both") +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
+  # coord_fixed() +
   theme(
     panel.grid = element_blank(),
     axis.ticks = element_blank(),
@@ -768,11 +764,11 @@ p <- stats %>%
   ylab("Algorithm")
 
 ggsave(
-  plot = p,
+  plot = p_succ,
   filename = file.path(imgdir, "barplots_fraction_successful_runs_ARI_wide.pdf"),
   width = 8, height = 4.2
 )
-p
+p_succ
 ```
 
 # Runtime & Scalability
@@ -1100,6 +1096,61 @@ ggsave(
 )
 ```
 
+# Figure Panel Max
+```{r}
+
+fig4 <- (p_max_ari + p_tile) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    text = element_text(size = 20),
+    plot.title = element_text(size = 22, face = "plain"),
+    plot.tag = element_text(size = 22, face = "bold")
+  )
+
+ggsave(
+  plot = fig4,
+  filename = file.path(imgdir, "figure4_panel.pdf"),
+  width = 5600,
+  height = 2240,
+  units = "px"
+)
+
+fig4
+```
+
+# Figure Panel Mean
+```{r}
+
+suppl_panel <- (
+    (
+      (free(p_mean_ari, type = "label") + theme(legend.position = "none") + p_mean_nmi) +
+      plot_layout(guides = "collect") +
+      scale_shape_manual(values = seq_len(length(df_all$simulation))) +
+      scale_fill_mpimg(name = "mpi_extend") +
+      scale_color_manual(values = list(
+        "zeisel" = "#60636a",
+        "pbmc3k" = "#a5acaf"
+      ))
+    ) /
+    (plot_spacer() + p_succ + plot_spacer() + plot_layout(width = c(1,6,1)))
+  ) +
+    plot_annotation(tag_levels = "a") &
+    theme(
+      text = element_text(size = 20),
+      plot.title = element_text(size = 22, face = "plain"),
+      plot.tag = element_text(size = 22, face = "bold")
+    )
+
+ggsave(
+  plot = suppl_panel,
+  filename = file.path(imgdir, "suppl_mean_panel.pdf"),
+  width = 5600,
+  height = 4200,
+  units = "px"
+)
+
+suppl_panel
+```
 # Environment
 
 ```{r}
