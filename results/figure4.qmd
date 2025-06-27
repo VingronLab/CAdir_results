@@ -378,19 +378,6 @@ ggsave(
 )
 ```
 
-### Panel
-```{r}
-fig1 <- p_max_ari + p_mean_ari + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a")
-
-ggsave(
-  plot = fig1,
-  filename = file.path(imgdir, "sim_ARI_panel.pdf"),
-  width = 3800,
-  height = 1600,
-  units = "px"
-)
-
-```
 
 ## Experimental Data
 
@@ -572,6 +559,70 @@ df_tile$is2nd[is.na(df_tile$is2nd)] <- FALSE
 ```
 
 ```{r}
+p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
+  geom_tile() +
+  geom_tile(
+    data = df_tile[df_tile$ismax, ],
+    aes(x = algorithm, y = dataset),
+    fill = NA,
+    color = "#d44a3d",
+    linewidth = 1
+  ) +
+  # geom_tile(data = df_tile[df_tile$is2nd & !df_tile$ismax, ],
+  #   aes(x = algorithm, y = dataset),
+  #   fill = NA,
+  #   color = "#8c5fa8",
+  #   size = 1) +
+  geom_text(
+    aes(label = round(Max_ARI, 2)),
+    color = "white",
+    size = 3,
+    check_overlap = TRUE,
+  ) +
+  geom_text(
+    data = na_txt,
+    aes(x = algorithm, y = dataset, label = NAs),
+    color = "white",
+    size = 3,
+    check_overlap = TRUE
+  ) +
+  scale_fill_gradientn(
+    colours = c("#29485d", "#006c66", "#c6d325", "#ef7c00"),
+    limits = c(0, 1),
+    na.value = "#777777",
+    name = "Max ARI"
+  ) +
+  scale_color_manual(values = c("transparent", "red")) +
+  coord_fixed() +
+  theme_minimal() +
+  theme(
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    axis.text.y = element_text(color = "black"),
+    axis.text.x = element_text(angle = 30, hjust = 1, color = "black"),
+    text = element_text(size = 16),
+    plot.title = element_text(size = 16, face = "plain")
+  ) +
+  labs(
+    x = "Dataset",
+    y = "Algorithm",
+    title = "Maximum ARI on experimental data"
+  )
+
+ggsave(
+  plot = p,
+  filename = file.path(imgdir, "real_bench_max_ARI_cells.pdf"),
+  width = 2000,
+  height = 1750,
+  units = "px"
+)
+p
+```
+
+```{r}
+# NOTE: For figure4 panel.
 p_tile <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
   geom_tile() +
   geom_tile(
@@ -627,15 +678,6 @@ p_tile <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
     y = "Algorithm",
     title = "Maximum ARI on experimental data"
   )
-
-ggsave(
-  plot = p_tile,
-  filename = file.path(imgdir, "real_bench_max_ARI_cells.pdf"),
-  width = 2000,
-  height = 1750,
-  units = "px"
-)
-p_tile
 ```
 
 ## Calculate % successful runs
@@ -1096,7 +1138,29 @@ ggsave(
 )
 ```
 
-# Figure Panel Max
+# Panels
+## Review Panel
+```{r}
+fig1 <- (p_max_ari + p_mean_ari + plot_layout(guides = "collect")) +
+  p_tile +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    text = element_text(size = 16),
+    plot.title = element_text(size = 16, face = "plain"),
+    plot.tag = element_text(size = 16, face = "bold")
+  )
+
+ggsave(
+  plot = fig1,
+  filename = file.path(imgdir, "upd_bench_review_panel.pdf"),
+  width = 3800,
+  height = 1600,
+  units = "px"
+)
+
+```
+
+## Figure Panel Max
 ```{r}
 
 fig4 <- (p_max_ari + p_tile) +
@@ -1118,7 +1182,7 @@ ggsave(
 fig4
 ```
 
-# Figure Panel Mean
+## Figure Panel Mean
 ```{r}
 
 suppl_panel <- (
