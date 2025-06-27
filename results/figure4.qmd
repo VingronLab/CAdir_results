@@ -1145,16 +1145,17 @@ fig1 <- (p_max_ari + p_mean_ari + plot_layout(guides = "collect")) +
   p_tile +
   plot_annotation(tag_levels = "a") &
   theme(
-    text = element_text(size = 16),
-    plot.title = element_text(size = 16, face = "plain"),
-    plot.tag = element_text(size = 16, face = "bold")
+    text = element_text(size = 18),
+    plot.title = element_text(size = 18, face = "plain"),
+    plot.tag = element_text(size = 20, face = "bold"),
+    legend.text = element_text(size = 14)
   )
 
 ggsave(
   plot = fig1,
   filename = file.path(imgdir, "upd_bench_review_panel.pdf"),
-  width = 3800,
-  height = 1600,
+  width = 5800,
+  height = 2200,
   units = "px"
 )
 
