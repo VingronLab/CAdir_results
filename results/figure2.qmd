@@ -145,7 +145,6 @@ pcl <- wrap_plots(pcl, ncol = 3) +
   guide_area() +
   plot_layout(guides = "collect")
 
-pcl
 
 ggsave(
   plot = pcl,
@@ -163,6 +162,8 @@ ggsave(
   height = 2000,
   units = "px"
 )
+
+pcl
 ```
 
 ## B & T cells - standard coordinates APL
@@ -192,7 +193,7 @@ i_dir <- model(i_dir)
 ```
 
 ```{r}
-p_bt <- cluster_apl(
+p_bt_std <- cluster_apl(
   ca,
   cak,
   cluster = cls,
@@ -246,10 +247,10 @@ p_bt <- cluster_apl(
   ggtitle("B cell") +
   theme_bw(base_size = 16)
 
-p_bt
+p_bt_std
 
 ggsave(
-  plot = p_bt,
+  plot = p_bt_std,
   file = file.path(imgdir, "B_cell_cluster_std_coords.pdf"),
   device = cairo_pdf,
   width = 2000,
@@ -279,7 +280,7 @@ e_dir <- model(e_dir)
 ```
 
 ```{r}
-p_ecs <- cluster_apl(
+p_ecs_std <- cluster_apl(
   ca,
   cak,
   cluster = cls,
@@ -314,10 +315,10 @@ p_ecs <- cluster_apl(
   ggtitle("Vascular endothelial cell") +
   theme_bw(base_size = 16)
 
-p_ecs
+p_ecs_std
 
 ggsave(
-  plot = p_ecs,
+  plot = p_ecs_std,
   file = file.path(imgdir, "endothelial_cell_clusters_std_coords.pdf"),
   device = cairo_pdf,
   width = 2000,
@@ -351,7 +352,7 @@ i_dir <- model(i_dir)
 ```
 
 ```{r}
-p_bt <- cluster_apl(
+p_bt_prin <- cluster_apl(
   ca,
   cak,
   cluster = cls,
@@ -406,10 +407,10 @@ p_bt <- cluster_apl(
   theme_bw(base_size = 18) +
   theme(plot.title = element_text(size = 22))
 
-p_bt
+p_bt_prin
 
 ggsave(
-  plot = p_bt,
+  plot = p_bt_prin,
   file = file.path(imgdir, "B_cell_cluster_prin_coords.pdf"),
   device = cairo_pdf,
   width = 2000,
@@ -438,7 +439,7 @@ e_dir <- model(e_dir)
 ```
 
 ```{r}
-p_ecs <- cluster_apl(
+p_ecs_prin <- cluster_apl(
   ca,
   cak,
   cluster = cls,
@@ -474,10 +475,10 @@ p_ecs <- cluster_apl(
   theme_bw(base_size = 18) +
   theme(plot.title = element_text(size = 22))
 
-p_ecs
+p_ecs_prin
 
 ggsave(
-  plot = p_ecs,
+  plot = p_ecs_prin,
   file = file.path(imgdir, "endothelial_cell_clusters_prin_coords.pdf"),
   device = cairo_pdf,
   width = 2000,
@@ -496,7 +497,7 @@ sm <- sm_plot(
   rm_redund = TRUE,
   keep_end = FALSE,
   highlight_cluster = TRUE,
-  show_genes = F,
+  show_genes = FALSE,
   annotate_clusters = TRUE,
   org = "mm",
   inlet_side = 0.13,
@@ -519,6 +520,20 @@ ggsave(
   filename = file.path(imgdir,"tm_split_merge_plot.png"),
   width = 2300,
   height = 2100,
+  units = "px"
+)
+```
+
+# Panel Figure 2
+
+```{r}
+fig2 <- (pcl / (p_bt_prin + p_ecs_prin)) | sm
+
+ggsave(
+  plot = fig2,
+  filename = file.path(imgdir, "figure2_patchwork_panel.png"),
+  width = 5000,
+  height = 4500,
   units = "px"
 )
 ```
