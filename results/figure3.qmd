@@ -589,7 +589,7 @@ df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::
 
 names(cols) <- stringr::str_wrap(names(cols), wrap)
 
-sank <- ggplot(df, aes(x = x,
+sank_anno <- ggplot(df, aes(x = x,
                next_x = next_x,
                node = node,
                next_node = next_node,
@@ -606,16 +606,16 @@ sank <- ggplot(df, aes(x = x,
     legend.position = "none"
   )
 
-sank
+sank_anno
 
-ggsave(plot = sank,
+ggsave(plot = sank_anno,
        filename = file.path(imgdir, "sankey_plot_corr_clustering.pdf"),
        width = 2700,
        height = 3200,
        device = cairo_pdf,
        units = "px")
 
-ggsave(plot = sank,
+ggsave(plot = sank_anno,
        filename = file.path(imgdir, "sankey_plot_corr_clustering.png"),
        width = 2700,
        height = 3200,
@@ -669,6 +669,43 @@ ggsave(
   units = "px"
 )
 ```
+
+```{r}
+pcc_panel <- pc_corr
+for (i in seq_len(length(pcc_panel))) {
+  if (i != 1) pcc_panel[[i]] <- pcc_panel[[i]] + plot_layout(tag_level = "new")
+}
+pcc_panel <- wrap_plots(pcc_panel, ncol = 2, nrow = 3) +
+  guide_area() +
+  plot_layout(guides = "collect")
+
+layout  <- c(
+  area(1, 1, 4, 4),
+  area(1, 5, 4, 8)
+)
+suppl_fig2 <-
+  (
+    (
+      wrap_plots(pcc_panel, ncol = 2, nrow = 3) +
+        guide_area() +
+        plot_layout(guides = "collect")
+    ) +
+      sank_anno
+  ) +
+  plot_layout(width = c(2, 1), ncol = 2)
+  # plot_layout(design = layout, ncol = 2)
+
+ggsave(
+  plot = suppl_fig2,
+  filename = file.path(imgdir, "suppl_figure2_patchwork_panel.png"),
+  height = 3600,
+  # height = 3307,
+  width = 5000,
+  # width = 4677,
+  units = "px"
+)
+```
+
 # sessionInfo
 
 ```{r}

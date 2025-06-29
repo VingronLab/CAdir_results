@@ -528,37 +528,6 @@ ggsave(
 )
 ```
 
-# Panel Figure 2
-
-```{r}
-pcl_panel <- pcll
-for (i in seq_len(length(pcl_panel))) {
-  if (i != 1) pcl_panel[[i]] <- pcl_panel[[i]] + plot_layout(tag_level = "new")
-}
-
-fig2 <- (
-  ( (wrap_plots(pcl_panel, ncol = 3) +
-  guide_area() +
-  plot_layout(guides = "collect") &
-  theme(legend.box = "horizontal"))
- / 
-    (p_bt_prin + p_ecs_prin + guide_area() + plot_layout(guides = "collect", width = c(3,3,1)))
-  ) + plot_layout(height = c(2,1)) |
-    plot_spacer()
-) +
-  plot_annotation(tag_levels = "a") & 
-  theme(plot.tag = element_text(size = 18, face = "bold"))
-
-ggsave(
-  plot = fig2,
-  filename = file.path(imgdir, "figure2_patchwork_panel.png"),
-  width = 6372,
-  # width = 3186,
-  height = 3312,
-  # height = 1656,
-  units = "px"
-)
-```
 
 
 ## Sankey
@@ -736,8 +705,13 @@ ggsave(
 pr
 ```
 
-# Panel Suppl. Figure 1 
+# Panel Figure 2
+
 ```{r}
+pcl_panel <- pcll
+for (i in seq_len(length(pcl_panel))) {
+  if (i != 1) pcl_panel[[i]] <- pcl_panel[[i]] + plot_layout(tag_level = "new")
+}
 
 fig2 <- (
   ( (wrap_plots(pcl_panel, ncol = 3) +
@@ -761,6 +735,10 @@ ggsave(
   # height = 1656,
   units = "px"
 )
+```
+
+# Panel Suppl. Figure 1 
+```{r}
 
 pr_panel <- lapply(
   seq_along(prl),
