@@ -128,7 +128,7 @@ ggsave(
 # Cluster Association Plots
 
 ```{r}
-pcl <- plot_clusters(
+pcll <- plot_clusters(
   cadir = cak,
   caobj = ca,
   show_genes = TRUE,
@@ -141,9 +141,10 @@ pcl <- plot_clusters(
   return_list = TRUE,
   gsub_title = "_"
 )
-pcl <- wrap_plots(pcl, ncol = 3) +
+pcl <- wrap_plots(pcll, ncol = 3) +
   guide_area() +
-  plot_layout(guides = "collect")
+  plot_layout(guides = "collect") &
+  theme(legend.box = "horizontal")
 
 
 ggsave(
@@ -223,7 +224,8 @@ p_bt_std <- cluster_apl(
     aes(x, y, text = NULL),
     label = "T_cell",
     color = "#d44a3d",
-    vjust = -1
+    vjust = 1,
+    hjust = -0.1
   ) +
   geom_point(
     data = ics_coords,
@@ -242,7 +244,8 @@ p_bt_std <- cluster_apl(
     aes(x, y, text = NULL),
     label = "Immune_cell",
     color = "#00b1ea",
-    vjust = 1
+    vjust = 1,
+    hjust = -0.4
   ) +
   ggtitle("B cell") +
   theme_bw(base_size = 16)
@@ -310,7 +313,7 @@ p_ecs_std <- cluster_apl(
     aes(x, y, text = NULL),
     label = "Endothelial_cell",
     color = "#d44a3d",
-    hjust = -0.5
+    hjust = 0
   ) +
   ggtitle("Vascular endothelial cell") +
   theme_bw(base_size = 16)
@@ -469,7 +472,8 @@ p_ecs_prin <- cluster_apl(
     aes(x, y, text = NULL),
     label = "Endothelial_cell",
     color = "#d44a3d",
-    hjust = -0.3
+    hjust = -0.3,
+    ov
   ) +
   ggtitle("Vascular endothelial cell") +
   theme_bw(base_size = 18) +
@@ -527,16 +531,35 @@ ggsave(
 # Panel Figure 2
 
 ```{r}
-fig2 <- (pcl / (p_bt_prin + p_ecs_prin)) | sm
+pcl_panel <- pcll
+for (i in seq_len(length(pcl_panel))) {
+  if (i != 1) pcl_panel[[i]] <- pcl_panel[[i]] + plot_layout(tag_level = "new")
+}
+
+fig2 <- (
+  ( (wrap_plots(pcl_panel, ncol = 3) +
+  guide_area() +
+  plot_layout(guides = "collect") &
+  theme(legend.box = "horizontal"))
+ / 
+    (p_bt_prin + p_ecs_prin + guide_area() + plot_layout(guides = "collect", width = c(3,3,1)))
+  ) + plot_layout(height = c(2,1)) |
+    plot_spacer()
+) +
+  plot_annotation(tag_levels = "a") & 
+  theme(plot.tag = element_text(size = 18, face = "bold"))
 
 ggsave(
   plot = fig2,
   filename = file.path(imgdir, "figure2_patchwork_panel.png"),
-  width = 5000,
-  height = 4500,
+  width = 6372,
+  # width = 3186,
+  height = 3312,
+  # height = 1656,
   units = "px"
 )
 ```
+
 
 ## Sankey
 
@@ -656,7 +679,7 @@ ang_deg <- as.data.frame(CAdir:::rad2deg(ang_rad)) %>% tibble::rownames_to_colum
 
 long_ang <- tidyr::pivot_longer(data = ang_deg, cols = -cluster, values_to = "angle", names_to = "to_cluster" )
 
-p <- ggplot(long_ang, aes(x=cluster, y = to_cluster, fill = angle)) +
+pang <- ggplot(long_ang, aes(x=cluster, y = to_cluster, fill = angle)) +
   geom_tile() +
   CAdir:::scale_fill_gradient_mpimg(name = "orange", trans = "reverse") +
   theme_bw(base_size = 16)+
@@ -667,10 +690,10 @@ theme(
   ) +
   ggtitle("Angle between clusters")
 
-p
+pang
 
 ggsave(
-  plot = p,
+  plot = png,
   filename = file.path(imgdir, "angle_between_clusters.pdf"),
   width = 2000,
   height = 1600,
@@ -679,7 +702,7 @@ ggsave(
 ```
 
 ```{r}
-pr <- plot_results(
+prl <- plot_results(
   cak,
   ca,
   highlight_cluster = TRUE,
@@ -689,7 +712,7 @@ pr <- plot_results(
 )
 
 pr <- lapply(
-  pr,
+  prl,
   FUN = function(p) {
     p + theme(
       plot.title = ggtext::element_textbox_simple(size = 15)
@@ -712,6 +735,86 @@ ggsave(
 
 pr
 ```
+
+# Panel Suppl. Figure 1 
+```{r}
+
+fig2 <- (
+  ( (wrap_plots(pcl_panel, ncol = 3) +
+  guide_area() +
+  plot_layout(guides = "collect") &
+  theme(legend.box = "horizontal"))
+ / 
+    (p_bt_prin + p_ecs_prin + guide_area() + plot_layout(guides = "collect", width = c(3,3,1)))
+  ) + plot_layout(height = c(2,1)) |
+    plot_spacer()
+) +
+  plot_annotation(tag_levels = "a") & 
+  theme(plot.tag = element_text(size = 18, face = "bold"))
+
+ggsave(
+  plot = fig2,
+  filename = file.path(imgdir, "figure2_patchwork_panel.png"),
+  width = 6372,
+  # width = 3186,
+  height = 3312,
+  # height = 1656,
+  units = "px"
+)
+
+pr_panel <- lapply(
+  seq_along(prl),
+  FUN = function(i) {
+    if (i != 1) {
+    prl[[i]] +
+      theme(plot.title = ggtext::element_textbox_simple(size = 8)) +
+      plot_layout(tag_level = "new")
+    } else {
+      prl[[i]] +
+      theme(plot.title = ggtext::element_textbox_simple(size = 8))
+    }
+})
+
+pr_panel <- ggpubr::ggarrange(
+  plotlist = pr_panel,
+  nrow = sqrt(length(pr_panel)),
+  ncol = sqrt(length(pr_panel))
+)
+
+layout = c(
+  area(t = 1, l = 1, b = 4 , r = 4),
+  area(1, 5, 4, 8),
+  area(5, 1, 8, 4),
+  area(5, 5, 6, 8),
+  area(7, 5, 8, 8)
+)
+# plot(layout)
+
+# pr_panel <- wrap_plots(pr_panel, ncol = 3)
+
+sfig1 <- pang +
+  free(pr_panel, side = "rtbl") +
+  free(sank, side = "lr") +
+  p_bt_std +
+  p_ecs_std +
+  plot_layout(design = layout) +
+  plot_annotation(tag_levels = "a") & 
+  theme(plot.tag = element_text(size = 18, face = "bold"))
+
+# sfig1 <- (pang + free(pr, type = "panel", side = "rb")) / (free(sank, side = "l") + (p_bt_std / p_ecs_std))
+
+ggsave(
+  plot = sfig1,
+  filename = file.path(imgdir, "suppl_figure1_patchwork_panel.png"),
+  width = 4802,
+  # width = 2251,
+  height = 4502,
+  # height = 2251,
+  units = "px"
+)
+
+```
+
 
 # Session Info
 

@@ -479,7 +479,7 @@ p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
   ) +
   coord_fixed() +
   theme_bw() +
-  labs(x = "Cluster", y = "Gene Set", title = "Gene Set enrichment") +
+  labs(x = "Cluster", y = "Gene Set", title = "Gene Set enrichment", fill =expression(atop("-log"[10], "\npadj"))) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
     axis.text.y = element_text(color = "black"),
@@ -622,6 +622,53 @@ ggsave(plot = sank,
        units = "px")
 ```
 
+# Figure panels
+
+```{r}
+
+sank <- ggplot(df, aes(x = x,
+               next_x = next_x,
+               node = node,
+               next_node = next_node,
+               fill = node,
+               label = as.character(node))) +
+  geom_sankey(
+    flow.alpha = 0.4,
+  ) +
+  geom_sankey_label(size = 4) +
+  labs(x = "") +
+  scale_fill_manual(values = cols) +
+  theme_sankey(base_size = 18, base_family = "sans") +
+  theme(
+    legend.position = "none"
+  )
+
+layout <- c(
+  area(t = 1, l = 1, b = 7, r = 9),
+  area(7, 1, 12, 5),
+  area(7, 6, 12, 9),
+  area(1, 10, 12, 12)
+)
+
+fig2 <- free(pc_mod, side = "b") +
+  free(p_expr, side = "r") +
+  free(sank, type = "panel", side = "tbl") +
+  free(p_gs_enr + theme(plot.title = element_text(hjust = 0.5)), type = "label", side = "tbr") +
+  plot_layout(design = layout) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 18, face = "bold"))
+
+
+ggsave(
+  plot = fig2,
+  filename = file.path(imgdir, "figure2_patchwork_panel.png"),
+  height = 3600,
+  # height = 3307,
+  width = 5000,
+  # width = 4677,
+  units = "px"
+)
+```
 # sessionInfo
 
 ```{r}
