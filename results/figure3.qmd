@@ -138,7 +138,7 @@ ggsave(
 ## Association plots of clusters
 
 ```{r}
-pc_mod <- plot_clusters_custom(
+pc_mod_l <- plot_clusters_custom(
   cak,
   ca,
   show_genes = TRUE,
@@ -148,7 +148,14 @@ pc_mod <- plot_clusters_custom(
   title_prefix = "",
   gsub_title = "_",
   outlier_cluster = "cluster_5",
-  text_size = 19
+  text_size = 19,
+  return_list = TRUE
+)
+
+pc_mod <- ggpubr::ggarrange(
+  plotlist = pc_mod_l,
+  nrow = 2,
+  ncol = 3
 )
 
 pc_mod
@@ -294,7 +301,7 @@ sce_corr$cadir_corr <- cak_corr@cell_clusters
 
 cak_corr <- rank_genes(cadir = cak_corr, caobj = ca_corr)
 
-pc_corr <- plot_clusters(
+pc_corr_list <- plot_clusters(
   cak_corr,
   ca_corr,
   show_genes = TRUE,
@@ -308,7 +315,7 @@ pc_corr <- plot_clusters(
   return_list = TRUE,
   legend_pos = "right"
 )
-pc_corr <- wrap_plots(pc_corr, ncol = 2, nrow = 3) +
+pc_corr <- wrap_plots(pc_corr_list, ncol = 2, nrow = 3) +
   guide_area() +
   plot_layout(guides = "collect")
 
@@ -339,7 +346,7 @@ data <- colData(sce_sank) %>%
     "Second" = "cadir2"
   )
 
-df <- data %>%
+df_cl <- data %>%
   make_long(First, Second)
 
 info <- data.frame(
@@ -361,15 +368,15 @@ info <- data.frame(
 
 pal <- mpimg_pal()
 
-cols <- pal(length(cadir_cls))
-names(cols) <- cadir_cls
+c5cols <- pal(length(cadir_cls))
+names(c5cols) <- cadir_cls
 
-info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
+info <- left_join(data.frame("Biclusters" = names(c5cols), "col" = c5cols), info, by = "Biclusters")
 info$col <- pal(nrow(info) + 1)[2:(nrow(info) + 1)]
 
-cols <- c(cols, info$col)
+c5cols <- c(c5cols, info$col)
 
-names(cols) <- c(as.character(cadir_cls), info$Truth)
+names(c5cols) <- c(as.character(cadir_cls), info$Truth)
 
 
 order <- c(
@@ -380,20 +387,20 @@ order <- c(
   "B_cell"
 )
 
-df$node <- gsub("_", " ", df$node)
-df$next_node <- gsub("_", " ", df$next_node)
-names(cols) <- gsub("_", " ", names(cols))
+df_cl$node <- gsub("_", " ", df_cl$node)
+df_cl$next_node <- gsub("_", " ", df_cl$next_node)
+names(c5cols) <- gsub("_", " ", names(c5cols))
 order <- gsub("_", " ", order)
 
 
 wrap <- 17
-df$node <- factor(stringr::str_wrap(df$node, wrap), levels = stringr::str_wrap(order, wrap))
-df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::str_wrap(order, wrap))
+df_cl$node <- factor(stringr::str_wrap(df_cl$node, wrap), levels = stringr::str_wrap(order, wrap))
+df_cl$next_node <- factor(stringr::str_wrap(df_cl$next_node, wrap), levels = stringr::str_wrap(order, wrap))
 
-names(cols) <- stringr::str_wrap(names(cols), wrap)
+names(c5cols) <- stringr::str_wrap(names(c5cols), wrap)
 
 
-sank <- ggplot(df, aes(
+sank <- ggplot(df_cl, aes(
   x = x,
   next_x = next_x,
   node = node,
@@ -404,7 +411,7 @@ sank <- ggplot(df, aes(
   geom_sankey(flow.alpha = 0.6, flow.fill = c("#777777")) +
   geom_sankey_label(size = 6) +
   labs(x = "") +
-  scale_fill_manual(values = cols) +
+  scale_fill_manual(values = c5cols) +
   theme_sankey(base_size = 26) +
   theme(
     legend.position = "none"
@@ -626,32 +633,36 @@ ggsave(plot = sank_anno,
 
 ```{r}
 
-sank <- ggplot(df, aes(x = x,
-               next_x = next_x,
-               node = node,
-               next_node = next_node,
-               fill = node,
-               label = as.character(node))) +
-  geom_sankey(
-    flow.alpha = 0.4,
-  ) +
+sank <- ggplot(df_cl, aes(x = x,
+  next_x = next_x,
+  node = node,
+  next_node = next_node,
+  fill = node,
+  label = as.character(node))) +
+  geom_sankey(flow.alpha = 0.6, flow.fill = c("#777777")) +
   geom_sankey_label(size = 4) +
   labs(x = "") +
-  scale_fill_manual(values = cols) +
+  scale_fill_manual(values = c5cols) +
   theme_sankey(base_size = 18, base_family = "sans") +
   theme(
     legend.position = "none"
   )
+  
 
 layout <- c(
-  area(t = 1, l = 1, b = 7, r = 9),
+  area(t = 1, l = 1, b = 6, r = 9),
   area(7, 1, 12, 5),
   area(7, 6, 12, 9),
   area(1, 10, 12, 12)
 )
 
-fig2 <- free(pc_mod, side = "b") +
-  free(p_expr, side = "r") +
+pcl_panel <- pc_mod_l
+for (i in seq_len(length(pcl_panel))) {
+  if (i != 1) pcl_panel[[i]] <- pcl_panel[[i]] + plot_layout(tag_level = "new")
+}
+
+fig3 <- wrap_elements(wrap_plots(pcl_panel, ncol = 3)) +
+  p_expr +
   free(sank, type = "panel", side = "tbl") +
   free(p_gs_enr + theme(plot.title = element_text(hjust = 0.5)), type = "label", side = "tbr") +
   plot_layout(design = layout) +
@@ -660,24 +671,38 @@ fig2 <- free(pc_mod, side = "b") +
 
 
 ggsave(
-  plot = fig2,
-  filename = file.path(imgdir, "figure2_patchwork_panel.png"),
+  plot = fig3,
+  filename = file.path(imgdir, "figure3_patchwork_panel.png"),
   height = 3600,
   # height = 3307,
   width = 5000,
   # width = 4677,
   units = "px"
 )
+
+ggsave(
+  plot = fig3,
+  filename = file.path(imgdir, "figure3_patchwork_panel.pdf"),
+  height = 3600,
+  # height = 3307,
+  width = 5000,
+  # width = 4677,
+  device = cairo_pdf,
+  units = "px"
+)
 ```
 
 ```{r}
-pcc_panel <- pc_corr
+pcc_panel <- pc_corr_list
 for (i in seq_len(length(pcc_panel))) {
   if (i != 1) pcc_panel[[i]] <- pcc_panel[[i]] + plot_layout(tag_level = "new")
 }
 pcc_panel <- wrap_plots(pcc_panel, ncol = 2, nrow = 3) +
   guide_area() +
-  plot_layout(guides = "collect")
+  plot_layout(guides = "collect") &
+  theme(legend.text = element_text(size = 14),
+  legend.title = element_text(size = 16))
+
 
 layout  <- c(
   area(1, 1, 4, 4),
@@ -686,13 +711,13 @@ layout  <- c(
 suppl_fig2 <-
   (
     (
-      wrap_plots(pcc_panel, ncol = 2, nrow = 3) +
-        guide_area() +
-        plot_layout(guides = "collect")
+      wrap_elements(pcc_panel)
     ) +
       sank_anno
   ) +
-  plot_layout(width = c(2, 1), ncol = 2)
+  plot_layout(width = c(2, 1), ncol = 2) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 18, face = "bold"))
   # plot_layout(design = layout, ncol = 2)
 
 ggsave(
@@ -702,6 +727,17 @@ ggsave(
   # height = 3307,
   width = 5000,
   # width = 4677,
+  units = "px"
+)
+
+ggsave(
+  plot = suppl_fig2,
+  filename = file.path(imgdir, "suppl_figure2_patchwork_panel.pdf"),
+  height = 3600,
+  # height = 3307,
+  width = 5000,
+  # width = 4677,
+  device = cairo_pdf,
   units = "px"
 )
 ```

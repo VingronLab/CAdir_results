@@ -473,7 +473,6 @@ p_ecs_prin <- cluster_apl(
     label = "Endothelial_cell",
     color = "#d44a3d",
     hjust = -0.3,
-    ov
   ) +
   ggtitle("Vascular endothelial cell") +
   theme_bw(base_size = 18) +
@@ -504,9 +503,11 @@ sm <- sm_plot(
   show_genes = FALSE,
   annotate_clusters = TRUE,
   org = "mm",
-  inlet_side = 0.13,
+  inlet_side = 0.11,
   title_size = 12,
-  show_axis = FALSE
+  show_axis = FALSE,
+  layout = "tree",
+  rotate = TRUE
 )
 
 sm
@@ -644,16 +645,27 @@ ggsave(
 ang_rad <- CAdir:::get_angle(cak@directions, cak@directions)
 rownames(ang_rad) <- gsub("_|\\.", " ", rownames(ang_rad))
 colnames(ang_rad) <- gsub("_|\\.", " ", colnames(ang_rad))
-ang_deg <- as.data.frame(CAdir:::rad2deg(ang_rad)) %>% tibble::rownames_to_column("cluster")
+ang_deg <- as.data.frame(CAdir:::rad2deg(ang_rad)) %>%
+  tibble::rownames_to_column("cluster")
 
-long_ang <- tidyr::pivot_longer(data = ang_deg, cols = -cluster, values_to = "angle", names_to = "to_cluster" )
+long_ang <- tidyr::pivot_longer(
+  data = ang_deg,
+  cols = -cluster,
+  values_to = "angle",
+  names_to = "to_cluster"
+)
 
-pang <- ggplot(long_ang, aes(x=cluster, y = to_cluster, fill = angle)) +
+pang <- ggplot(long_ang, aes(x = cluster, y = to_cluster, fill = angle)) +
   geom_tile() +
   CAdir:::scale_fill_gradient_mpimg(name = "orange", trans = "reverse") +
-  theme_bw(base_size = 16)+
-theme(
-    axis.text.x = element_text(color = "black", angle = 45, vjust = 1, hjust=1),
+  theme_bw(base_size = 16) +
+  theme(
+    axis.text.x = element_text(
+      color = "black",
+      angle = 45,
+      vjust = 1,
+      hjust = 1
+    ),
     axis.text.y = element_text(color = "black"),
     plot.title = element_text(size = 18)
   ) +
@@ -662,7 +674,7 @@ theme(
 pang
 
 ggsave(
-  plot = png,
+  plot = pang,
   filename = file.path(imgdir, "angle_between_clusters.pdf"),
   width = 2000,
   height = 1600,
@@ -721,7 +733,7 @@ fig2 <- (
  / 
     (p_bt_prin + p_ecs_prin + guide_area() + plot_layout(guides = "collect", width = c(3,3,1)))
   ) + plot_layout(height = c(2,1)) |
-    plot_spacer()
+    wrap_elements(sm)
 ) +
   plot_annotation(tag_levels = "a") & 
   theme(plot.tag = element_text(size = 18, face = "bold"))
@@ -733,6 +745,17 @@ ggsave(
   # width = 3186,
   height = 3312,
   # height = 1656,
+  units = "px"
+)
+
+ggsave(
+  plot = fig2,
+  filename = file.path(imgdir, "figure2_patchwork_panel.pdf"),
+  width = 6372,
+  # width = 3186,
+  height = 3312,
+  # height = 1656,
+  device = cairo_pdf,
   units = "px"
 )
 ```
@@ -788,6 +811,17 @@ ggsave(
   # width = 2251,
   height = 4502,
   # height = 2251,
+  units = "px"
+)
+
+ggsave(
+  plot = sfig1,
+  filename = file.path(imgdir, "suppl_figure1_patchwork_panel.pdf"),
+  width = 4802,
+  # width = 2251,
+  height = 4502,
+  # height = 2251,
+  device = cairo_pdf,
   units = "px"
 )
 
