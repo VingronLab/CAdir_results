@@ -1,6 +1,6 @@
 algorithm <- "kmeans"
 
-source("./benchmarking/setup_split.R")
+source("./setup_split.R")
 
 cat("\nStarting k-means clustering\n")
 

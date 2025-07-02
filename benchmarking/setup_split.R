@@ -1,3 +1,9 @@
+renv::load("/project/kohl_analysis/analysis/CAdir")
+
+if (algorithm == "scG-cluster" || algorithm == "scDeepCluster") {
+  library(reticulate)
+  use_condaenv("deep_cluster")
+}
 library(optparse)
 
 library(biclust)
@@ -9,10 +15,10 @@ library(tibble)
 
 set.seed(2358)
 
-source("./benchmarking/helpers/sim_eval.R")
-source("./benchmarking/helpers/cell_clustering_eval.R")
-source("./benchmarking/helpers/utils.R")
-source("./benchmarking/algorithms/biclustlib/clustering_error.R")
+source("./helpers/sim_eval.R")
+source("./helpers/cell_clustering_eval.R")
+source("./helpers/utils.R")
+source("./algorithms/biclustlib/clustering_error.R")
 
 # Set to false unless set to TRUE by CAbiNet
 graph_select_by_prop <- FALSE

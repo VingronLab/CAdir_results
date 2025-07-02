@@ -1,5 +1,5 @@
 # to install run "pip install backspinpy"
-source("./benchmarking/algorithms/backspin/backspin_fun.R")
+source("./algorithms/backspin/backspin_fun.R")
 
 # Backspin Options
 alg_option_list <- list(

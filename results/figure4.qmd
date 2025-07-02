@@ -816,7 +816,8 @@ p_succ
 # Runtime & Scalability
 
 ```{r}
-date <- "20240823"
+# date <- "20240823"
+date <- "20250626"
 mpgGreen <- "#006c66"
 mpgDarkGreen <- "#005555"
 mpgDarkGrey <- "#777777"
@@ -825,6 +826,8 @@ mpgOrange <- "#ef7c00"
 mpgGrau <- "#a7a7a8" # MPG-Grau
 mpgDarkBlue <- "#29485d" # MPG Dunkelblau
 mpgLightBlue <- "#00b1ea" # MPG Hellblau
+mpgPink <- "#d95276" # Rich Pink
+mpgBrown <- "#a25b43" # Warm Brown
 
 eval_files <- list.files(
   file.path("./results/benchmarking/results/scalability", date, "out"),
@@ -855,7 +858,9 @@ scal_df$algorithm <- factor(scal_df$algorithm, levels = c(
   "Seurat",
   "Monocle3",
   "SC3",
-  "SIMLR"
+  "SIMLR",
+  "scDeepCluster",
+  "scG-cluster"
 ))
 
 scal_df$dataset <- as.numeric(scal_df$dataset)
@@ -910,7 +915,9 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
     "SC3" = alph,
     "SIMLR" = alph,
     "Seurat" = alph,
-    "kmeans" = alph
+    "kmeans" = alph,
+    "scDeepCluster" = alph,
+    "scG-cluster" = alph
   )) +
   scale_colour_manual(values = c(
     "CAdir" = mpgOrange,
@@ -921,7 +928,9 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
     "SC3" = mpgDarkGreen,
     "SIMLR" = mpgGrau,
     "Seurat" = mpgGreenLight,
-    "kmeans" = mpgGreen
+    "kmeans" = mpgGreen,
+    "scDeepCluster" = mpgPink,
+    "scG-cluster" = mpgBrown
   )) +
   scale_linetype_manual(values = c(
     "CAdir" = "solid",
@@ -932,7 +941,9 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
     "SC3" = "dashed",
     "SIMLR" = "solid",
     "Seurat" = "solid",
-    "kmeans" = "solid"
+    "kmeans" = "solid",
+    "scDeepCluster" = "solid",
+    "scG-cluster" = "solid"
   )) +
   theme_bw(base_size = 18) +
   theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust = 1))

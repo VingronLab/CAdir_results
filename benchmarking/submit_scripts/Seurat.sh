@@ -1,23 +1,32 @@
 #!/bin/bash
 
 # Seurat
+
+# res_seurat=(1)
+# dims_seurat=(10 30 60)
+# NNs_seurat=(20 40 80)
+#
+# min_perc=(0.15 0.25)
+# logfc_thr=(0.25)
+# return_thr=(0.01 0.05)
+
 if [[ $cc -eq 0 ]]; then
-  res_seurat=(1)
-  dims_seurat=(10 30 60)
-  NNs_seurat=(20 40 80)
-  min_perc=(0.15 0.25)
-  logfc_thr=(0.25)
-  return_thr=(0.01 0.05)
+	res_seurat=(1)
+	dims_seurat=(10 30 60)
+	NNs_seurat=(20 40 80)
+	min_perc=(0.15 0.25)
+	logfc_thr=(0.25)
+	return_thr=(0.01 0.05)
 elif [[ $cc -eq 1 ]]; then
-  res_seurat=(1 1.5)
-  dims_seurat=(10 30 60)
-  NNs_seurat=(10 20 40 60 80 100)
-  min_perc=(0.15)
-  logfc_thr=(0.25)
-  return_thr=(0.05)
+	res_seurat=(1 1.5)
+	dims_seurat=(10 30 60)
+	NNs_seurat=(10 20 40 60 80 100)
+	min_perc=(0.15)
+	logfc_thr=(0.25)
+	return_thr=(0.05)
 else
-  echo "UNCLEAR IF CELL CLUSTERING OR NOT"
-  exit 0
+	echo "UNCLEAR IF CELL CLUSTERING OR NOT"
+	exit 0
 fi
 
 algorithm="Seurat"
@@ -25,16 +34,16 @@ SCRIPT="${scripts_path}/${algorithm}.R"
 
 n_loops=6
 for d in "${dims_seurat[@]}"; do
-  for n in "${NNs_seurat[@]}"; do
-    for r in "${res_seurat[@]}"; do
-      for mp in "${min_perc[@]}"; do
-        for lt in "${logfc_thr[@]}"; do
-          for rt in "${return_thr[@]}"; do
+	for n in "${NNs_seurat[@]}"; do
+		for r in "${res_seurat[@]}"; do
+			for mp in "${min_perc[@]}"; do
+				for lt in "${logfc_thr[@]}"; do
+					for rt in "${return_thr[@]}"; do
 
-            nm="${algorithm}_${filename}_ntop-${nt}_dims-${d}_NNs-${n}_resolution-${r}_minperc-${mp}_logfcthr-${lt}_return_thr-${rt}"
-            tmp_sh="${here_dir}/bench_${mode}_${dataset}_${nm}.sh"
+						nm="${algorithm}_${filename}_ntop-${nt}_dims-${d}_NNs-${n}_resolution-${r}_minperc-${mp}_logfcthr-${lt}_return_thr-${rt}"
+						tmp_sh="${here_dir}/bench_${mode}_${dataset}_${nm}.sh"
 
-            cat <<EOF >"$tmp_sh"
+						cat <<EOF >"$tmp_sh"
 #!/bin/bash
 
 # BEGIN_MXQ
@@ -62,21 +71,21 @@ Rscript-4.2.2 $SCRIPT   \\
    --rthr $rt \\
 && mv $tmp_sh $here_dir/.done/
 EOF
-            chmod +x "$tmp_sh"
+						chmod +x "$tmp_sh"
 
-            mxqsub --stdout="${logdir}/bench_${mode}_${dataset}_${nm}.stdout.log" \
-              --group-name="bench_${mode}_${dataset}_${filename}_${algorithm}" \
-              --threads=$THREADS \
-              --memory=$MEMORY \
-              -t $MINUTES \
-              bash "$tmp_sh"
+						mxqsub --stdout="${logdir}/bench_${mode}_${dataset}_${nm}.stdout.log" \
+							--group-name="bench_${mode}_${dataset}_${filename}_${algorithm}" \
+							--threads=$THREADS \
+							--memory=$MEMORY \
+							-t $MINUTES \
+							bash "$tmp_sh"
 
-            if [ "$test_run" = true ]; then
-              break $n_loops
-            fi
-          done
-        done
-      done
-    done
-  done
+						if [ "$test_run" = true ]; then
+							break $n_loops
+						fi
+					done
+				done
+			done
+		done
+	done
 done

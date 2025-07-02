@@ -1,5 +1,5 @@
 algorithm <- "s4vd"
-source("./benchmarking/setup_split.R")
+source("./setup_split.R")
 
 # sv4d
 cat("\nStarting s4vd\n")

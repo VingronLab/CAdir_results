@@ -1,18 +1,22 @@
 #!/bin/bash
 
 # add date to output folder
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="20250528"
 
 THREADS=6
 MEMORY=30G
 MINUTES=60
 
+LD_LIBRARY_VAR=/home/kohl/.local/lib:/home/kohl/.local/bin:/home/kohl/.local/include
+GDAL_DATA_VAR=/home/kohl/.local/share/gdal
+
 datasets=("zeisel" "pbmc3k")
 for dataset in "${datasets[@]}"; do
 
-	scripts_path="./benchmarking/algorithms/"
+	scripts_path="./algorithms/"
 
-	outdir="./results/benchmarking/results/simulated/${date}"
+	outdir="/project/kohl_data/CAdir/benchmarking/results/simulated/${date}"
 
 	logdir="${outdir}/log/${dataset}"
 	here_dir="${outdir}/sh/${dataset}"
@@ -25,12 +29,12 @@ for dataset in "${datasets[@]}"; do
 	OUTDIR="${outdir}/out/${dataset}"
 	mkdir -p "$OUTDIR"
 
-	files="./data/sim/preprocessed/${dataset}/*.rds"
+	files="/project/kohl_data/CAdir/data/sim/preprocessed/${dataset}/*.rds"
 
 	ntop=(2000 4000 6000)
 	# nclust=6
 	truth='Group'
-	cc=1  #set is_cell_clustering to TRUE
+	cc=1  # set is_cell_clustering to TRUE
 	sim=1 # set simulation to TRUE
 
 	test_run=false
@@ -53,42 +57,52 @@ for dataset in "${datasets[@]}"; do
 			###########
 			# CAbiNet #
 			###########
-			source ./submit_scripts/CAbiNet.sh
+			# source ./submit_scripts/CAbiNet.sh
 
 			##########
 			# Seurat #
 			##########
-			source ./submit_scripts/Seurat.sh
+			# source ./submit_scripts/Seurat.sh
 
 			############
 			# Monocle3 #
 			############
-			source ./submit_scripts/Monocle3.sh
+			# source ./submit_scripts/Monocle3.sh
 
 			###########
 			# CAdir   #
 			###########
-			source ./submit_scripts/CAdir.sh
+			# source ./submit_scripts/CAdir.sh
 
 			############
 			# kmeans   #
 			############
-			source ./submit_scripts/kmeans.sh
+			# source ./submit_scripts/kmeans.sh
 
 			############
 			# RaceID   #
 			############
-			source ./submit_scripts/RaceID.sh
+			# source ./submit_scripts/RaceID.sh
 
 			########
 			# SC3  #
 			########
-			source ./submit_scripts/SC3.sh
+			# source ./submit_scripts/SC3.sh
 
 			##########
 			# SIMLR  #
 			##########
-			source ./submit_scripts/SIMLR.sh
+			# source ./submit_scripts/SIMLR.sh
+
+      ##################
+			# scDeepCluster  #
+      ##################
+			source ./submit_scripts/scDeepCluster.sh
+
+      ###############
+      # scG-cluster #
+      ###############
+      source ./submit_scripts/scG-cluster.sh
 
 			if [ "$test_run" = true ]; then
 				break 3

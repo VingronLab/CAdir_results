@@ -1,6 +1,6 @@
-library(CAdir)
 library(APL)
 library(CAbiNet)
+library(CAdir)
 
 alg_option_list <- list(
   make_option(c("--qcut"),

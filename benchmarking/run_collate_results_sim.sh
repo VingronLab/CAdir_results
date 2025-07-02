@@ -4,11 +4,11 @@ THREADS=6
 MEMORY=3G
 MINUTES=500
 
-date=$(date '+%Y%m%d')
-outdir="./results/benchmarking/results/simulated/${date}/eval"
-indir="./results/benchmarking/results/simulated/${date}/out/"
+date="20250528"
+outdir="/project/kohl_data/CAdir/benchmarking/results/simulated/${date}/eval"
+indir="/project/kohl_data/CAdir/benchmarking/results/simulated/${date}/out/"
 
-files=$(ls ./results/benchmarking/results/simulated/${date}/out/)
+files=$(ls /project/kohl_data/CAdir/benchmarking/results/simulated/${date}/out/)
 
 mkdir -p $outdir
 
@@ -20,7 +20,7 @@ echo $file
          --threads=$THREADS \
          --memory=$MEMORY \
          -t $MINUTES \
-	Rscript-4.4.0 ./benchmarking/collate_results.R \
+	Rscript-4.4.0 /project/kohl_analysis/analysis/CAdir/benchmarking/collate_results.R \
     --name "${date}_${file}_collated" \
     --indir  $indir/$file \
     --outdir $outdir

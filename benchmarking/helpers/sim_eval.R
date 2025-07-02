@@ -448,8 +448,8 @@ evaluate_sim <- function(sce, biclust, truth_col = NULL) {
   )
 
   if (biclust@Number > 0) {
-    nomono_biclust <- rm_monoclusters(biclust)
-    nomono_truth <- rm_monoclusters(true_biclust)
+    nomono_biclust <- CAbiNet::rm_monoclusters(biclust)
+    nomono_truth <- CAbiNet::rm_monoclusters(true_biclust)
 
     ac <- ari_cells(
       reference = sce,
@@ -507,7 +507,7 @@ evaluate_sim <- function(sce, biclust, truth_col = NULL) {
 
 evaluate_real <- function(sce, biclust, truth_col = NULL) {
   if (biclust@Number > 0) {
-    nomono_biclust <- rm_monoclusters(biclust)
+    nomono_biclust <- CAbiNet::rm_monoclusters(biclust)
 
     ac <- ari_cells(
       reference = sce,
@@ -944,8 +944,8 @@ evaluate_sim_diff_size <- function(sce, biclust, truth_col = NULL) {
   )
 
   if (biclust@Number > 0) {
-    nomono_biclust <- rm_monoclusters(biclust)
-    nomono_truth <- rm_monoclusters(true_biclust)
+    nomono_biclust <- CAbiNet::rm_monoclusters(biclust)
+    nomono_truth <- CAbiNet::rm_monoclusters(true_biclust)
 
     ac <- ari_cells(
       splatter_sim = sce,

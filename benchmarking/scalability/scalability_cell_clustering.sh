@@ -7,13 +7,14 @@
 #########################################################################################################
 
 
-cd ./benchmarking/ || exit
+cd /project/kohl_analysis/analysis/CAdir/benchmarking/ || exit
 
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="20250626"
 
-scripts_path="./benchmarking/algorithms"
+scripts_path="/project/kohl_analysis/analysis/CAdir/benchmarking/algorithms"
 
-outdir="./results/benchmarking/results/scalability/${date}"
+outdir="/project/kohl_data/CAdir/benchmarking/results/scalability/${date}"
 
 logdir="${outdir}/log/${dataset}"
 here_dir="${outdir}/sh/${dataset}"
@@ -28,8 +29,9 @@ mkdir -p $OUTDIR
 
 ###########3
 
-indir="./data/sim/preprocessed/scalability/"
+indir='/project/kohl_data/CAdir/data/sim/preprocessed/scalability/'
 datasets=$(ls -d ${indir}/*)
+# datasets=("/project/kohl_data/CAdir/data/sim/preprocessed/scalability/ncell-10000_ngene-2000")
 
 for dataset in ${datasets[@]}; do
 
@@ -100,42 +102,52 @@ for dataset in ${datasets[@]}; do
 			###########
 			# CAbiNet #
 			###########
-			source ./scalability/submit_scripts/CAbiNet.sh
+			# source ./scalability/submit_scripts/CAbiNet.sh
 
 			##########
 			# Seurat #
 			##########
-			source ./scalability/submit_scripts/Seurat.sh
+			# source ./scalability/submit_scripts/Seurat.sh
 
 			############
 			# Monocle3 #
 			############
-			source ./scalability/submit_scripts/Monocle3.sh
+			# source ./scalability/submit_scripts/Monocle3.sh
 
 			###########
 			# CAdir   #
 			###########
-			source ./scalability/submit_scripts/CAdir.sh
+			# source ./scalability/submit_scripts/CAdir.sh
 
 			############
 			# kmeans   #
 			############
-			source ./scalability/submit_scripts/kmeans.sh
+			# source ./scalability/submit_scripts/kmeans.sh
 
 			############
 			# RaceID   #
 			############
-			source ./scalability/submit_scripts/RaceID.sh
+			# source ./scalability/submit_scripts/RaceID.sh
 
 			########
 			# SC3  #
 			########
-			source ./scalability/submit_scripts/SC3.sh
+			# source ./scalability/submit_scripts/SC3.sh
 
 			##########
 			# SIMLR  #
 			##########
-			source ./scalability/submit_scripts/SIMLR.sh
+			# source ./scalability/submit_scripts/SIMLR.sh
+
+      ##################
+			# scDeepCluster  #
+      ##################
+			source ./scalability/submit_scripts/scDeepCluster.sh
+
+      ###############
+      # scG-cluster #
+      ###############
+      # source ./scalability/submit_scripts/scG-cluster.sh
 
 			if [ "$test_run" = true ]; then
 				break 3

@@ -1,5 +1,5 @@
 algorithm <- "CCA"
-source("./benchmarking/setup_split.R")
+source("./setup_split.R")
 
 # CCA
 cat("\nStarting CCA\n")

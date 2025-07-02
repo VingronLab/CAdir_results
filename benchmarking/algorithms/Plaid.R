@@ -1,5 +1,5 @@
 algorithm <- "Plaid"
-source("./benchmarking/setup_split.R")
+source("./setup_split.R")
 
 ## PLAID
 cat("\nStarting PLAID\n")

@@ -4,19 +4,22 @@
 # nruns: 2 #
 ############
 
-date=$(date '+%Y%m%d')
-OUTDIR="./results/benchmarking/results/real/${date}/"
+date="20250528_cpu"
+OUTDIR="/project/kohl_data/CAdir/benchmarking/results/real/${date}/"
 
-dataset_list=("Darmanis"
-	"FreytagGold"
-	"PBMC_10X"
-	"Tirosh_nonmaglignant"
-	"BaronPancreas"
-	"ZeiselBrain"
-	"brain_organoids"
-	"dmel_E14-16h"
-	"tabula_sapiens_tissue")
+# dataset_list=("Darmanis"
+# 	"FreytagGold"
+# 	"PBMC_10X"
+# 	"Tirosh_nonmaglignant"
+# 	"BaronPancreas"
+# 	"ZeiselBrain"
+# 	"brain_organoids"
+# 	"dmel_E14-16h"
+# 	"tabula_sapiens_tissue")
 
+dataset_list=("dmel_E14-16h")
+
+is_cpu=true
 for dataset in ${dataset_list[@]}; do
 
 	LOGDIR="${OUTDIR}/log/${dataset}"
@@ -54,6 +57,13 @@ for dataset in ${dataset_list[@]}; do
 		bn=$(basename -s ".stdout.log" $file)
 
 		sh_file=$SHDIR/$bn.sh
+
+    gpu=0
+		if [ "$is_cpu" = false ]; then
+      if [[ "$bn" == *scG-cluster* || "$bn" == *scDeepCluster* ]]; then
+        gpu=1
+      fi
+    fi
 
 		# Extract metadata
 
@@ -107,13 +117,26 @@ EOM
 
 		echo "Processing file: $file"
 
-		mxqsub --stdout=$file \
-			--group-name="MEMORY_error_failed_runs_${dataset}" \
-			--threads=$THREADS \
-			--memory=$MEMORY \
-			--tmpdir=$TMPDIR \
-			-t $MINUTES \
-			bash $sh_file
+		if [[ $gpu -eq 1 ]]; then
+			mxqsub --stdout=$file \
+				--group-name="MEMORY_error_failed_runs_${dataset}" \
+				--threads=$THREADS \
+				--memory=$MEMORY \
+				--tmpdir=$TMPDIR \
+				-t $MINUTES \
+				--gpu \
+				--blacklist="bandersnatch" \
+				bash $sh_file
+		else
+			mxqsub --stdout=$file \
+				--group-name="MEMORY_error_failed_runs_${dataset}" \
+				--threads=$THREADS \
+				--memory=$MEMORY \
+				--tmpdir=$TMPDIR \
+				-t $MINUTES \
+				--blacklist="magpie" \
+				bash $sh_file
+		fi
 
 		# More processing code here...
 	done
@@ -126,6 +149,13 @@ EOM
 		bn=$(basename -s ".stdout.log" $file)
 
 		sh_file=$SHDIR/$bn.sh
+
+    gpu=0
+		if [ "$is_cpu" = false ]; then
+      if [[ "$bn" == *scG-cluster* || "$bn" == *scDeepCluster* ]]; then
+        gpu=1
+      fi
+    fi
 
 		# Extract metadata
 
@@ -174,13 +204,26 @@ EOM
 
 		echo "Processing file: $file"
 
-		mxqsub --stdout=$file \
-			--group-name="TIME_error_failed_runs_${dataset}" \
-			--threads=$THREADS \
-			--memory=$MEMORY \
-			--tmpdir=$TMPDIR \
-			-t $MINUTES \
-			bash $sh_file
+		if [[ $gpu -eq 1 ]]; then
+			mxqsub --stdout=$file \
+				--group-name="TIME_error_failed_runs_${dataset}" \
+				--threads=$THREADS \
+				--memory=$MEMORY \
+				--tmpdir=$TMPDIR \
+				-t $MINUTES \
+				--gpu \
+				--blacklist="bandersnatch" \
+				bash $sh_file
+		else
+			mxqsub --stdout=$file \
+				--group-name="TIME_error_failed_runs_${dataset}" \
+				--threads=$THREADS \
+				--memory=$MEMORY \
+				--tmpdir=$TMPDIR \
+				-t $MINUTES \
+				--blacklist="magpie" \
+				bash $sh_file
+		fi
 
 	done
 
@@ -193,6 +236,12 @@ EOM
 
 		sh_file=$SHDIR/$bn.sh
 
+    gpu=0
+		if [ "$is_cpu" = false ]; then
+      if [[ "$bn" == *scG-cluster* || "$bn" == *scDeepCluster* ]]; then
+        gpu=1
+      fi
+    fi
 		# Extract metadata
 
 		while read -r line; do
@@ -241,13 +290,26 @@ EOM
 
 		echo "Processing file: $file"
 
-		mxqsub --stdout=$file \
-			--group-name="BADALLOC_failed_runs_${dataset}" \
-			--threads=$THREADS \
-			--memory=$MEMORY \
-			--tmpdir=$TMPDIR \
-			-t $MINUTES \
-			bash $sh_file
+		if [[ $gpu -eq 1 ]]; then
+			mxqsub --stdout=$file \
+				--group-name="BADALLOC_failed_runs_${dataset}" \
+				--threads=$THREADS \
+				--memory=$MEMORY \
+				--tmpdir=$TMPDIR \
+				-t $MINUTES \
+				--gpu \
+				--blacklist="bandersnatch" \
+				bash $sh_file
+		else
+			mxqsub --stdout=$file \
+				--group-name="BADALLOC_failed_runs_${dataset}" \
+				--threads=$THREADS \
+				--memory=$MEMORY \
+				--tmpdir=$TMPDIR \
+				-t $MINUTES \
+				--blacklist="magpie" \
+				bash $sh_file
+		fi
 
 	done
 
@@ -260,6 +322,12 @@ EOM
 
 		sh_file=$SHDIR/$bn.sh
 
+    gpu=0
+		if [ "$is_cpu" = false ]; then
+      if [[ "$bn" == *scG-cluster* || "$bn" == *scDeepCluster* ]]; then
+        gpu=1
+      fi
+    fi
 		# Extract metadata
 
 		while read -r line; do
@@ -329,13 +397,26 @@ EOM
 
 		echo "Processing file: $file"
 
-		mxqsub --stdout=$file \
-			--group-name="ERROR_failed_runs_${dataset}" \
-			--threads=$THREADS \
-			--memory=$MEMORY \
-			--tmpdir=$TMPDIR \
-			-t $MINUTES \
-			bash $sh_file
+		if [[ $gpu -eq 1 ]]; then
+			mxqsub --stdout=$file \
+				--group-name="ERROR_failed_runs_${dataset}" \
+				--threads=$THREADS \
+				--memory=$MEMORY \
+				--tmpdir=$TMPDIR \
+				-t $MINUTES \
+				--gpu \
+				--blacklist="bandersnatch" \
+				bash $sh_file
+		else
+			mxqsub --stdout=$file \
+				--group-name="ERROR_failed_runs_${dataset}" \
+				--threads=$THREADS \
+				--memory=$MEMORY \
+				--tmpdir=$TMPDIR \
+				-t $MINUTES \
+				--blacklist="magpie" \
+				bash $sh_file
+		fi
 
 	done
 
@@ -352,6 +433,13 @@ EOM
 	for file in $shtorun; do
 
 		bn=$(basename -s ".sh" $file)
+
+    gpu=0
+		if [ "$is_cpu" = false ]; then
+      if [[ "$bn" == *scG-cluster* || "$bn" == *scDeepCluster* ]]; then
+        gpu=1
+      fi
+    fi
 
 		log_file="${LOGDIR}/${bn}.stdout.log"
 		if [[ $all_files == *$log_file* ]]; then
@@ -435,13 +523,26 @@ EOM
 
 		echo "Processing file: $file"
 
-		mxqsub --stdout=$log_file \
-			--group-name="MISSING_runs_${dataset}" \
-			--threads=$THREADS \
-			--memory=$MEMORY \
-			--tmpdir=$TMPDIR \
-			-t $MINUTES \
-			bash $sh_file
+		if [[ $gpu -eq 1 ]]; then
+			mxqsub --stdout=$log_file \
+				--group-name="MISSING_runs_${dataset}" \
+				--threads=$THREADS \
+				--memory=$MEMORY \
+				--tmpdir=$TMPDIR \
+				-t $MINUTES \
+				--gpu \
+				--blacklist="bandersnatch" \
+				bash $sh_file
+		else
+			mxqsub --stdout=$log_file \
+				--group-name="MISSING_runs_${dataset}" \
+				--threads=$THREADS \
+				--memory=$MEMORY \
+				--tmpdir=$TMPDIR \
+				-t $MINUTES \
+				--blacklist="magpie" \
+				bash $sh_file
+		fi
 
 	done
 done

@@ -205,7 +205,7 @@ sim_truth <- function(splatter_sim,
   if (any(de_fac < 1)) {
     stop("Only simulated datesets with no downregulated genes allowed.")
   }
-  
+
   # All genes with a pos. factor are DE
   de_genes <- de_fac > factor_cutoff
 
@@ -270,8 +270,8 @@ evaluate_sim <- function(sce,
   )
 
   if (biclust@Number > 0) {
-    nomono_biclust <- rm_monoclusters(biclust)
-    nomono_truth <- rm_monoclusters(true_biclust)
+    nomono_biclust <- CAbiNet::rm_monoclusters(biclust)
+    nomono_truth <- CAbiNet::rm_monoclusters(true_biclust)
 
     ac <- ari_cells(
       reference = sce,
@@ -319,7 +319,7 @@ evaluate_sim <- function(sce,
 evaluate_real <- function(sce, biclust, truth_col = NULL) {
 
   if (biclust@Number > 0) {
-    nomono_biclust <- rm_monoclusters(biclust)
+    nomono_biclust <- CAbiNet::rm_monoclusters(biclust)
 
     ac <- ari_cells(
       reference = sce,

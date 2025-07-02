@@ -1,5 +1,5 @@
 algorithm <- "Monocle3"
-source("./benchmarking/setup_split.R")
+source("./setup_split.R")
 
 
 cds <- new_cell_data_set(counts(data),
@@ -72,11 +72,11 @@ if (!isTRUE(is_cell_clustering)) {
 
     monocle_cells <- matrix(FALSE, nrow = length(ccs), ncol = ncol(cds))
     rownames(monocle_cells) <- paste0("Bic_", ccs)
-    colnames(monocle_cells) <- Cells(cds)
+    colnames(monocle_cells) <- colnames(cds)
 
 
     for (i in seq_along(ccs)) {
-      clust_cells <- Cells(cds)[which(part == ccs[i])]
+      clust_cells <- colnames(cds)[which(part == ccs[i])]
       idx <- which(colnames(monocle_cells) %in% clust_cells)
       monocle_cells[i, idx] <- TRUE
     }

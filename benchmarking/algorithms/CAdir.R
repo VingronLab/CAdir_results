@@ -1,5 +1,5 @@
 algorithm <- "CAdir"
-source("./benchmarking/setup_split.R")
+source("./setup_split.R")
 
 if (is.null(angle)) {
   algorithm <- "CAdir_auto"

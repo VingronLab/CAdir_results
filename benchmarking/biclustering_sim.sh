@@ -1,18 +1,24 @@
 #!/bin/bash
+# TODO: Move to more sensible number than 108 parameter choices. Best divisible number.
+# -> 120 is a good choice.
 
 # add date to output folder
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="20250403"
 
 THREADS=6
 MEMORY=4G
 MINUTES=240
 
+LD_LIBRARY_VAR=/home/kohl/.local/lib:/home/kohl/.local/bin:/home/kohl/.local/include
+GDAL_DATA_VAR=/home/kohl/.local/share/gdal
+
 dataset="pbmc3k"
 # dataset="zeisel"
 
-scripts_path="./benchmarking/algorithms/"
+scripts_path="./algorithms/"
 
-outdir="./results/benchmarking/results/simulated/${date}"
+outdir="/project/kohl_data/CAdir/benchmarking/results/biclustering/${date}"
 
 logdir="${outdir}/log/${dataset}"
 here_dir="${outdir}/sh/${dataset}"
@@ -25,12 +31,12 @@ mkdir -p "$here_dir/.done/"
 OUTDIR="${outdir}/out/${dataset}"
 mkdir -p "$OUTDIR"
 
-files="./data/sim/preprocessed/${dataset}/*.rds"
+files="/project/kohl_data/CAdir/data/sim/preprocessed/${dataset}/*.rds"
 
 ntop=(2000 4000 6000)
 nclust=6
 truth='Group'
-cc=0 #set is_cell_clustering to FALSE
+cc=0  # set is_cell_clustering to FALSE
 sim=1 # set simulation to TRUE
 
 test_run=false

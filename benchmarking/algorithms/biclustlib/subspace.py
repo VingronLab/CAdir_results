@@ -1,22 +1,23 @@
 """
-    biclustlib: A Python library of biclustering algorithms and evaluation measures.
-    Copyright (C) 2017  Victor Alexandre Padilha
+biclustlib: A Python library of biclustering algorithms and evaluation measures.
+Copyright (C) 2017  Victor Alexandre Padilha
 
-    This file is part of biclustlib.
+This file is part of biclustlib.
 
-    biclustlib is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+biclustlib is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    biclustlib is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+biclustlib is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+
 import sys
 import numpy as np
 
@@ -24,7 +25,9 @@ from munkres import Munkres
 from itertools import product
 
 
-def clustering_error(predicted_biclustering, reference_biclustering, num_rows, num_cols):
+def clustering_error(
+    predicted_biclustering, reference_biclustering, num_rows, num_cols
+):
     """The Clustering Error (CE) external evaluation measure.
 
     CE computes the similarity between two subspace clusterings. This measure was originally
@@ -59,19 +62,23 @@ def clustering_error(predicted_biclustering, reference_biclustering, num_rows, n
     ce : float
         Similarity score between 0.0 and 1.0.
     """
-    
 
     check = check_biclusterings(predicted_biclustering, reference_biclustering)
 
     if isinstance(check, float):
         return check
 
-    union_size = _calculate_size(predicted_biclustering, reference_biclustering, num_rows, num_cols, 'union')
+    union_size = _calculate_size(
+        predicted_biclustering, reference_biclustering, num_rows, num_cols, "union"
+    )
     dmax = _calculate_dmax(predicted_biclustering, reference_biclustering)
 
     return float(dmax) / union_size
 
-def relative_non_intersecting_area(predicted_biclustering, reference_biclustering, num_rows, num_cols):
+
+def relative_non_intersecting_area(
+    predicted_biclustering, reference_biclustering, num_rows, num_cols
+):
     """The Relative Non-Intersecting Area (RNIA) external evaluation measure.
 
     RNIA computes the similarity between two subspace clusterings. This measure was originally
@@ -111,30 +118,47 @@ def relative_non_intersecting_area(predicted_biclustering, reference_biclusterin
     if isinstance(check, float):
         return check
 
-    union_size = _calculate_size(predicted_biclustering, reference_biclustering, num_rows, num_cols, 'union')
-    intersection_size = _calculate_size(predicted_biclustering, reference_biclustering, num_rows, num_cols, 'intersection')
+    union_size = _calculate_size(
+        predicted_biclustering, reference_biclustering, num_rows, num_cols, "union"
+    )
+    intersection_size = _calculate_size(
+        predicted_biclustering,
+        reference_biclustering,
+        num_rows,
+        num_cols,
+        "intersection",
+    )
 
     return float(intersection_size) / union_size
 
-def _calculate_size(predicted_biclustering, reference_biclustering, num_rows, num_cols, operation):
+
+def _calculate_size(
+    predicted_biclustering, reference_biclustering, num_rows, num_cols, operation
+):
     pred_count = _count_biclusters(predicted_biclustering, num_rows, num_cols)
     true_count = _count_biclusters(reference_biclustering, num_rows, num_cols)
 
-    if operation == 'union':
+    if operation == "union":
         return np.sum(np.maximum(pred_count, true_count))
-    elif operation == 'intersection':
+    elif operation == "intersection":
         return np.sum(np.minimum(pred_count, true_count))
 
-    valid_operations = ('union', 'intersection')
+    valid_operations = ("union", "intersection")
 
-    raise ValueError("operation must be one of {0}, got {1}".format(valid_operations, operation))
+    raise ValueError(
+        "operation must be one of {0}, got {1}".format(valid_operations, operation)
+    )
+
 
 def _calculate_dmax(predicted_biclustering, reference_biclustering):
     pred_sets = _bic2sets(predicted_biclustering)
     true_sets = _bic2sets(reference_biclustering)
-    cost_matrix = [[sys.maxsize - len(b.intersection(g)) for g in true_sets] for b in pred_sets]
+    cost_matrix = [
+        [sys.maxsize - len(b.intersection(g)) for g in true_sets] for b in pred_sets
+    ]
     indices = Munkres().compute(cost_matrix)
     return sum(sys.maxsize - cost_matrix[i][j] for i, j in indices)
+
 
 def _count_biclusters(biclustering, num_rows, num_cols):
     count = np.zeros((num_rows, num_cols), dtype=np.int)
@@ -147,6 +171,7 @@ def _count_biclusters(biclustering, num_rows, num_cols):
 
     return count
 
+
 # def _bic2sets(biclust):
 #     return [set(product(b.rows, b.cols)) for b in biclust.biclusters]
 def _bic2sets(biclust):
@@ -156,17 +181,18 @@ def _bic2sets(biclust):
             b.cols = np.array([b.cols])
         if b.rows.ndim == 0:
             b.rows = np.array([b.rows])
-            
+
         prd.append(set(product(b.rows, b.cols)))
 
     return prd
-    
- ############################# check.py
-    
+
+
+############################# check.py
+
 
 def check_biclusterings(b1, b2):
     if not isinstance(b1, Biclustering) or not isinstance(b2, Biclustering):
-        raise ValueError('b1 and b2 must be Biclustering instances')
+        raise ValueError("b1 and b2 must be Biclustering instances")
 
     if len(b1.biclusters) == 0 and len(b2.biclusters) == 0:
         return 1.0
@@ -175,12 +201,10 @@ def check_biclusterings(b1, b2):
         return 0.0
 
     return None
-    
-    
-    
-  ############ models.py
-  
-  
+
+
+############ models.py
+
 
 class Bicluster:
     """This class models a bicluster.
@@ -198,10 +222,18 @@ class Bicluster:
     """
 
     def __init__(self, rows, cols, data=None):
-        if isinstance(rows, np.ndarray) and rows.dtype == np.bool and cols.dtype == np.bool:
+        if (
+            isinstance(rows, np.ndarray)
+            and rows.dtype == np.bool
+            and cols.dtype == np.bool
+        ):
             self.rows = np.nonzero(rows)[0]
             self.cols = np.nonzero(cols)[0]
-        elif isinstance(cols, np.ndarray) and rows.dtype == np.int and cols.dtype == np.int:
+        elif (
+            isinstance(cols, np.ndarray)
+            and rows.dtype == np.int
+            and cols.dtype == np.int
+        ):
             self.rows = rows
             self.cols = cols
         else:
@@ -210,7 +242,9 @@ class Bicluster:
         if data is not None:
             n, m = len(self.rows), len(self.cols)
 
-            if isinstance(data, np.ndarray) and (data.shape == (n, m) or (len(data) == 0 and n == 0)):
+            if isinstance(data, np.ndarray) and (
+                data.shape == (n, m) or (len(data) == 0 and n == 0)
+            ):
                 self.data = data
             else:
                 raise ValueError("")
@@ -241,7 +275,7 @@ class Bicluster:
         self.cols.sort()
 
     def __str__(self):
-        return 'Bicluster(rows={0}, cols={1})'.format(self.rows, self.cols)
+        return "Bicluster(rows={0}, cols={1})".format(self.rows, self.cols)
 
 
 class Biclustering:
@@ -257,14 +291,15 @@ class Biclustering:
         if all(isinstance(b, Bicluster) for b in biclusters):
             self.biclusters = biclusters
         else:
-            raise ValueError("biclusters list contains an element that is not a Bicluster instance")
+            raise ValueError(
+                "biclusters list contains an element that is not a Bicluster instance"
+            )
 
     def __str__(self):
-        return '\n'.join(str(b) for b in self.biclusters)
-        
-        
-def convert2biclustlib(biclustering):
+        return "\n".join(str(b) for b in self.biclusters)
 
+
+def convert2biclustlib(biclustering):
     biclusters = []
     # f = open("biclustering", "wb")
     # pickle.dump(biclustering, f)
@@ -272,7 +307,6 @@ def convert2biclustlib(biclustering):
     # print("biclustering", flush = True)
 
     for i in range(len(biclustering)):
-
         row_indices, col_indices = biclustering[i]
 
         row_indices = np.asarray(row_indices)
@@ -282,7 +316,7 @@ def convert2biclustlib(biclustering):
             break
 
         biclusters.append(Bicluster(row_indices, col_indices))
-    
+
     biclustering = Biclustering(biclusters)
-    
-    return(biclustering)
+
+    return biclustering

@@ -10,3 +10,9 @@ wget-log
 
 /.quarto/
 results/benchmarking
+.benchmarking_bu/algorithms/.bu
+.benchmarking_bu
+benchmarking/algorithms/scASDC/__pycache__
+benchmarking/algorithms/scASDC/utils/__pycache__
+benchmarking/algorithms/scDeepCluster_pytorch/__pycache__
+benchmarking/algorithms/scG-cluster/__pycache__

@@ -27,6 +27,9 @@ for pv in "${pcerv[@]}"; do
 # t=$MINUTES
 # END_MXQ
 
+export LD_LIBRARY_PATH=$LD_LIBRARY_VAR:\$LD_LIBRARY_PATH
+export GDAL_DATA=$GDAL_DATA_VAR:\$GDAL_DATA
+
 trap 'echo ERROR_TIMEOUT >&2' SIGXCPU
 
 Rscript-4.2.2 $SCRIPT   \\
