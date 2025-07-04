@@ -773,9 +773,7 @@ ggsave(
   plot = fig3,
   filename = file.path(imgdir, "figure3_patchwork_panel.png"),
   height = 3600,
-  # height = 3307,
   width = 5000,
-  # width = 4677,
   units = "px"
 )
 
@@ -783,9 +781,7 @@ ggsave(
   plot = fig3,
   filename = file.path(imgdir, "figure3_patchwork_panel.pdf"),
   height = 3600,
-  # height = 3307,
   width = 5000,
-  # width = 4677,
   device = cairo_pdf,
   units = "px"
 )
@@ -821,9 +817,7 @@ ggsave(
   plot = suppl_fig2,
   filename = file.path(imgdir, "suppl_figure2_patchwork_panel.png"),
   height = 3600,
-  # height = 3307,
   width = 5000,
-  # width = 4677,
   units = "px"
 )
 
@@ -831,9 +825,7 @@ ggsave(
   plot = suppl_fig2,
   filename = file.path(imgdir, "suppl_figure2_patchwork_panel.pdf"),
   height = 3600,
-  # height = 3307,
   width = 5000,
-  # width = 4677,
   device = cairo_pdf,
   units = "px"
 )
