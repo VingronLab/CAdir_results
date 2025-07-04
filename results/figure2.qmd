@@ -53,8 +53,14 @@ dir.create(imgdir, recursive = TRUE)
 ```{r}
 data_dir <- "./data/real/discussed/"
 
-marker_genes <- readr::read_csv(file.path(data_dir, "tabula_muris_marker_genes.csv"))
-sce <- readRDS(file.path(data_dir, "preprocessed/tabula_muris_preprocessed_filtered.rds"))
+marker_genes <- readr::read_csv(file.path(
+  data_dir,
+  "tabula_muris_marker_genes.csv"
+))
+sce <- readRDS(file.path(
+  data_dir,
+  "preprocessed/tabula_muris_preprocessed_filtered.rds"
+))
 
 genevars <- modelGeneVar(sce, assay.type = "logcounts")
 chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)
@@ -65,12 +71,14 @@ chosen <- c(chosen, expr_markers$gene)
 chosen <- unique(chosen)
 sce_sub <- sce[chosen, ]
 
-ca <- cacomp(obj = logcounts(sce_sub),
-             princ_coords = 3,
-             dims = 30,
-             top = nrow(sce_sub),
-             residuals = "pearson",
-             python = TRUE)
+ca <- cacomp(
+  obj = logcounts(sce_sub),
+  princ_coords = 3,
+  dims = 30,
+  top = nrow(sce_sub),
+  residuals = "pearson",
+  python = TRUE
+)
 
 cell_types <- sce$cell_ontology_class
 cat("Number of cell types:", length(unique(cell_types)), "\n")
@@ -81,17 +89,17 @@ cat("Number of cell types:", length(unique(cell_types)), "\n")
 ```{r}
 set.seed(2358)
 cak <- dirclust_splitmerge(
-    caobj = ca,
-    k = 8,
-    cutoff = 55,
-    method = "random",
-    apl_quant = 0.99,
-    counts = NULL,
-    min_cells = 20,
-    reps = NULL,
-    make_plots = TRUE,
-    qcutoff = 0.8,
-    convergence_thr = 0.001
+  caobj = ca,
+  k = 8,
+  cutoff = 55,
+  method = "random",
+  apl_quant = 0.99,
+  counts = NULL,
+  min_cells = 20,
+  reps = NULL,
+  make_plots = TRUE,
+  qcutoff = 0.8,
+  convergence_thr = 0.001
 )
 ```
 
@@ -183,13 +191,13 @@ model <- apl_model(
 tcs_coords <- model(ca@std_coords_cols)
 tcs_coords <- tcs_coords[cak@cell_clusters == "T_cell", ]
 t_dir <- cak@directions[cak@dict[["T_cell"]], ]
-t_dir <- t_dir / ca@D  # prin_coords to std_coords
+t_dir <- t_dir / ca@D # prin_coords to std_coords
 t_dir <- model(t_dir)
 
 ics_coords <- model(ca@std_coords_cols)
 ics_coords <- ics_coords[cak@cell_clusters == "Immune_cell", ]
 i_dir <- cak@directions[cak@dict[["Immune_cell"]], ]
-i_dir <- i_dir / ca@D  # prin_coords to std_coords
+i_dir <- i_dir / ca@D # prin_coords to std_coords
 i_dir <- model(i_dir)
 ```
 
@@ -278,7 +286,7 @@ model <- apl_model(
 ecs_coords <- model(ca@std_coords_cols)
 ecs_coords <- ecs_coords[cak@cell_clusters == "Endothelial_cell", ]
 e_dir <- cak@directions[cak@dict[["Endothelial_cell"]], ]
-e_dir <- e_dir / ca@D  # prin_coords to std_coords
+e_dir <- e_dir / ca@D # prin_coords to std_coords
 e_dir <- model(e_dir)
 ```
 
@@ -513,7 +521,7 @@ sm <- sm_plot(
 sm
 ggsave(
   plot = sm,
-  filename = file.path(imgdir,"tm_split_merge_plot.pdf"),
+  filename = file.path(imgdir, "tm_split_merge_plot.pdf"),
   device = cairo_pdf,
   width = 2300,
   height = 2100,
@@ -522,8 +530,44 @@ ggsave(
 
 ggsave(
   plot = sm,
-  filename = file.path(imgdir,"tm_split_merge_plot.png"),
+  filename = file.path(imgdir, "tm_split_merge_plot.png"),
   width = 2300,
+  height = 2100,
+  units = "px"
+)
+```
+
+```{r}
+sm <- sm_plot(
+  cadir = cak,
+  caobj = ca,
+  rm_redund = TRUE,
+  keep_end = FALSE,
+  highlight_cluster = TRUE,
+  show_genes = FALSE,
+  annotate_clusters = TRUE,
+  org = "mm",
+  inlet_side = 0.11,
+  title_size = 12,
+  show_axis = FALSE,
+  layout = "tree",
+  rotate = FALSE
+)
+
+sm
+ggsave(
+  plot = sm,
+  filename = file.path(imgdir, "tm_split_merge_plot_rotate.pdf"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 2100,
+  units = "px"
+)
+
+ggsave(
+  plot = sm,
+  filename = file.path(imgdir, "tm_split_merge_plot_rotate.png"),
+  width = 4000,
   height = 2100,
   units = "px"
 )
@@ -569,7 +613,11 @@ pal <- mpi_extend_pal()
 cols <- pal(length(unique(sce_sank$cadir)))
 names(cols) <- unique(sce_sank$cadir)
 
-info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
+info <- left_join(
+  data.frame("Biclusters" = names(cols), "col" = cols),
+  info,
+  by = "Biclusters"
+)
 
 cols <- c(cols, info$col)
 
@@ -594,20 +642,29 @@ order <- c(
 )
 
 wrap <- 17
-df$node <- factor(stringr::str_wrap(df$node, wrap), levels = stringr::str_wrap(order, wrap))
-df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::str_wrap(order, wrap))
+df$node <- factor(
+  stringr::str_wrap(df$node, wrap),
+  levels = stringr::str_wrap(order, wrap)
+)
+df$next_node <- factor(
+  stringr::str_wrap(df$next_node, wrap),
+  levels = stringr::str_wrap(order, wrap)
+)
 
 names(cols) <- stringr::str_wrap(names(cols), wrap)
 
 
-sank <- ggplot(df, aes(
-  x = x,
-  next_x = next_x,
-  node = node,
-  next_node = next_node,
-  fill = node,
-  label = as.character(node)
-)) +
+sank <- ggplot(
+  df,
+  aes(
+    x = x,
+    next_x = next_x,
+    node = node,
+    next_node = next_node,
+    fill = node,
+    label = as.character(node)
+  )
+) +
   geom_sankey(
     flow.alpha = 0.4,
   ) +
@@ -695,10 +752,12 @@ prl <- plot_results(
 pr <- lapply(
   prl,
   FUN = function(p) {
-    p + theme(
-      plot.title = ggtext::element_textbox_simple(size = 15)
-    )
-  })
+    p +
+      theme(
+        plot.title = ggtext::element_textbox_simple(size = 15)
+      )
+  }
+)
 
 pr <- ggpubr::ggarrange(
   plotlist = pr,
@@ -725,17 +784,17 @@ for (i in seq_len(length(pcl_panel))) {
   if (i != 1) pcl_panel[[i]] <- pcl_panel[[i]] + plot_layout(tag_level = "new")
 }
 
-fig2 <- (
-  ( (wrap_plots(pcl_panel, ncol = 3) +
+fig2 <- (((wrap_plots(pcl_panel, ncol = 3) +
   guide_area() +
   plot_layout(guides = "collect") &
-  theme(legend.box = "horizontal"))
- / 
-    (p_bt_prin + p_ecs_prin + guide_area() + plot_layout(guides = "collect", width = c(3,3,1)))
-  ) + plot_layout(height = c(2,1)) |
-    wrap_elements(sm)
-) +
-  plot_annotation(tag_levels = "a") & 
+  theme(legend.box = "horizontal")) /
+  (p_bt_prin +
+    p_ecs_prin +
+    guide_area() +
+    plot_layout(guides = "collect", width = c(3, 3, 1)))) +
+  plot_layout(height = c(2, 1)) |
+  wrap_elements(sm)) +
+  plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
 ggsave(
@@ -767,14 +826,15 @@ pr_panel <- lapply(
   seq_along(prl),
   FUN = function(i) {
     if (i != 1) {
-    prl[[i]] +
-      theme(plot.title = ggtext::element_textbox_simple(size = 8)) +
-      plot_layout(tag_level = "new")
+      prl[[i]] +
+        theme(plot.title = ggtext::element_textbox_simple(size = 8)) +
+        plot_layout(tag_level = "new")
     } else {
       prl[[i]] +
-      theme(plot.title = ggtext::element_textbox_simple(size = 8))
+        theme(plot.title = ggtext::element_textbox_simple(size = 8))
     }
-})
+  }
+)
 
 pr_panel <- ggpubr::ggarrange(
   plotlist = pr_panel,
@@ -783,7 +843,7 @@ pr_panel <- ggpubr::ggarrange(
 )
 
 layout = c(
-  area(t = 1, l = 1, b = 4 , r = 4),
+  area(t = 1, l = 1, b = 4, r = 4),
   area(1, 5, 4, 8),
   area(5, 1, 8, 4),
   area(5, 5, 6, 8),
@@ -799,7 +859,7 @@ sfig1 <- pang +
   p_bt_std +
   p_ecs_std +
   plot_layout(design = layout) +
-  plot_annotation(tag_levels = "a") & 
+  plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
 # sfig1 <- (pang + free(pr, type = "panel", side = "rb")) / (free(sank, side = "l") + (p_bt_std / p_ecs_std))
@@ -824,7 +884,6 @@ ggsave(
   device = cairo_pdf,
   units = "px"
 )
-
 ```
 
 

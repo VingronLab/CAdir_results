@@ -208,6 +208,13 @@ ggsave(
   height = 2000,
   units = "px"
 )
+ggsave(
+  plot = p_max_ari,
+  filename = file.path(imgdir, "sim_bench_max_ARI_cells.png"),
+  width = 3000,
+  height = 2000,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -250,6 +257,13 @@ p_max_nmi
 ggsave(
   plot = p_max_nmi,
   filename = file.path(imgdir, "sim_bench_max_NMI_cells.pdf"),
+  width = 3000,
+  height = 2000,
+  units = "px"
+)
+ggsave(
+  plot = p_max_nmi,
+  filename = file.path(imgdir, "sim_bench_max_NMI_cells.png"),
   width = 3000,
   height = 2000,
   units = "px"
@@ -321,6 +335,13 @@ ggsave(
   height = 1650,
   units = "px"
 )
+ggsave(
+  plot = p_mean_ari,
+  filename = file.path(imgdir, "sim_bench_mean_ARI_cells.png"),
+  width = 2500,
+  height = 1650,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -372,6 +393,13 @@ p_mean_nmi
 ggsave(
   plot = p_mean_nmi,
   filename = file.path(imgdir, "sim_bench_mean_NMI_cells.pdf"),
+  width = 2500,
+  height = 1650,
+  units = "px"
+)
+ggsave(
+  plot = p_mean_nmi,
+  filename = file.path(imgdir, "sim_bench_mean_NMI_cells.png"),
   width = 2500,
   height = 1650,
   units = "px"
@@ -618,6 +646,13 @@ ggsave(
   height = 1750,
   units = "px"
 )
+ggsave(
+  plot = p,
+  filename = file.path(imgdir, "real_bench_max_ARI_cells.png"),
+  width = 2000,
+  height = 1750,
+  units = "px"
+)
 p
 ```
 
@@ -810,6 +845,11 @@ ggsave(
   filename = file.path(imgdir, "barplots_fraction_successful_runs_ARI_wide.pdf"),
   width = 8, height = 4.2
 )
+ggsave(
+  plot = p_succ,
+  filename = file.path(imgdir, "barplots_fraction_successful_runs_ARI_wide.png"),
+  width = 8, height = 4.2
+)
 p_succ
 ```
 
@@ -858,9 +898,9 @@ scal_df$algorithm <- factor(scal_df$algorithm, levels = c(
   "Seurat",
   "Monocle3",
   "SC3",
-  "SIMLR",
-  "scDeepCluster",
-  "scG-cluster"
+  "SIMLR"
+  # "scDeepCluster",
+  # "scG-cluster"
 ))
 
 scal_df$dataset <- as.numeric(scal_df$dataset)
@@ -915,9 +955,9 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
     "SC3" = alph,
     "SIMLR" = alph,
     "Seurat" = alph,
-    "kmeans" = alph,
-    "scDeepCluster" = alph,
-    "scG-cluster" = alph
+    "kmeans" = alph
+    # "scDeepCluster" = alph,
+    # "scG-cluster" = alph
   )) +
   scale_colour_manual(values = c(
     "CAdir" = mpgOrange,
@@ -928,9 +968,9 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
     "SC3" = mpgDarkGreen,
     "SIMLR" = mpgGrau,
     "Seurat" = mpgGreenLight,
-    "kmeans" = mpgGreen,
-    "scDeepCluster" = mpgPink,
-    "scG-cluster" = mpgBrown
+    "kmeans" = mpgGreen
+    # "scDeepCluster" = mpgPink,
+    # "scG-cluster" = mpgBrown
   )) +
   scale_linetype_manual(values = c(
     "CAdir" = "solid",
@@ -941,9 +981,9 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
     "SC3" = "dashed",
     "SIMLR" = "solid",
     "Seurat" = "solid",
-    "kmeans" = "solid",
-    "scDeepCluster" = "solid",
-    "scG-cluster" = "solid"
+    "kmeans" = "solid"
+    # "scDeepCluster" = "solid",
+    # "scG-cluster" = "solid"
   )) +
   theme_bw(base_size = 18) +
   theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust = 1))
@@ -953,6 +993,13 @@ rt
 ggsave(
   plot = rt,
   filename = file.path(imgdir, "runtime_singleproc.pdf"),
+  width = 2200,
+  height = 1800,
+  units = "px"
+)
+ggsave(
+  plot = rt,
+  filename = file.path(imgdir, "runtime_singleproc.png"),
   width = 2200,
   height = 1800,
   units = "px"
@@ -1027,6 +1074,13 @@ ggsave(
   height = 1800,
   units = "px"
 )
+ggsave(
+  filename = file.path(imgdir, "deviation_aplq-09999_detection.png"),
+  plot = devp_single,
+  width = 2200,
+  height = 1800,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -1054,6 +1108,13 @@ ggsave(
   height = 2400,
   units = "px"
 )
+ggsave(
+  filename = file.path(imgdir, "deviation_detection.png"),
+  plot = devp,
+  width = 3000,
+  height = 2400,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -1073,6 +1134,13 @@ log2fc
 
 ggsave(
   filename = file.path(imgdir, "log2fc_ct_detection.pdf"),
+  plot = log2fc,
+  width = 2800,
+  height = 1800,
+  units = "px"
+)
+ggsave(
+  filename = file.path(imgdir, "log2fc_ct_detection.png"),
   plot = log2fc,
   width = 2800,
   height = 1800,
@@ -1169,6 +1237,13 @@ ggsave(
   height = 2200,
   units = "px"
 )
+ggsave(
+  plot = fig1,
+  filename = file.path(imgdir, "upd_bench_review_panel.png"),
+  width = 5800,
+  height = 2200,
+  units = "px"
+)
 
 ```
 
@@ -1186,6 +1261,13 @@ fig4 <- (p_max_ari + p_tile) +
 ggsave(
   plot = fig4,
   filename = file.path(imgdir, "figure4_panel.pdf"),
+  width = 5600,
+  height = 2240,
+  units = "px"
+)
+ggsave(
+  plot = fig4,
+  filename = file.path(imgdir, "figure4_panel.png"),
   width = 5600,
   height = 2240,
   units = "px"
@@ -1224,6 +1306,13 @@ ggsave(
   height = 4200,
   units = "px"
 )
+ggsave(
+  plot = suppl_panel,
+  filename = file.path(imgdir, "suppl_mean_panel.png"),
+  width = 5600,
+  height = 4200,
+  units = "px"
+)
 
 suppl_panel
 ```
@@ -1232,3 +1321,5 @@ suppl_panel
 ```{r}
 sessionInfo()
 ```
+
+
