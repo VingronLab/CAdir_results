@@ -5,7 +5,7 @@
 ############
 
 date="20250528_cpu"
-OUTDIR="/project/kohl_data/CAdir/benchmarking/results/real/${date}/"
+OUTDIR="./results/benchmarking/results/real/${date}/"
 
 # dataset_list=("Darmanis"
 # 	"FreytagGold"

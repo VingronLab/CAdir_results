@@ -78,11 +78,11 @@ mpgDarkGrey = "#777777"
 mpgGreenLight = "#c6d325"
 mpgOrange = '#ef7c00'
 
-eval_cabinet = list.files('/project/kohl_data/CAdir/benchmarking/results/scalability/20240515/', pattern = '*.csv', full.names = T)
+eval_cabinet = list.files('./results/benchmarking/results/scalability/20240515/', pattern = '*.csv', full.names = T)
 
 # eval_cabinet = list.files('/project/kohl_data/dayofscience/results/scalability_cabinet/out/', pattern = '*.csv', full.names = T)
 eval_cam = list.files('/project/kohl_data/dayofscience/results/scalability/out', pattern = '*.csv', full.names = T)
-eval_cadir = list.files('/project/kohl_data/CAdir/benchmarking/results/scalability/20240327/out/', pattern = '*.csv', full.names = T)
+eval_cadir = list.files('./results/benchmarking/results/scalability/20240327/out/', pattern = '*.csv', full.names = T)
 
 eval_files <- c(eval_cabinet, eval_cam, eval_cadir)
 

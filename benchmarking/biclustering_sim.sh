@@ -14,7 +14,7 @@ dataset="pbmc3k"
 
 scripts_path="./algorithms/"
 
-outdir="/project/kohl_data/CAdir/benchmarking/results/biclustering/${date}"
+outdir="./results/benchmarking/results/biclustering/${date}"
 
 logdir="${outdir}/log/${dataset}"
 here_dir="${outdir}/sh/${dataset}"
@@ -27,7 +27,7 @@ mkdir -p "$here_dir/.done/"
 OUTDIR="${outdir}/out/${dataset}"
 mkdir -p "$OUTDIR"
 
-files="/project/kohl_data/CAdir/data/sim/preprocessed/${dataset}/*.rds"
+files="./data/sim/preprocessed/${dataset}/*.rds"
 
 ntop=(2000 4000 6000)
 nclust=6

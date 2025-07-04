@@ -8,7 +8,7 @@ if (!isTRUE(is_cell_clustering)) {
 cat("\nStarting scG-cluster\n")
 t <- Sys.time()
 
-# data <- readRDS("/project/kohl_data/CAdir/data/sim/preprocessed/pbmc3k/dePROB-0_1_defacLOC-1_5_defacSCALE-1_5_filtered.rds")
+# data <- readRDS("./data/sim/preprocessed/pbmc3k/dePROB-0_1_defacLOC-1_5_defacSCALE-1_5_filtered.rds")
 cnts <- as.matrix(counts(data))
 # label <- as.numeric(as.factor(colData(data)[, truth]))
 label <- as.numeric(as.factor(colnames(data)))

@@ -1,4 +1,4 @@
-renv::load("/project/kohl_analysis/analysis/CAdir")
+renv::load()
 
 if (algorithm == "scG-cluster" || algorithm == "scDeepCluster") {
   library(reticulate)
@@ -25,49 +25,56 @@ graph_select_by_prop <- FALSE
 graph_select <- FALSE
 
 option_list <- list(
-  make_option(c("--name"),
+  make_option(
+    c("--name"),
     type = "character",
     action = "store",
     default = "sample",
     help = "Name of sample",
     metavar = "character"
   ),
-  make_option(c("--file"),
+  make_option(
+    c("--file"),
     type = "character",
     action = "store",
     default = NULL,
     help = "Name of file to load",
     metavar = "character"
   ),
-  make_option(c("--dataset"),
+  make_option(
+    c("--dataset"),
     type = "character",
     action = "store",
     default = NULL,
     help = "Name of the dataset",
     metavar = "character"
   ),
-  make_option(c("--outdir"),
+  make_option(
+    c("--outdir"),
     type = "character",
     action = "store",
     default = NULL,
     help = "output directory",
     metavar = "character"
   ),
-  make_option(c("--ntop"),
+  make_option(
+    c("--ntop"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "top X most variable genes",
     metavar = "numeric"
   ),
-  make_option(c("--sim"),
+  make_option(
+    c("--sim"),
     type = "numeric",
     action = "store",
     default = 0,
     help = "Is the dataset a simulated one or not",
     metavar = "numeric"
   ),
-  make_option(c("--truth"),
+  make_option(
+    c("--truth"),
     type = "character",
     action = "store",
     default = "truth",
@@ -75,7 +82,8 @@ option_list <- list(
     metavar = "character"
   ),
   # Toggle if it is only a cell clustering.
-  make_option(c("--cell_clustering"),
+  make_option(
+    c("--cell_clustering"),
     type = "numeric",
     action = "store",
     default = 0,
@@ -148,9 +156,7 @@ if (fileformat == "txt") {
     data <- data[chosen, ]
   }
 
-
   cnts <- as.matrix(logcounts(data))
-
 
   trueclusters <- colData(data)[, colnames(colData(data)) == truth]
 

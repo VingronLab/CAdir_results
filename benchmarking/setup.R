@@ -1,4 +1,4 @@
-renv::load("/project/kohl_analysis/analysis/CAdir")
+renv::load()
 library(Rcpp)
 library(CAbiNet)
 library(APL)
@@ -32,161 +32,184 @@ source("./algorithms/biclustlib/clustering_error.R")
 
 
 option_list <- list(
-  make_option(c("--name"),
+  make_option(
+    c("--name"),
     type = "character",
     action = "store",
     default = "sample",
     help = "Name of sample",
     metavar = "character"
   ),
-  make_option(c("--file"),
+  make_option(
+    c("--file"),
     type = "character",
     action = "store",
     default = NULL,
     help = "Name of file to load",
     metavar = "character"
   ),
-  make_option(c("--dataset"),
+  make_option(
+    c("--dataset"),
     type = "character",
     action = "store",
     default = NULL,
     help = "Name of the dataset",
     metavar = "character"
   ),
-  make_option(c("--outdir"),
+  make_option(
+    c("--outdir"),
     type = "character",
     action = "store",
     default = NULL,
     help = "output directory",
     metavar = "character"
   ),
-  make_option(c("--decomp"),
+  make_option(
+    c("--decomp"),
     type = "logical",
     action = "store_true",
     default = FALSE,
     help = "Whether DECOMP plot should be made",
     metavar = "logical"
   ),
-  make_option(c("--ntop"),
+  make_option(
+    c("--ntop"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "top X most variable genes",
     metavar = "numeric"
   ),
-  make_option(c("--dims"),
+  make_option(
+    c("--dims"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "dimensions",
     metavar = "numeric"
   ),
-  make_option(c("--vst"),
+  make_option(
+    c("--vst"),
     type = "logical",
     action = "store_true",
     default = FALSE,
     help = "Whether to use vst or not",
     metavar = "logical"
   ),
-  make_option(c("--distance"),
+  make_option(
+    c("--distance"),
     type = "character",
     action = "store",
     default = "Euclidean",
     help = "distance measure for gene-gene/sample-sample adjacency matrix",
     metavar = "character"
   ),
-  make_option(c("--NNs"),
+  make_option(
+    c("--NNs"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "number of nearest neighbour samples for SNN graph",
     metavar = "numeric"
   ),
-  make_option(c("--prune"),
+  make_option(
+    c("--prune"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "prune cutoff for sample SNN graph",
     metavar = "numeric"
   ),
-  make_option(c("--prune_overlap"),
+  make_option(
+    c("--prune_overlap"),
     type = "logical",
     action = "store",
     default = TRUE,
     help = "prune gene nodes or not in the SNN graph by overlapping of neighbourhood",
     metavar = "logical"
   ),
-  make_option(c("--resolution"),
+  make_option(
+    c("--resolution"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "Resolutions for louvain and leiden algorithm, numbers should be separated by comma",
     metavar = "numeric"
   ),
-  make_option(c("--usegap"),
+  make_option(
+    c("--usegap"),
     type = "logical",
     action = "store",
     default = NA,
     help = "Whether to use eigengap or not",
     metavar = "logical"
   ),
-  make_option(c("--sim"),
+  make_option(
+    c("--sim"),
     type = "logical",
     action = "store",
     default = FALSE,
     help = "Is the dataset a simulated one or not",
     metavar = "logical"
   ),
-  make_option(c("--truth"),
+  make_option(
+    c("--truth"),
     type = "character",
     action = "store",
     default = "truth",
     help = "Name of Column which defines ground truth of sample clusters in colData(sce)",
     metavar = "character"
   ),
-  make_option(c("--nclust"),
+  make_option(
+    c("--nclust"),
     type = "numeric",
     action = "store",
     default = NULL,
     help = "Assigning number of clusters for kmeans/skmeans",
     metavar = "numeric"
   ),
-  make_option(c("--graph_select"),
+  make_option(
+    c("--graph_select"),
     type = "logical",
     action = "store",
     default = NA,
     help = "Whether genes should be selected on the graph",
     metavar = "logical"
   ),
-  make_option(c("--graph_select_by_prop"),
+  make_option(
+    c("--graph_select_by_prop"),
     type = "logical",
     action = "store",
     default = FALSE,
     help = "Whether top variable genes should be selected by 80% criterion",
     metavar = "logical"
   ),
-  make_option(c("--gcKNN"),
+  make_option(
+    c("--gcKNN"),
     type = "logical",
     action = "store",
     default = NA,
     help = "Whether gcKNN should be calculated",
     metavar = "logical"
   ),
-  make_option(c("--SNN_mode"),
+  make_option(
+    c("--SNN_mode"),
     type = "character",
     action = "store",
     default = NA,
     help = "SNN mode for caclust",
     metavar = "character"
   ),
-  make_option(c("--leiden_pack"),
+  make_option(
+    c("--leiden_pack"),
     type = "character",
     action = "store",
     default = "igraph",
     help = "package for running leiden algorithm",
     metavar = "character"
   ),
-  make_option(c("--overlap"),
+  make_option(
+    c("--overlap"),
     type = "numeric",
     action = "store",
     default = NA,
@@ -195,21 +218,24 @@ option_list <- list(
   ),
 
   # QUBIC options
-  make_option(c("--r_param"),
+  make_option(
+    c("--r_param"),
     type = "numeric",
     action = "store",
     default = NA, # default 1
     help = "The range of possible ranks",
     metavar = "numeric"
   ),
-  make_option(c("--q_param"),
+  make_option(
+    c("--q_param"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.06
     help = "QUBIC q parameter",
     metavar = "numeric"
   ),
-  make_option(c("--c_param"),
+  make_option(
+    c("--c_param"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.95
@@ -218,28 +244,32 @@ option_list <- list(
   ),
   # s4vd parameters
 
-  make_option(c("--pcerv"),
+  make_option(
+    c("--pcerv"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.05
     help = "Per comparsion wise error rate for v.",
     metavar = "numeric"
   ),
-  make_option(c("--pceru"),
+  make_option(
+    c("--pceru"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.05
     help = "Per comparsion wise error rate for u.",
     metavar = "numeric"
   ),
-  make_option(c("--ss_thr_min"),
+  make_option(
+    c("--ss_thr_min"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.6
     help = "Range of the cutoff threshold minimum.",
     metavar = "numeric"
   ),
-  make_option(c("--ss_thr_add"),
+  make_option(
+    c("--ss_thr_add"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.05
@@ -248,14 +278,16 @@ option_list <- list(
   ),
   # Plaid parameters
 
-  make_option(c("--rrelease"),
+  make_option(
+    c("--rrelease"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.7
     help = "threshold to prune rows in the layers depending on row homogeneity",
     metavar = "numeric"
   ),
-  make_option(c("--crelease"),
+  make_option(
+    c("--crelease"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.7
@@ -264,14 +296,16 @@ option_list <- list(
   ),
   # Unibic parameters
 
-  make_option(c("--t_param"),
+  make_option(
+    c("--t_param"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.95
     help = "consistency level of the block (0.5-1.0]",
     metavar = "numeric"
   ),
-  make_option(c("--q_discr"),
+  make_option(
+    c("--q_discr"),
     type = "numeric",
     action = "store",
     default = NA, # default 0
@@ -280,14 +314,16 @@ option_list <- list(
   ),
 
   # Bimax parameters
-  make_option(c("--minr"),
+  make_option(
+    c("--minr"),
     type = "numeric",
     action = "store",
     default = NA, # default 2
     help = "Minimum row size of resulting bicluster",
     metavar = "numeric"
   ),
-  make_option(c("--minc"),
+  make_option(
+    c("--minc"),
     type = "numeric",
     action = "store",
     default = NA, # default 2
@@ -302,14 +338,16 @@ option_list <- list(
   #     metavar="numeric"),
   # CCA
 
-  make_option(c("--alpha"),
+  make_option(
+    c("--alpha"),
     type = "numeric",
     action = "store",
     default = NA, # default 1.5
     help = "Scaling factor",
     metavar = "numeric"
   ),
-  make_option(c("--delta"),
+  make_option(
+    c("--delta"),
     type = "numeric",
     action = "store",
     default = NA, # default 1
@@ -318,28 +356,32 @@ option_list <- list(
   ),
 
   # Xmotifs
-  make_option(c("--ns_param"),
+  make_option(
+    c("--ns_param"),
     type = "numeric",
     action = "store",
     default = NA, # default 10
     help = "Number of columns choosen",
     metavar = "numeric"
   ),
-  make_option(c("--nd_param"),
+  make_option(
+    c("--nd_param"),
     type = "numeric",
     action = "store",
     default = NA, # default 10
     help = "Number of repetitions.",
     metavar = "numeric"
   ),
-  make_option(c("--sd_param"),
+  make_option(
+    c("--sd_param"),
     type = "numeric",
     action = "store",
     default = NA, # default 5
     help = "Sample size in repetitions.",
     metavar = "numeric"
   ),
-  make_option(c("--alphaX"),
+  make_option(
+    c("--alphaX"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.05
@@ -348,28 +390,32 @@ option_list <- list(
   ),
   # BC_Spectral
 
-  make_option(c("--numEig"),
+  make_option(
+    c("--numEig"),
     type = "numeric",
     action = "store",
     default = NA, # default 1.5
     help = "the number of eigenValues considered to find biclusters.",
     metavar = "numeric"
   ),
-  make_option(c("--minr_BCS"),
+  make_option(
+    c("--minr_BCS"),
     type = "numeric",
     action = "store",
     default = NA, # default 1
     help = "minimum number of rows that biclusters must have.",
     metavar = "numeric"
   ),
-  make_option(c("--minc_BCS"),
+  make_option(
+    c("--minc_BCS"),
     type = "numeric",
     action = "store",
     default = NA, # default 1
     help = "Sminimum number of columns that biclusters must have.",
     metavar = "numeric"
   ),
-  make_option(c("--withinVar"),
+  make_option(
+    c("--withinVar"),
     type = "numeric",
     action = "store",
     default = NA, # default 1
@@ -391,21 +437,24 @@ option_list <- list(
   #     help="vector with first element the number of row clusters and second element the number of column clusters.",
   #     metavar="numeric")
 
-  make_option(c("--Qconsistency"),
+  make_option(
+    c("--Qconsistency"),
     type = "numeric",
     action = "store",
     default = NA, # default 1
     help = "consistency level of the block (0.5-1.0],",
     metavar = "numeric"
   ),
-  make_option(c("--Qoverlap"),
+  make_option(
+    c("--Qoverlap"),
     type = "numeric",
     action = "store",
     default = NA, # default 1
     help = "filtering overlapping blocks",
     metavar = "numeric"
   ),
-  make_option(c("--Qcmin"),
+  make_option(
+    c("--Qcmin"),
     type = "numeric",
     action = "store",
     default = NA, # default 1
@@ -414,21 +463,24 @@ option_list <- list(
   ),
 
   # Seurat options
-  make_option(c("--logfc_thr"),
+  make_option(
+    c("--logfc_thr"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.25
     help = "minimum log2fc threshold to test genes.",
     metavar = "numeric"
   ),
-  make_option(c("--min_perc"),
+  make_option(
+    c("--min_perc"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.25
     help = "minimum fraction of min.pct cells to test genes in.",
     metavar = "numeric"
   ),
-  make_option(c("--rthr"),
+  make_option(
+    c("--rthr"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.01
@@ -437,14 +489,16 @@ option_list <- list(
   ),
 
   # Monocle3
-  make_option(c("--redm"),
+  make_option(
+    c("--redm"),
     type = "character",
     action = "store",
     default = "UMAP",
     help = "Dimensin reduction method of Monocle3",
     metavar = "character"
   ),
-  make_option(c("--ngene_pg"),
+  make_option(
+    c("--ngene_pg"),
     type = "numeric",
     action = "store",
     default = 100, # default 0.25
@@ -453,42 +507,48 @@ option_list <- list(
   ),
 
   # DivBiclust
-  make_option(c("--maxdiff"),
+  make_option(
+    c("--maxdiff"),
     type = "numeric",
     action = "store",
     default = 0.15,
     help = "Argument max_diff",
     metavar = "numeric"
   ),
-  make_option(c("--dorate"),
+  make_option(
+    c("--dorate"),
     type = "numeric",
     action = "store",
     default = 0.1,
     help = "fraction of missing values in a bicluster",
     metavar = "numeric"
   ),
-  make_option(c("--seedColSz"),
+  make_option(
+    c("--seedColSz"),
     type = "numeric",
     action = "store",
     default = 50,
     help = "size of seed gene set",
     metavar = "numeric"
   ),
-  make_option(c("--maxColSz"),
+  make_option(
+    c("--maxColSz"),
     type = "numeric",
     action = "store",
     default = 100,
     help = "maximum size of gene set, fixed to 100",
     metavar = "numeric"
   ),
-  make_option(c("--simThresh"),
+  make_option(
+    c("--simThresh"),
     type = "numeric",
     action = "store",
     default = 0.5,
     help = "similarity threshold for pattern merging, fixed to 0.5",
     metavar = "numeric"
   ),
-  make_option(c("--isdivbiclust"),
+  make_option(
+    c("--isdivbiclust"),
     type = "logical",
     action = "store",
     default = FALSE,
@@ -498,21 +558,24 @@ option_list <- list(
 
   # BackSpin
 
-  make_option(c("--numLevels"),
+  make_option(
+    c("--numLevels"),
     type = "numeric",
     action = "store",
     default = 2,
     help = "the number of splits that will be tried",
     metavar = "numeric"
   ),
-  make_option(c("--stop_const"),
+  make_option(
+    c("--stop_const"),
     type = "numeric",
     action = "store",
     default = 1.15,
     help = "minimum score that a breaking point has to reach to be suitable for splitting",
     metavar = "numeric"
   ),
-  make_option(c("--low_thrs"),
+  make_option(
+    c("--low_thrs"),
     type = "numeric",
     action = "store",
     default = 0.2,
@@ -527,42 +590,48 @@ option_list <- list(
   #     help = 'perform PCA dim. reduction as a preprocessing step.',
   #     metavar = 'logical')
   # CAdir
-  make_option(c("--qcut"),
+  make_option(
+    c("--qcut"),
     type = "numeric",
     action = "store",
     default = 0.8,
     help = "quantile for gene cutoff",
     metavar = "numeric"
   ),
-  make_option(c("--angle"),
+  make_option(
+    c("--angle"),
     type = "numeric",
     action = "store",
     default = 30,
     help = "angle cutoff ",
     metavar = "numeric"
   ),
-  make_option(c("--kdir"),
+  make_option(
+    c("--kdir"),
     type = "numeric",
     action = "store",
     default = 30,
     help = "number of directions for CAdir",
     metavar = "numeric"
   ),
-  make_option(c("--coords"),
+  make_option(
+    c("--coords"),
     type = "character",
     action = "store",
     default = "prin",
     help = "Coordinates to use for gene assignment",
     metavar = "character"
   ),
-  make_option(c("--apl_quant"),
+  make_option(
+    c("--apl_quant"),
     type = "numeric",
     action = "store",
     default = 0.99,
     help = "Quantile for APL cutoff",
     metavar = "numeric"
   ),
-  make_option(c("--subsp_dim"),
+  make_option(
+    c("--subsp_dim"),
     type = "numeric",
     action = "store",
     default = 30,
@@ -571,7 +640,8 @@ option_list <- list(
   ),
 
   # kmeans parameters
-  make_option(c("--kmeansk"),
+  make_option(
+    c("--kmeansk"),
     type = "numeric",
     action = "store",
     default = 30,
@@ -579,7 +649,8 @@ option_list <- list(
     metavar = "numeric"
   ),
 
-  make_option(c("--test"),
+  make_option(
+    c("--test"),
     type = "logical",
     action = "store",
     default = FALSE,
@@ -588,7 +659,8 @@ option_list <- list(
   ),
 
   # Toggle if it is only a cell clustering.
-  make_option(c("--cell_clustering"),
+  make_option(
+    c("--cell_clustering"),
     type = "logical",
     action = "store",
     default = FALSE,
@@ -643,7 +715,9 @@ gcKNN <- opt$gcKNN
 overlap <- opt$overlap
 leiden_pack <- opt$leiden_pack
 
-if (is.character(overlap)) overlap <- NA
+if (is.character(overlap)) {
+  overlap <- NA
+}
 
 # QUBIC
 c_param <- opt$c_param
@@ -755,7 +829,6 @@ if (isTRUE(sim)) {
 }
 
 
-
 if (isTRUE(is_divbiclust)) {
   # prefix of input file name
   ds_type <- file.path(outdir, paste0(name, "_Ntop_", ntop))
@@ -794,9 +867,7 @@ if (fileformat == "txt") {
     data <- data[chosen, ]
   }
 
-
   cnts <- as.matrix(logcounts(data))
-
 
   trueclusters <- colData(data)[, colnames(colData(data)) == truth]
 

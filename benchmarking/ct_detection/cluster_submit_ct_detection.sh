@@ -5,7 +5,7 @@ MEMORY=50G
 MINUTES=1200
 
 date="20250414"
-outdir="/project/kohl_data/CAdir/benchmarking/results/ct_detection_batch_corr/${date}"
+outdir="./results/benchmarking/results/ct_detection_batch_corr/${date}"
 logdir="${outdir}/log/"
 resdir="${outdir}/out/"
 
@@ -13,8 +13,8 @@ mkdir -p "$outdir"
 mkdir -p "$logdir"
 mkdir -p "$resdir"
 
-# SCRIPT="/project/kohl_analysis/analysis/CAdir/benchmarking/ct_detection/ct_detection_clusters.R"
-SCRIPT="/project/kohl_analysis/analysis/CAdir/benchmarking/ct_detection/ct_detection_batch_correction.R"
+# SCRIPT="./benchmarking/ct_detection/ct_detection_clusters.R"
+SCRIPT="./benchmarking/ct_detection/ct_detection_batch_correction.R"
 
 ks=(5 10 15 20 25 30)
 nr_cts=(4 6 8 10 12 14 16 18 20 22 24 26 28 30)

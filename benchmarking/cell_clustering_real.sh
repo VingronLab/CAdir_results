@@ -52,7 +52,7 @@ for dataset in "${datasets[@]}"; do
 
 	scripts_path="./algorithms/"
 
-	outdir="/project/kohl_data/CAdir/benchmarking/results/real/${date}"
+	outdir="./results/benchmarking/results/real/${date}"
 
 	logdir="${outdir}/log/${dataset}"
 	here_dir="${outdir}/sh/${dataset}"
@@ -65,7 +65,7 @@ for dataset in "${datasets[@]}"; do
 	OUTDIR="${outdir}/out/${dataset}"
 	mkdir -p "$OUTDIR"
 
-	files="/project/kohl_data/CAdir/data/real/preprocessed/benchmarking/${dataset}_filtered.rds"
+	files="./data/real/preprocessed/benchmarking/${dataset}_filtered.rds"
 
 	ntop=(2000 4000 6000)
 	truth='truth'

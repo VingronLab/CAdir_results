@@ -8,7 +8,7 @@ loompy <- import("loompy")
 scvi <- import("scvi", convert = FALSE)
 anndata <- import("anndata", convert = FALSE)
 
-renv::load("/project/kohl_analysis/analysis/CAdir/")
+renv::load("./")
 
 library(CAdir)
 
@@ -113,7 +113,7 @@ cellpcl <- opt$cellpcl
 # cell types from single-cell RNA-sequencing data.
 # Genome Biology 23, 49 (2022).
 
-datadir <- "/project/kohl_data/CAdir/data/real/preprocessed"
+datadir <- "./data/real/preprocessed"
 
 sce <- readRDS(file.path(
   datadir,

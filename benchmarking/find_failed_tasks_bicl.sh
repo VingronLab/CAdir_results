@@ -5,7 +5,7 @@
 ############
 
 date="20250403"
-OUTDIR="/project/kohl_data/CAdir/benchmarking/results/biclustering/${date}"
+OUTDIR="./results/benchmarking/results/biclustering/${date}"
 
 dataset_list=("zeisel" "pbmc3k")
 

@@ -12,7 +12,7 @@ for dataset in "${datasets[@]}"; do
 
 	scripts_path="./algorithms/"
 
-	outdir="/project/kohl_data/CAdir/benchmarking/results/simulated/${date}"
+	outdir="./results/benchmarking/results/simulated/${date}"
 
 	logdir="${outdir}/log/${dataset}"
 	here_dir="${outdir}/sh/${dataset}"
@@ -25,7 +25,7 @@ for dataset in "${datasets[@]}"; do
 	OUTDIR="${outdir}/out/${dataset}"
 	mkdir -p "$OUTDIR"
 
-	files="/project/kohl_data/CAdir/data/sim/preprocessed/${dataset}/*.rds"
+	files="./data/sim/preprocessed/${dataset}/*.rds"
 
 	ntop=(2000 4000 6000)
 	# nclust=6
