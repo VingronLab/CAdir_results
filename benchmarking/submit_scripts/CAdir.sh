@@ -47,9 +47,6 @@ for d in "${dims_cd[@]}"; do
 # t=$CADIR_MINUTES
 # END_MXQ
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_VAR:\$LD_LIBRARY_PATH
-export GDAL_DATA=$GDAL_DATA_VAR:\$GDAL_DATA
-
 trap 'echo ERROR_TIMEOUT >&2' SIGXCPU
 
 Rscript-4.2.2 $SCRIPT   \\
@@ -136,9 +133,6 @@ for d in "${dims_cd[@]}"; do
 # memory=$MEMORY
 # t=$CADIR_MINUTES
 # END_MXQ
-
-export LD_LIBRARY_PATH=$LD_LIBRARY_VAR:\$LD_LIBRARY_PATH
-export GDAL_DATA=$GDAL_DATA_VAR:\$GDAL_DATA
 
 trap 'echo ERROR_TIMEOUT >&2' SIGXCPU
 

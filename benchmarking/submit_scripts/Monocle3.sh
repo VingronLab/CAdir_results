@@ -1,7 +1,8 @@
 #!/bin/bash
 
-LD_LIBRARY_VAR=/home/kohl/.local/lib:/home/kohl/.local/bin:/home/kohl/.local/include
-GDAL_DATA_VAR=/home/kohl/.local/share/gdal
+# NOTE: Uncomment if needed.
+# LD_LIBRARY_VAR=$HOME/.local/lib:$HOME/.local/bin:$HOME/.local/include
+# GDAL_DATA_VAR=$HOME/.local/share/gdal
 
 # Monocle 108
 res_monocle=(0.1 1)
@@ -41,8 +42,8 @@ for d in "${dims_monocle[@]}"; do
 # t=$MINUTES
 # END_MXQ
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_VAR:\$LD_LIBRARY_PATH
-export GDAL_DATA=$GDAL_DATA_VAR:\$GDAL_DATA
+# export LD_LIBRARY_PATH=$LD_LIBRARY_VAR:\$LD_LIBRARY_PATH
+# export GDAL_DATA=$GDAL_DATA_VAR:\$GDAL_DATA
 
 trap 'echo ERROR_TIMEOUT >&2' SIGXCPU
 

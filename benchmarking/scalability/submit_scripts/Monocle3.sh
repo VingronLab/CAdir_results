@@ -10,6 +10,9 @@ ngene_perg=(50)
 algorithm="Monocle3"
 SCRIPT="${scripts_path}/${algorithm}.R"
 
+LD_LIBRARY_VAR=/home/kohl/.local/lib:/home/kohl/.local/bin:/home/kohl/.local/include
+GDAL_DATA_VAR=/home/kohl/.local/share/gdal
+
 # Bash doesnt like arithmetic operations with decimals.
 # division by 1 to set 0 decimal points.
 

@@ -3,15 +3,11 @@
 # -> 120 is a good choice.
 
 # add date to output folder
-# date=$(date '+%Y%m%d')
-date="20250403"
+date=$(date '+%Y%m%d')
 
 THREADS=6
 MEMORY=4G
 MINUTES=240
-
-LD_LIBRARY_VAR=/home/kohl/.local/lib:/home/kohl/.local/bin:/home/kohl/.local/include
-GDAL_DATA_VAR=/home/kohl/.local/share/gdal
 
 dataset="pbmc3k"
 # dataset="zeisel"

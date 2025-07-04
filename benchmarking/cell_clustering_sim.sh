@@ -1,15 +1,11 @@
 #!/bin/bash
 
 # add date to output folder
-# date=$(date '+%Y%m%d')
-date="20250528"
+date=$(date '+%Y%m%d')
 
 THREADS=6
 MEMORY=30G
 MINUTES=60
-
-LD_LIBRARY_VAR=/home/kohl/.local/lib:/home/kohl/.local/bin:/home/kohl/.local/include
-GDAL_DATA_VAR=/home/kohl/.local/share/gdal
 
 datasets=("zeisel" "pbmc3k")
 for dataset in "${datasets[@]}"; do
