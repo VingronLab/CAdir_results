@@ -267,6 +267,13 @@ ggsave(
   height = 1600,
   units = "px"
 )
+ggsave(
+  plot = p_bt_std,
+  file = file.path(imgdir, "B_cell_cluster_std_coords.png"),
+  width = 2000,
+  height = 1600,
+  units = "px"
+)
 ```
 
 ## Endothelial cells - Standard coordinates APL
@@ -331,6 +338,13 @@ ggsave(
   plot = p_ecs_std,
   file = file.path(imgdir, "endothelial_cell_clusters_std_coords.pdf"),
   device = cairo_pdf,
+  width = 2000,
+  height = 1600,
+  units = "px"
+)
+ggsave(
+  plot = p_ecs_std,
+  file = file.path(imgdir, "endothelial_cell_clusters_std_coords.png"),
   width = 2000,
   height = 1600,
   units = "px"
@@ -427,6 +441,13 @@ ggsave(
   height = 1600,
   units = "px"
 )
+ggsave(
+  plot = p_bt_prin,
+  file = file.path(imgdir, "B_cell_cluster_prin_coords.png"),
+  width = 2000,
+  height = 1600,
+  units = "px"
+)
 ```
 
 ## Endothelial cells - principal coordinates APL
@@ -491,6 +512,13 @@ ggsave(
   plot = p_ecs_prin,
   file = file.path(imgdir, "endothelial_cell_clusters_prin_coords.pdf"),
   device = cairo_pdf,
+  width = 2000,
+  height = 1600,
+  units = "px"
+)
+ggsave(
+  plot = p_ecs_prin,
+  file = file.path(imgdir, "endothelial_cell_clusters_prin_coords.png"),
   width = 2000,
   height = 1600,
   units = "px"

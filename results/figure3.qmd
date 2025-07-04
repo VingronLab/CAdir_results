@@ -123,7 +123,7 @@ um2 <- plotUMAP(sce, colour = "cell_type")
 
 ari <- aricode::clustComp(sce$cadir, sce$cell_type)
 p <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
-p
+# p
 
 ggsave(
   plot = p,
@@ -157,7 +157,7 @@ pc_mod <- ggpubr::ggarrange(
   ncol = 3
 )
 
-pc_mod
+# pc_mod
 
 ggsave(
   plot = pc_mod,
@@ -199,11 +199,18 @@ p_expr <- scater::plotExpression(
     legend.position = "none"
   )
 
-p_expr
+# p_expr
 
 ggsave(
   plot = p_expr,
   file = file.path(imgdir, "cluster_5_top_genes.pdf"),
+  width = 2200,
+  height = 2000,
+  units = "px"
+)
+ggsave(
+  plot = p_expr,
+  file = file.path(imgdir, "cluster_5_top_genes.png"),
   width = 2200,
   height = 2000,
   units = "px"
@@ -250,10 +257,18 @@ p_cl5_cells <- cluster_apl(
     max.overlaps = Inf
   )
 
-p_cl5_cells
+# p_cl5_cells
+
 ggsave(
   plot = p_cl5_cells,
   file = file.path(imgdir, "cluster_5_cells.pdf"),
+  width = 1600,
+  height = 1600,
+  units = "px"
+)
+ggsave(
+  plot = p_cl5_cells,
+  file = file.path(imgdir, "cluster_5_cells.png"),
   width = 1600,
   height = 1600,
   units = "px"
@@ -322,12 +337,19 @@ pc_corr <- wrap_plots(pc_corr_list, ncol = 2, nrow = 3) +
   plot_layout(guides = "collect")
 
 cak_corr
-pc_corr
+# pc_corr
 
 ggsave(
   plot = pc_corr,
   file = file.path(imgdir, "apl_clusters_corrected.pdf"),
   device = cairo_pdf,
+  width = 3000,
+  height = 2500,
+  units = "px"
+)
+ggsave(
+  plot = pc_corr,
+  file = file.path(imgdir, "apl_clusters_corrected.png"),
   width = 3000,
   height = 2500,
   units = "px"
@@ -432,11 +454,19 @@ sank <- ggplot(
     legend.position = "none"
   )
 
-sank
+# sank
 
 ggsave(
   plot = sank,
   filename = file.path(imgdir, "sankey_plot_cluster_5.pdf"),
+  device = cairo_pdf,
+  width = 2700,
+  height = 2000,
+  units = "px"
+)
+ggsave(
+  plot = sank,
+  filename = file.path(imgdir, "sankey_plot_cluster_5.png"),
   device = cairo_pdf,
   width = 2700,
   height = 2000,
@@ -465,7 +495,7 @@ Top 5 most highly significant gene sets for cluster "Megakaryocyte":
 ```{r}
 cl_goa <- goa_res$Megakaryocyte
 
-ggplot(
+p <- ggplot(
   cl_goa[1:5, ],
   aes(x = gene_set, y = -log10(padj), fill = -log10(padj))
 ) +
@@ -517,11 +547,18 @@ p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
     plot.title = element_text(size = 16, face = "plain")
   ) # "bold"
 
-p_gs_enr
+# p_gs_enr
 
 ggsave(
   plot = p_gs_enr,
   file = file.path(imgdir, "gene_set_enr_hm.pdf"),
+  width = 2000,
+  height = 3000,
+  units = "px"
+)
+ggsave(
+  plot = p_gs_enr,
+  file = file.path(imgdir, "gene_set_enr_hm.png"),
   width = 2000,
   height = 3000,
   units = "px"
@@ -541,11 +578,18 @@ sm <- sm_plot(
   annotate_clusters = TRUE,
   org = "hs"
 )
-sm
+# sm
 
 ggsave(
   plot = sm,
   file = file.path(imgdir, "split_merge_plot.pdf"),
+  width = 3000,
+  height = 1800,
+  units = "px"
+)
+ggsave(
+  plot = sm,
+  file = file.path(imgdir, "split_merge_plot.png"),
   width = 3000,
   height = 1800,
   units = "px"
@@ -654,7 +698,7 @@ sank_anno <- ggplot(
     legend.position = "none"
   )
 
-sank_anno
+# sank_anno
 
 ggsave(
   plot = sank_anno,
