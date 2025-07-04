@@ -355,7 +355,7 @@
       "RemoteUsername": "ClemensKohl",
       "RemoteRepo": "CAdir",
       "RemoteRef": "main",
-      "RemoteSha": "b36607843c55a2ed92dc6538751c7e5e948a91fb",
+      "RemoteSha": "828121bafb944bbc4b42e606d7b5c21fea36e99e",
       "Remotes": "davidsjoberg/ggsankey",
       "Requirements": [
         "APL",
@@ -371,10 +371,11 @@
         "methods",
         "networkD3",
         "patchwork",
+        "plotly",
         "rlang",
         "scales"
       ],
-      "Hash": "15cd8a2d40f3518ac841f8919e98a9d3"
+      "Hash": "1e9e27dedd43968d6c029e85c5219f1b"
     },
     "Cairo": {
       "Package": "Cairo",
@@ -5125,6 +5126,16 @@
       ],
       "Hash": "55e85f05d479f9c8644f94900bbefd56"
     },
+    "pdist": {
+      "Package": "pdist",
+      "Version": "1.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "methods"
+      ],
+      "Hash": "bf3987702285f4e68c270e8498801194"
+    },
     "permute": {
       "Package": "permute",
       "Version": "0.9-7",
@@ -6317,6 +6328,22 @@
         "stats"
       ],
       "Hash": "10ee4b91ec812690bd55d9bf51edccee"
+    },
+    "sceasy": {
+      "Package": "sceasy",
+      "Version": "0.0.7",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "cellgeni",
+      "RemoteRepo": "sceasy",
+      "RemoteRef": "master",
+      "RemoteSha": "c1c0bf973b0b3b67e013c01bf583d1fcc4c9f8cc",
+      "Requirements": [
+        "R",
+        "reticulate"
+      ],
+      "Hash": "ed806dad4a5ac1e3c27b26e6ca3f24ad"
     },
     "scran": {
       "Package": "scran",
