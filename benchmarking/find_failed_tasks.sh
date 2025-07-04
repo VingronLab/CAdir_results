@@ -4,7 +4,7 @@
 # nruns: 2 #
 ############
 
-date="20250528"
+date=$(date '+%Y%m%d')
 OUTDIR="./results/benchmarking/results/simulated/${date}"
 
 dataset_list=("zeisel" "pbmc3k")

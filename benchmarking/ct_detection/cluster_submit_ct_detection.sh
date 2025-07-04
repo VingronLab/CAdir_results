@@ -4,7 +4,7 @@ THREADS=12
 MEMORY=50G
 MINUTES=1200
 
-date="20250414"
+date=$(date '+%Y%m%d')
 outdir="./results/benchmarking/results/ct_detection_batch_corr/${date}"
 logdir="${outdir}/log/"
 resdir="${outdir}/out/"

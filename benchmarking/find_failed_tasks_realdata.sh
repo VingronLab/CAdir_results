@@ -4,7 +4,7 @@
 # nruns: 2 #
 ############
 
-date="20250528_cpu"
+date=$(date '+%Y%m%d')
 OUTDIR="./results/benchmarking/results/real/${date}/"
 
 # dataset_list=("Darmanis"

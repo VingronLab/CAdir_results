@@ -4,7 +4,7 @@ THREADS=6
 MEMORY=3G
 MINUTES=500
 
-date="20250528_cpu"
+date=$(date '+%Y%m%d')
 outdir="./results/benchmarking/results/real/${date}/eval"
 indir="./results/benchmarking/results/real/${date}/out/"
 

@@ -4,7 +4,7 @@ THREADS=6
 MEMORY=3G
 MINUTES=500
 
-date="20250403"
+date=$(date '+%Y%m%d')
 outdir="./results/benchmarking/results/biclustering/${date}/eval"
 indir="./results/benchmarking/results/biclustering/${date}/out/"
 
