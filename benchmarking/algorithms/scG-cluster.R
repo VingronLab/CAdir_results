@@ -27,7 +27,7 @@ if (dataset == "Tirosh_nonmaglignant" || dataset == "dmel_E14-16h") {
   ignore_noint <- ""
 }
 
-preproc <- "python /home/kohl/gits/ClemensKohl/CAdir_benchmarking/algorithms/scG-cluster/preprocess.py"
+preproc <- "python ./benchmarking/algorithms/scG-cluster/preprocess.py"
 preproc <- paste(
   preproc,
   "--file_path", h5file,
@@ -38,7 +38,7 @@ preproc <- paste(
 cat(preproc)
 system(preproc)
 
-graph <- "python /home/kohl/gits/ClemensKohl/CAdir_benchmarking/algorithms/scG-cluster/graph_function.py"
+graph <- "python ./benchmarking/algorithms/scG-cluster/graph_function.py"
 graph <- paste(
   graph,
   "--outdir", tmp_dir,
@@ -48,7 +48,7 @@ graph <- paste(
 cat(graph)
 system(graph)
 
-train <- "python /home/kohl/gits/ClemensKohl/CAdir_benchmarking/algorithms/scG-cluster/train.py"
+train <- "python ./benchmarking/algorithms/scG-cluster/train.py"
 train <- paste(
   train,
   "--dataset_path", h5preproc,

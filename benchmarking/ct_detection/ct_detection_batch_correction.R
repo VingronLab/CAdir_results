@@ -1,7 +1,7 @@
 library(reticulate)
 use_condaenv(
   condaenv = "scvi-env-clone",
-  conda = "/home/kohl/miniconda3/bin/conda"
+  conda = "$HOME/miniconda3/bin/conda"
 )
 sc <- import("scanpy", convert = FALSE)
 loompy <- import("loompy")
@@ -27,49 +27,56 @@ library(sceasy)
 library(optparse)
 
 option_list <- list(
-  make_option(c("--outdir"),
+  make_option(
+    c("--outdir"),
     type = "character",
     action = "store",
     default = NULL,
     help = "output directory",
     metavar = "character"
   ),
-  make_option(c("--k"),
+  make_option(
+    c("--k"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "k for CAdir",
     metavar = "numeric"
   ),
-  make_option(c("--n"),
+  make_option(
+    c("--n"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "Number of cell types",
     metavar = "numeric"
   ),
-  make_option(c("--q"),
+  make_option(
+    c("--q"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "APL quantile",
     metavar = "numeric"
   ),
-  make_option(c("--pd"),
+  make_option(
+    c("--pd"),
     type = "logical",
     action = "store_true",
     default = FALSE,
     help = "Whether pick_dims should be used",
     metavar = "logical"
   ),
-  make_option(c("--subset_cts"),
+  make_option(
+    c("--subset_cts"),
     type = "logical",
     action = "store_true",
     default = FALSE,
     help = "Whether cell types should be subset",
     metavar = "logical"
   ),
-  make_option(c("--cellpcl"),
+  make_option(
+    c("--cellpcl"),
     type = "numeric",
     action = "store",
     default = NA,
@@ -134,7 +141,7 @@ cat("\nStarting clustering for", n, "clusters.")
 set.seed(2358)
 # results <- list()
 for (i in reps) {
-# results <- foreach(i = reps) %dopar% {
+  # results <- foreach(i = reps) %dopar% {
 
   cat("\nIteration:", i, "\n")
 

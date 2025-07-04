@@ -10,8 +10,9 @@ ngene_perg=(50)
 algorithm="Monocle3"
 SCRIPT="${scripts_path}/${algorithm}.R"
 
-LD_LIBRARY_VAR=/home/kohl/.local/lib:/home/kohl/.local/bin:/home/kohl/.local/include
-GDAL_DATA_VAR=/home/kohl/.local/share/gdal
+# NOTE: Uncomment if needed.
+# LD_LIBRARY_VAR=$HOME/.local/lib:$HOME/.local/bin:$HOME/.local/include
+# GDAL_DATA_VAR=$HOME/.local/share/gdal
 
 # Bash doesnt like arithmetic operations with decimals.
 # division by 1 to set 0 decimal points.
@@ -49,8 +50,8 @@ for d in "${dims_monocle[@]}"; do
 # t=$MINUTES
 # END_MXQ
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_VAR:\$LD_LIBRARY_PATH
-export GDAL_DATA=$GDAL_DATA_VAR:\$GDAL_DATA
+# export LD_LIBRARY_PATH=$LD_LIBRARY_VAR:\$LD_LIBRARY_PATH
+# export GDAL_DATA=$GDAL_DATA_VAR:\$GDAL_DATA
 
 trap 'echo ERROR_TIMEOUT >&2' SIGXCPU
 

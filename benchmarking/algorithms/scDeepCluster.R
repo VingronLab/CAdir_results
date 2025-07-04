@@ -19,7 +19,7 @@ if (dataset == "Tirosh_nonmaglignant" || dataset == "dmel_E14-16h") {
   ignore_noint <- ""
 }
 
-cmd <- "python /home/kohl/gits/ClemensKohl/CAdir_benchmarking/algorithms/scDeepCluster_pytorch/run_scDeepCluster.py"
+cmd <- "python ./benchmarking/algorithms/scDeepCluster_pytorch/run_scDeepCluster.py"
 cmd <- paste(
   cmd,
   "--data_file", h5file,
