@@ -2,42 +2,48 @@ library(rhdf5)
 
 
 alg_option_list <- list(
-  make_option(c("--seed"),
+  make_option(
+    c("--seed"),
     type = "numeric",
     action = "store",
     default = 0,
     help = "Seed",
     metavar = "numeric"
   ),
-  make_option(c("--tmpdir"),
+  make_option(
+    c("--tmpdir"),
     type = "character",
     action = "store",
     default = tempdir(),
     help = "temporary directory",
     metavar = "character"
   ),
-  make_option(c("--scg_method"),
+  make_option(
+    c("--scg_method"),
     type = "character",
     action = "store",
     default = "ncos",
     help = "Graph building method",
     metavar = "character"
   ),
-  make_option(c("--n_clusters"),
+  make_option(
+    c("--n_clusters"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "Number of clusters",
     metavar = "numeric"
   ),
-  make_option(c("--pretrain"),
+  make_option(
+    c("--pretrain"),
     type = "numeric",
     action = "store",
     default = 800,
     help = "Pretraining epochs",
     metavar = "numeric"
   ),
-  make_option(c("--train"),
+  make_option(
+    c("--train"),
     type = "numeric",
     action = "store",
     default = 300,

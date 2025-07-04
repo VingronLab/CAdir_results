@@ -2,18 +2,13 @@ algorithm <- "CAbiNet_leiden"
 source("./setup.R")
 
 
-
 if (is.na(dims)) {
   stop("Need to specify dimensionality.")
 }
 
 cat("\nStarting CA.\n")
 t <- Sys.time()
-caobj <- cacomp(cnts,
-  dims = dims,
-  top = nrow(cnts),
-  python = TRUE
-)
+caobj <- cacomp(cnts, dims = dims, top = nrow(cnts), python = TRUE)
 
 t.CA <- difftime(Sys.time(), t, units = "secs")
 
@@ -87,5 +82,8 @@ if (isTRUE(sim)) {
   eval_res <- bind_cols(eval_res, as_tibble(opt))
 }
 
-write_csv(eval_res, file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv")))
+write_csv(
+  eval_res,
+  file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv"))
+)
 cat("\nFinished benchmarking!\n")

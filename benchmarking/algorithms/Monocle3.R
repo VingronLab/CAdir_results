@@ -2,9 +2,7 @@ algorithm <- "Monocle3"
 source("./setup_split.R")
 
 
-cds <- new_cell_data_set(counts(data),
-  cell_metadata = colData(data)
-)
+cds <- new_cell_data_set(counts(data), cell_metadata = colData(data))
 
 # monocle
 cat("\nStarting Monocle3 clustering\n")
@@ -12,17 +10,17 @@ cat("\nStarting Monocle3 clustering\n")
 t <- Sys.time()
 
 
-cds <- preprocess_cds(cds,
+cds <- preprocess_cds(
+  cds,
   num_dim = dims,
   norm_method = "log",
   use_genes = rownames(data)
 )
 
-cds <- reduce_dimension(cds,
-  reduction_method = reduction_method
-)
+cds <- reduce_dimension(cds, reduction_method = reduction_method)
 
-cds <- cluster_cells(cds,
+cds <- cluster_cells(
+  cds,
   reduction_method = reduction_method,
   cluster_method = "leiden",
   k = NNs,
@@ -47,7 +45,8 @@ if (!isTRUE(is_cell_clustering)) {
 
     t.run <- difftime(Sys.time(), t, units = "secs")
   } else {
-    marker_test_res <- top_markers(cds,
+    marker_test_res <- top_markers(
+      cds,
       group_cells_by = "partition",
       reduction_method = reduction_method,
       reference_cells = NULL,
@@ -74,7 +73,6 @@ if (!isTRUE(is_cell_clustering)) {
     rownames(monocle_cells) <- paste0("Bic_", ccs)
     colnames(monocle_cells) <- colnames(cds)
 
-
     for (i in seq_along(ccs)) {
       clust_cells <- colnames(cds)[which(part == ccs[i])]
       idx <- which(colnames(monocle_cells) %in% clust_cells)
@@ -88,14 +86,19 @@ if (!isTRUE(is_cell_clustering)) {
     colnames(monocle_genes) <- paste0("Bic_", ccs)
 
     for (i in seq_along(ccs)) {
-      if (!ccs[i] %in% gcs) next
+      if (!ccs[i] %in% gcs) {
+        next
+      }
 
-      clust_genes <- top_specific_markers$gene_id[which(top_specific_markers$cell_group == ccs[i])]
+      clust_genes <- top_specific_markers$gene_id[which(
+        top_specific_markers$cell_group == ccs[i]
+      )]
       idx <- which(rownames(monocle_genes) %in% clust_genes)
       monocle_genes[idx, i] <- TRUE
     }
 
-    res <- new("Biclust",
+    res <- new(
+      "Biclust",
       "Parameters" = opt,
       "RowxNumber" = monocle_genes,
       "NumberxCol" = monocle_cells,
@@ -104,9 +107,6 @@ if (!isTRUE(is_cell_clustering)) {
     )
   }
 }
-
-
-
 
 
 #########
@@ -167,9 +167,10 @@ if (isTRUE(is_cell_clustering)) {
 }
 
 eval_res <- bind_cols(eval_res, as_tibble(opt))
-write_csv(eval_res,
-          file.path(outdir,
-                    paste0(algorithm, "_", name, "_EVALUATION.csv")))
+write_csv(
+  eval_res,
+  file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv"))
+)
 
 print("All done!")
 cat("\nFinished benchmarking!\n")

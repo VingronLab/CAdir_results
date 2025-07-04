@@ -112,4 +112,3 @@ res <- data.frame(
   ngenes = nrow(sce_sub),
   cellspcl = cellpcl
 )
-

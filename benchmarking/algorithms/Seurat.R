@@ -52,7 +52,8 @@ seu <- FindClusters(
 
 t.clust <- difftime(Sys.time(), t, units = "secs")
 
-seu.markers <- FindAllMarkers(seu,
+seu.markers <- FindAllMarkers(
+  seu,
   features = VariableFeatures(seu),
   only.pos = TRUE,
   min.pct = min_perc, # 0.25
@@ -91,7 +92,6 @@ if (isTRUE(is_cell_clustering)) {
   rownames(seurat_cells) <- paste0("Bic_", ccs)
   colnames(seurat_cells) <- Cells(seu)
 
-
   for (i in seq_along(ccs)) {
     clust_cells <- Cells(seu)[which(seu$seurat_clusters == ccs[i])]
     idx <- which(colnames(seurat_cells) %in% clust_cells)
@@ -100,23 +100,27 @@ if (isTRUE(is_cell_clustering)) {
 
   gcs <- sort(unique(seu.markers$cluster))
 
-  seurat_genes <- matrix(FALSE,
-                         nrow = length(VariableFeatures(seu)),
-                         ncol = length(ccs))
+  seurat_genes <- matrix(
+    FALSE,
+    nrow = length(VariableFeatures(seu)),
+    ncol = length(ccs)
+  )
 
   rownames(seurat_genes) <- VariableFeatures(seu)
   colnames(seurat_genes) <- paste0("Bic_", ccs)
 
-
   for (i in seq_along(ccs)) {
-    if (!ccs[i] %in% gcs) next
+    if (!ccs[i] %in% gcs) {
+      next
+    }
 
     clust_genes <- seu.markers$gene[which(seu.markers$cluster == ccs[i])]
     idx <- which(rownames(seurat_genes) %in% clust_genes)
     seurat_genes[idx, i] <- TRUE
   }
 
-  res <- new("Biclust",
+  res <- new(
+    "Biclust",
     "Parameters" = opt,
     "RowxNumber" = seurat_genes,
     "NumberxCol" = seurat_cells,

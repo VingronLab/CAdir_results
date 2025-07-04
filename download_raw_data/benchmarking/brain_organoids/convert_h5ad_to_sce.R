@@ -7,7 +7,7 @@ names(assays(sce)) <- "counts"
 colnames(sce) <- sce$cell_id
 
 # subset to triple-i protocol treated cells.
-# Removes dublets and cells of unknown type. 
+# Removes dublets and cells of unknown type.
 # remove if you want all ~100k cells.
 sce <- sce[, which(sce$protocol == "Triple-i")]
 sce <- sce[, which(sce$cell_type != "doublet" & sce$cell_type != "Unknown")]

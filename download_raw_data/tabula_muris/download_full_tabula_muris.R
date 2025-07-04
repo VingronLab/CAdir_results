@@ -1,4 +1,3 @@
-
 library(TabulaMurisData)
 
 sce <- TabulaMurisSmartSeq2()

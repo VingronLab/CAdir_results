@@ -3,21 +3,24 @@ library(SIMLR)
 
 # SC3 Options
 alg_option_list <- list(
-  make_option(c("--simlr_k"),
+  make_option(
+    c("--simlr_k"),
     type = "numeric",
     action = "store",
     default = 5,
     help = "Number of clusters for SIMLR",
     metavar = "numeric"
   ),
-  make_option(c("--ndim"),
+  make_option(
+    c("--ndim"),
     type = "numeric",
     action = "store",
     default = 30,
     help = "Number of dimensions for SIMLR",
     metavar = "numeric"
   ),
-  make_option(c("--k_tuning"),
+  make_option(
+    c("--k_tuning"),
     type = "numeric",
     action = "store",
     default = 10,

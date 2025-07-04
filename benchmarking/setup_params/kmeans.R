@@ -1,28 +1,32 @@
 source("./helpers/custom_pca.R")
 
 alg_option_list <- list(
-  make_option(c("--dims"),
+  make_option(
+    c("--dims"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "dimensions",
     metavar = "numeric"
   ),
-  make_option(c("--qcut"),
+  make_option(
+    c("--qcut"),
     type = "numeric",
     action = "store",
     default = 0.8,
     help = "quantile for gene cutoff",
     metavar = "numeric"
   ),
-  make_option(c("--coords"),
+  make_option(
+    c("--coords"),
     type = "character",
     action = "store",
     default = "prin",
     help = "Coordinates to use for gene assignment",
     metavar = "character"
   ),
-  make_option(c("--kmeansk"),
+  make_option(
+    c("--kmeansk"),
     type = "numeric",
     action = "store",
     default = 30,

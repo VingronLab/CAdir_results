@@ -9,7 +9,9 @@ t <- Sys.time()
 k <- min(dim(cnts)) - 1
 
 use_python <- TRUE
-if (dims < k) use_python <- FALSE
+if (dims < k) {
+  use_python <- FALSE
+}
 
 pca <- run_pca(
   mat = cnts,

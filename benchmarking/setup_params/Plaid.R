@@ -2,14 +2,16 @@ library(biclust)
 
 # Seurat options
 alg_option_list <- list(
-  make_option(c("--rrelease"),
+  make_option(
+    c("--rrelease"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.7
     help = "threshold to prune rows in the layers depending on row homogeneity",
     metavar = "numeric"
   ),
-  make_option(c("--crelease"),
+  make_option(
+    c("--crelease"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.7

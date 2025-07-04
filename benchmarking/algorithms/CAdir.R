@@ -12,11 +12,7 @@ if (is.na(dims)) {
 cat("\nStarting CA.\n")
 t <- Sys.time()
 
-caobj <- cacomp(cnts,
-  dims = dims,
-  top = nrow(cnts),
-  python = TRUE
-)
+caobj <- cacomp(cnts, dims = dims, top = nrow(cnts), python = TRUE)
 
 t.CA <- difftime(Sys.time(), t, units = "secs")
 
@@ -62,7 +58,6 @@ if (isTRUE(is_cell_clustering)) {
   )
 } else {
   if (isTRUE(sim)) {
-
     eval_res <- evaluate_sim(
       sce = data,
       biclust = res,
@@ -80,7 +75,6 @@ if (isTRUE(is_cell_clustering)) {
         "runtime_dimreduc" = t.CA
       )
     )
-
   } else {
     eval_res <- evaluate_real(
       sce = data,
@@ -99,11 +93,12 @@ if (isTRUE(is_cell_clustering)) {
         "runtime_dimreduc" = t.CA
       )
     )
-
   }
 }
 
 eval_res <- bind_cols(eval_res, as_tibble(opt))
-write_csv(eval_res,
-          file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv")))
+write_csv(
+  eval_res,
+  file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv"))
+)
 cat("\nFinished benchmarking!\n")

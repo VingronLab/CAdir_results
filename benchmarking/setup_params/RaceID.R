@@ -1,35 +1,40 @@
 library(RaceID)
 
 alg_option_list <- list(
-  make_option(c("--auto_mode"),
+  make_option(
+    c("--auto_mode"),
     type = "numeric",
     action = "store",
     default = 0,
     help = "Whether or not to run RaceID in auto mode.",
     metavar = "numeric"
   ),
-  make_option(c("--raceid_k"),
+  make_option(
+    c("--raceid_k"),
     type = "numeric",
     action = "store",
     default = 5,
     help = "Number of clusters for RaceID.",
     metavar = "numeric"
   ),
-  make_option(c("--raceid_metrics"),
+  make_option(
+    c("--raceid_metrics"),
     type = "character",
     action = "store",
     default = "pearson",
     help = "Metric to calculate distance.",
     metavar = "character"
   ),
-  make_option(c("--clustering_alg"),
+  make_option(
+    c("--clustering_alg"),
     type = "character",
     action = "store",
     default = "kmedoids",
     help = "Clustering algorithm for RaceID",
     metavar = "character"
   ),
-  make_option(c("--samp"),
+  make_option(
+    c("--samp"),
     type = "numeric",
     action = "store",
     default = NULL,
@@ -75,5 +80,5 @@ if (raceid_k == 0) {
 }
 
 if (samp == "NULL") {
-  samp  <- NULL
+  samp <- NULL
 }

@@ -52,7 +52,6 @@ if (anyNA(res)) {
 }
 
 if (isTRUE(is_cell_clustering)) {
-
   eval_res <- eval_cell_clustering(
     clustering = res,
     reference = colData(data)[, truth]
@@ -69,7 +68,6 @@ if (isTRUE(is_cell_clustering)) {
       "runtime_dimreduc" = NA
     )
   )
-
 } else {
   stop("biclustering not implemented for SC3!")
 }

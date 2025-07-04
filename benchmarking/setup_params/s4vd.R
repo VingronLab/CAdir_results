@@ -1,35 +1,40 @@
 library(s4vd)
 
 alg_option_list <- list(
-  make_option(c("--nclust"),
+  make_option(
+    c("--nclust"),
     type = "numeric",
     action = "store",
     default = NULL,
     help = "Assigning number of clusters for kmeans/skmeans",
     metavar = "numeric"
   ),
-  make_option(c("--pcerv"),
+  make_option(
+    c("--pcerv"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.05
     help = "Per comparsion wise error rate for v.",
     metavar = "numeric"
   ),
-  make_option(c("--pceru"),
+  make_option(
+    c("--pceru"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.05
     help = "Per comparsion wise error rate for u.",
     metavar = "numeric"
   ),
-  make_option(c("--ss_thr_min"),
+  make_option(
+    c("--ss_thr_min"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.6
     help = "Range of the cutoff threshold minimum.",
     metavar = "numeric"
   ),
-  make_option(c("--ss_thr_add"),
+  make_option(
+    c("--ss_thr_add"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.05

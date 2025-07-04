@@ -30,9 +30,12 @@ if (dataset == "Tirosh_nonmaglignant" || dataset == "dmel_E14-16h") {
 preproc <- "python ./benchmarking/algorithms/scG-cluster/preprocess.py"
 preproc <- paste(
   preproc,
-  "--file_path", h5file,
-  "--save_path", h5preproc,
-  "--ngenes", ntop,
+  "--file_path",
+  h5file,
+  "--save_path",
+  h5preproc,
+  "--ngenes",
+  ntop,
   ignore_noint
 )
 cat(preproc)
@@ -41,9 +44,12 @@ system(preproc)
 graph <- "python ./benchmarking/algorithms/scG-cluster/graph_function.py"
 graph <- paste(
   graph,
-  "--outdir", tmp_dir,
-  "--file", h5preproc,
-  "--method", scg_method
+  "--outdir",
+  tmp_dir,
+  "--file",
+  h5preproc,
+  "--method",
+  scg_method
 )
 cat(graph)
 system(graph)
@@ -51,13 +57,20 @@ system(graph)
 train <- "python ./benchmarking/algorithms/scG-cluster/train.py"
 train <- paste(
   train,
-  "--dataset_path", h5preproc,
-  "--model_pth", tmp_dir,
-  "--n_clusters", n_clusters,
-  "--method", scg_method,
-  "--seed", seed,
-  "--pretrain_epochs", pretrain_epochs,
-  "--train_epochs", train_epochs
+  "--dataset_path",
+  h5preproc,
+  "--model_pth",
+  tmp_dir,
+  "--n_clusters",
+  n_clusters,
+  "--method",
+  scg_method,
+  "--seed",
+  seed,
+  "--pretrain_epochs",
+  pretrain_epochs,
+  "--train_epochs",
+  train_epochs
 )
 cat(train)
 system(train)

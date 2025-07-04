@@ -22,15 +22,24 @@ if (dataset == "Tirosh_nonmaglignant" || dataset == "dmel_E14-16h") {
 cmd <- "python ./benchmarking/algorithms/scDeepCluster_pytorch/run_scDeepCluster.py"
 cmd <- paste(
   cmd,
-  "--data_file", h5file,
-  "--n_clusters", n_clusters,
-  "--resolution", resolution,
-  "--knn", knn,
-  "--device", device,
-  "--save_dir", tmp_dir,
-  "--predict_label_file", file.path(tmp_dir, "pred_labels.txt"),
-  "--ae_weight_file", file.path(tmp_dir, "AE_weights.pth.tar"),
-  "--final_latent_file", file.path(tmp_dir, "final_latent_file.txt"),
+  "--data_file",
+  h5file,
+  "--n_clusters",
+  n_clusters,
+  "--resolution",
+  resolution,
+  "--knn",
+  knn,
+  "--device",
+  device,
+  "--save_dir",
+  tmp_dir,
+  "--predict_label_file",
+  file.path(tmp_dir, "pred_labels.txt"),
+  "--ae_weight_file",
+  file.path(tmp_dir, "AE_weights.pth.tar"),
+  "--final_latent_file",
+  file.path(tmp_dir, "final_latent_file.txt"),
   ignore_noint
 )
 

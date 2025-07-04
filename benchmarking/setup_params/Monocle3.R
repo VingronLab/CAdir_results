@@ -1,35 +1,40 @@
 library(monocle3)
 
 alg_option_list <- list(
-  make_option(c("--dims"),
+  make_option(
+    c("--dims"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "dimensions",
     metavar = "numeric"
   ),
-  make_option(c("--resolution"),
+  make_option(
+    c("--resolution"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "Resolutions leiden algorithm, numbers should be separated by comma",
     metavar = "numeric"
   ),
-  make_option(c("--redm"),
+  make_option(
+    c("--redm"),
     type = "character",
     action = "store",
     default = "UMAP",
     help = "Dimensin reduction method of Monocle3",
     metavar = "character"
   ),
-  make_option(c("--NNs"),
+  make_option(
+    c("--NNs"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "number of nearest neighbour samples for SNN graph",
     metavar = "numeric"
   ),
-  make_option(c("--ngene_pg"),
+  make_option(
+    c("--ngene_pg"),
     type = "numeric",
     action = "store",
     default = 100, # default 0.25

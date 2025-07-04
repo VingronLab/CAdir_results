@@ -1,33 +1,33 @@
-
 ca_sphere_idx <- function(x, qcutoff = 0.8) {
-    xn <- row_norm(x)
-    q <- quantile(xn, qcutoff)
+  xn <- row_norm(x)
+  q <- quantile(xn, qcutoff)
 
-    idx <- which(xn > q)
+  idx <- which(xn > q)
 
-    return(idx)
+  return(idx)
 }
 
-assign_genes_coords <- function(caobj,
-                                directions,
-                                qcutoff = NULL,
-                                coords = "prin") {
+assign_genes_coords <- function(
+  caobj,
+  directions,
+  qcutoff = NULL,
+  coords = "prin"
+) {
+  if (coords == "prin") {
+    idx <- ca_sphere_idx(caobj@prin_coords_rows, qcutoff = qcutoff)
+  } else if (coords == "std") {
+    idx <- ca_sphere_idx(caobj@std_coords_rows, qcutoff = qcutoff)
+  } else {
+    stop("Invalid coords argument")
+  }
 
-    if (coords == "prin") {
-        idx <- ca_sphere_idx(caobj@prin_coords_rows, qcutoff = qcutoff)
-    } else if (coords == "std") {
-        idx <- ca_sphere_idx(caobj@std_coords_rows, qcutoff = qcutoff)
-    } else {
-        stop("Invalid coords argument")
-    }
+  X <- caobj@std_coords_rows[idx, ]
 
-    X <- caobj@std_coords_rows[idx, ]
+  ldist <- dist_to_line(X, directions, norm_vec(X))
+  # find closest line
+  clusters <- apply(ldist, 1, which.min)
 
-    ldist <- dist_to_line(X, directions, norm_vec(X))
-    # find closest line
-    clusters <- apply(ldist, 1, which.min)
-
-    return(clusters)
+  return(clusters)
 }
 
 
@@ -47,10 +47,12 @@ dist_to_subspace <- function(X, subspaces, Xnorm) {
   return(subsp_dist)
 }
 
-assign_genes_coords_subspace <- function(caobj,
-                                         subspaces,
-                                         qcutoff = NULL,
-                                         coords = "prin") {
+assign_genes_coords_subspace <- function(
+  caobj,
+  subspaces,
+  qcutoff = NULL,
+  coords = "prin"
+) {
   if (coords == "prin") {
     idx <- ca_sphere_idx(caobj@prin_coords_rows, qcutoff = qcutoff)
   } else if (coords == "std") {

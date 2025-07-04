@@ -1,4 +1,3 @@
-
 ari_cells <- function(reference, biclust_obj, reference_col = "Group") {
   cc <- biclust_obj@NumberxCol
 
@@ -7,15 +6,20 @@ ari_cells <- function(reference, biclust_obj, reference_col = "Group") {
   for (j in seq_len(ncol(cc))) {
     idx <- which(cc[, j] == TRUE)
 
-    if (length(idx) == 0) idx <- 0
-    if (length(idx) > 1) idx <- sample(x = idx, size = 1)
+    if (length(idx) == 0) {
+      idx <- 0
+    }
+    if (length(idx) > 1) {
+      idx <- sample(x = idx, size = 1)
+    }
     cc_clust[j] <- idx
   }
 
   cc_clust <- as.factor(cc_clust)
 
   stopifnot(
-    length(cc_clust) == length(SummarizedExperiment::colData(reference)[, reference_col])
+    length(cc_clust) ==
+      length(SummarizedExperiment::colData(reference)[, reference_col])
   )
 
   ari <- mclust::adjustedRandIndex(
@@ -37,7 +41,8 @@ ari_genes <- function(splatter_sim, biclust_obj) {
 
   # doesnt consider that gene can be DE in 2 groups
   de_genes <- de_fac > 1 | de_fac < 1
-  de_bool <- matrix(FALSE,
+  de_bool <- matrix(
+    FALSE,
     nrow = nrow(de_fac),
     ncol = ncol(de_fac),
     dimnames = list(
@@ -76,65 +81,87 @@ recovery_biclust <- function(res, truth) {
   temp <- c()
   for (i in seq_len(truth@Number)) {
     # Matrix genes x cells
-    truthdf <- Matrix::Matrix(0,
+    truthdf <- Matrix::Matrix(
+      0,
       nrow(truth@RowxNumber),
       ncol(truth@NumberxCol),
       sparse = T
     )
 
-    dimnames(truthdf) <- list(rownames(truth@RowxNumber), colnames(truth@NumberxCol))
+    dimnames(truthdf) <- list(
+      rownames(truth@RowxNumber),
+      colnames(truth@NumberxCol)
+    )
 
     # Mark cells and genes in cluster i
     truthdf[truth@RowxNumber[, i], truth@NumberxCol[i, ]] <- 1
 
     if (res@Number > 1) {
       # for each cluster in results, calculate U/I, take max for each cluster.
-      temp <- c(temp, do.call(max, lapply(seq_len(res@Number), function(x) {
-        # Matrix marking cells & genes in results that are in cluster i.
-        resdf <- Matrix::Matrix(0,
-          nrow(res@RowxNumber),
-          ncol(res@NumberxCol),
-          sparse = T
+      temp <- c(
+        temp,
+        do.call(
+          max,
+          lapply(seq_len(res@Number), function(x) {
+            # Matrix marking cells & genes in results that are in cluster i.
+            resdf <- Matrix::Matrix(
+              0,
+              nrow(res@RowxNumber),
+              ncol(res@NumberxCol),
+              sparse = T
+            )
+
+            dimnames(resdf) <- list(
+              rownames(res@RowxNumber),
+              colnames(res@NumberxCol)
+            )
+
+            # Subset reference to rows & columns in results
+            truth_tmp <- truthdf[
+              rownames(truthdf) %in% rownames(resdf),
+              colnames(truthdf) %in% colnames(resdf)
+            ]
+
+            resdf[res@RowxNumber[, x], res@NumberxCol[x, ]] <- 1
+
+            ord_r <- order(match(rownames(resdf), rownames(truth_tmp)))
+            ord_c <- order(match(colnames(resdf), colnames(truth_tmp)))
+
+            resdf <- resdf[ord_r, ord_c]
+
+            # Intersection / Union
+            return(sum(truth_tmp & resdf) / sum(truth_tmp | resdf))
+          })
         )
-
-        dimnames(resdf) <- list(
-          rownames(res@RowxNumber),
-          colnames(res@NumberxCol)
-        )
-
-        # Subset reference to rows & columns in results
-        truth_tmp <- truthdf[
-          rownames(truthdf) %in% rownames(resdf),
-          colnames(truthdf) %in% colnames(resdf)
-        ]
-
-        resdf[res@RowxNumber[, x], res@NumberxCol[x, ]] <- 1
-
-        ord_r <- order(match(rownames(resdf), rownames(truth_tmp)))
-        ord_c <- order(match(colnames(resdf), colnames(truth_tmp)))
-
-        resdf <- resdf[ord_r, ord_c]
-
-        # Intersection / Union
-        return(sum(truth_tmp & resdf) / sum(truth_tmp | resdf))
-      })))
+      )
     } else {
-      temp <- c(temp, unlist(lapply(seq_len(res@Number), function(x) {
-        resdf <- Matrix::Matrix(0, nrow(res@RowxNumber), ncol(res@NumberxCol), sparse = T)
-        dimnames(resdf) <- list(rownames(res@RowxNumber), colnames(res@NumberxCol))
-        resdf[res@RowxNumber[, x], res@NumberxCol[x, ]] <- 1
-        truth_tmp <- truthdf[
-          rownames(truthdf) %in% rownames(resdf),
-          colnames(truthdf) %in% colnames(resdf)
-        ]
+      temp <- c(
+        temp,
+        unlist(lapply(seq_len(res@Number), function(x) {
+          resdf <- Matrix::Matrix(
+            0,
+            nrow(res@RowxNumber),
+            ncol(res@NumberxCol),
+            sparse = T
+          )
+          dimnames(resdf) <- list(
+            rownames(res@RowxNumber),
+            colnames(res@NumberxCol)
+          )
+          resdf[res@RowxNumber[, x], res@NumberxCol[x, ]] <- 1
+          truth_tmp <- truthdf[
+            rownames(truthdf) %in% rownames(resdf),
+            colnames(truthdf) %in% colnames(resdf)
+          ]
 
-        ord_r <- order(match(rownames(resdf), rownames(truth_tmp)))
-        ord_c <- order(match(colnames(resdf), colnames(truth_tmp)))
+          ord_r <- order(match(rownames(resdf), rownames(truth_tmp)))
+          ord_c <- order(match(colnames(resdf), colnames(truth_tmp)))
 
-        resdf <- resdf[ord_r, ord_c]
+          resdf <- resdf[ord_r, ord_c]
 
-        return(sum(truth_tmp & resdf) / sum(truth_tmp | resdf))
-      })))
+          return(sum(truth_tmp & resdf) / sum(truth_tmp | resdf))
+        }))
+      )
     }
   }
   return(sum(temp) / truth@Number)
@@ -145,44 +172,74 @@ relevance_biclust <- function(res, truth) {
   # column names of res/truth should be cluster, label
   temp <- c()
   for (i in seq_len(res@Number)) {
-    resdf <- Matrix::Matrix(0, nrow(res@RowxNumber), ncol(res@NumberxCol), sparse = T)
+    resdf <- Matrix::Matrix(
+      0,
+      nrow(res@RowxNumber),
+      ncol(res@NumberxCol),
+      sparse = T
+    )
     dimnames(resdf) <- list(rownames(res@RowxNumber), colnames(res@NumberxCol))
     resdf[res@RowxNumber[, i], res@NumberxCol[i, ]] <- 1
 
     if (res@Number > 0) {
-      temp <- c(temp, do.call(max, lapply(seq_len(truth@Number), function(x) {
-        truthdf <- Matrix::Matrix(0, nrow(truth@RowxNumber), ncol(truth@NumberxCol), sparse = T)
-        dimnames(truthdf) <- list(rownames(truth@RowxNumber), colnames(truth@NumberxCol))
-        truthdf[truth@RowxNumber[, x], truth@NumberxCol[x, ]] <- 1
-        truthdf <- truthdf[
-          rownames(truthdf) %in% rownames(resdf),
-          colnames(truthdf) %in% colnames(resdf)
-        ]
+      temp <- c(
+        temp,
+        do.call(
+          max,
+          lapply(seq_len(truth@Number), function(x) {
+            truthdf <- Matrix::Matrix(
+              0,
+              nrow(truth@RowxNumber),
+              ncol(truth@NumberxCol),
+              sparse = T
+            )
+            dimnames(truthdf) <- list(
+              rownames(truth@RowxNumber),
+              colnames(truth@NumberxCol)
+            )
+            truthdf[truth@RowxNumber[, x], truth@NumberxCol[x, ]] <- 1
+            truthdf <- truthdf[
+              rownames(truthdf) %in% rownames(resdf),
+              colnames(truthdf) %in% colnames(resdf)
+            ]
 
-        ord_r <- order(match(rownames(resdf), rownames(truthdf)))
-        ord_c <- order(match(colnames(resdf), colnames(truthdf)))
+            ord_r <- order(match(rownames(resdf), rownames(truthdf)))
+            ord_c <- order(match(colnames(resdf), colnames(truthdf)))
 
-        resdf <- resdf[ord_r, ord_c]
+            resdf <- resdf[ord_r, ord_c]
 
-        return(sum(truthdf & resdf) / sum(truthdf | resdf))
-      })))
+            return(sum(truthdf & resdf) / sum(truthdf | resdf))
+          })
+        )
+      )
     } else {
-      temp <- c(temp, unlist(lapply(seq_len(truth@Number), function(x) {
-        truthdf <- Matrix::Matrix(0, nrow(truth@RowxNumber), ncol(truth@NumberxCol), sparse = T)
-        dimnames(truthdf) <- list(rownames(truth@RowxNumber), colnames(truth@NumberxCol))
-        truthdf[truth@RowxNumber[, x], truth@NumberxCol[x, ]] <- 1
-        truthdf <- truthdf[
-          rownames(truthdf) %in% rownames(resdf),
-          colnames(truthdf) %in% colnames(resdf)
-        ]
+      temp <- c(
+        temp,
+        unlist(lapply(seq_len(truth@Number), function(x) {
+          truthdf <- Matrix::Matrix(
+            0,
+            nrow(truth@RowxNumber),
+            ncol(truth@NumberxCol),
+            sparse = T
+          )
+          dimnames(truthdf) <- list(
+            rownames(truth@RowxNumber),
+            colnames(truth@NumberxCol)
+          )
+          truthdf[truth@RowxNumber[, x], truth@NumberxCol[x, ]] <- 1
+          truthdf <- truthdf[
+            rownames(truthdf) %in% rownames(resdf),
+            colnames(truthdf) %in% colnames(resdf)
+          ]
 
-        ord_r <- order(match(rownames(resdf), rownames(truthdf)))
-        ord_c <- order(match(colnames(resdf), colnames(truthdf)))
+          ord_r <- order(match(rownames(resdf), rownames(truthdf)))
+          ord_c <- order(match(colnames(resdf), colnames(truthdf)))
 
-        resdf <- resdf[ord_r, ord_c]
+          resdf <- resdf[ord_r, ord_c]
 
-        return(sum(truthdf & resdf) / sum(truthdf | resdf))
-      })))
+          return(sum(truthdf & resdf) / sum(truthdf | resdf))
+        }))
+      )
     }
   }
   return(sum(temp) / res@Number)
@@ -190,10 +247,7 @@ relevance_biclust <- function(res, truth) {
 
 # FIXME: Rework
 # TODO: implement fuzzy clusters.
-sim_truth <- function(splatter_sim,
-                      factor_cutoff = 1,
-                      no_overlap = TRUE) {
-
+sim_truth <- function(splatter_sim, factor_cutoff = 1, no_overlap = TRUE) {
   rd <- as.data.frame(SummarizedExperiment::rowData(splatter_sim))
   cd <- as.data.frame(SummarizedExperiment::colData(splatter_sim))
 
@@ -210,7 +264,8 @@ sim_truth <- function(splatter_sim,
   de_genes <- de_fac > factor_cutoff
 
   if (isTRUE(no_overlap)) {
-    de_bool <- matrix(FALSE,
+    de_bool <- matrix(
+      FALSE,
       nrow = nrow(de_fac),
       ncol = ncol(de_fac),
       dimnames = list(
@@ -245,8 +300,8 @@ sim_truth <- function(splatter_sim,
     number <- length(union(rownames(number_x_col), colnames(row_x_number)))
   }
 
-
-  bic <- new("Biclust",
+  bic <- new(
+    "Biclust",
     "Parameters" = list("Splatter_Params" = splatter_sim@metadata$Params),
     "RowxNumber" = row_x_number,
     "NumberxCol" = number_x_col,
@@ -258,11 +313,7 @@ sim_truth <- function(splatter_sim,
 }
 
 
-evaluate_sim <- function(sce,
-                         biclust,
-                         truth_col = NULL,
-                         no_overlap = TRUE) {
-
+evaluate_sim <- function(sce, biclust, truth_col = NULL, no_overlap = TRUE) {
   true_biclust <- sim_truth(
     splatter_sim = sce,
     factor_cutoff = 1,
@@ -290,10 +341,11 @@ evaluate_sim <- function(sce,
     fARI <- fclust::ARI.F(VC = sce$Group, U = t(biclust@NumberxCol))
 
     genes_kept <- rownames(nomono_biclust@RowxNumber)
-    nomono_truth@RowxNumber <- nomono_truth@RowxNumber[rownames(nomono_truth@RowxNumber) %in% genes_kept, ]
+    nomono_truth@RowxNumber <- nomono_truth@RowxNumber[
+      rownames(nomono_truth@RowxNumber) %in% genes_kept,
+    ]
 
     clustering_error <- biclustlib_CE(nomono_biclust, nomono_truth)
-
   } else {
     ac <- NA
     ag <- NA
@@ -317,7 +369,6 @@ evaluate_sim <- function(sce,
 }
 
 evaluate_real <- function(sce, biclust, truth_col = NULL) {
-
   if (biclust@Number > 0) {
     nomono_biclust <- CAbiNet::rm_monoclusters(biclust)
 
@@ -331,7 +382,6 @@ evaluate_real <- function(sce, biclust, truth_col = NULL) {
     relevance <- NA
     recovery <- NA
     clustering_error <- NA
-
   } else {
     ac <- NA
     ag <- NA
@@ -350,4 +400,3 @@ evaluate_real <- function(sce, biclust, truth_col = NULL) {
 
   return(evldf)
 }
-

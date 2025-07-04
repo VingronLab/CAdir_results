@@ -2,28 +2,32 @@ library(SC3)
 
 # SC3 Options
 alg_option_list <- list(
-  make_option(c("--sc3_k"),
+  make_option(
+    c("--sc3_k"),
     type = "numeric",
     action = "store",
     default = 5,
     help = "Number of clusters for SC3",
     metavar = "numeric"
   ),
-  make_option(c("--gene_filtering"),
+  make_option(
+    c("--gene_filtering"),
     type = "numeric",
     action = "store",
     default = 0,
     help = "Turn SC3 gene filtering on/off.",
     metavar = "numeric"
   ),
-  make_option(c("--d_min"),
+  make_option(
+    c("--d_min"),
     type = "numeric",
     action = "store",
     default = 0.04,
     help = "Min n eigenvector as % of cells.",
     metavar = "numeric"
   ),
-  make_option(c("--d_max"),
+  make_option(
+    c("--d_max"),
     type = "numeric",
     action = "store",
     default = 0.07,
@@ -49,7 +53,9 @@ if (is.null(opt$file)) {
 }
 
 sc3_k <- opt$sc3_k
-if (sc3_k == 0) sc3_k <- NULL
+if (sc3_k == 0) {
+  sc3_k <- NULL
+}
 d_min <- opt$d_min
 d_max <- opt$d_max
 

@@ -68,7 +68,10 @@ if (isTRUE(sim)) {
 }
 
 
-write_csv(eval_res, file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv")))
+write_csv(
+  eval_res,
+  file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv"))
+)
 
 print("All done!")
 cat("\nFinished benchmarking!\n")

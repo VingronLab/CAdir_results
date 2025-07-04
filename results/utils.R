@@ -19,18 +19,23 @@ sce_pbmc3k <- function() {
   pbmc[["percent.mt"]] <- Seurat::PercentageFeatureSet(pbmc, pattern = "^MT-")
 
   # Filter data
-  pbmc <- subset(pbmc, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5)
+  pbmc <- subset(
+    pbmc,
+    subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5
+  )
   no_zeros_rows <- Matrix::rowSums(pbmc, slot = "counts") > 0
   pbmc <- pbmc[no_zeros_rows, ]
 
   # Normalization
-  pbmc <- Seurat::NormalizeData(pbmc,
+  pbmc <- Seurat::NormalizeData(
+    pbmc,
     normalization.method = "LogNormalize",
     scale.factor = 10000,
     verbose = FALSE
   )
 
-  pbmc <- Seurat::FindVariableFeatures(pbmc,
+  pbmc <- Seurat::FindVariableFeatures(
+    pbmc,
     # selection.method = "vst",
     nfeatures = 2000,
     verbose = FALSE
@@ -38,13 +43,11 @@ sce_pbmc3k <- function() {
 
   # Scaling
   all.genes <- rownames(pbmc)
-  pbmc <- Seurat::ScaleData(pbmc,
-    features = all.genes,
-    verbose = FALSE
-  )
+  pbmc <- Seurat::ScaleData(pbmc, features = all.genes, verbose = FALSE)
 
   # Run PCA
-  pbmc <- Seurat::RunPCA(pbmc,
+  pbmc <- Seurat::RunPCA(
+    pbmc,
     features = Seurat::VariableFeatures(object = pbmc),
     verbose = FALSE
   )
@@ -103,7 +106,8 @@ get_top_cells <- function(cadir, caobj, cluster) {
 
   # subset genes to cluster genes
   cell_coords <- cell_coords[
-    which(rownames(cell_coords) %in% cluster_cells), ,
+    which(rownames(cell_coords) %in% cluster_cells),
+    ,
     drop = FALSE
   ]
 
@@ -126,7 +130,11 @@ get_top_cells <- function(cadir, caobj, cluster) {
 }
 
 load_platelet_gs <- function() {
-  df <- readr::read_tsv("./platelets_marker_genes.tsv", show_col_types = FALSE, progress = FALSE)
+  df <- readr::read_tsv(
+    "./platelets_marker_genes.tsv",
+    show_col_types = FALSE,
+    progress = FALSE
+  )
   colnames(df) <- gsub(" ", "_", colnames(df))
   df <- df %>%
     filter(cell_type == "Platelets") %>%
@@ -136,23 +144,24 @@ load_platelet_gs <- function() {
 }
 
 
-
-plot_clusters_custom <- function(cadir,
-                                 caobj,
-                                 point_size = 1,
-                                 size_factor = 1,
-                                 show_genes = FALSE,
-                                 label_genes = FALSE,
-                                 ntop = 5,
-                                 text_size = 16,
-                                 ggncol = NULL,
-                                 ggnrow = NULL,
-                                 outlier_cluster,
-                                 axis = FALSE,
-                                 title_prefix = "_",
-                                 gsub_title = NULL,
-                                 legend_pos = "none",
-                                 return_list = FALSE) {
+plot_clusters_custom <- function(
+  cadir,
+  caobj,
+  point_size = 1,
+  size_factor = 1,
+  show_genes = FALSE,
+  label_genes = FALSE,
+  ntop = 5,
+  text_size = 16,
+  ggncol = NULL,
+  ggnrow = NULL,
+  outlier_cluster,
+  axis = FALSE,
+  title_prefix = "_",
+  gsub_title = NULL,
+  legend_pos = "none",
+  return_list = FALSE
+) {
   pls <- list()
   cls <- levels(cadir@cell_clusters)
 
@@ -205,7 +214,6 @@ plot_clusters_custom <- function(cadir,
       ggplot2::ggtitle(paste0(title_prefix, cls_title)) +
       plot_theme
 
-
     if (cls[i] == outlier_cluster) {
       cell_rnk <- get_top_cells(
         cadir = cadir,
@@ -228,11 +236,13 @@ plot_clusters_custom <- function(cadir,
   } else {
     fig <- ggpubr::ggarrange(
       plotlist = pls,
-      nrow = ifelse(test = is.null(ggnrow),
+      nrow = ifelse(
+        test = is.null(ggnrow),
         yes = ceiling(sqrt(length(cls))),
         no = ggnrow
       ),
-      ncol = ifelse(test = is.null(ggncol),
+      ncol = ifelse(
+        test = is.null(ggncol),
         yes = ceiling(sqrt(length(cls))),
         no = ggncol
       )
@@ -242,20 +252,21 @@ plot_clusters_custom <- function(cadir,
 }
 
 
-
-sm_plot_custom <- function(cadir,
-                           caobj,
-                           rm_redund = TRUE,
-                           show_cells = TRUE,
-                           show_genes = FALSE,
-                           highlight_cluster = FALSE,
-                           annotate_clusters = FALSE,
-                           org = "mm",
-                           keep_end = TRUE) {
+sm_plot_custom <- function(
+  cadir,
+  caobj,
+  rm_redund = TRUE,
+  show_cells = TRUE,
+  show_genes = FALSE,
+  highlight_cluster = FALSE,
+  annotate_clusters = FALSE,
+  org = "mm",
+  keep_end = TRUE
+) {
   # TODO: Simplify function.
   base::stopifnot(
-    "Set either `show_cells` or `show_genes` to TRUE." =
-      isTRUE(show_cells) || isTRUE(show_genes)
+    "Set either `show_cells` or `show_genes` to TRUE." = isTRUE(show_cells) ||
+      isTRUE(show_genes)
   )
 
   graph <- build_graph(
@@ -285,7 +296,9 @@ sm_plot_custom <- function(cadir,
     name_elems <- base::strsplit(node_nm, "-", fixed = TRUE)[[1]]
     # name_elems <- stringr::str_split_1(node_nm, "-")
 
-    if (name_elems[1] == "root") next
+    if (name_elems[1] == "root") {
+      next
+    }
 
     iter_nm <- name_elems[1]
     cluster <- name_elems[2]
@@ -359,7 +372,8 @@ sm_plot_custom <- function(cadir,
         theme_blank(
           title = ggplot2::element_text(
             color = "black",
-            size = 10, face = "bold"
+            size = 10,
+            face = "bold"
           ),
           text = ggplot2::element_text()
         )
@@ -370,7 +384,8 @@ sm_plot_custom <- function(cadir,
     }
 
     bg <- bg +
-      patchwork::inset_element(p,
+      patchwork::inset_element(
+        p,
         left = bg_coords[i, 1] - 0.07,
         right = bg_coords[i, 1] + 0.07,
         top = bg_coords[i, 2] + 0.07,

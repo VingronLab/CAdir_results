@@ -52,13 +52,15 @@ t.run <- difftime(Sys.time(), t, units = "secs")
 
 #########
 
-names(bs) <- c("genes_order",
-               "cells_order",
-               "genes_gr_level",
-               "cells_gr_level",
-               "cells_gr_level_sc",
-               "genes_bor_level",
-               "cells_bor_level") # nolint
+names(bs) <- c(
+  "genes_order",
+  "cells_order",
+  "genes_gr_level",
+  "cells_gr_level",
+  "cells_gr_level_sc",
+  "genes_bor_level",
+  "cells_bor_level"
+) # nolint
 
 
 # cell binary matrix
@@ -95,7 +97,8 @@ nclusts <- min(length(ccs), length(gcs))
 
 # make biclust object
 
-res <- new("Biclust",
+res <- new(
+  "Biclust",
   "Parameters" = opt,
   "RowxNumber" = gene_mat,
   "NumberxCol" = cell_mat,
@@ -105,7 +108,6 @@ res <- new("Biclust",
 
 
 res <- CAbiNet::rm_monoclusters(res)
-
 
 
 #########
@@ -165,7 +167,6 @@ write_csv(
 
 cat("\nFinished benchmarking!\n")
 
-
 ###############
 ###### OLD ####
 ###############
@@ -200,11 +201,9 @@ cat("\nFinished benchmarking!\n")
 #           quote=F,
 #           append = T)
 
-
 # backspin = paste0("backspin -i ", output.cef, " -o ", clust_res.cef, " &> ", clust_res.cef, ".log" )
 
 # system(backspin)
-
 
 # cells <- readr::read_delim(clust_res.cef,
 #          n_max = 3,
@@ -212,7 +211,6 @@ cat("\nFinished benchmarking!\n")
 #          delim = "\t",
 #          show_col_types = FALSE) %>%
 #                select(well:last_col())
-
 
 # genes <- readr::read_delim(clust_res.cef,
 #                skip = 5,

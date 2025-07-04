@@ -2,14 +2,9 @@ algorithm <- "CAbiNet_spectral"
 source("./setup.R")
 
 
-
 cat("\nStarting CA.\n")
 t <- Sys.time()
-caobj <- cacomp(cnts,
-  dims = dims,
-  top = nrow(cnts),
-  python = TRUE
-)
+caobj <- cacomp(cnts, dims = dims, top = nrow(cnts), python = TRUE)
 
 t.CA <- difftime(Sys.time(), t, units = "secs")
 
@@ -40,7 +35,9 @@ res <-
   )
 t.run <- difftime(Sys.time(), t, units = "secs")
 
-if (is(res, "caclust")) res <- convert_to_biclust(res)
+if (is(res, "caclust")) {
+  res <- convert_to_biclust(res)
+}
 
 
 if (isTRUE(sim)) {
@@ -86,8 +83,10 @@ if (isTRUE(sim)) {
 }
 
 
-
-write_csv(eval_res, file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv")))
+write_csv(
+  eval_res,
+  file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv"))
+)
 
 if (isTRUE(DECOMP)) {
   imgdir <- file.path(outdir, "img")
@@ -104,7 +103,10 @@ if (isTRUE(DECOMP)) {
 
   ggsave(
     plot = p,
-    file = file.path(imgdir, paste0(algorithm, "_", name, "_DE_genes_comparison.png"))
+    file = file.path(
+      imgdir,
+      paste0(algorithm, "_", name, "_DE_genes_comparison.png")
+    )
   )
 }
 print("All done!")

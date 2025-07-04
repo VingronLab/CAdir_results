@@ -39,35 +39,33 @@ if (dataset == "zeisel") {
     meta.data = as.data.frame(colData(sce))
   )
 
-
   pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT-")
 
   # Filter data
-  pbmc <- subset(pbmc, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5)
+  pbmc <- subset(
+    pbmc,
+    subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5
+  )
   no_zeros_rows <- rowSums(pbmc, slot = "counts") > 0
   pbmc <- pbmc[no_zeros_rows, ]
 
   # Normalization
-  pbmc <- NormalizeData(pbmc,
+  pbmc <- NormalizeData(
+    pbmc,
     normalization.method = "LogNormalize",
     scale.factor = 10000,
     verbose = FALSE
   )
 
-  pbmc <- FindVariableFeatures(pbmc,
-    nfeatures = 2000,
-    verbose = FALSE
-  )
+  pbmc <- FindVariableFeatures(pbmc, nfeatures = 2000, verbose = FALSE)
 
   # Scaling
   all.genes <- rownames(pbmc)
-  pbmc <- ScaleData(pbmc,
-    features = all.genes,
-    verbose = FALSE
-  )
+  pbmc <- ScaleData(pbmc, features = all.genes, verbose = FALSE)
 
   # Run PCA
-  pbmc <- RunPCA(pbmc,
+  pbmc <- RunPCA(
+    pbmc,
     features = VariableFeatures(object = pbmc),
     verbose = FALSE
   )
@@ -99,7 +97,9 @@ if (dataset == "zeisel") {
   logcounts(sce) <- as.matrix(logcounts(sce))
   counts(sce) <- as.matrix(counts(sce))
 } else {
-  stop("Please pick either 'zeisel' or 'pbmc3k' for the dataset to base the simulation on.")
+  stop(
+    "Please pick either 'zeisel' or 'pbmc3k' for the dataset to base the simulation on."
+  )
 }
 
 
@@ -110,7 +110,8 @@ defacloc_defacscale <- c(0.75, 1.5)
 
 for (p in deprob) {
   for (l in defacloc_defacscale) {
-    sim <- splatSimulate(params,
+    sim <- splatSimulate(
+      params,
       nGenes = 10000,
       batchCells = 1000,
       group.prob = c(0.25, 0.1, 0.1, 0.2, 0.3, 0.05),
@@ -133,9 +134,12 @@ for (p in deprob) {
     pumap <- plotUMAP(sim, colour_by = "Group")
 
     name <- paste0(
-      "dePROB-", gsub("\\.", "_", p),
-      "_defacLOC-", gsub("\\.", "_", l),
-      "_defacSCALE-", gsub("\\.", "_", l)
+      "dePROB-",
+      gsub("\\.", "_", p),
+      "_defacLOC-",
+      gsub("\\.", "_", l),
+      "_defacSCALE-",
+      gsub("\\.", "_", l)
     )
 
     outdir <- paste0(maindir, name)
@@ -146,20 +150,34 @@ for (p in deprob) {
       filename = paste0(outdir, "/", name, "_UMAP.png")
     )
 
-    saveRDS(sim, paste0(
-      outdir,
-      "/",
-      name,
-      ".rds"
-    ))
+    saveRDS(
+      sim,
+      paste0(
+        outdir,
+        "/",
+        name,
+        ".rds"
+      )
+    )
 
     png(paste0(outdir, "/", name, "_distribution.png"))
     grid <- seq(0, 30, .1)
     log_mean <- l
     log_sd <- sqrt(l)
 
-    plot(grid, dlnorm(grid, log_mean, log_sd), type = "l", xlab = "DE-factor", ylab = "density")
-    legend("topright", paste0("log-norm: ", log_mean, " mean, ", log_sd, " sd"), lty = 1, col = 1)
+    plot(
+      grid,
+      dlnorm(grid, log_mean, log_sd),
+      type = "l",
+      xlab = "DE-factor",
+      ylab = "density"
+    )
+    legend(
+      "topright",
+      paste0("log-norm: ", log_mean, " mean, ", log_sd, " sd"),
+      lty = 1,
+      col = 1
+    )
     dev.off()
   }
 }

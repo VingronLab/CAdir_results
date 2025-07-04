@@ -8,9 +8,11 @@ name_biclust <- function(biclust, input) {
     }
 
     if (is.null(dimnames(biclust@NumberxCol))) {
-      if (biclust@Number == 1 &&
-        nrow(biclust@NumberxCol) != 1 &&
-        ncol(biclust@NumberxCol) == 1) {
+      if (
+        biclust@Number == 1 &&
+          nrow(biclust@NumberxCol) != 1 &&
+          ncol(biclust@NumberxCol) == 1
+      ) {
         biclust@NumberxCol <- t(biclust@NumberxCol)
       }
 
@@ -46,12 +48,18 @@ bic_to_biclust <- function(cell_clusters, gene_clusters, params = NULL) {
     NumberxCol <- matrix(0)
     RowxNumber <- matrix(0)
   } else {
-    NumberxCol <- do.call(rbind, lapply(bitypes, function(x) {
-      cell_clusters == x
-    }))
-    RowxNumber <- do.call(cbind, lapply(bitypes, function(x) {
-      gene_clusters == x
-    }))
+    NumberxCol <- do.call(
+      rbind,
+      lapply(bitypes, function(x) {
+        cell_clusters == x
+      })
+    )
+    RowxNumber <- do.call(
+      cbind,
+      lapply(bitypes, function(x) {
+        gene_clusters == x
+      })
+    )
   }
 
   rownames(RowxNumber) <- names(gene_clusters)
@@ -60,7 +68,8 @@ bic_to_biclust <- function(cell_clusters, gene_clusters, params = NULL) {
   rownames(NumberxCol) <- paste0("BC", bitypes)
   colnames(NumberxCol) <- names(cell_clusters)
 
-  bic <- new("Biclust",
+  bic <- new(
+    "Biclust",
     "Parameters" = params,
     "RowxNumber" = RowxNumber,
     "NumberxCol" = NumberxCol,
@@ -82,7 +91,6 @@ dist_to_line <- function(X, lines, Xnorm) {
 
   return(dist)
 }
-
 
 
 #' Calculate the norm of a row-vector.

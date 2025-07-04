@@ -2,28 +2,32 @@ library(QUBIC)
 library(biclust)
 
 alg_option_list <- list(
-  make_option(c("--nclust"),
+  make_option(
+    c("--nclust"),
     type = "numeric",
     action = "store",
     default = NULL,
     help = "Assigning number of clusters for kmeans/skmeans",
     metavar = "numeric"
   ),
-  make_option(c("--r_param"),
+  make_option(
+    c("--r_param"),
     type = "numeric",
     action = "store",
     default = NA, # default 1
     help = "The range of possible ranks",
     metavar = "numeric"
   ),
-  make_option(c("--q_param"),
+  make_option(
+    c("--q_param"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.06
     help = "QUBIC q parameter",
     metavar = "numeric"
   ),
-  make_option(c("--c_param"),
+  make_option(
+    c("--c_param"),
     type = "numeric",
     action = "store",
     default = NA, # default 0.95

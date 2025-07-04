@@ -3,21 +3,24 @@ library(CAbiNet)
 library(CAdir)
 
 alg_option_list <- list(
-  make_option(c("--qcut"),
+  make_option(
+    c("--qcut"),
     type = "numeric",
     action = "store",
     default = 0.8,
     help = "quantile for gene cutoff",
     metavar = "numeric"
   ),
-  make_option(c("--angle"),
+  make_option(
+    c("--angle"),
     type = "numeric",
     action = "store",
     default = 30,
     help = "angle cutoff ",
     metavar = "numeric"
   ),
-  make_option(c("--kdir"),
+  make_option(
+    c("--kdir"),
     type = "numeric",
     action = "store",
     default = 30,
@@ -31,21 +34,24 @@ alg_option_list <- list(
   #   help = "Coordinates to use for gene assignment",
   #   metavar = "character"
   # ),
-  make_option(c("--apl_quant"),
+  make_option(
+    c("--apl_quant"),
     type = "numeric",
     action = "store",
     default = 0.99,
     help = "Quantile for APL cutoff",
     metavar = "numeric"
   ),
-  make_option(c("--subsp_dim"),
+  make_option(
+    c("--subsp_dim"),
     type = "numeric",
     action = "store",
     default = 30,
     help = "Dimensions for subspaces",
     metavar = "numeric"
   ),
-  make_option(c("--dims"),
+  make_option(
+    c("--dims"),
     type = "numeric",
     action = "store",
     default = NA,
