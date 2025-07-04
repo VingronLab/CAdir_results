@@ -1,5 +1,5 @@
 renv::load("./")
-devtools::load_all("~/gits/ClemensKohl/CAdir/")
+library(CAdir)
 library(APL)
 library(aricode)
 library(SingleCellExperiment)
@@ -8,49 +8,56 @@ library(readr)
 library(optparse)
 
 option_list <- list(
-  make_option(c("--outdir"),
+  make_option(
+    c("--outdir"),
     type = "character",
     action = "store",
     default = NULL,
     help = "output directory",
     metavar = "character"
   ),
-  make_option(c("--k"),
+  make_option(
+    c("--k"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "k for CAdir",
     metavar = "numeric"
   ),
-  make_option(c("--n"),
+  make_option(
+    c("--n"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "Number of cell types",
     metavar = "numeric"
   ),
-  make_option(c("--q"),
+  make_option(
+    c("--q"),
     type = "numeric",
     action = "store",
     default = NA,
     help = "APL quantile",
     metavar = "numeric"
   ),
-  make_option(c("--pd"),
+  make_option(
+    c("--pd"),
     type = "logical",
     action = "store_true",
     default = FALSE,
     help = "Whether pick_dims should be used",
     metavar = "logical"
   ),
-  make_option(c("--subset_cts"),
+  make_option(
+    c("--subset_cts"),
     type = "logical",
     action = "store_true",
     default = FALSE,
     help = "Whether cell types should be subset",
     metavar = "logical"
   ),
-  make_option(c("--cellpcl"),
+  make_option(
+    c("--cellpcl"),
     type = "numeric",
     action = "store",
     default = NA,
@@ -110,11 +117,9 @@ reps <- 1:10
 cat("\nStarting clustering for", n, "clusters.")
 set.seed(2358)
 for (i in reps) {
-
   cat("\nIteration:", i, "\n")
 
   picked_cts <- sample(x = cell_types, size = n, replace = FALSE)
-
 
   if (isTRUE(subset_cts)) {
     chosen_cells <- c()
@@ -206,4 +211,7 @@ for (i in reps) {
 cat("\nDone.")
 
 id <- paste0("_k-", k, "_n-", n, "_q-", q)
-write_csv(x = res, file = file.path(outdir, paste0("ct_detection.csv", id, ".csv")))
+write_csv(
+  x = res,
+  file = file.path(outdir, paste0("ct_detection.csv", id, ".csv"))
+)

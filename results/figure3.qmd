@@ -23,8 +23,7 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  devtools::load_all("~/gits/ClemensKohl/CAdir")
-  # library(CAdir)
+  library(CAdir)
   library(APL)
   library(SingleCellExperiment)
   library(dplyr)
@@ -70,13 +69,13 @@ sce <- sce[sce.top, ]
 sce <- runUMAP(sce, ntop = 2000)
 
 ca <- cacomp(
-    obj = as.matrix(logcounts(sce)),
-    princ_coords = 3,
-    dims = 30,
-    top = nrow(sce),
-    residuals = "pearson",
-    python = TRUE,
-    clip = TRUE
+  obj = as.matrix(logcounts(sce)),
+  princ_coords = 3,
+  dims = 30,
+  top = nrow(sce),
+  residuals = "pearson",
+  python = TRUE,
+  clip = TRUE
 )
 ```
 
@@ -87,18 +86,18 @@ With `cutoff = NULL` CAdir tries to estimate the angle cutoff directly from the 
 ```{r}
 set.seed(2358)
 cak <- dirclust_splitmerge(
-    caobj = ca,
-    k = 12,
-    cutoff = NULL,
-    method = "random",
-    apl_quant = 0.99,
-    counts = NULL,
-    min_cells = 30,
-    reps = NULL,
-    make_plots = TRUE,
-    apl_cutoff_reps = 100,
-    qcutoff = 0.6,
-    convergence_thr = 0.001
+  caobj = ca,
+  k = 12,
+  cutoff = NULL,
+  method = "random",
+  apl_quant = 0.99,
+  counts = NULL,
+  min_cells = 30,
+  reps = NULL,
+  make_plots = TRUE,
+  apl_cutoff_reps = 100,
+  qcutoff = 0.6,
+  convergence_thr = 0.001
 )
 
 cak <- rank_genes(cadir = cak, caobj = ca)
@@ -109,9 +108,9 @@ top <- top_genes(cak)
 
 ```{r}
 cak <- annotate_biclustering(
-    obj = cak,
-    universe = rownames(sce),
-    org = "hs"
+  obj = cak,
+  universe = rownames(sce),
+  org = "hs"
 )
 
 cak <- rank_genes(cadir = cak, caobj = ca)
@@ -165,7 +164,7 @@ ggsave(
   file = file.path(imgdir, "plot_clusters.pdf"),
   width = 3400,
   height = 2000,
-  units ="px"
+  units = "px"
 )
 
 ggsave(
@@ -173,7 +172,7 @@ ggsave(
   file = file.path(imgdir, "plot_clusters.png"),
   width = 3400,
   height = 2000,
-  units ="px"
+  units = "px"
 )
 ```
 
@@ -196,9 +195,9 @@ p_expr <- scater::plotExpression(
   labs(x = "Cluster", title = "Top 4 genes cluster 5") +
   theme_bw(base_size = 18) +
   theme(
-  axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
-  legend.position = "none"
- )
+    axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
+    legend.position = "none"
+  )
 
 p_expr
 
@@ -264,7 +263,10 @@ ggsave(
 Remove outliers:
 
 ```{r}
-sce_corr <- sce[(!rownames(sce) %in% top_genes), (!colnames(sce) %in% top_cells)]
+sce_corr <- sce[
+  (!rownames(sce) %in% top_genes),
+  (!colnames(sce) %in% top_cells)
+]
 
 ca_corr <- cacomp(
   obj = as.matrix(logcounts(sce_corr)),
@@ -371,7 +373,11 @@ pal <- mpimg_pal()
 c5cols <- pal(length(cadir_cls))
 names(c5cols) <- cadir_cls
 
-info <- left_join(data.frame("Biclusters" = names(c5cols), "col" = c5cols), info, by = "Biclusters")
+info <- left_join(
+  data.frame("Biclusters" = names(c5cols), "col" = c5cols),
+  info,
+  by = "Biclusters"
+)
 info$col <- pal(nrow(info) + 1)[2:(nrow(info) + 1)]
 
 c5cols <- c(c5cols, info$col)
@@ -394,20 +400,29 @@ order <- gsub("_", " ", order)
 
 
 wrap <- 17
-df_cl$node <- factor(stringr::str_wrap(df_cl$node, wrap), levels = stringr::str_wrap(order, wrap))
-df_cl$next_node <- factor(stringr::str_wrap(df_cl$next_node, wrap), levels = stringr::str_wrap(order, wrap))
+df_cl$node <- factor(
+  stringr::str_wrap(df_cl$node, wrap),
+  levels = stringr::str_wrap(order, wrap)
+)
+df_cl$next_node <- factor(
+  stringr::str_wrap(df_cl$next_node, wrap),
+  levels = stringr::str_wrap(order, wrap)
+)
 
 names(c5cols) <- stringr::str_wrap(names(c5cols), wrap)
 
 
-sank <- ggplot(df_cl, aes(
-  x = x,
-  next_x = next_x,
-  node = node,
-  next_node = next_node,
-  fill = node,
-  label = as.character(node)
-)) +
+sank <- ggplot(
+  df_cl,
+  aes(
+    x = x,
+    next_x = next_x,
+    node = node,
+    next_node = next_node,
+    fill = node,
+    label = as.character(node)
+  )
+) +
   geom_sankey(flow.alpha = 0.6, flow.fill = c("#777777")) +
   geom_sankey_label(size = 6) +
   labs(x = "") +
@@ -450,11 +465,14 @@ Top 5 most highly significant gene sets for cluster "Megakaryocyte":
 ```{r}
 cl_goa <- goa_res$Megakaryocyte
 
-ggplot(cl_goa[1:5, ], aes(x = gene_set, y = -log10(padj), fill = -log10(padj))) +
+ggplot(
+  cl_goa[1:5, ],
+  aes(x = gene_set, y = -log10(padj), fill = -log10(padj))
+) +
   geom_col() +
   scale_fill_gradientn(
     colours = c("#29485d", "#006c66", "#c6d325", "#ef7c00"),
-  ) + 
+  ) +
   theme_bw()
 ```
 
@@ -470,7 +488,7 @@ goa_mat <- lapply(goa_res, function(x, nc = nclust) {
 
 goa_mat <- dplyr::bind_rows(goa_mat, .id = "cluster")
 
-gr <- goa_mat[,c("cluster", "gene_set", "padj")]
+gr <- goa_mat[, c("cluster", "gene_set", "padj")]
 gr <- complete(gr, cluster, gene_set, fill = list(padj = 1))
 gr$gene_set <- gsub("_", " ", gr$gene_set)
 gr$cluster <- gsub("_", " ", gr$cluster)
@@ -486,7 +504,12 @@ p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
   ) +
   coord_fixed() +
   theme_bw() +
-  labs(x = "Cluster", y = "Gene Set", title = "Gene Set enrichment", fill =expression(atop("-log"[10], "\npadj"))) +
+  labs(
+    x = "Cluster",
+    y = "Gene Set",
+    title = "Gene Set enrichment",
+    fill = expression(atop("-log"[10], "\npadj"))
+  ) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
     axis.text.y = element_text(color = "black"),
@@ -520,11 +543,13 @@ sm <- sm_plot(
 )
 sm
 
-ggsave(plot = sm,
+ggsave(
+  plot = sm,
   file = file.path(imgdir, "split_merge_plot.pdf"),
   width = 3000,
   height = 1800,
-  units = "px")
+  units = "px"
+)
 ```
 
 ## Annotation - Sankey
@@ -534,26 +559,27 @@ library(ggsankey)
 sce_sank <- sce_corr
 
 data <- colData(sce_sank) %>%
-        as.data.frame() %>%
-        rename('CAdir' = "cadir_corr",
-               'Annotation' = "cell_type")
+  as.data.frame() %>%
+  rename('CAdir' = "cadir_corr", 'Annotation' = "cell_type")
 
 df <- data %>%
-    make_long(CAdir, Annotation)
+  make_long(CAdir, Annotation)
 
-info  <-  data.frame(Biclusters = as.factor(data$CAdir),
-                     Truth = as.character(data$Annotation)) %>%
-                as_tibble() %>%
-                group_by(Biclusters, Truth) %>%
-                summarise(n = n()) %>%
-                group_by(Truth) %>%
-                mutate(Partition = n/sum(n)) %>%
-                ungroup() %>%
-                as.data.frame() %>%
-                group_by(Truth) %>%
-                filter(Partition == max(Partition) ) %>%
-                dplyr::select(Biclusters, Truth) %>%
-                distinct(Biclusters, .keep_all = TRUE)
+info <- data.frame(
+  Biclusters = as.factor(data$CAdir),
+  Truth = as.character(data$Annotation)
+) %>%
+  as_tibble() %>%
+  group_by(Biclusters, Truth) %>%
+  summarise(n = n()) %>%
+  group_by(Truth) %>%
+  mutate(Partition = n / sum(n)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  group_by(Truth) %>%
+  filter(Partition == max(Partition)) %>%
+  dplyr::select(Biclusters, Truth) %>%
+  distinct(Biclusters, .keep_all = TRUE)
 
 
 pal <- mpi_extend_pal()
@@ -561,7 +587,11 @@ pal <- mpi_extend_pal()
 cols <- pal(length(unique(sce_sank$cadir)))
 names(cols) <- unique(sce_sank$cadir)
 
-info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
+info <- left_join(
+  data.frame("Biclusters" = names(cols), "col" = cols),
+  info,
+  by = "Biclusters"
+)
 
 cols <- c(cols, info$col)
 
@@ -591,17 +621,28 @@ names(cols) <- gsub("_", " ", names(cols))
 order <- gsub("_", " ", order)
 
 wrap <- 17
-df$node <- factor(stringr::str_wrap(df$node, wrap), levels = stringr::str_wrap(order, wrap))
-df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::str_wrap(order, wrap))
+df$node <- factor(
+  stringr::str_wrap(df$node, wrap),
+  levels = stringr::str_wrap(order, wrap)
+)
+df$next_node <- factor(
+  stringr::str_wrap(df$next_node, wrap),
+  levels = stringr::str_wrap(order, wrap)
+)
 
 names(cols) <- stringr::str_wrap(names(cols), wrap)
 
-sank_anno <- ggplot(df, aes(x = x,
-               next_x = next_x,
-               node = node,
-               next_node = next_node,
-               fill = node,
-               label = as.character(node))) +
+sank_anno <- ggplot(
+  df,
+  aes(
+    x = x,
+    next_x = next_x,
+    node = node,
+    next_node = next_node,
+    fill = node,
+    label = as.character(node)
+  )
+) +
   geom_sankey(
     flow.alpha = 0.4,
   ) +
@@ -615,30 +656,39 @@ sank_anno <- ggplot(df, aes(x = x,
 
 sank_anno
 
-ggsave(plot = sank_anno,
-       filename = file.path(imgdir, "sankey_plot_corr_clustering.pdf"),
-       width = 2700,
-       height = 3200,
-       device = cairo_pdf,
-       units = "px")
+ggsave(
+  plot = sank_anno,
+  filename = file.path(imgdir, "sankey_plot_corr_clustering.pdf"),
+  width = 2700,
+  height = 3200,
+  device = cairo_pdf,
+  units = "px"
+)
 
-ggsave(plot = sank_anno,
-       filename = file.path(imgdir, "sankey_plot_corr_clustering.png"),
-       width = 2700,
-       height = 3200,
-       units = "px")
+ggsave(
+  plot = sank_anno,
+  filename = file.path(imgdir, "sankey_plot_corr_clustering.png"),
+  width = 2700,
+  height = 3200,
+  units = "px"
+)
 ```
 
 # Figure panels
 
 ```{r}
 
-sank <- ggplot(df_cl, aes(x = x,
-  next_x = next_x,
-  node = node,
-  next_node = next_node,
-  fill = node,
-  label = as.character(node))) +
+sank <- ggplot(
+  df_cl,
+  aes(
+    x = x,
+    next_x = next_x,
+    node = node,
+    next_node = next_node,
+    fill = node,
+    label = as.character(node)
+  )
+) +
   geom_sankey(flow.alpha = 0.6, flow.fill = c("#777777")) +
   geom_sankey_label(size = 4) +
   labs(x = "") +
@@ -647,7 +697,7 @@ sank <- ggplot(df_cl, aes(x = x,
   theme(
     legend.position = "none"
   )
-  
+
 
 layout <- c(
   area(t = 1, l = 1, b = 6, r = 9),
@@ -664,7 +714,11 @@ for (i in seq_len(length(pcl_panel))) {
 fig3 <- wrap_elements(wrap_plots(pcl_panel, ncol = 3)) +
   p_expr +
   free(sank, type = "panel", side = "tbl") +
-  free(p_gs_enr + theme(plot.title = element_text(hjust = 0.5)), type = "label", side = "tbr") +
+  free(
+    p_gs_enr + theme(plot.title = element_text(hjust = 0.5)),
+    type = "label",
+    side = "tbr"
+  ) +
   plot_layout(design = layout) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
@@ -700,25 +754,23 @@ for (i in seq_len(length(pcc_panel))) {
 pcc_panel <- wrap_plots(pcc_panel, ncol = 2, nrow = 3) +
   guide_area() +
   plot_layout(guides = "collect") &
-  theme(legend.text = element_text(size = 14),
-  legend.title = element_text(size = 16))
+  theme(
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16)
+  )
 
 
-layout  <- c(
+layout <- c(
   area(1, 1, 4, 4),
   area(1, 5, 4, 8)
 )
 suppl_fig2 <-
-  (
-    (
-      wrap_elements(pcc_panel)
-    ) +
-      sank_anno
-  ) +
+  ((wrap_elements(pcc_panel)) +
+    sank_anno) +
   plot_layout(width = c(2, 1), ncol = 2) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
-  # plot_layout(design = layout, ncol = 2)
+# plot_layout(design = layout, ncol = 2)
 
 ggsave(
   plot = suppl_fig2,

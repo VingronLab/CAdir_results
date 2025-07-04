@@ -22,8 +22,7 @@ jupyter:
 renv::load()
 
 suppressPackageStartupMessages({
-  # library(CAdir)
-  devtools::load_all("~/gits/ClemensKohl/CAdir")
+  library(CAdir)
   library(scater)
   library(dplyr)
   library(tidyr)
@@ -63,18 +62,28 @@ zeisel_eval <- readRDS(
 dfz <- zeisel_eval %>%
   mutate(dataset = "zeisel") %>%
   mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep = "_")) %>%
-  mutate(simulation = factor(simulation, levels = c(
-    "0.02_0.75_0.75",
-    "0.06_0.75_0.75",
-    "0.1_0.75_0.75",
-    "0.02_1.5_1.5",
-    "0.06_1.5_1.5",
-    "0.1_1.5_1.5"
-  )))
+  mutate(
+    simulation = factor(
+      simulation,
+      levels = c(
+        "0.02_0.75_0.75",
+        "0.06_0.75_0.75",
+        "0.1_0.75_0.75",
+        "0.02_1.5_1.5",
+        "0.06_1.5_1.5",
+        "0.1_1.5_1.5"
+      )
+    )
+  )
 
 table(
   zeisel_eval$algorithm,
-  paste(zeisel_eval$dePROB, zeisel_eval$defacLOC, zeisel_eval$defacSCALE, sep = "_")
+  paste(
+    zeisel_eval$dePROB,
+    zeisel_eval$defacLOC,
+    zeisel_eval$defacSCALE,
+    sep = "_"
+  )
 )
 ```
 
@@ -91,14 +100,19 @@ pbmc_eval <- readRDS(
 dfp <- pbmc_eval %>%
   mutate(dataset = "pbmc3k") %>%
   mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep = "_")) %>%
-  mutate(simulation = factor(simulation, levels = c(
-    "0.02_0.75_0.75",
-    "0.06_0.75_0.75",
-    "0.1_0.75_0.75",
-    "0.02_1.5_1.5",
-    "0.06_1.5_1.5",
-    "0.1_1.5_1.5"
-  )))
+  mutate(
+    simulation = factor(
+      simulation,
+      levels = c(
+        "0.02_0.75_0.75",
+        "0.06_0.75_0.75",
+        "0.1_0.75_0.75",
+        "0.02_1.5_1.5",
+        "0.06_1.5_1.5",
+        "0.1_1.5_1.5"
+      )
+    )
+  )
 
 table(
   pbmc_eval$algorithm,
@@ -113,22 +127,22 @@ df_all <- rbind(dfz, dfp)
 
 df_all$algorithm <- gsub("CAbiNet_igraph", "CAbiNet", df_all$algorithm)
 
-df_all$algorithm <- factor(df_all$algorithm,
-  levels =
-    c(
-      "CAdir",
-      "CAdir_auto",
-      "kmeans",
-      "CAbiNet",
-      "RaceID",
-      "RaceID_auto",
-      "Seurat",
-      "Monocle3",
-      "SC3",
-      "SIMLR",
-      "scDeepCluster",
-      "scG-cluster"
-    )
+df_all$algorithm <- factor(
+  df_all$algorithm,
+  levels = c(
+    "CAdir",
+    "CAdir_auto",
+    "kmeans",
+    "CAbiNet",
+    "RaceID",
+    "RaceID_auto",
+    "Seurat",
+    "Monocle3",
+    "SC3",
+    "SIMLR",
+    "scDeepCluster",
+    "scG-cluster"
+  )
 )
 
 
@@ -162,7 +176,8 @@ p_max_ari <- df %>%
     x = algorithm,
     y = max_ARI
   )) +
-  geom_boxplot(aes(fill = algorithm),
+  geom_boxplot(
+    aes(fill = algorithm),
     color = "#383e42",
     alpha = 1,
     outlier.alpha = 0
@@ -186,7 +201,9 @@ p_max_ari <- df %>%
   ) +
   scale_shape_manual(values = seq_len(length(df$simulation))) +
   scale_fill_mpimg(name = "mpi_extend") +
-  scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
+  scale_color_manual(
+    values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")
+  ) +
   theme_bw(base_size = 20) +
   theme(
     axis.text.x = element_text(
@@ -223,7 +240,8 @@ p_max_nmi <- df %>%
     x = algorithm,
     y = max_NMI
   )) +
-  geom_boxplot(aes(fill = algorithm),
+  geom_boxplot(
+    aes(fill = algorithm),
     color = "#383e42",
     alpha = 1,
     outlier.alpha = 0
@@ -247,7 +265,9 @@ p_max_nmi <- df %>%
   ) +
   scale_shape_manual(values = seq_len(length(df$simulation))) +
   scale_fill_mpimg(name = "mpi_extend") +
-  scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
+  scale_color_manual(
+    values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")
+  ) +
   theme_bw(base_size = 18) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   guides(fill = "none")
@@ -288,7 +308,8 @@ p_mean_ari <- df %>%
     x = algorithm,
     y = mean_ARI
   )) +
-  geom_boxplot(aes(fill = algorithm),
+  geom_boxplot(
+    aes(fill = algorithm),
     color = "#383e42",
     alpha = 1,
     outlier.alpha = 0
@@ -312,7 +333,9 @@ p_mean_ari <- df %>%
   ) +
   scale_shape_manual(values = seq_len(length(df$simulation))) +
   scale_fill_mpimg(name = "mpi_extend") +
-  scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
+  scale_color_manual(
+    values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")
+  ) +
   theme_bw(base_size = 20) +
   theme(
     axis.text.x = element_text(
@@ -350,7 +373,8 @@ p_mean_nmi <- df %>%
     x = algorithm,
     y = mean_NMI
   )) +
-  geom_boxplot(aes(fill = algorithm),
+  geom_boxplot(
+    aes(fill = algorithm),
     color = "#383e42",
     alpha = 1,
     outlier.alpha = 0
@@ -374,7 +398,9 @@ p_mean_nmi <- df %>%
   ) +
   scale_shape_manual(values = seq_len(length(df$simulation))) +
   scale_fill_mpimg(name = "mpi_extend") +
-  scale_color_manual(values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")) +
+  scale_color_manual(
+    values = list("zeisel" = "#60636a", "pbmc3k" = "#a5acaf")
+  ) +
   theme_bw(base_size = 18) +
   theme(
     axis.text.x = element_text(
@@ -493,20 +519,23 @@ subdf <- df[!(df$pattern %in% test$pattern), ]
 subdf <- subdf[!is.na(subdf$ARI), ]
 subdf <- rbind(subdf, df_na) # add a single instance of failed runs & missing runs.
 
-subdf$algorithm <- factor(subdf$algorithm, levels = c(
-  "CAdir",
-  "CAdir_auto",
-  "kmeans",
-  "CAbiNet",
-  "RaceID",
-  "RaceID_auto",
-  "Seurat",
-  "Monocle3",
-  "SC3",
-  "SIMLR",
-  "scDeepCluster",
-  "scG-cluster"
-))
+subdf$algorithm <- factor(
+  subdf$algorithm,
+  levels = c(
+    "CAdir",
+    "CAdir_auto",
+    "kmeans",
+    "CAbiNet",
+    "RaceID",
+    "RaceID_auto",
+    "Seurat",
+    "Monocle3",
+    "SC3",
+    "SIMLR",
+    "scDeepCluster",
+    "scG-cluster"
+  )
+)
 
 df_g <- subdf %>%
   group_by(algorithm, dataset) %>%
@@ -518,18 +547,21 @@ df_g <- subdf %>%
     Max_NMI = max(NMI)
   )
 
-df_g$dataset <- factor(df_g$dataset, levels = c(
-  "Darmanis",
-  "Freytag Gold",
-  "PBMC10x",
-  "Tirosh",
-  "Zeisel",
-  "Baron Pancreas",
-  "Dmel Spatial",
-  "Tabula Sapiens",
-  "Brain Organoids",
-  unique(simdf$dataset)
-))
+df_g$dataset <- factor(
+  df_g$dataset,
+  levels = c(
+    "Darmanis",
+    "Freytag Gold",
+    "PBMC10x",
+    "Tirosh",
+    "Zeisel",
+    "Baron Pancreas",
+    "Dmel Spatial",
+    "Tabula Sapiens",
+    "Brain Organoids",
+    unique(simdf$dataset)
+  )
+)
 ```
 
 ```{r}
@@ -549,17 +581,21 @@ df_m$max_ARI[is.infinite(df_m$max_ARI)] <- NA
 options(repr.plot.width = 10, repr.plot.height = 5)
 
 # Remove simulated data sets
-df_real <- df_g %>% filter(dataset %in% c(
-  "Darmanis",
-  "Freytag Gold",
-  "PBMC10x",
-  "Tirosh",
-  "Zeisel",
-  "Baron Pancreas",
-  "Dmel Spatial",
-  "Tabula Sapiens",
-  "Brain Organoids"
-))
+df_real <- df_g %>%
+  filter(
+    dataset %in%
+      c(
+        "Darmanis",
+        "Freytag Gold",
+        "PBMC10x",
+        "Tirosh",
+        "Zeisel",
+        "Baron Pancreas",
+        "Dmel Spatial",
+        "Tabula Sapiens",
+        "Brain Organoids"
+      )
+  )
 df_real$dataset <- droplevels(df_real$dataset)
 df_real <- df_real %>%
   drop_na(algorithm) %>%
@@ -574,11 +610,16 @@ df_tile <- df_real %>%
   select(algorithm, dataset, Max_ARI) %>%
   distinct() %>%
   group_by(dataset) %>%
-  mutate(ismax = (round(Max_ARI, 2) == max(round(pick(Max_ARI), 2), na.rm = TRUE))) %>%
-  mutate(is2nd = (round(Max_ARI, 2) == round(
-    sort(Max_ARI, decreasing = TRUE, na.last = NA)[2],
-    2
-  ))) %>%
+  mutate(
+    ismax = (round(Max_ARI, 2) == max(round(pick(Max_ARI), 2), na.rm = TRUE))
+  ) %>%
+  mutate(
+    is2nd = (round(Max_ARI, 2) ==
+      round(
+        sort(Max_ARI, decreasing = TRUE, na.last = NA)[2],
+        2
+      ))
+  ) %>%
   ungroup() %>%
   arrange(desc(ismax))
 
@@ -734,38 +775,52 @@ stats <- df %>%
     perc_NMI_NA = round(NA_NMI / n_param, 2),
     perc_crash = round((n_param - n_runs) / n_param, 2)
   ) %>%
-  select(algorithm, dataset, perc_ARI_succ, perc_NMI_succ, perc_ARI_NA, perc_NMI_NA, perc_crash) %>%
+  select(
+    algorithm,
+    dataset,
+    perc_ARI_succ,
+    perc_NMI_succ,
+    perc_ARI_NA,
+    perc_NMI_NA,
+    perc_crash
+  ) %>%
   distinct()
 ```
 
 ```{r}
-stats$algorithm <- factor(stats$algorithm, levels = c(
-  "CAdir",
-  "CAdir_auto",
-  "kmeans",
-  "CAbiNet",
-  "RaceID",
-  "RaceID_auto",
-  "Seurat",
-  "Monocle3",
-  "SC3",
-  "SIMLR",
-  "scDeepCluster",
-  "scG-cluster"
-))
+stats$algorithm <- factor(
+  stats$algorithm,
+  levels = c(
+    "CAdir",
+    "CAdir_auto",
+    "kmeans",
+    "CAbiNet",
+    "RaceID",
+    "RaceID_auto",
+    "Seurat",
+    "Monocle3",
+    "SC3",
+    "SIMLR",
+    "scDeepCluster",
+    "scG-cluster"
+  )
+)
 
-stats$dataset <- factor(stats$dataset, levels = c(
-  "Darmanis",
-  "Freytag Gold",
-  "PBMC10x",
-  "Tirosh",
-  "Zeisel",
-  "Baron Pancreas",
-  "Dmel Spatial",
-  "Tabula Sapiens",
-  "Brain Organoids",
-  unique(simdf$dataset)
-))
+stats$dataset <- factor(
+  stats$dataset,
+  levels = c(
+    "Darmanis",
+    "Freytag Gold",
+    "PBMC10x",
+    "Tirosh",
+    "Zeisel",
+    "Baron Pancreas",
+    "Dmel Spatial",
+    "Tabula Sapiens",
+    "Brain Organoids",
+    unique(simdf$dataset)
+  )
+)
 ```
 
 ```{r}
@@ -802,7 +857,10 @@ p_succ <- stats %>%
     values_to = "perc"
   ) %>%
   mutate(
-    stat = factor(stat, levels = c("perc_ARI_succ", "perc_ARI_NA", "perc_crash"))
+    stat = factor(
+      stat,
+      levels = c("perc_ARI_succ", "perc_ARI_NA", "perc_crash")
+    )
   ) %>%
   ggplot(aes(x = 1, y = perc, fill = stat)) +
   geom_col(position = "fill") +
@@ -832,7 +890,11 @@ p_succ <- stats %>%
     plot.title = element_text(size = 18)
   ) +
   scale_fill_manual(
-    values = c("perc_ARI_succ" = "#006c66", "perc_ARI_NA" = "#ef7c00", "perc_crash" = "#d44a3d"),
+    values = c(
+      "perc_ARI_succ" = "#006c66",
+      "perc_ARI_NA" = "#ef7c00",
+      "perc_crash" = "#d44a3d"
+    ),
     name = "% runs",
     labels = c("Success", "N/A", "Crashed")
   ) +
@@ -842,13 +904,21 @@ p_succ <- stats %>%
 
 ggsave(
   plot = p_succ,
-  filename = file.path(imgdir, "barplots_fraction_successful_runs_ARI_wide.pdf"),
-  width = 8, height = 4.2
+  filename = file.path(
+    imgdir,
+    "barplots_fraction_successful_runs_ARI_wide.pdf"
+  ),
+  width = 8,
+  height = 4.2
 )
 ggsave(
   plot = p_succ,
-  filename = file.path(imgdir, "barplots_fraction_successful_runs_ARI_wide.png"),
-  width = 8, height = 4.2
+  filename = file.path(
+    imgdir,
+    "barplots_fraction_successful_runs_ARI_wide.png"
+  ),
+  width = 8,
+  height = 4.2
 )
 p_succ
 ```
@@ -888,26 +958,34 @@ scal_df$dataset <- gsub("_ngene-2000", "", scal_df$dataset)
 scal_df$dataset <- gsub("ncell-", "", scal_df$dataset)
 scal_df$algorithm <- gsub("CAbiNet_igraph", "CAbiNet", scal_df$algorithm)
 
-scal_df$algorithm <- factor(scal_df$algorithm, levels = c(
-  "CAdir",
-  "CAdir_auto",
-  "kmeans",
-  "CAbiNet",
-  "RaceID",
-  # "RaceID_auto",
-  "Seurat",
-  "Monocle3",
-  "SC3",
-  "SIMLR"
-  # "scDeepCluster",
-  # "scG-cluster"
-))
+scal_df$algorithm <- factor(
+  scal_df$algorithm,
+  levels = c(
+    "CAdir",
+    "CAdir_auto",
+    "kmeans",
+    "CAbiNet",
+    "RaceID",
+    # "RaceID_auto",
+    "Seurat",
+    "Monocle3",
+    "SC3",
+    "SIMLR"
+    # "scDeepCluster",
+    # "scG-cluster"
+  )
+)
 
 scal_df$dataset <- as.numeric(scal_df$dataset)
 
 scal_df <- scal_df[!is.na(scal_df$algorithm), ]
 
-scal_df$total_runtime <- scal_df$runtime + ifelse(is.na(scal_df$runtime_dimreduc), yes = 0, no = scal_df$runtime_dimreduc)
+scal_df$total_runtime <- scal_df$runtime +
+  ifelse(
+    is.na(scal_df$runtime_dimreduc),
+    yes = 0,
+    no = scal_df$runtime_dimreduc
+  )
 table(scal_df$algorithm)
 ```
 
@@ -916,8 +994,19 @@ options(repr.plot.width = 10, repr.plot.height = 10)
 
 alph <- 0.8
 rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
-  geom_point(aes(group = algorithm, color = algorithm, alpha = algorithm), size = 2) +
-  geom_line(aes(group = algorithm, color = algorithm, alpha = algorithm, linetype = algorithm), linewidth = 1) +
+  geom_point(
+    aes(group = algorithm, color = algorithm, alpha = algorithm),
+    size = 2
+  ) +
+  geom_line(
+    aes(
+      group = algorithm,
+      color = algorithm,
+      alpha = algorithm,
+      linetype = algorithm
+    ),
+    linewidth = 1
+  ) +
   scale_x_continuous(
     breaks = c(
       1000,
@@ -944,47 +1033,57 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
       "6e+05"
     )
   ) +
-  labs(x = "Number of cells", y = "Running time (min)", title = "Runtime vs Data Set Size") +
+  labs(
+    x = "Number of cells",
+    y = "Running time (min)",
+    title = "Runtime vs Data Set Size"
+  ) +
   coord_trans(x = "log10") +
-  scale_alpha_manual(values = c(
-    "CAdir" = 1,
-    "CAbiNet" = alph,
-    "Monocle3" = alph,
-    "RaceID" = alph,
-    # 'RaceID_auto' = alph,
-    "SC3" = alph,
-    "SIMLR" = alph,
-    "Seurat" = alph,
-    "kmeans" = alph
-    # "scDeepCluster" = alph,
-    # "scG-cluster" = alph
-  )) +
-  scale_colour_manual(values = c(
-    "CAdir" = mpgOrange,
-    "CAbiNet" = mpgLightBlue,
-    "Monocle3" = mpgDarkBlue,
-    "RaceID" = mpgDarkGrey,
-    # 'RaceID_auto' = alph,
-    "SC3" = mpgDarkGreen,
-    "SIMLR" = mpgGrau,
-    "Seurat" = mpgGreenLight,
-    "kmeans" = mpgGreen
-    # "scDeepCluster" = mpgPink,
-    # "scG-cluster" = mpgBrown
-  )) +
-  scale_linetype_manual(values = c(
-    "CAdir" = "solid",
-    "CAbiNet" = "solid",
-    "Monocle3" = "solid",
-    "RaceID" = "solid",
-    # 'RaceID_auto' = "solid",
-    "SC3" = "dashed",
-    "SIMLR" = "solid",
-    "Seurat" = "solid",
-    "kmeans" = "solid"
-    # "scDeepCluster" = "solid",
-    # "scG-cluster" = "solid"
-  )) +
+  scale_alpha_manual(
+    values = c(
+      "CAdir" = 1,
+      "CAbiNet" = alph,
+      "Monocle3" = alph,
+      "RaceID" = alph,
+      # 'RaceID_auto' = alph,
+      "SC3" = alph,
+      "SIMLR" = alph,
+      "Seurat" = alph,
+      "kmeans" = alph
+      # "scDeepCluster" = alph,
+      # "scG-cluster" = alph
+    )
+  ) +
+  scale_colour_manual(
+    values = c(
+      "CAdir" = mpgOrange,
+      "CAbiNet" = mpgLightBlue,
+      "Monocle3" = mpgDarkBlue,
+      "RaceID" = mpgDarkGrey,
+      # 'RaceID_auto' = alph,
+      "SC3" = mpgDarkGreen,
+      "SIMLR" = mpgGrau,
+      "Seurat" = mpgGreenLight,
+      "kmeans" = mpgGreen
+      # "scDeepCluster" = mpgPink,
+      # "scG-cluster" = mpgBrown
+    )
+  ) +
+  scale_linetype_manual(
+    values = c(
+      "CAdir" = "solid",
+      "CAbiNet" = "solid",
+      "Monocle3" = "solid",
+      "RaceID" = "solid",
+      # 'RaceID_auto' = "solid",
+      "SC3" = "dashed",
+      "SIMLR" = "solid",
+      "Seurat" = "solid",
+      "kmeans" = "solid"
+      # "scDeepCluster" = "solid",
+      # "scG-cluster" = "solid"
+    )
+  ) +
   theme_bw(base_size = 18) +
   theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust = 1))
 
@@ -1014,13 +1113,18 @@ indir <- "./results/benchmarking/results/ct_detection/"
 
 if (file.exists(file.path(indir, date, "eval", "results.csv"))) {
   # If only a single file:
-  res <- read_csv(file.path(indir, date, "eval", "results.csv"),
+  res <- read_csv(
+    file.path(indir, date, "eval", "results.csv"),
     show_col_types = FALSE,
     progress = FALSE
   )
 } else {
   # For multiple split files.
-  files <- list.files(path = file.path(indir, date, "out"), pattern = "*.csv", full.names = TRUE)
+  files <- list.files(
+    path = file.path(indir, date, "out"),
+    pattern = "*.csv",
+    full.names = TRUE
+  )
 
   res <- tibble()
   for (f in files) {
@@ -1124,7 +1228,10 @@ log2fc <- res %>%
   facet_wrap(~k) +
   geom_point() +
   geom_line() +
-  geom_errorbar(aes(ymin = log2fc_mean - log2fc_sd, ymax = log2fc_mean + log2fc_sd)) +
+  geom_errorbar(aes(
+    ymin = log2fc_mean - log2fc_sd,
+    ymax = log2fc_mean + log2fc_sd
+  )) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(x = "# clusters", y = "log2 FC", title = "Detected clusters") +
   scale_color_mpimg() +
@@ -1244,7 +1351,6 @@ ggsave(
   height = 2200,
   units = "px"
 )
-
 ```
 
 ## Figure Panel Max
@@ -1279,25 +1385,25 @@ fig4
 ## Figure Panel Mean
 ```{r}
 
-suppl_panel <- (
-    (
-      (free(p_mean_ari, type = "label") + theme(legend.position = "none") + p_mean_nmi) +
-      plot_layout(guides = "collect") +
-      scale_shape_manual(values = seq_len(length(df_all$simulation))) +
-      scale_fill_mpimg(name = "mpi_extend") +
-      scale_color_manual(values = list(
-        "zeisel" = "#60636a",
-        "pbmc3k" = "#a5acaf"
-      ))
-    ) /
-    (plot_spacer() + p_succ + plot_spacer() + plot_layout(width = c(1,6,1)))
-  ) +
-    plot_annotation(tag_levels = "a") &
-    theme(
-      text = element_text(size = 20),
-      plot.title = element_text(size = 22, face = "plain"),
-      plot.tag = element_text(size = 22, face = "bold")
+suppl_panel <- (((free(p_mean_ari, type = "label") +
+  theme(legend.position = "none") +
+  p_mean_nmi) +
+  plot_layout(guides = "collect") +
+  scale_shape_manual(values = seq_len(length(df_all$simulation))) +
+  scale_fill_mpimg(name = "mpi_extend") +
+  scale_color_manual(
+    values = list(
+      "zeisel" = "#60636a",
+      "pbmc3k" = "#a5acaf"
     )
+  )) /
+  (plot_spacer() + p_succ + plot_spacer() + plot_layout(width = c(1, 6, 1)))) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    text = element_text(size = 20),
+    plot.title = element_text(size = 22, face = "plain"),
+    plot.tag = element_text(size = 22, face = "bold")
+  )
 
 ggsave(
   plot = suppl_panel,

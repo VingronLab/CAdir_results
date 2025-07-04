@@ -23,8 +23,7 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  # library(CAdir)
-  devtools::load_all("~/gits/ClemensKohl/CAdir")
+  library(CAdir)
   library(APL)
 
   library(SingleCellExperiment)
@@ -89,7 +88,6 @@ cabic <- dirclust_splitmerge(
   qcutoff = 0.9,
   convergence_thr = 0.001
 )
-
 ```
 
 ### Annotate clusters
@@ -156,26 +154,27 @@ library(ggsankey)
 sce_sank <- sce
 
 data <- colData(sce_sank) %>%
-        as.data.frame() %>%
-        rename('CAdir' = "cadir",
-               'Annotation' = "cell_type")
+  as.data.frame() %>%
+  rename('CAdir' = "cadir", 'Annotation' = "cell_type")
 
 df <- data %>%
-    make_long(CAdir, Annotation)
+  make_long(CAdir, Annotation)
 
-info  <-  data.frame(Biclusters = as.factor(data$CAdir),
-                     Truth = as.character(data$Annotation)) %>%
-                as_tibble() %>%
-                group_by(Biclusters, Truth) %>%
-                summarise(n = n()) %>%
-                group_by(Truth) %>%
-                mutate(Partition = n/sum(n)) %>%
-                ungroup() %>%
-                as.data.frame() %>%
-                group_by(Truth) %>%
-                filter(Partition == max(Partition) ) %>%
-                dplyr::select(Biclusters, Truth) %>%
-                distinct(Biclusters, .keep_all = TRUE)
+info <- data.frame(
+  Biclusters = as.factor(data$CAdir),
+  Truth = as.character(data$Annotation)
+) %>%
+  as_tibble() %>%
+  group_by(Biclusters, Truth) %>%
+  summarise(n = n()) %>%
+  group_by(Truth) %>%
+  mutate(Partition = n / sum(n)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  group_by(Truth) %>%
+  filter(Partition == max(Partition)) %>%
+  dplyr::select(Biclusters, Truth) %>%
+  distinct(Biclusters, .keep_all = TRUE)
 
 
 pal <- mpi_extend_pal()
@@ -183,7 +182,11 @@ pal <- mpi_extend_pal()
 cols <- pal(length(unique(sce_sank$cadir)))
 names(cols) <- unique(sce_sank$cadir)
 
-info <- left_join(data.frame("Biclusters" = names(cols), "col" = cols), info, by = "Biclusters")
+info <- left_join(
+  data.frame("Biclusters" = names(cols), "col" = cols),
+  info,
+  by = "Biclusters"
+)
 
 cols <- c(cols, info$col)
 
@@ -213,17 +216,28 @@ names(cols) <- gsub("_", " ", names(cols))
 order <- gsub("_", " ", order)
 
 wrap <- 17
-df$node <- factor(stringr::str_wrap(df$node, wrap), levels = stringr::str_wrap(order, wrap))
-df$next_node <- factor(stringr::str_wrap(df$next_node, wrap), levels = stringr::str_wrap(order, wrap))
+df$node <- factor(
+  stringr::str_wrap(df$node, wrap),
+  levels = stringr::str_wrap(order, wrap)
+)
+df$next_node <- factor(
+  stringr::str_wrap(df$next_node, wrap),
+  levels = stringr::str_wrap(order, wrap)
+)
 
 names(cols) <- stringr::str_wrap(names(cols), wrap)
 
-sank <- ggplot(df, aes(x = x,
-               next_x = next_x,
-               node = node,
-               next_node = next_node,
-               fill = node,
-               label = as.character(node))) +
+sank <- ggplot(
+  df,
+  aes(
+    x = x,
+    next_x = next_x,
+    node = node,
+    next_node = next_node,
+    fill = node,
+    label = as.character(node)
+  )
+) +
   geom_sankey(
     flow.alpha = 0.4,
   ) +
@@ -237,18 +251,22 @@ sank <- ggplot(df, aes(x = x,
 
 sank
 
-ggsave(plot = sank,
-       filename = file.path(imgdir, "sankey_plot_clustering.pdf"),
-       width = 2700,
-       height = 3200,
-       device = cairo_pdf,
-       units = "px")
+ggsave(
+  plot = sank,
+  filename = file.path(imgdir, "sankey_plot_clustering.pdf"),
+  width = 2700,
+  height = 3200,
+  device = cairo_pdf,
+  units = "px"
+)
 
-ggsave(plot = sank,
-       filename = file.path(imgdir, "sankey_plot_clustering.png"),
-       width = 2700,
-       height = 3200,
-       units = "px")
+ggsave(
+  plot = sank,
+  filename = file.path(imgdir, "sankey_plot_clustering.png"),
+  width = 2700,
+  height = 3200,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -323,7 +341,11 @@ gs_mkcells <- gs %>%
   pull(gene) %>%
   unique()
 
-cat("% of Megakaryocyte marker genes:", mean(top_mega$Rowname %in% gs_mkcells), "\n")
+cat(
+  "% of Megakaryocyte marker genes:",
+  mean(top_mega$Rowname %in% gs_mkcells),
+  "\n"
+)
 ```
 
 ```{r}
@@ -353,13 +375,12 @@ cat("% of Platelet marker genes:", mean(top_mega$Rowname %in% gs_plate), "\n")
 
 ```{r}
 unique(gs$cell_type)[grep("T cell", unique(gs$cell_type))]
-
 ```
 
 ```{r}
 cm <- CAbiNet::cellmarker_v2
-cm <- cm[cm$species == "Human",]
-cm <- cm[cm$cell_name == "B cell",]
+cm <- cm[cm$species == "Human", ]
+cm <- cm[cm$cell_name == "B cell", ]
 ```
 
 # Pie charts
@@ -381,7 +402,6 @@ perc5 <- mean(top_mega$Rowname %in% gs_mkcells)
 # pie(c(perc5, 1 - perc5), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))
 
 perc6 <- mean(top_c6$Rowname %in% gs_cd4tcells)
-
 ```
 
 ```{r}
@@ -392,7 +412,7 @@ piechart <- function(perc, title) {
     x = c(perc, 1 - perc),
     labels = c("Markers", "Other"),
     col = rev(CAdir::mpimg_pal()(2))
-  ) 
+  )
   title(main = title, cex.main = 1.2, line = 0.1)
 }
 pie1 <- wrap_elements(full = ~ piechart(perc1, "B cells"))
@@ -408,46 +428,53 @@ pdf(file = file.path(imgdir, "pies.pdf"), width = 9, height = 6)
   plot_annotation(tag_levels = "a")
 dev.off()
 
-png(file = file.path(imgdir, "pies.png"), width = 900, height = 600, units = "px")
-  (pie1 + pie2 + pie3 + pie4 + pie5) +
-  plot_layout(ncol = 3) + 
+png(
+  file = file.path(imgdir, "pies.png"),
+  width = 900,
+  height = 600,
+  units = "px"
+)
+(pie1 + pie2 + pie3 + pie4 + pie5) +
+  plot_layout(ncol = 3) +
   plot_annotation(tag_levels = "a")
 dev.off()
-
 ```
 
 # Pie + Sankey
 ```{r}
 # pdf(file = file.path(imgdir, "pies_and_sankey.pdf"), width = 12, height = 6)
 # ((pie1 + pie2 + pie3 + pie4 + pie5) | sank) +
-#   plot_annotation(tag_levels = "a") & 
+#   plot_annotation(tag_levels = "a") &
 #   theme(plot.tag = element_text(size = 16))
 # dev.off()
 
-png(file = file.path(imgdir, "pies_and_sankey.png"), width = 1200, height = 600, units = "px")
+png(
+  file = file.path(imgdir, "pies_and_sankey.png"),
+  width = 1200,
+  height = 600,
+  units = "px"
+)
 ((pie1 + pie2 + pie3 + pie4 + pie5 + pie6) | sank) +
-  plot_annotation(tag_levels = "a") & 
+  plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 16))
 dev.off()
-
 ```
 
 # B cell discussion
 ```{r}
 top_b
 top_m
-
 ```
 
 # Top genes table
 
 ```{r}
 library(xtable)
-tbl <- top_genes(cabic,  cutoff = 0)
+tbl <- top_genes(cabic, cutoff = 0)
 
 top_table <- list()
 n <- 3
-for (c in unique(tbl$Cluster)){
+for (c in unique(tbl$Cluster)) {
   cat(c)
   sub_tbl <- tbl[tbl$Cluster == c, ] %>%
     dplyr::arrange(desc(Score))
@@ -458,8 +485,10 @@ top_table <- top_table[, c(1, 2, 4)]
 colnames(top_table) <- c("Gene", "Score", "Cluster")
 top_table <- top_table[, c("Cluster", "Gene", "Score")]
 rownames(top_table) <- NULL
-print(xtable(top_table, type = "latex"), file = file.path(imgdir, "top_genes.tex"))
-
+print(
+  xtable(top_table, type = "latex"),
+  file = file.path(imgdir, "top_genes.tex")
+)
 ```
 
 # Session Info

@@ -23,7 +23,7 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  library(CAdir)
   library(APL)
 
   library(SingleCellExperiment)
@@ -42,7 +42,6 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 dir <- "./results/"
 imgdir <- file.path(dir, "img/review/batch/")
 dir.create(imgdir, recursive = TRUE)
-
 ```
 
 
@@ -187,7 +186,7 @@ cact@cell_clusters <- sce_sub$celltype
 names(cact@cell_clusters) <- names(cabic@cell_clusters)
 
 dirs <- list()
-for (c in unique(sce_sub$celltype)){
+for (c in unique(sce_sub$celltype)) {
   grp <- which(sce_sub$celltype == c)
   dir <- colMeans(ca@prin_coords_cols[grp, ])
   dirs[[c]] <- dir
@@ -200,16 +199,16 @@ capl1 <- cluster_apl(
   cadir = cact,
   caobj = ca,
   cluster = "beta",
-  direction = cact@directions["beta",],
+  direction = cact@directions["beta", ],
   group = which(cact@cell_clusters == "beta"),
   highlight_cluster = TRUE,
   show_genes = TRUE,
   point_size = 1
-) + ggtitle("beta - no batch correction") +
+) +
+  ggtitle("beta - no batch correction") +
   theme(legend.position = "none")
 
 # cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")
-
 ```
 
 ```{r}
@@ -218,7 +217,7 @@ cact2@cell_clusters <- sce_sub$tech
 names(cact2@cell_clusters) <- names(cabic@cell_clusters)
 
 dirs <- list()
-for (c in unique(sce_sub$tech)){
+for (c in unique(sce_sub$tech)) {
   grp <- which(sce_sub$tech == c)
   dir <- colMeans(ca@prin_coords_cols[grp, ])
   dirs[[c]] <- dir
@@ -231,16 +230,16 @@ capl12 <- cluster_apl(
   cadir = cact2,
   caobj = ca,
   cluster = "smartseq2",
-  direction = cact2@directions["smartseq2",],
+  direction = cact2@directions["smartseq2", ],
   group = which(cact2@cell_clusters == "smartseq2"),
   highlight_cluster = TRUE,
   show_genes = TRUE,
   point_size = 1
-) + ggtitle("smartseq2 - no batch correction") +
+) +
+  ggtitle("smartseq2 - no batch correction") +
   theme(legend.position = "none")
 
 # cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")
-
 ```
 # Batch correction
 
@@ -306,7 +305,6 @@ cabic_corr <- dirclust_splitmerge(
 sce_corr$cadir <- cabic_corr@cell_clusters
 ari2 <- aricode::clustComp(sce_corr$cadir, sce_corr$celltype)
 cat("ARI:", ari2$ARI, "\n")
-
 ```
 
 ```{r}
@@ -337,7 +335,6 @@ ggsave(
   height = 1600,
   units = "px"
 )
-
 ```
 
 ```{r}
@@ -346,7 +343,7 @@ cact@cell_clusters <- sce_corr$celltype
 names(cact@cell_clusters) <- names(cabic_corr@cell_clusters)
 
 dirs <- list()
-for (c in unique(sce_corr$celltype)){
+for (c in unique(sce_corr$celltype)) {
   grp <- which(sce_corr$celltype == c)
   dir <- colMeans(ca_corr@prin_coords_cols[grp, ])
   dirs[[c]] <- dir
@@ -359,16 +356,15 @@ capl2 <- cluster_apl(
   cadir = cact,
   caobj = ca_corr,
   cluster = "beta",
-  direction = cact@directions["beta",],
+  direction = cact@directions["beta", ],
   group = which(cact@cell_clusters == "beta"),
   highlight_cluster = TRUE,
   show_genes = TRUE,
   point_size = 1
 ) +
-ggtitle("beta - batch corrected") +
+  ggtitle("beta - batch corrected") +
   theme(legend.position = "none")
 # cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")
-
 ```
 
 ```{r}
@@ -377,7 +373,7 @@ cact2@cell_clusters <- as.factor(sce_corr$batch)
 names(cact2@cell_clusters) <- names(cabic_corr@cell_clusters)
 
 dirs <- list()
-for (c in unique(sce_corr$batch)){
+for (c in unique(sce_corr$batch)) {
   grp <- which(sce_corr$batch == c)
   dir <- colMeans(ca_corr@prin_coords_cols[grp, ])
   dirs[[c]] <- dir
@@ -390,20 +386,25 @@ capl22 <- cluster_apl(
   cadir = cact2,
   caobj = ca_corr,
   cluster = "smartseq2",
-  direction = cact2@directions["smartseq2",],
+  direction = cact2@directions["smartseq2", ],
   group = which(cact2@cell_clusters == "smartseq2"),
   highlight_cluster = TRUE,
   show_genes = TRUE,
   point_size = 1
 ) +
-ggtitle("smartseq2 - batch corrected") +
+  ggtitle("smartseq2 - batch corrected") +
   theme(legend.position = "none")
 # cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")
-
 ```
 ```{r}
-capl3 <- cluster_apl(cadir = cabic, caobj = ca, cluster = "Beta_cell(β_cell)") + ggtitle("Beta_cell(β_cell) - no batch correction")
-capl4 <- cluster_apl(cadir = cabic_corr, caobj = ca_corr, cluster = "Beta_cell(β_cell)") + ggtitle("Beta_cell(β_cell) - batch correction")
+capl3 <- cluster_apl(cadir = cabic, caobj = ca, cluster = "Beta_cell(β_cell)") +
+  ggtitle("Beta_cell(β_cell) - no batch correction")
+capl4 <- cluster_apl(
+  cadir = cabic_corr,
+  caobj = ca_corr,
+  cluster = "Beta_cell(β_cell)"
+) +
+  ggtitle("Beta_cell(β_cell) - batch correction")
 
 # capl3 <- cluster_apl(cadir = cabic, caobj = ca, cluster = "Acinar_cell")
 # capl4 <- cluster_apl(cadir = cabic_corr, caobj = ca_corr, cluster = "Acinar_cell")
@@ -439,13 +440,10 @@ ggsave(
 
 
 ```{r}
-all <- ((
-  (um2 | um3) /
-    (um1 + ggtitle(paste0("ARI: ", round(ari1$ARI, 2))) + capl1)
-) | (
-  (um4 | um5) /
-    (um6 + ggtitle(paste0("ARI: ", round(ari2$ARI, 2))) + capl2)
-)) +
+all <- (((um2 | um3) /
+  (um1 + ggtitle(paste0("ARI: ", round(ari1$ARI, 2))) + capl1)) |
+  ((um4 | um5) /
+    (um6 + ggtitle(paste0("ARI: ", round(ari2$ARI, 2))) + capl2))) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(face = "bold", size = 12))
 

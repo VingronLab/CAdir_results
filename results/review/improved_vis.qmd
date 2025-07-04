@@ -23,7 +23,7 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  devtools::load_all("~/gits/ClemensKohl/CAdir")
+  library(CAdir)
   library(APL)
   library(SingleCellExperiment)
   library(dplyr)
@@ -52,8 +52,14 @@ dir.create(imgdir, recursive = TRUE)
 ```{r}
 data_dir <- "./data/real/discussed/"
 
-marker_genes <- readr::read_csv(file.path(data_dir, "tabula_muris_marker_genes.csv"))
-sce <- readRDS(file.path(data_dir, "preprocessed/tabula_muris_preprocessed_filtered.rds"))
+marker_genes <- readr::read_csv(file.path(
+  data_dir,
+  "tabula_muris_marker_genes.csv"
+))
+sce <- readRDS(file.path(
+  data_dir,
+  "preprocessed/tabula_muris_preprocessed_filtered.rds"
+))
 
 genevars <- modelGeneVar(sce, assay.type = "logcounts")
 chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)
@@ -64,12 +70,14 @@ chosen <- c(chosen, expr_markers$gene)
 chosen <- unique(chosen)
 sce_sub <- sce[chosen, ]
 
-ca <- cacomp(obj = logcounts(sce_sub),
-             princ_coords = 3,
-             dims = 30,
-             top = nrow(sce_sub),
-             residuals = "pearson",
-             python = TRUE)
+ca <- cacomp(
+  obj = logcounts(sce_sub),
+  princ_coords = 3,
+  dims = 30,
+  top = nrow(sce_sub),
+  residuals = "pearson",
+  python = TRUE
+)
 
 cell_types <- sce$cell_ontology_class
 cat("Number of cell types:", length(unique(cell_types)), "\n")
@@ -80,17 +88,17 @@ cat("Number of cell types:", length(unique(cell_types)), "\n")
 ```{r}
 set.seed(2358)
 cak <- dirclust_splitmerge(
-    caobj = ca,
-    k = 8,
-    cutoff = 55,
-    method = "random",
-    apl_quant = 0.99,
-    counts = NULL,
-    min_cells = 20,
-    reps = NULL,
-    make_plots = TRUE,
-    qcutoff = 0.8,
-    convergence_thr = 0.001
+  caobj = ca,
+  k = 8,
+  cutoff = 55,
+  method = "random",
+  apl_quant = 0.99,
+  counts = NULL,
+  min_cells = 20,
+  reps = NULL,
+  make_plots = TRUE,
+  qcutoff = 0.8,
+  convergence_thr = 0.001
 )
 ```
 
@@ -155,7 +163,7 @@ ggsave(
 
 ggsave(
   plot = sm,
-  filename = file.path(imgdir,"tm_split_merge_plot.png"),
+  filename = file.path(imgdir, "tm_split_merge_plot.png"),
   width = 2300,
   height = 2100,
   units = "px"
@@ -182,7 +190,6 @@ p_bt1 <- cluster_apl(
   ggtitle("Large genes, small cells")
 
 p_bt1
-
 ```
 ## small genes
 
@@ -202,7 +209,6 @@ p_bt2 <- cluster_apl(
   ggtitle("Large cells, small genes")
 
 p_bt2
-
 ```
 
 ```{r}
@@ -223,7 +229,6 @@ p_bt3 <- cluster_apl(
   ggtitle("genes only, top 10 labelled")
 
 p_bt3
-
 ```
 
 ```{r}
@@ -242,7 +247,6 @@ p_bt4 <- cluster_apl(
   ggtitle("cells only, colored by cluster")
 
 p_bt4
-
 ```
 
 
@@ -251,7 +255,8 @@ p_bt4
 ```{r}
 library(patchwork)
 
-fig <- (wrap_elements(sm)) + (p_bt1 / p_bt2) +
+fig <- (wrap_elements(sm)) +
+  (p_bt1 / p_bt2) +
   plot_layout(widths = c(2, 1)) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 18))
@@ -264,7 +269,6 @@ ggsave(
   height = 1600,
   units = "px"
 )
-
 ```
 
 ```{r}
