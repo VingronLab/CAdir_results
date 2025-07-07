@@ -283,6 +283,7 @@ sce_corr <- sce[
   (!colnames(sce) %in% top_cells)
 ]
 
+set.seed(1)
 ca_corr <- cacomp(
   obj = as.matrix(logcounts(sce_corr)),
   princ_coords = 3,
