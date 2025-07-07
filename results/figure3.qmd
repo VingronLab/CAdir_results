@@ -175,7 +175,44 @@ ggsave(
   units = "px"
 )
 ```
+```{r}
 
+pc_mod_lng <- plot_clusters_custom(
+  cak,
+  ca,
+  show_genes = TRUE,
+  label_genes = FALSE,
+  ntop = 5,
+  axis = TRUE,
+  title_prefix = "",
+  gsub_title = "_",
+  outlier_cluster = "cluster_5",
+  text_size = 19,
+  return_list = TRUE
+)
+
+pc_mod_ng <- ggpubr::ggarrange(
+  plotlist = pc_mod_lng,
+  nrow = 2,
+  ncol = 3
+)
+
+ggsave(
+  plot = pc_mod_ng,
+  file = file.path(imgdir, "plot_clusters_no_genes.pdf"),
+  width = 3400,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  plot = pc_mod_ng,
+  file = file.path(imgdir, "plot_clusters_no_genes.png"),
+  width = 3400,
+  height = 2000,
+  units = "px"
+)
+```
 ### Identify outlier genes & cells
 
 ```{r}
@@ -357,6 +394,41 @@ ggsave(
 )
 ```
 
+```{r}
+pc_corr_list_no_genes <- plot_clusters(
+  cak_corr,
+  ca_corr,
+  show_genes = TRUE,
+  label_genes = FALSE,
+  axis = TRUE,
+  ggncol = 2,
+  ggnrow = 3,
+  title_prefix = "",
+  gsub_title = "_",
+  text_size = 19,
+  return_list = TRUE,
+  legend_pos = "right"
+)
+pc_corr_no_genes <- wrap_plots(pc_corr_list_no_genes, ncol = 2, nrow = 3) +
+  guide_area() +
+  plot_layout(guides = "collect")
+
+ggsave(
+  plot = pc_corr_no_genes,
+  file = file.path(imgdir, "apl_clusters_corrected_no_genes.pdf"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 2500,
+  units = "px"
+)
+ggsave(
+  plot = pc_corr_no_genes,
+  file = file.path(imgdir, "apl_clusters_corrected_no_genes.png"),
+  width = 3000,
+  height = 2500,
+  units = "px"
+)
+```
 Sankey plot showing to which clusters the remaining cells from cluster 5 are being clustered.
 
 ```{r}
