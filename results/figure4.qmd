@@ -970,9 +970,9 @@ scal_df$algorithm <- factor(
     "Seurat",
     "Monocle3",
     "SC3",
-    "SIMLR"
-    # "scDeepCluster",
-    # "scG-cluster"
+    "SIMLR",
+    "scDeepCluster",
+    "scG-cluster"
   )
 )
 
@@ -1049,9 +1049,9 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
       "SC3" = alph,
       "SIMLR" = alph,
       "Seurat" = alph,
-      "kmeans" = alph
-      # "scDeepCluster" = alph,
-      # "scG-cluster" = alph
+      "kmeans" = alph,
+      "scDeepCluster" = alph,
+      "scG-cluster" = alph
     )
   ) +
   scale_colour_manual(
@@ -1064,9 +1064,9 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
       "SC3" = mpgDarkGreen,
       "SIMLR" = mpgGrau,
       "Seurat" = mpgGreenLight,
-      "kmeans" = mpgGreen
-      # "scDeepCluster" = mpgPink,
-      # "scG-cluster" = mpgBrown
+      "kmeans" = mpgGreen,
+      "scDeepCluster" = mpgPink,
+      "scG-cluster" = mpgBrown
     )
   ) +
   scale_linetype_manual(
@@ -1079,9 +1079,9 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
       "SC3" = "dashed",
       "SIMLR" = "solid",
       "Seurat" = "solid",
-      "kmeans" = "solid"
-      # "scDeepCluster" = "solid",
-      # "scG-cluster" = "solid"
+      "kmeans" = "solid",
+      "scDeepCluster" = "solid",
+      "scG-cluster" = "solid"
     )
   ) +
   theme_bw(base_size = 18) +
