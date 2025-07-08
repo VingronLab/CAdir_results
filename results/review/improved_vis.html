@@ -98,7 +98,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="abad12a1" class="cell" data-execution_count="1">
+<div id="83e3b1ea" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Working directory should be the root directory of repository.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("./")</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>()</span>
@@ -134,7 +134,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="load-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-data">Load data</h2>
-<div id="b406d8ca" class="cell" data-execution_count="2">
+<div id="61298128" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="st">"./data/real/discussed/"</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>marker_genes <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">file.path</span>(</span>
@@ -183,7 +183,7 @@ chr (2): cell_type, gene
 </section>
 <section id="cadir" class="level1">
 <h1>CAdir</h1>
-<div id="8faa1297" class="cell" data-execution_count="3">
+<div id="5fab9bbb" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>cak <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -208,7 +208,7 @@ Iteration 3</code></pre>
 </div>
 </div>
 <p>Annotate biclustering:</p>
-<div id="565ad361" class="cell" data-execution_count="4">
+<div id="cc25b523" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cak <span class="ot">&lt;-</span> <span class="fu">annotate_biclustering</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> cak,</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe =</span> <span class="fu">rownames</span>(sce_sub),</span>
@@ -233,7 +233,7 @@ Clustering results:
  Vascular_endothelial_cell 187    270   </code></pre>
 </div>
 </div>
-<div id="e1f224f0" class="cell" data-execution_count="5">
+<div id="dba8194c" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>um1 <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(sce_sub, <span class="at">colour =</span> <span class="st">"cadir"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>um2 <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(sce_sub, <span class="at">colour =</span> <span class="st">"cell_ontology_class"</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -266,7 +266,7 @@ Clustering results:
 <h1>Improved Graph plot</h1>
 <section id="graph" class="level2">
 <h2 class="anchored" data-anchor-id="graph">graph</h2>
-<div id="b1175062" class="cell" data-execution_count="6">
+<div id="9732e90a" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sm <span class="ot">&lt;-</span> <span class="fu">sm_plot</span>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cadir =</span> cak,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -311,7 +311,7 @@ Clustering results:
 <h2 class="anchored" data-anchor-id="apls">APLs</h2>
 <section id="large-genes" class="level3">
 <h3 class="anchored" data-anchor-id="large-genes">large genes</h3>
-<div id="3357aec7" class="cell" data-execution_count="7">
+<div id="89ba4d8d" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"B_cell"</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>p_bt1 <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  ca,</span>
@@ -340,7 +340,7 @@ Clustering results:
 </section>
 <section id="small-genes" class="level2">
 <h2 class="anchored" data-anchor-id="small-genes">small genes</h2>
-<div id="c46d9f7a" class="cell" data-execution_count="8">
+<div id="5ff3ddaf" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"B_cell"</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>p_bt2 <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  ca,</span>
@@ -364,7 +364,7 @@ Clustering results:
 </div>
 </div>
 </div>
-<div id="c9fc0940" class="cell" data-execution_count="9">
+<div id="62523397" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"B_cell"</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>p_bt3 <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  ca,</span>
@@ -390,7 +390,7 @@ Clustering results:
 </div>
 </div>
 </div>
-<div id="ae7b0783" class="cell" data-execution_count="10">
+<div id="5373cfa9" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"B_cell"</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>p_bt4 <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -417,7 +417,7 @@ Clustering results:
 </section>
 <section id="panel" class="level2">
 <h2 class="anchored" data-anchor-id="panel">Panel</h2>
-<div id="a7cf946b" class="cell" data-execution_count="11">
+<div id="a0b2be39" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>fig <span class="ot">&lt;-</span> (<span class="fu">wrap_elements</span>(sm)) <span class="sc">+</span></span>
@@ -442,7 +442,7 @@ Clustering results:
 </div>
 </div>
 </div>
-<div id="0acc23dd" class="cell" data-execution_count="12">
+<div id="939952b8" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fig1 <span class="ot">&lt;-</span> ((p_bt4 <span class="sc">/</span> p_bt3) <span class="sc">|</span> (p_bt1 <span class="sc">/</span> p_bt2)) <span class="sc">+</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"a"</span>) <span class="sc">&amp;</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.tag =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>))</span>
@@ -466,7 +466,7 @@ Clustering results:
 </div>
 <section id="interactive-apl" class="level3">
 <h3 class="anchored" data-anchor-id="interactive-apl">Interactive APL</h3>
-<div id="e9f220c8" class="cell" data-execution_count="13">
+<div id="83807c22" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"B_cell"</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>p_bt3 <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  ca,</span>
@@ -492,7 +492,7 @@ Clustering results:
 </section>
 <section id="session-info" class="level1">
 <h1>Session Info</h1>
-<div id="6854ba5d" class="cell" data-execution_count="14">
+<div id="aea45ce3" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>R version 4.4.1 (2024-06-14)

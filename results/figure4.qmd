@@ -675,8 +675,8 @@ p <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
     plot.title = element_text(size = 16, face = "plain")
   ) +
   labs(
-    x = "Dataset",
-    y = "Algorithm",
+    x = "Algorithm",
+    y = "Dataset",
     title = "Maximum ARI on experimental data"
   )
 
@@ -750,8 +750,8 @@ p_tile <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
     plot.title = element_text(size = 16, face = "plain")
   ) +
   labs(
-    x = "Dataset",
-    y = "Algorithm",
+    x = "Algorithm",
+    y = "Dataset",
     title = "Maximum ARI on experimental data"
   )
 ```

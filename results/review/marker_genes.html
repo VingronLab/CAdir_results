@@ -101,7 +101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="f5434282" class="cell" data-execution_count="1">
+<div id="96e54999" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Working directory should be the root directory of repository.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("./")</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>()</span>
@@ -134,7 +134,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="load-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-data">Load data</h2>
-<div id="6398beb1" class="cell" data-execution_count="2">
+<div id="650c8f08" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sce <span class="ot">&lt;-</span> <span class="fu">sce_pbmc3k</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>see ?TENxPBMCData and browseVignettes('TENxPBMCData') for documentation
@@ -155,7 +155,7 @@ This message will be shown once per session”</code></pre>
 </section>
 <section id="cadir" class="level1">
 <h1>CAdir</h1>
-<div id="29dc5d28" class="cell" data-execution_count="3">
+<div id="cb2324ac" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>sce_bu <span class="ot">&lt;-</span> sce</span>
@@ -176,7 +176,7 @@ This message will be shown once per session”</code></pre>
 </div>
 <section id="split-merge-clustering" class="level2">
 <h2 class="anchored" data-anchor-id="split-merge-clustering">Split &amp; Merge Clustering</h2>
-<div id="efa540af" class="cell" data-execution_count="4">
+<div id="5e7a325f" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>cabic <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -203,7 +203,7 @@ Iteration 2</code></pre>
 </div>
 <section id="annotate-clusters" class="level3">
 <h3 class="anchored" data-anchor-id="annotate-clusters">Annotate clusters</h3>
-<div id="8a20c34b" class="cell" data-execution_count="5">
+<div id="0cb661c0" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cabic <span class="ot">&lt;-</span> CAdir<span class="sc">::</span><span class="fu">annotate_biclustering</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> cabic,</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe =</span> <span class="fu">rownames</span>(sce),</span>
@@ -257,7 +257,7 @@ Clustering results:
 </section>
 <section id="plot-clusters" class="level1">
 <h1>Plot clusters</h1>
-<div id="19ed283b" class="cell" data-execution_count="6">
+<div id="ac04d023" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>b_cells <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  ca,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  cabic,</span>
@@ -282,7 +282,7 @@ Clustering results:
 </div>
 <section id="sankey-of-clustering" class="level2">
 <h2 class="anchored" data-anchor-id="sankey-of-clustering">Sankey of clustering</h2>
-<div id="0d87d361" class="cell" data-execution_count="7">
+<div id="8c248117" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggsankey)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>sce_sank <span class="ot">&lt;-</span> sce</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -414,7 +414,7 @@ Clustering results:
 </div>
 </div>
 </div>
-<div id="5841e2b9" class="cell" data-execution_count="8">
+<div id="630ae7e5" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>top_b <span class="ot">&lt;-</span> cabic<span class="sc">@</span>gene_ranks<span class="sc">$</span>B_cell <span class="sc">%&gt;%</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Score <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>gs <span class="ot">&lt;-</span> CAbiNet<span class="sc">:::</span><span class="fu">load_gene_set</span>(<span class="at">set =</span> <span class="st">"CellMarker"</span>, <span class="at">org =</span> <span class="st">"hs"</span>)</span>
@@ -428,7 +428,7 @@ Clustering results:
 <pre><code>% of B cell marker genes: 0.7540984 </code></pre>
 </div>
 </div>
-<div id="c3bd7789" class="cell" data-execution_count="9">
+<div id="ed1c92de" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>top_m <span class="ot">&lt;-</span> cabic<span class="sc">@</span>gene_ranks<span class="sc">$</span>Monocyte <span class="sc">%&gt;%</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Score <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>gs <span class="ot">&lt;-</span> CAbiNet<span class="sc">:::</span><span class="fu">load_gene_set</span>(<span class="at">set =</span> <span class="st">"CellMarker"</span>, <span class="at">org =</span> <span class="st">"hs"</span>)</span>
@@ -442,7 +442,7 @@ Clustering results:
 <pre><code>% of Monocyte marker genes: 0.4761905 </code></pre>
 </div>
 </div>
-<div id="8d280caa" class="cell" data-execution_count="10">
+<div id="414ef2f4" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>top_t <span class="ot">&lt;-</span> cabic<span class="sc">@</span>gene_ranks<span class="sc">$</span><span class="st">`</span><span class="at">CD8+_T_cell</span><span class="st">`</span> <span class="sc">%&gt;%</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Score <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>gs <span class="ot">&lt;-</span> CAbiNet<span class="sc">:::</span><span class="fu">load_gene_set</span>(<span class="at">set =</span> <span class="st">"CellMarker"</span>, <span class="at">org =</span> <span class="st">"hs"</span>)</span>
@@ -456,7 +456,7 @@ Clustering results:
 <pre><code>% of CD8+ T cells marker genes: 0.75 </code></pre>
 </div>
 </div>
-<div id="927a4daf" class="cell" data-execution_count="11">
+<div id="1a64afa8" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>top_t <span class="ot">&lt;-</span> cabic<span class="sc">@</span>gene_ranks<span class="sc">$</span><span class="st">`</span><span class="at">CD8+_T_cell</span><span class="st">`</span> <span class="sc">%&gt;%</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Score <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>gs <span class="ot">&lt;-</span> CAbiNet<span class="sc">:::</span><span class="fu">load_gene_set</span>(<span class="at">set =</span> <span class="st">"CellMarker"</span>, <span class="at">org =</span> <span class="st">"hs"</span>)</span>
@@ -470,7 +470,7 @@ Clustering results:
 <pre><code>% of T cells marker genes: 0.75 </code></pre>
 </div>
 </div>
-<div id="f43730a2" class="cell" data-execution_count="12">
+<div id="ef3158a9" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>top_nk <span class="ot">&lt;-</span> cabic<span class="sc">@</span>gene_ranks<span class="sc">$</span>Natural_killer_cell <span class="sc">%&gt;%</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Score <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -485,7 +485,7 @@ Clustering results:
 <pre><code>% of NK cells marker genes: 0.5405405 </code></pre>
 </div>
 </div>
-<div id="1250ad84" class="cell" data-execution_count="13">
+<div id="1600cbb2" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>top_mega <span class="ot">&lt;-</span> cabic<span class="sc">@</span>gene_ranks<span class="sc">$</span>Megakaryocyte <span class="sc">%&gt;%</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Score <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -504,7 +504,7 @@ Clustering results:
 <pre><code>% of Megakaryocyte marker genes: 0.2444444 </code></pre>
 </div>
 </div>
-<div id="5177bb2b" class="cell" data-execution_count="14">
+<div id="8656d283" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>top_c6 <span class="ot">&lt;-</span> cabic<span class="sc">@</span>gene_ranks<span class="sc">$</span>cluster_6</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>gs <span class="ot">&lt;-</span> CAbiNet<span class="sc">:::</span><span class="fu">load_gene_set</span>(<span class="at">set =</span> <span class="st">"CellMarker"</span>, <span class="at">org =</span> <span class="st">"hs"</span>)</span>
@@ -518,7 +518,7 @@ Clustering results:
 <pre><code>% of cd4 marker genes: 0 </code></pre>
 </div>
 </div>
-<div id="9238412f" class="cell" data-execution_count="15">
+<div id="9662524b" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>top_mega <span class="ot">&lt;-</span> cabic<span class="sc">@</span>gene_ranks<span class="sc">$</span>Megakaryocyte <span class="sc">%&gt;%</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Score <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -533,7 +533,7 @@ Clustering results:
 <pre><code>% of Platelet marker genes: 0.1111111 </code></pre>
 </div>
 </div>
-<div id="92c1ed48" class="cell" data-execution_count="16">
+<div id="fbbc4ee2" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(gs<span class="sc">$</span>cell_type)[<span class="fu">grep</span>(<span class="st">"T cell"</span>, <span class="fu">unique</span>(gs<span class="sc">$</span>cell_type))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <style>
@@ -544,7 +544,7 @@ Clustering results:
 <ol class="list-inline"><li>'Naive CD4+ T cell'</li><li>'Activated effector memory CD4+ T cell'</li><li>'Memory CD4+ T cell'</li><li>'Activated tissue resident memory CD8+ T cell'</li><li>'Tissue resident memory CD4+ T cell'</li><li>'Activated effector memory CD8+ T cell'</li><li>'Gamma delta(γδ) T cell'</li><li>'Effector memory CD4+ T cell'</li><li>'Naive CD8+ T cell'</li><li>'Effector CD8+ T cell'</li><li>'T cell'</li><li>'Activated tissue resident memory CD4+ T cell'</li><li>'Tissue resident memory CD8+ T cell'</li><li>'Central memory CD4+ T cell'</li><li>'Effector CD4+ T cell'</li><li>'CD8+ T cell'</li><li>'MKI67+ T cell'</li><li>'Foxp3+ regulatory T cell'</li><li>'GZMK+ T cell'</li><li>'GZMB+ T cell'</li><li>'Naive IL7R+ T cell'</li><li>'Cytotoxic T cell'</li><li>'Exhausted CD8+ T cell'</li><li>'CD4+ T cell'</li><li>'CD4+CD25+ regulatory T cell'</li><li>'Naive T cell'</li><li>'Cytotoxic CD8+ T cell'</li><li>'Suppressor T cell'</li><li>'Activated CD4+ T cell'</li><li>'CD4-CD28- T cell'</li><li>'CD4-CD28+ T cell'</li><li>'Responder T cell'</li><li>'Effector T cell'</li><li>'Central memory T cell'</li><li>'Effector memory T cell'</li><li>'Angiogenic T cell'</li><li>'Memory T cell'</li><li>'IL-17Ralpha T cell'</li><li>'Central memory CD8+ T cell'</li><li>'Terminally differentiated effector memory CD4+ T cell'</li><li>'Activated peripheral helper T cell'</li><li>'Effector memory CD8+ T cell'</li><li>'Effector (EMRA) CD8+ T cell'</li><li>'Memory regulatory T cell'</li><li>'Activated regulatory T cell'</li><li>'CD4 T cell'</li><li>'CD8 T cell'</li><li>'CAR-T cell'</li><li>'Late effector T cell'</li><li>'Activated CD25+ regulatory T cell'</li><li>'CD25 LAG3+ T cell'</li><li>'CD25+LAG3+ T cell'</li><li>'Regulatory CD25+ T cell'</li><li>'Memory CD4 T cell'</li><li>'Cytotoxic CD4+ T cell'</li><li>'TolDC-induced regulatory T cell'</li><li>'Memory CD8+ T cell'</li><li>'Memory CD8 T cell'</li><li>'Activated T cell'</li><li>'Natural regulatory T cell'</li><li>'Finally highly effector (TEMRA) memory T cell'</li><li>'Naive CD4 T cell'</li><li>'Differentiated effector T cell'</li><li>'Proliferative T cell'</li><li>'CD4+ recently activated effector memory or effector T cell (CTL)'</li><li>'CD8+ mucosal-associated invariant T cell(CD8+ MAIT)'</li><li>'CD8+ recently activated effector memory or effector T cell (CTL)'</li><li>'Naive cytotoxic T cell'</li><li>'Circulating memory T cell'</li><li>'Ovalbumin-specific regulatory T cell'</li><li>'Follicular cytotoxic CD8+ T cell'</li><li>'Terminal effector T cell'</li><li>'Exhausted CD4+ T cell'</li><li>'Early effector T cell'</li><li>'CD3/CD28-stimulated T cell'</li><li>'Tumor regulatory T cell'</li><li>'Transitional memory T cell'</li><li>'Activated memory CD8+ T cell'</li><li>'Activated naive T cell'</li><li>'Activated memory T cell'</li><li>'Activated naive CD8+ T cell'</li><li>'Double-negative T cell'</li><li>'Double-positive T cell'</li><li>'Regulatory CD4+ T cell'</li><li>'Terminal effector CD8+ T cell'</li><li>'Transitional CD8+ T cell'</li><li>'Activated CD8+ T cell'</li><li>'Cytotoxic CD8 T cell'</li><li>'Effector memory CD4 T cell'</li><li>'Regulatory CD4 T cell'</li><li>'Effector memory CD8 T cell'</li><li>'Naive CD8 T cell'</li><li>'CD8+ terminally differentiated effector memory re-expressing CD45RA T cell(CD8+ TEMRA)'</li><li>'EMRA CD4+ T cell'</li><li>'EMRA CD8+ T cell'</li><li>'Effector CD8 T cell'</li><li>'Proliferative CD8+ T cell'</li><li>'Proliferative CD4+ T cell'</li><li>'Regulatory CD8+ T cell'</li><li>'Early activated CD4+ T cell'</li><li>'Early activated CD8+ T cell'</li><li>'Responding conventional T cell'</li><li>'Pan-T cell'</li><li>'T cell large granular lymphocytic leukemia cell'</li><li>'Type 17 T cell'</li><li>'Terminally differentiated effector memory CD8+ T cell'</li><li>'CD34+ pre-T cell'</li><li>'Chronically activated CD8+ T cell'</li><li>'Chronically activated CD4+ T cell'</li><li>'Conventional CD8+ T cell'</li><li>'Conventional CD4+ T cell'</li><li>'Tumor-infiltrating T cell'</li><li>'Proliferating T cell'</li><li><span style="white-space:pre-wrap">'Naïve or central memory  T cell'</span></li><li>'Tissue resident effector memory T cell'</li><li>'Conventional CD4 T cell'</li><li>'Eomesodermin homolog(EOMES)+ regulatory T cell type 1'</li><li>'Cytotoxic T cell 2'</li><li>'Resident memory CD8+ T cell'</li><li>'CD4 peripherally derived regulatory T cell'</li><li>'CD8+ tissue-resident memory T cell'</li><li>'Stem-like CD8+ T cell'</li><li>'Cancer-associated antigen-specific T cell'</li><li>'Mucosal-associated invariant T cell'</li><li>'Pan‐T cell'</li><li>'Terminally differentiated effector memory T cell'</li><li>'Cytotoxic double-positive T cell'</li><li>'Suppressive regulatory T cell'</li><li>'Exhausted double-positive T cell'</li><li>'Memory double-positive T cell'</li><li>'Naive double-positive T cell'</li><li>'Activated double-positive T cell'</li><li>'Transitional exhausted CD8+ T cell'</li><li>'Resting regulatory T cell'</li><li>'Dysfunctional T cell'</li><li>'Pre-exhausted CD8+ T cell'</li><li>'Naive-like T cell'</li><li>'Tumor-infiltrating regulatory T cell'</li><li>'Terminal effector memory T cell'</li><li>'Follicular helper (Tfh) T cell'</li><li>'Stem-like CD8 T cell'</li><li>'Rosetting T cell'</li><li>'Highly differentiated effector CD8 + T cell'</li><li>'Cytotoxic effector memory T cell'</li><li>'T cell progenitor'</li><li>'Tumor-reactive T cell'</li><li>'Tissue resident memory-like T cell'</li><li>'Non-recirculating tissue-resident memory T cell'</li><li>'KIR + RA + T cell'</li><li>'Cytotoxic effector T cell'</li><li>'Tumor-infiltrating CD8+ T cell'</li><li>'Regulatory T cell 1'</li><li>'Memory-like CD8+ T cell'</li><li>'Progenitor-like CD8+ T cell'</li><li>'Resting T cell'</li><li>'Resident memory T cell'</li><li>'Skin resident T cell'</li><li>'NK and T cell'</li><li>'Natural killer CD4+ T cell'</li><li>'Natural killer CD8+ T cell'</li><li>'Mucosa-associated invariant CD8+ T cell'</li><li>'Mucosa-associated invariant CD4+ T cell'</li><li>'γ δ T cell'</li><li>'Dividing T cell'</li><li>'T cell &amp; Natural killer cell'</li><li>'Central memory T cell precursor'</li><li>'Early T cell progenitor (ETP)'</li><li>'Follicular T cell'</li><li>'Foxp3+IL-17+ T cell'</li><li>'Exhasuted CD8+ T cell'</li><li>'Tumor-reactive CD8+ infiltrating T cell'</li><li>'Pre-T cell'</li><li>'Intermediate exhausted T cell'</li><li>'Exhausted T cell progenitor'</li><li>'Tumor-specific T cell'</li><li>'Exhausted CD8 + T cell'</li><li>'Memory CD8 + T cell'</li></ol>
 </div>
 </div>
-<div id="c16288bd" class="cell" data-execution_count="17">
+<div id="800e81ce" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> CAbiNet<span class="sc">::</span>cellmarker_v2</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm[cm<span class="sc">$</span>species <span class="sc">==</span> <span class="st">"Human"</span>, ]</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> cm[cm<span class="sc">$</span>cell_name <span class="sc">==</span> <span class="st">"B cell"</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -553,7 +553,7 @@ Clustering results:
 </section>
 <section id="pie-charts" class="level1">
 <h1>Pie charts</h1>
-<div id="c4f16c2c" class="cell" data-execution_count="18">
+<div id="7a7c6d09" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>perc1 <span class="ot">&lt;-</span> <span class="fu">mean</span>(top_b<span class="sc">$</span>Rowname <span class="sc">%in%</span> gs_bcells)</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pie(c(perc1, 1 - perc1), labels = c("Markers", "Other"), col = rev(CAdir::mpimg_pal()(2)))</span></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -571,7 +571,7 @@ Clustering results:
 <span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>perc6 <span class="ot">&lt;-</span> <span class="fu">mean</span>(top_c6<span class="sc">$</span>Rowname <span class="sc">%in%</span> gs_cd4tcells)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="4ebdb0f1" class="cell" data-execution_count="19">
+<div id="7084c8aa" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridGraphics)</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>piechart <span class="ot">&lt;-</span> <span class="cf">function</span>(perc, title) {</span>
@@ -619,7 +619,7 @@ Clustering results:
 </section>
 <section id="pie-sankey" class="level1">
 <h1>Pie + Sankey</h1>
-<div id="804a4eb6" class="cell" data-execution_count="20">
+<div id="1489d878" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pdf(file = file.path(imgdir, "pies_and_sankey.pdf"), width = 12, height = 6)</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ((pie1 + pie2 + pie3 + pie4 + pie5) | sank) +</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   plot_annotation(tag_levels = "a") &amp;</span></span>
@@ -643,7 +643,7 @@ Clustering results:
 </section>
 <section id="b-cell-discussion" class="level1">
 <h1>B cell discussion</h1>
-<div id="7cb8561f" class="cell" data-execution_count="21">
+<div id="858dce9f" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>top_b</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>top_m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
@@ -1360,7 +1360,7 @@ Clustering results:
 </section>
 <section id="top-genes-table" class="level1">
 <h1>Top genes table</h1>
-<div id="05b8d748" class="cell" data-execution_count="22">
+<div id="0d8c3386" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xtable)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="ot">&lt;-</span> <span class="fu">top_genes</span>(cabic, <span class="at">cutoff =</span> <span class="dv">0</span>)</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1388,7 +1388,7 @@ Clustering results:
 </section>
 <section id="session-info" class="level1">
 <h1>Session Info</h1>
-<div id="a3c49327" class="cell" data-execution_count="23">
+<div id="10e7aa93" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>R version 4.4.1 (2024-06-14)
