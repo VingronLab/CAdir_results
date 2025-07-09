@@ -1105,6 +1105,119 @@ ggsave(
 )
 ```
 
+```{r}
+options(repr.plot.width = 10, repr.plot.height = 10)
+
+alph <- 0.8
+rt <- scal_df %>%
+  filter(algorithm != "scDeepCluster") %>%
+  filter(algorithm != "scG-cluster") %>%
+  ggplot(aes(x = dataset, y = (total_runtime / 60))) +
+  geom_point(
+    aes(group = algorithm, color = algorithm, alpha = algorithm),
+    size = 2
+  ) +
+  geom_line(
+    aes(
+      group = algorithm,
+      color = algorithm,
+      alpha = algorithm,
+      linetype = algorithm
+    ),
+    linewidth = 1
+  ) +
+  scale_x_continuous(
+    breaks = c(
+      1000,
+      10000,
+      20000,
+      40000,
+      60000,
+      80000,
+      100000,
+      200000,
+      400000,
+      600000
+    ),
+    labels = c(
+      "1000",
+      "10000",
+      "20000",
+      "40000",
+      "60000",
+      "80000",
+      "1e+05",
+      "2e+05",
+      "4e+05",
+      "6e+05"
+    )
+  ) +
+  labs(
+    x = "Number of cells",
+    y = "Running time (min)",
+    title = "Runtime vs Data Set Size"
+  ) +
+  coord_trans(x = "log10") +
+  scale_alpha_manual(
+    values = c(
+      "CAdir" = 1,
+      "CAbiNet" = alph,
+      "Monocle3" = alph,
+      "RaceID" = alph,
+      # 'RaceID_auto' = alph,
+      "SC3" = alph,
+      "SIMLR" = alph,
+      "Seurat" = alph,
+      "kmeans" = alph
+    )
+  ) +
+  scale_colour_manual(
+    values = c(
+      "CAdir" = mpgOrange,
+      "CAbiNet" = mpgLightBlue,
+      "Monocle3" = mpgDarkBlue,
+      "RaceID" = mpgDarkGrey,
+      # 'RaceID_auto' = alph,
+      "SC3" = mpgDarkGreen,
+      "SIMLR" = mpgGrau,
+      "Seurat" = mpgGreenLight,
+      "kmeans" = mpgGreen
+    )
+  ) +
+  scale_linetype_manual(
+    values = c(
+      "CAdir" = "solid",
+      "CAbiNet" = "solid",
+      "Monocle3" = "solid",
+      "RaceID" = "solid",
+      # 'RaceID_auto' = "solid",
+      "SC3" = "dashed",
+      "SIMLR" = "solid",
+      "Seurat" = "solid",
+      "kmeans" = "solid"
+    )
+  ) +
+  theme_bw(base_size = 18) +
+  theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust = 1))
+
+rt
+
+ggsave(
+  plot = rt,
+  filename = file.path(imgdir, "runtime_singleproc_no_DL.pdf"),
+  width = 2200,
+  height = 1800,
+  units = "px"
+)
+ggsave(
+  plot = rt,
+  filename = file.path(imgdir, "runtime_singleproc_no_DL.png"),
+  width = 2200,
+  height = 1800,
+  units = "px"
+)
+```
+
 # Detection of cluster number
 
 ```{r}

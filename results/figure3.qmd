@@ -473,7 +473,15 @@ info <- left_join(
   info,
   by = "Biclusters"
 )
-info$col <- pal(nrow(info) + 1)[2:(nrow(info) + 1)]
+col_picker <- c(
+  "#c6d325",
+  "#ef7c00",
+  "#00b1ea",
+  "#d44a3d",
+  "#8c5fa8"
+)
+# info$col <- pal(nrow(info) + 1)[2:(nrow(info) + 1)]
+info$col <- col_picker[1:nrow(info)]
 
 c5cols <- c(c5cols, info$col)
 
@@ -701,8 +709,25 @@ info <- data.frame(
 
 
 pal <- mpi_extend_pal()
-
 cols <- pal(length(unique(sce_sank$cadir)))
+
+save_cols <- c(
+  "#006c66", # MPG-CD-Grün
+  "#c6d325", # MPG Hellgrün
+  "#ef7c00", # MPG Orange
+  # "#29485d", # MPG Dunkelblau
+  "#00b1ea", # MPG Hellblau
+  "#777777", # MPG-Dunkelgrau
+  "#d44a3d", # Warm Red
+  "#8c5fa8", # Soft Purple
+  "#a7a7a8", # MPG-Grau
+  "#f4c542", # Golden Yellow
+  "#d95276", # Rich Pink
+  "#a25b43", # Warm Brown
+  "#00CED1" # Soft Cyan
+)
+
+cols <- save_cols[seq_len(length(unique(sce_sank$cadir)))]
 names(cols) <- unique(sce_sank$cadir)
 
 info <- left_join(
