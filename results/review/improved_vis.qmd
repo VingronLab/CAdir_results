@@ -244,6 +244,7 @@ p_bt4 <- cluster_apl(
   size_factor = 0.1,
   point_size = 2
 ) +
+  guides(shape = FALSE, size = FALSE, linetype = FALSE) +
   ggtitle("cells only, colored by cluster")
 
 p_bt4
