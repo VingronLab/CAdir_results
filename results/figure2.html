@@ -98,7 +98,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="c8970434" class="cell" data-execution_count="1">
+<div id="b76a9b87" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Working directory should be the root directory of repository.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("./")</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>()</span>
@@ -134,7 +134,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="load-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-data">Load data</h2>
-<div id="6bcb8bd8" class="cell" data-execution_count="2">
+<div id="71d1e787" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="st">"./data/real/discussed/"</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>marker_genes <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">file.path</span>(</span>
@@ -183,7 +183,7 @@ chr (2): cell_type, gene
 </section>
 <section id="cadir" class="level1">
 <h1>CAdir</h1>
-<div id="c9b1f827" class="cell" data-execution_count="3">
+<div id="10725670" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>cak <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -208,7 +208,7 @@ Iteration 3</code></pre>
 </div>
 </div>
 <p>Annotate biclustering:</p>
-<div id="f3568d29" class="cell" data-execution_count="4">
+<div id="503239df" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cak <span class="ot">&lt;-</span> <span class="fu">annotate_biclustering</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> cak,</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe =</span> <span class="fu">rownames</span>(sce_sub),</span>
@@ -233,7 +233,7 @@ Clustering results:
  Vascular_endothelial_cell 187    270   </code></pre>
 </div>
 </div>
-<div id="f29b142f" class="cell" data-execution_count="5">
+<div id="d7595747" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>um1 <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(sce_sub, <span class="at">colour =</span> <span class="st">"cadir"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>um2 <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(sce_sub, <span class="at">colour =</span> <span class="st">"cell_ontology_class"</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -264,7 +264,7 @@ Clustering results:
 </section>
 <section id="cluster-association-plots" class="level1">
 <h1>Cluster Association Plots</h1>
-<div id="02bf16b4" class="cell" data-execution_count="6">
+<div id="0cd79e9e" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pcll <span class="ot">&lt;-</span> <span class="fu">plot_clusters</span>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cadir =</span> cak,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -312,7 +312,7 @@ Clustering results:
 </div>
 <section id="b-t-cells---standard-coordinates-apl" class="level2">
 <h2 class="anchored" data-anchor-id="b-t-cells---standard-coordinates-apl">B &amp; T cells - standard coordinates APL</h2>
-<div id="c7d4e4b5" class="cell" data-execution_count="7">
+<div id="724a5daa" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"B_cell"</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">which</span>(cak<span class="sc">@</span>cell_clusters <span class="sc">==</span> cls)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>direction <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[cls]], ] <span class="sc">/</span> ca<span class="sc">@</span>D</span>
@@ -335,7 +335,7 @@ Clustering results:
 <span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>i_dir <span class="ot">&lt;-</span> i_dir <span class="sc">/</span> ca<span class="sc">@</span>D <span class="co"># prin_coords to std_coords</span></span>
 <span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>i_dir <span class="ot">&lt;-</span> <span class="fu">model</span>(i_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="65e28dbc" class="cell" data-execution_count="8">
+<div id="dc44a2bb" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p_bt_std <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  ca,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  cak,</span>
@@ -420,7 +420,7 @@ Clustering results:
 </section>
 <section id="endothelial-cells---standard-coordinates-apl" class="level2">
 <h2 class="anchored" data-anchor-id="endothelial-cells---standard-coordinates-apl">Endothelial cells - Standard coordinates APL</h2>
-<div id="7242c4f3" class="cell" data-execution_count="9">
+<div id="67d58e1d" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"Vascular_endothelial_cell"</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">which</span>(cak<span class="sc">@</span>cell_clusters <span class="sc">==</span> cls)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>direction <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[cls]], ] <span class="sc">/</span> ca<span class="sc">@</span>D</span>
@@ -437,7 +437,7 @@ Clustering results:
 <span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>e_dir <span class="ot">&lt;-</span> e_dir <span class="sc">/</span> ca<span class="sc">@</span>D <span class="co"># prin_coords to std_coords</span></span>
 <span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>e_dir <span class="ot">&lt;-</span> <span class="fu">model</span>(e_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="92ba6cb0" class="cell" data-execution_count="10">
+<div id="7e75b1c5" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p_ecs_std <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  ca,</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  cak,</span>
@@ -506,7 +506,7 @@ Clustering results:
 </section>
 <section id="b-t-cells---principal-coordinates-apl" class="level2">
 <h2 class="anchored" data-anchor-id="b-t-cells---principal-coordinates-apl">B &amp; T cells - principal coordinates APL</h2>
-<div id="c73efddb" class="cell" data-execution_count="11">
+<div id="9ee99d68" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"B_cell"</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">which</span>(cak<span class="sc">@</span>cell_clusters <span class="sc">==</span> cls)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>direction <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[cls]], ]</span>
@@ -527,7 +527,7 @@ Clustering results:
 <span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>i_dir <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[<span class="st">"Immune_cell"</span>]], ]</span>
 <span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>i_dir <span class="ot">&lt;-</span> <span class="fu">model</span>(i_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="76aaea0f" class="cell" data-execution_count="12">
+<div id="e22a392b" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>p_bt_prin <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  ca,</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  cak,</span>
@@ -611,7 +611,7 @@ Clustering results:
 </section>
 <section id="endothelial-cells---principal-coordinates-apl" class="level2">
 <h2 class="anchored" data-anchor-id="endothelial-cells---principal-coordinates-apl">Endothelial cells - principal coordinates APL</h2>
-<div id="a8c78de6" class="cell" data-execution_count="13">
+<div id="a1cf0305" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"Vascular_endothelial_cell"</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">which</span>(cak<span class="sc">@</span>cell_clusters <span class="sc">==</span> cls)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>direction <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[cls]], ]</span>
@@ -627,7 +627,7 @@ Clustering results:
 <span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>e_dir <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[<span class="st">"Endothelial_cell"</span>]], ]</span>
 <span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>e_dir <span class="ot">&lt;-</span> <span class="fu">model</span>(e_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="9d2c57bf" class="cell" data-execution_count="14">
+<div id="6c13f79e" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>p_ecs_prin <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  ca,</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  cak,</span>
@@ -695,7 +695,7 @@ Clustering results:
 <h1>Further Plots</h1>
 <section id="sm-plot" class="level2">
 <h2 class="anchored" data-anchor-id="sm-plot">SM plot</h2>
-<div id="024023ee" class="cell" data-execution_count="15">
+<div id="9e731baa" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>sm <span class="ot">&lt;-</span> <span class="fu">sm_plot</span>(</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cadir =</span> cak,</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -737,7 +737,7 @@ Clustering results:
 </div>
 </div>
 </div>
-<div id="a99fa17d" class="cell" data-execution_count="16">
+<div id="bf5dd7af" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>sm <span class="ot">&lt;-</span> <span class="fu">sm_plot</span>(</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cadir =</span> cak,</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -782,7 +782,7 @@ Clustering results:
 </section>
 <section id="sankey" class="level2">
 <h2 class="anchored" data-anchor-id="sankey">Sankey</h2>
-<div id="bf768f28" class="cell" data-execution_count="17">
+<div id="563a5be7" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggsankey)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>sce_sank <span class="ot">&lt;-</span> sce_sub</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -916,7 +916,7 @@ Clustering results:
 </section>
 <section id="angle-between-clusters" class="level2">
 <h2 class="anchored" data-anchor-id="angle-between-clusters">Angle between clusters</h2>
-<div id="c92efedf" class="cell" data-execution_count="18">
+<div id="729af270" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ang_rad <span class="ot">&lt;-</span> CAdir<span class="sc">:::</span><span class="fu">get_angle</span>(cak<span class="sc">@</span>directions, cak<span class="sc">@</span>directions)</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ang_rad) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_|</span><span class="sc">\\</span><span class="st">."</span>, <span class="st">" "</span>, <span class="fu">rownames</span>(ang_rad))</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ang_rad) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_|</span><span class="sc">\\</span><span class="st">."</span>, <span class="st">" "</span>, <span class="fu">colnames</span>(ang_rad))</span>
@@ -963,7 +963,7 @@ Clustering results:
 </div>
 </div>
 </div>
-<div id="77f96be3" class="cell" data-execution_count="19">
+<div id="af16935e" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>prl <span class="ot">&lt;-</span> <span class="fu">plot_results</span>(</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  cak,</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  ca,</span>
@@ -1033,7 +1033,7 @@ data's size values.”</code></pre>
 </section>
 <section id="panel-figure-2" class="level1">
 <h1>Panel Figure 2</h1>
-<div id="06861bf0" class="cell" data-execution_count="20">
+<div id="4f7d7a64" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pcl_panel <span class="ot">&lt;-</span> pcll</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">length</span>(pcl_panel))) {</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">!=</span> <span class="dv">1</span>) pcl_panel[[i]] <span class="ot">&lt;-</span> pcl_panel[[i]] <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">tag_level =</span> <span class="st">"new"</span>)</span>
@@ -1076,7 +1076,7 @@ data's size values.”</code></pre>
 </section>
 <section id="panel-suppl.-figure-1" class="level1">
 <h1>Panel Suppl. Figure 1</h1>
-<div id="c0368171" class="cell" data-execution_count="21">
+<div id="99b47ddb" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>pr_panel <span class="ot">&lt;-</span> <span class="fu">lapply</span>(</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">seq_along</span>(prl),</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> <span class="cf">function</span>(i) {</span>
@@ -1166,7 +1166,7 @@ data's size values.”</code></pre>
 </section>
 <section id="session-info" class="level1">
 <h1>Session Info</h1>
-<div id="ef1d6b88" class="cell" data-execution_count="22">
+<div id="5ad96976" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>R version 4.4.1 (2024-06-14)
