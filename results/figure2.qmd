@@ -148,6 +148,21 @@ pcll <- plot_clusters(
   return_list = TRUE,
   gsub_title = "_"
 )
+
+pcll_nolabel <- plot_clusters(
+  cadir = cak,
+  caobj = ca,
+  show_genes = TRUE,
+  label_genes = FALSE,
+  ntop = 5,
+  title_prefix = "",
+  axis = TRUE,
+  text_size = 19,
+  legend_pos = "right",
+  return_list = TRUE,
+  gsub_title = "_"
+)
+
 pcl <- wrap_plots(pcll, ncol = 3) +
   guide_area() +
   plot_layout(guides = "collect") &
@@ -542,7 +557,7 @@ sm <- sm_plot(
   title_size = 12,
   show_axis = FALSE,
   layout = "tree",
-  rotate = TRUE
+  rotate = FALSE
 )
 
 sm
@@ -565,7 +580,7 @@ ggsave(
 ```
 
 ```{r}
-sm <- sm_plot(
+sm_rot <- sm_plot(
   cadir = cak,
   caobj = ca,
   rm_redund = TRUE,
@@ -578,12 +593,12 @@ sm <- sm_plot(
   title_size = 12,
   show_axis = FALSE,
   layout = "tree",
-  rotate = FALSE
+  rotate = TRUE
 )
 
-sm
+sm_rot
 ggsave(
-  plot = sm,
+  plot = sm_rot,
   filename = file.path(imgdir, "tm_split_merge_plot_rotate.pdf"),
   device = cairo_pdf,
   width = 3000,
@@ -592,7 +607,7 @@ ggsave(
 )
 
 ggsave(
-  plot = sm,
+  plot = sm_rot,
   filename = file.path(imgdir, "tm_split_merge_plot_rotate.png"),
   width = 4000,
   height = 2100,
@@ -806,6 +821,121 @@ pr
 # Panel Figure 2
 
 ```{r}
+pcll_nolegend <- lapply(pcll, function(x) {
+  x + guides(color = "none")
+})
+# fmt: skip
+layout <- c(
+  # left column no label
+  area(t = 1 , b = 6 , l = 1, r = 6),
+  area(t = 7 , b = 12, l = 1, r = 6),
+  area(t = 13, b = 18, l = 1, r = 6),
+  area(t = 19, b = 24, l = 1, r = 6),
+  # left column with label
+  area(t = 1 , b = 6 , l = 7, r = 12),
+  area(t = 7 , b = 12, l = 7, r = 12),
+  area(t = 13, b = 18, l = 7, r = 12),
+  area(t = 19, b = 24, l = 7, r = 12),
+  # right column no label
+  area(t = 1 , b = 6 , l = 16, r = 21),
+  area(t = 7 , b = 12, l = 16, r = 21),
+  area(t = 13, b = 18, l = 16, r = 21),
+  # right column with label
+  area(t = 1 , b = 6 , l = 22, r = 27),
+  area(t = 7 , b = 12, l = 22, r = 27),
+  area(t = 13, b = 18, l = 22, r = 27),
+  # Guide Area
+  area(t = 19, b = 24, l = 16, r = 27)
+)
+
+first_half_fig2 <- wrap_plots(
+  c(
+    pcll_nolabel[1:4],
+    pcll_nolegend[1:4],
+    pcll_nolabel[5:7],
+    pcll_nolegend[5:7],
+    list(guide_area())
+  ),
+  design = layout,
+  guides = "collect"
+) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(
+      size = 18,
+      face = "bold",
+    )
+    # legend.position = "bottom"
+  )
+
+ggsave(
+  plot = first_half_fig2,
+  filename = file.path(imgdir, "fig2_apls.png"),
+  width = 6372,
+  height = 3312,
+  units = "px"
+)
+
+ggsave(
+  plot = first_half_fig2,
+  filename = file.path(imgdir, "fig2_apls.pdf"),
+  width = 6372,
+  height = 3312,
+  device = cairo_pdf,
+  units = "px"
+)
+```
+
+
+```{r}
+
+# fmt: skip
+layout <- c(
+  # left column no label
+  area(t = 2 , b = 4 , l = 1, r = 3),
+  area(t = 5 , b = 7, l = 1, r = 3),
+  area(t = 8, b = 8, l = 1, r = 3),
+  area(t = 1, b = 9, l = 4, r = 9)
+)
+
+second_half_fig2 <- p_bt_prin +
+  p_ecs_prin +
+  guide_area() +
+  wrap_elements(sm_rot) +
+  plot_layout(guides = "collect", design = layout) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(
+      size = 18,
+      face = "bold"
+    ),
+    legend.position = "bottom",
+    legend.box = "vertical"
+  )
+
+second_half_fig2
+
+ggsave(
+  plot = second_half_fig2,
+  filename = file.path(imgdir, "figure2_2ndhalf.png"),
+  width = 5372,
+  height = 3312,
+  units = "px"
+)
+
+ggsave(
+  plot = second_half_fig2,
+  filename = file.path(imgdir, "figure2_2ndhalf.pdf"),
+  width = 5372,
+  height = 3312,
+  device = cairo_pdf,
+  units = "px"
+)
+```
+
+
+
+```{r}
 pcl_panel <- pcll
 for (i in seq_len(length(pcl_panel))) {
   if (i != 1) pcl_panel[[i]] <- pcl_panel[[i]] + plot_layout(tag_level = "new")
@@ -820,7 +950,7 @@ fig2 <- (((wrap_plots(pcl_panel, ncol = 3) +
     guide_area() +
     plot_layout(guides = "collect", width = c(3, 3, 1)))) +
   plot_layout(height = c(2, 1)) |
-  wrap_elements(sm)) +
+  wrap_elements(sm_rot)) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
