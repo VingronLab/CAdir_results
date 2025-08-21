@@ -216,7 +216,7 @@ p_max_ari <- df %>%
   ) +
   guides(fill = "none")
 
-p_max_ari
+# p_max_ari
 
 ggsave(
   plot = p_max_ari,
@@ -272,7 +272,7 @@ p_max_nmi <- df %>%
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   guides(fill = "none")
 
-p_max_nmi
+# p_max_nmi
 
 ggsave(
   plot = p_max_nmi,
@@ -348,8 +348,7 @@ p_mean_ari <- df %>%
   ) +
   guides(fill = "none")
 
-p_mean_ari
-
+# p_mean_ari
 
 ggsave(
   plot = p_mean_ari,
@@ -413,8 +412,7 @@ p_mean_nmi <- df %>%
   ) +
   guides(fill = "none")
 
-p_mean_nmi
-
+# p_mean_nmi
 
 ggsave(
   plot = p_mean_nmi,
@@ -694,7 +692,7 @@ ggsave(
   height = 1750,
   units = "px"
 )
-p
+# p
 ```
 
 ```{r}
@@ -920,7 +918,8 @@ ggsave(
   width = 8,
   height = 4.2
 )
-p_succ
+
+# p_succ
 ```
 
 # Runtime & Scalability
@@ -1038,7 +1037,6 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
     y = "Running time (min)",
     title = "Runtime vs Data Set Size"
   ) +
-  coord_trans(x = "log10") +
   scale_alpha_manual(
     values = c(
       "CAdir" = 1,
@@ -1084,10 +1082,14 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
       "scG-cluster" = "solid"
     )
   ) +
+  # coord_trans(x = "log10") +
+  scale_y_log10(guide = guide_axis(n.dodge = 1)) +
+  scale_x_log10(guide = guide_axis(n.dodge = 1)) +
+  guides(x = "axis_logticks", y = "axis_logticks") +
   theme_bw(base_size = 18) +
   theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust = 1))
 
-rt
+# rt
 
 ggsave(
   plot = rt,
@@ -1109,7 +1111,7 @@ ggsave(
 options(repr.plot.width = 10, repr.plot.height = 10)
 
 alph <- 0.8
-rt <- scal_df %>%
+rt_no_DL <- scal_df %>%
   filter(algorithm != "scDeepCluster") %>%
   filter(algorithm != "scG-cluster") %>%
   ggplot(aes(x = dataset, y = (total_runtime / 60))) +
@@ -1200,17 +1202,17 @@ rt <- scal_df %>%
   theme_bw(base_size = 18) +
   theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust = 1))
 
-rt
+# rt_no_DL
 
 ggsave(
-  plot = rt,
+  plot = rt_no_DL,
   filename = file.path(imgdir, "runtime_singleproc_no_DL.pdf"),
   width = 2200,
   height = 1800,
   units = "px"
 )
 ggsave(
-  plot = rt,
+  plot = rt_no_DL,
   filename = file.path(imgdir, "runtime_singleproc_no_DL.png"),
   width = 2200,
   height = 1800,
@@ -1282,7 +1284,7 @@ devp_single <- res %>%
   theme_bw(base_size = 18) +
   theme(legend.position = "none")
 
-devp_single
+# devp_single
 
 ggsave(
   filename = file.path(imgdir, "deviation_aplq-09999_detection.pdf"),
@@ -1316,7 +1318,7 @@ devp <- res %>%
     plot.title = element_text(size = 28)
   )
 
-devp
+# devp
 
 ggsave(
   filename = file.path(imgdir, "deviation_detection.pdf"),
@@ -1350,7 +1352,7 @@ log2fc <- res %>%
   scale_color_mpimg() +
   theme_bw(base_size = 18)
 
-log2fc
+# log2fc
 
 ggsave(
   filename = file.path(imgdir, "log2fc_ct_detection.pdf"),
@@ -1426,7 +1428,7 @@ p3 <- plotUMAP(sce_sub, colour_by = "cell_ontology_class") +
   theme(legend.title = element_blank())
 
 comb_umap <- p1 + p2 + p3
-comb_umap
+# comb_umap
 
 ggsave(
   filename = file.path(imgdir, "tabula_muris_30_clusters.png"),
@@ -1438,6 +1440,37 @@ ggsave(
 ```
 
 # Panels
+
+## Suppl Runtime Panel
+
+```{r}
+rt_suppl <- rt +
+  devp +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    text = element_text(size = 18),
+    plot.title = element_text(size = 18, face = "plain"),
+    plot.tag = element_text(size = 20, face = "bold"),
+    legend.text = element_text(size = 14)
+  )
+
+ggsave(
+  plot = rt_suppl,
+  filename = file.path(imgdir, "rt_suppl_panel.png"),
+  width = 6000,
+  height = 2069,
+  units = "px"
+)
+ggsave(
+  plot = rt_suppl,
+  filename = file.path(imgdir, "rt_suppl_panel.pdf"),
+  width = 6400,
+  height = 2200,
+  units = "px"
+)
+```
+
+
 ## Review Panel
 ```{r}
 fig1 <- (p_max_ari + p_mean_ari + plot_layout(guides = "collect")) +
@@ -1497,7 +1530,7 @@ ggsave(
   units = "px"
 )
 
-fig4
+# fig4
 ```
 
 ## Figure Panel Mean
@@ -1538,7 +1571,7 @@ ggsave(
   units = "px"
 )
 
-suppl_panel
+# suppl_panel
 ```
 # Environment
 
