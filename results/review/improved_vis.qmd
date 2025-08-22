@@ -294,9 +294,17 @@ fig1 <- ((p_bt4 / p_bt3) | (p_bt1 / p_bt2)) +
 
 ggsave(
   plot = fig1,
-  filename = file.path(imgdir, "new_vis_panel2.png"),
+  filename = file.path(imgdir, "plotting_functions.png"),
   width = 3200,
   height = 1600,
+  units = "px"
+)
+ggsave(
+  plot = fig1,
+  filename = file.path(imgdir, "plotting_functions.pdf"),
+  width = 3200,
+  height = 1600,
+  device = cairo_pdf,
   units = "px"
 )
 ```
