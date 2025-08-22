@@ -21,9 +21,11 @@ jupyter:
 # setwd("./")
 renv::load()
 source("./results/utils.R")
+#FIXME: Remove!
+devtools::load_all("~/gits/ClemensKohl/CAdir")
 
 suppressPackageStartupMessages({
-  library(CAdir)
+  # library(CAdir)
   library(APL)
   library(SingleCellExperiment)
   library(dplyr)
@@ -124,7 +126,8 @@ ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
 cat("ARI:", ari$ARI)
 
 um <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
-um
+# NOTE: Uncomment to plot
+# um
 
 ggsave(
   plot = um,
@@ -186,7 +189,8 @@ ggsave(
   units = "px"
 )
 
-pcl
+# NOTE: Uncomment to plot
+# pcl
 ```
 
 ## B & T cells - standard coordinates APL
@@ -272,7 +276,8 @@ p_bt_std <- cluster_apl(
   ggtitle("B cell") +
   theme_bw(base_size = 16)
 
-p_bt_std
+# NOTE: Uncomment to plot
+# p_bt_std
 
 ggsave(
   plot = p_bt_std,
@@ -347,7 +352,8 @@ p_ecs_std <- cluster_apl(
   ggtitle("Vascular endothelial cell") +
   theme_bw(base_size = 16)
 
-p_ecs_std
+# NOTE: Uncomment to plot
+# p_ecs_std
 
 ggsave(
   plot = p_ecs_std,
@@ -446,7 +452,8 @@ p_bt_prin <- cluster_apl(
   theme_bw(base_size = 18) +
   theme(plot.title = element_text(size = 22))
 
-p_bt_prin
+# NOTE: Uncomment to plot
+# p_bt_prin
 
 ggsave(
   plot = p_bt_prin,
@@ -521,7 +528,8 @@ p_ecs_prin <- cluster_apl(
   theme_bw(base_size = 18) +
   theme(plot.title = element_text(size = 22))
 
-p_ecs_prin
+# NOTE: Uncomment to plot
+# p_ecs_prin
 
 ggsave(
   plot = p_ecs_prin,
@@ -560,7 +568,9 @@ sm <- sm_plot(
   rotate = FALSE
 )
 
-sm
+# NOTE: Uncomment to plot
+# sm
+
 ggsave(
   plot = sm,
   filename = file.path(imgdir, "tm_split_merge_plot.pdf"),
@@ -596,7 +606,9 @@ sm_rot <- sm_plot(
   rotate = TRUE
 )
 
-sm_rot
+# NOTE: Uncomment to plot
+# sm_rot
+
 ggsave(
   plot = sm_rot,
   filename = file.path(imgdir, "tm_split_merge_plot_rotate.pdf"),
@@ -718,7 +730,8 @@ sank <- ggplot(
     legend.position = "none"
   )
 
-sank
+# NOTE: Uncomment to plot
+# sank
 
 ggsave(
   plot = sank,
@@ -770,7 +783,8 @@ pang <- ggplot(long_ang, aes(x = cluster, y = to_cluster, fill = angle)) +
   ) +
   ggtitle("Angle between clusters")
 
-pang
+# NOTE: Uncomment to plot
+# pang
 
 ggsave(
   plot = pang,
@@ -815,7 +829,8 @@ ggsave(
   units = "px"
 )
 
-pr
+# NOTE: Uncomment to plot
+# pr
 ```
 
 # Panel Figure 2

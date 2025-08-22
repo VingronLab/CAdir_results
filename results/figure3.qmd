@@ -21,9 +21,11 @@ jupyter:
 # setwd("./")
 renv::load()
 source("./results/utils.R")
+#FIXME: Remove!
+devtools::load_all("~/gits/ClemensKohl/CAdir")
 
 suppressPackageStartupMessages({
-  library(CAdir)
+  # library(CAdir)
   library(APL)
   library(SingleCellExperiment)
   library(dplyr)
@@ -123,7 +125,9 @@ um2 <- plotUMAP(sce, colour = "cell_type")
 
 ari <- aricode::clustComp(sce$cadir, sce$cell_type)
 p <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
-p
+
+# NOTE: Uncomment to plot
+# p
 
 ggsave(
   plot = p,
@@ -157,7 +161,8 @@ pc_mod <- ggpubr::ggarrange(
   ncol = 3
 )
 
-pc_mod
+# NOTE: Uncomment to plot
+# pc_mod
 
 ggsave(
   plot = pc_mod,
@@ -236,7 +241,8 @@ p_expr <- scater::plotExpression(
     legend.position = "none"
   )
 
-p_expr
+# NOTE: Uncomment to plot
+# p_expr
 
 ggsave(
   plot = p_expr,
@@ -294,7 +300,8 @@ p_cl5_cells <- cluster_apl(
     max.overlaps = Inf
   )
 
-p_cl5_cells
+# NOTE: Uncomment to plot
+# p_cl5_cells
 
 ggsave(
   plot = p_cl5_cells,
@@ -375,7 +382,8 @@ pc_corr <- wrap_plots(pc_corr_list, ncol = 2, nrow = 3) +
   plot_layout(guides = "collect")
 
 cak_corr
-pc_corr
+# NOTE: Uncomment to plot
+# pc_corr
 
 ggsave(
   plot = pc_corr,
@@ -535,7 +543,8 @@ sank <- ggplot(
     legend.position = "none"
   )
 
-sank
+# NOTE: Uncomment to plot
+# sank
 
 ggsave(
   plot = sank,
@@ -585,7 +594,9 @@ p <- ggplot(
     colours = c("#29485d", "#006c66", "#c6d325", "#ef7c00"),
   ) +
   theme_bw()
-p
+
+# NOTE: Uncomment to plot
+# p
 ```
 
 Gene Set enrichment over all corrected clusters:
@@ -629,7 +640,8 @@ p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
     plot.title = element_text(size = 16, face = "plain")
   ) # "bold"
 
-p_gs_enr
+# NOTE: Uncomment to plot
+# p_gs_enr
 
 ggsave(
   plot = p_gs_enr,
@@ -660,7 +672,9 @@ sm <- sm_plot(
   annotate_clusters = TRUE,
   org = "hs"
 )
-sm
+
+# NOTE: Uncomment to plot
+# sm
 
 ggsave(
   plot = sm,
@@ -797,7 +811,8 @@ sank_anno <- ggplot(
     legend.position = "none"
   )
 
-sank_anno
+# NOTE: Uncomment to plot
+# sank_anno
 
 ggsave(
   plot = sank_anno,

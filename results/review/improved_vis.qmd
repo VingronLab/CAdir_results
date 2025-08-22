@@ -21,6 +21,8 @@ jupyter:
 # setwd("./")
 renv::load()
 source("./results/utils.R")
+#FIXME: Remove!
+devtools::load_all("~/gits/ClemensKohl/CAdir")
 
 suppressPackageStartupMessages({
   library(CAdir)
@@ -124,7 +126,9 @@ ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
 cat("ARI:", ari$ARI)
 
 um <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
-um
+
+# NOTE: Uncomment to plot
+# um
 
 ggsave(
   plot = um,
@@ -151,7 +155,9 @@ sm <- sm_plot(
   show_axis = FALSE
 )
 
-sm
+# NOTE: Uncomment to plot
+# sm
+
 ggsave(
   plot = sm,
   filename = file.path(imgdir, "tm_split_merge_plot.pdf"),
@@ -189,7 +195,8 @@ p_bt1 <- cluster_apl(
 ) +
   ggtitle("Large genes, small cells")
 
-p_bt1
+# NOTE: Uncomment to plot
+# p_bt1
 ```
 ## small genes
 
@@ -228,7 +235,8 @@ p_bt3 <- cluster_apl(
 ) +
   ggtitle("genes only, top 10 labelled")
 
-p_bt3
+# NOTE: Uncomment to plot
+# p_bt3
 ```
 
 ```{r}
@@ -247,7 +255,8 @@ p_bt4 <- cluster_apl(
   guides(shape = FALSE, size = FALSE, linetype = FALSE) +
   ggtitle("cells only, colored by cluster")
 
-p_bt4
+# NOTE: Uncomment to plot
+# p_bt4
 ```
 
 
@@ -261,7 +270,9 @@ fig <- (wrap_elements(sm)) +
   plot_layout(widths = c(2, 1)) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 18))
-fig
+
+# NOTE: Uncomment to plot
+# fig
 
 ggsave(
   plot = fig,
@@ -277,8 +288,9 @@ ggsave(
 fig1 <- ((p_bt4 / p_bt3) | (p_bt1 / p_bt2)) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 18))
-fig1
 
+# NOTE: Uncomment to plot
+# fig1
 
 ggsave(
   plot = fig1,
