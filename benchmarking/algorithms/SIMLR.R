@@ -8,7 +8,7 @@ res <- SIMLR(
   X = cnts, #TODO: Logcounts or raw counts?
   c = simlr_k,
   no.dim = ndim,
-  k = k_tuning, # 10 #FIXME: Find out what it is and if it should be changed!
+  k = k_tuning, # 10
   if.impute = FALSE,
   normalize = FALSE,
   cores.ratio = 0

@@ -21,8 +21,6 @@ jupyter:
 # setwd("./")
 renv::load()
 source("./results/utils.R")
-#FIXME: Remove!
-devtools::load_all("~/gits/ClemensKohl/CAdir")
 
 suppressPackageStartupMessages({
   library(CAdir)
