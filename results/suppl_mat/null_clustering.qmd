@@ -1,0 +1,162 @@
+---
+title: Null Clustering
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  library(CAdir)
+  library(APL)
+
+  library(SingleCellExperiment)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(scRNAseq)
+  library(splatter)
+
+  library(dplyr)
+  library(tidyr)
+
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/suppl_mat/null_clustering/")
+dir.create(imgdir, recursive = TRUE)
+```
+
+# Simulate Data
+```{r}
+# sce <- ZeiselBrainData()
+sce <- DarmanisBrainData()
+clust_sce <- quickCluster(sce)
+sce <- computeSumFactors(sce, cluster = clust_sce, min.mean = 0.1)
+sce <- logNormCounts(sce)
+
+logcounts(sce) <- as.matrix(logcounts(sce))
+counts(sce) <- as.matrix(counts(sce))
+```
+
+```{r}
+
+params <- splatEstimate(sce)
+sim <- splatSimulate(
+  params,
+  nGenes = 10000,
+  batchCells = 1000,
+  de.prob = 0.6,
+  # de.facLoc = 0.75,
+  # de.facScale = 0.75,
+  out.prob = 0.001,
+  de.downProb = c(0),
+  dropout.type = "experiment",
+  verbose = FALSE,
+  seed = 1234
+)
+
+# clust_sim <- quickCluster(sim)
+# sim <- computeSumFactors(sim, cluster = clust_sim, min.mean = 0.1)
+# sim <- logNormCounts(sim)
+# sim <- runUMAP(sim)
+# p_umap <- plotUMAP(sim)
+
+sim_bu <- sim
+```
+
+# Clustering
+```{r}
+qc_df <- perCellQCMetrics(sim)
+
+reasons <- perCellQCFilters(
+  qc_df,
+  sum.field = "sum",
+  detected.field = "detected",
+  sub.fields = NULL
+)
+colData(sim) <- cbind(colData(sim), qc_df)
+sim$discard <- reasons$discard
+sim <- sim[, !reasons$discard]
+
+# filter out genes expressed in less than 1% cells
+bm <- counts(sim) > 0
+ncell <- round(ncol(sim) * 0.01)
+idx <- which((rowSums(bm) > ncell))
+sim <- sim[idx, ]
+
+# Normalize
+clust_sim <- quickCluster(sim)
+sim <- computeSumFactors(sim, cluster = clust_sim, min.mean = 0.1)
+sim <- logNormCounts(sim)
+sim <- runUMAP(sim)
+
+sim_var <- scran::modelGeneVar(sim)
+sim_top <- scran::getTopHVGs(sim_var, prop = 0.4)
+sim <- sim[sim_top, ]
+```
+
+```{r}
+
+ca <- cacomp(
+  obj = as.matrix(logcounts(sim)),
+  princ_coords = 3,
+  dims = 30,
+  top = nrow(sim),
+  residuals = "pearson",
+  clip = TRUE
+)
+```
+
+```{r}
+set.seed(2358)
+cabic <- dirclust_splitmerge(
+  caobj = ca,
+  k = 1,
+  cutoff = NULL,
+  method = "random",
+  apl_quant = 0.99,
+  min_cells = 30,
+  make_plots = TRUE,
+  apl_cutoff_reps = 500,
+  qcutoff = 0.8,
+  convergence_thr = 0.001
+)
+
+cabic
+```
+
+
+```{r}
+sim$cadir <- cabic@cell_clusters
+plotUMAP(sim, color_by = "cadir")
+```
+
+## Plot results.
+```{r}
+plot_clusters(cadir = cabic, caobj = ca)
+```
+
+
+
+
+
