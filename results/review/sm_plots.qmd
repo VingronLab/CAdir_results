@@ -208,14 +208,14 @@ tirosh <- tirosh[chosen, ]
 
 cnts <- as.matrix(logcounts(tirosh))
 
-caobj <- cacomp(cnts, dims = dft$dims, top = nrow(cnts), python = TRUE)
+t_caobj <- cacomp(cnts, dims = dft$dims, top = nrow(cnts), python = TRUE)
 
 angle <- as.numeric(dft$angle)
 if (angle == 0) {
   angle <- NULL
 }
-cadir <- dirclust_splitmerge(
-  caobj = caobj,
+t_cadir <- dirclust_splitmerge(
+  caobj = t_caobj,
   k = dft$kdir,
   cutoff = angle,
   method = "random",
@@ -227,25 +227,43 @@ cadir <- dirclust_splitmerge(
   make_plots = FALSE
 )
 
-cadir
+t_cadir
 
-tirosh$cadir <- cadir@cell_clusters
-aricode::ARI(tirosh$truth, tirosh$cadir)
+tirosh$cadir <- t_cadir@cell_clusters
+ari <- aricode::ARI(tirosh$truth, tirosh$cadir)
+
+cat("Tirosh ARI:", ari)
 ```
 ## UMAP
 ```{r}
-um1 <- plotUMAP(tirosh, colour = "cadir")
-um2 <- plotUMAP(tirosh, colour = "truth")
+t_um1 <- plotUMAP(tirosh, colour = "cadir")
+t_um2 <- plotUMAP(tirosh, colour = "truth")
 
-um1 + um2
+# t_um1 + t_um2
+
+ggsave(
+  plot = t_um1,
+  filename = file.path(imgdir, "cadir_umap_tirosh.png")
+  # width = 6000,
+  # height = 4000,
+  # units = "px"
+)
+
+ggsave(
+  plot = t_um2,
+  filename = file.path(imgdir, "truth_umap_tirosh.png")
+  # width = 6000,
+  # height = 4000,
+  # units = "px"
+)
 ```
 
 ## SM plot
 ```{r}
 
-sm <- sm_plot(
-  cadir = cadir,
-  caobj = caobj,
+t_sm <- sm_plot(
+  cadir = t_cadir,
+  caobj = t_caobj,
   rm_redund = TRUE,
   keep_end = FALSE,
   highlight_cluster = TRUE,
@@ -257,6 +275,14 @@ sm <- sm_plot(
   show_axis = FALSE,
   layout = "tree",
   rotate = FALSE
+)
+
+ggsave(
+  plot = t_sm,
+  filename = file.path(imgdir, "split_merge_tirosh.png")
+  # width = 6000,
+  # height = 4000,
+  # units = "px"
 )
 ```
 
@@ -272,7 +298,7 @@ brain <- readRDS(file)
 # Run clustering - Brain Organoids
 
 ```{r}
-dft <- df_m %>%
+dfb <- df_m %>%
   filter(dataset == "Brain Organoids") %>%
   filter(algorithm == "CAdir_auto") %>%
   select(
@@ -293,49 +319,66 @@ dft <- df_m %>%
 ```{r}
 set.seed(2358)
 genevars <- scran::modelGeneVar(brain, assay.type = "logcounts")
-chosen <- scran::getTopHVGs(genevars, n = dft$ntop, var.threshold = NULL)
+chosen <- scran::getTopHVGs(genevars, n = dfb$ntop, var.threshold = NULL)
 brain <- brain[chosen, ]
 
 cnts <- as.matrix(logcounts(brain))
 
-caobj <- cacomp(cnts, dims = dft$dims, top = nrow(cnts), python = TRUE)
+bo_caobj <- cacomp(cnts, dims = dfb$dims, top = nrow(cnts), python = TRUE)
 
-angle <- as.numeric(dft$angle)
+angle <- as.numeric(dfb$angle)
 if (angle == 0) {
   angle <- NULL
 }
-cadir <- dirclust_splitmerge(
-  caobj = caobj,
-  k = dft$kdir,
+bo_cadir <- dirclust_splitmerge(
+  caobj = bo_caobj,
+  k = dfb$kdir,
   cutoff = angle,
   method = "random",
-  apl_quant = dft$apl_quant,
-  qcutoff = dft$qcut,
+  apl_quant = dfb$apl_quant,
+  qcutoff = dfb$qcut,
   counts = NULL,
   min_cells = 20,
   reps = 5,
   make_plots = FALSE
 )
 
-cadir
+bo_cadir
 
-brain$cadir <- cadir@cell_clusters
-aricode::ARI(brain$truth, brain$cadir)
+brain$cadir <- bo_cadir@cell_clusters
+ari <- aricode::ARI(brain$truth, brain$cadir)
+cat("Brain Organoids ARI:", ari)
 ```
 ## UMAP
 ```{r}
-um1 <- plotUMAP(brain, colour = "cadir")
-um2 <- plotUMAP(brain, colour = "truth")
+bo_um1 <- plotUMAP(brain, colour = "cadir")
+bo_um2 <- plotUMAP(brain, colour = "truth")
 
-um1 + um2
+# bo_um1 + bo_um2
+
+ggsave(
+  plot = bo_um1,
+  filename = file.path(imgdir, "cadir_umap_brain_organoids.png")
+  # width = 6000,
+  # height = 4000,
+  # units = "px"
+)
+
+ggsave(
+  plot = bo_um2,
+  filename = file.path(imgdir, "truth_umap_brain_organoids.png")
+  # width = 6000,
+  # height = 4000,
+  # units = "px"
+)
 ```
 
 ## SM plot
 ```{r}
 
-sm <- sm_plot(
-  cadir = cadir,
-  caobj = caobj,
+bo_sm <- sm_plot(
+  cadir = bo_cadir,
+  caobj = bo_caobj,
   rm_redund = TRUE,
   keep_end = FALSE,
   highlight_cluster = TRUE,
@@ -348,5 +391,170 @@ sm <- sm_plot(
   layout = "tree",
   rotate = FALSE
 )
+
+ggsave(
+  plot = bo_sm,
+  filename = file.path(imgdir, "split_merge_brain_organoids.png")
+  # width = 6000,
+  # height = 4000,
+  # units = "px"
+)
 ```
+
+# Tabula Sapiens
+
+## Load data set
+```{r}
+
+file <- "./data/real/preprocessed/benchmarking/tabula_sapiens_tissue_filtered.rds"
+tabulas <- readRDS(file)
+rownames(tabulas) <- rowData(tabulas)$SYMBOL
+```
+
+# Run clustering - Brain Organoids
+
+```{r}
+dfts <- df_m %>%
+  filter(dataset == "Tabula Sapiens") %>%
+  filter(algorithm == "CAdir_auto") %>%
+  select(
+    algorithm,
+    dataset,
+    ARI,
+    max_ARI,
+    ntop,
+    ngenes,
+    dims,
+    kdir,
+    angle,
+    qcut,
+    apl_quant
+  )
+```
+
+```{r}
+set.seed(2358)
+genevars <- scran::modelGeneVar(tabulas, assay.type = "logcounts")
+chosen <- scran::getTopHVGs(genevars, n = dfts$ntop, var.threshold = NULL)
+tabulas <- tabulas[chosen, ]
+
+cnts <- as.matrix(logcounts(tabulas))
+
+ts_caobj <- cacomp(cnts, dims = dfts$dims, top = nrow(cnts), python = TRUE)
+
+angle <- as.numeric(dfts$angle)
+if (angle == 0) {
+  angle <- NULL
+}
+ts_cadir <- dirclust_splitmerge(
+  caobj = ts_caobj,
+  k = dfts$kdir,
+  cutoff = angle,
+  method = "random",
+  apl_quant = dfts$apl_quant,
+  qcutoff = dfts$qcut,
+  counts = NULL,
+  min_cells = 20,
+  reps = 5,
+  make_plots = FALSE
+)
+
+ts_cadir
+
+tabulas$cadir <- ts_cadir@cell_clusters
+ari <- aricode::ARI(tabulas$truth, tabulas$cadir)
+cat("Tabula Sapiens ARI:", ari)
+```
+## UMAP
+```{r}
+ts_um1 <- plotUMAP(brain, colour = "cadir")
+ts_um2 <- plotUMAP(brain, colour = "truth")
+
+# ts_um1 + ts_um2
+
+ggsave(
+  plot = ts_um1,
+  filename = file.path(imgdir, "cadir_umap_tabula_sapiens.png")
+  # width = 6000,
+  # height = 4000,
+  # units = "px"
+)
+
+ggsave(
+  plot = ts_um2,
+  filename = file.path(imgdir, "truth_umap_tabula_sapiens.png")
+  # width = 6000,
+  # height = 4000,
+  # units = "px"
+)
+```
+
+## SM plot
+```{r}
+
+ts_sm <- sm_plot(
+  cadir = ts_cadir,
+  caobj = ts_caobj,
+  rm_redund = TRUE,
+  keep_end = FALSE,
+  highlight_cluster = TRUE,
+  show_genes = FALSE,
+  annotate_clusters = TRUE,
+  org = "hs",
+  inlet_side = 0.11,
+  title_size = 12,
+  show_axis = FALSE,
+  layout = "tree",
+  rotate = FALSE
+)
+
+ggsave(
+  plot = ts_sm,
+  filename = file.path(imgdir, "split_merge_tabula_sapiens.png")
+  # width = 6000,
+  # height = 4000,
+  # units = "px"
+)
+```
+
+
+# Panels
+
+
+```{r}
+
+layout = c(
+  area(t = 1, b = 4, l = 1, r = 4),
+  area(t = 5, b = 8, l = 1, r = 4),
+  area(t = 1, b = 4, l = 5, r = 8),
+  area(t = 5, b = 8, l = 5, r = 8),
+  area(t = 1, b = 4, l = 9, r = 12),
+  area(t = 5, b = 8, l = 9, r = 12)
+)
+
+umap_panel <- t_um1 +
+  t_um2 +
+  bo_um1 +
+  bo_um2 +
+  ts_um1 +
+  ts_um2 +
+  plot_layout(design = layout) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 18, face = "bold"))
+
+ggsave(
+  plot = sfig1,
+  filename = file.path(imgdir, "difficult_clusterings.png"),
+  width = 6000,
+  height = 4000,
+  units = "px"
+)
+```
+
+
+# Session Info
+```{r}
+sessionInfo()
+```
+
 
