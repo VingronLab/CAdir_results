@@ -1,0 +1,352 @@
+---
+title: sm_plots
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  library(CAdir)
+  library(APL)
+  library(SingleCellExperiment)
+  library(dplyr)
+
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(patchwork)
+  library(ggtext)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review/sm_plots/")
+dir.create(imgdir, recursive = TRUE)
+```
+
+# Load parameters
+```{r}
+date <- "20250528_cpu"
+evldir <- file.path("./results/benchmarking/results/real/", date, "eval")
+
+options(repr.plot.width = 15, repr.plot.height = 10)
+```
+```{r}
+### Load the results of real data sets
+files <- list.files(evldir, "*.rds", full.names = TRUE)
+
+df <- data.frame()
+for (file in files) {
+  data <- readRDS(file)
+  df <- bind_rows(df, data)
+}
+
+df$dataset <- gsub("_filtered", "", df$dataset)
+```
+
+```{r}
+df$dataset[df$dataset == "FreytagGold"] <- "Freytag Gold"
+df$dataset[df$dataset == "PBMC_10X"] <- "PBMC10x"
+df$dataset[df$dataset == "Tirosh_nonmaglignant"] <- "Tirosh"
+df$dataset[df$dataset == "ZeiselBrain"] <- "Zeisel"
+df$dataset[df$dataset == "BaronPancreas"] <- "Baron Pancreas"
+df$dataset[df$dataset == "dmel_E14-16h"] <- "Dmel Spatial"
+df$dataset[df$dataset == "tabula_sapiens_tissue"] <- "Tabula Sapiens"
+df$dataset[df$dataset == "brain_organoids"] <- "Brain Organoids"
+
+df <- df %>%
+  mutate(algorithm = gsub("CAbiNet_igraph", "CAbiNet", algorithm)) %>%
+  mutate(pattern = paste0(algorithm, dataset))
+```
+
+```{r}
+# Filter out combinations where all runs fail.
+test <- df %>%
+  group_by(dataset, algorithm) %>%
+  mutate(fail.n = sum(is.na(ARI)), scsd.n = n()) %>%
+  filter(fail.n == scsd.n | (scsd.n == 0))
+
+## pick 1 algor./dataset combinaton of failed runs
+df_na <- test %>%
+  group_by(algorithm, dataset) %>%
+  arrange(runtime) %>%
+  select(-fail.n, -scsd.n) %>%
+  top_n(n = 1, wt = runtime)
+
+## run_stat <- table(df$algorithm, df$dataset)
+##
+## # Find missing runs (no values because crash/error)
+## # Find row and column indices of cells equal to 0
+## zero_indices <- which(run_stat == 0, arr.ind = TRUE)
+##
+## # Create a data frame with row names and column names
+## zero_df <- data.frame(
+##   algorithm = rownames(run_stat)[zero_indices[, 1]],
+##   dataset = colnames(run_stat)[zero_indices[, 2]]
+## )
+##
+## df_na <- dplyr::bind_rows(df_na, zero_df)
+```
+
+```{r}
+# Filter out runs which failed
+subdf <- df[!(df$pattern %in% test$pattern), ]
+subdf <- subdf[!is.na(subdf$ARI), ]
+subdf <- rbind(subdf, df_na) # add a single instance of failed runs & missing runs.
+
+subdf$algorithm <- factor(
+  subdf$algorithm,
+  levels = c(
+    "CAdir",
+    "CAdir_auto",
+    "kmeans",
+    "CAbiNet",
+    "RaceID",
+    "RaceID_auto",
+    "Seurat",
+    "Monocle3",
+    "SC3",
+    "SIMLR",
+    "scDeepCluster",
+    "scG-cluster"
+  )
+)
+
+df_g <- subdf %>%
+  group_by(algorithm, dataset) %>%
+  mutate(
+    Mean_ARI = mean(ARI),
+    Max_ARI = max(ARI),
+    Median_ARI = median(ARI),
+    Mean_NMI = mean(NMI),
+    Max_NMI = max(NMI)
+  )
+
+df_g$dataset <- factor(
+  df_g$dataset,
+  levels = c(
+    "Darmanis",
+    "Freytag Gold",
+    "PBMC10x",
+    "Tirosh",
+    "Zeisel",
+    "Baron Pancreas",
+    "Dmel Spatial",
+    "Tabula Sapiens",
+    "Brain Organoids"
+  )
+)
+```
+
+```{r}
+df_m <- df_g %>%
+  group_by(sim, algorithm, dataset) %>%
+  mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
+  mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
+  # select(dataset, sim, algorithm, max_NMI, max_ARI) %>%
+  filter(ARI == max_ARI) %>%
+  distinct(dataset, sim, algorithm, max_NMI, max_ARI, .keep_all = TRUE) %>%
+  ungroup()
+
+df_m$max_NMI[is.infinite(df_m$max_NMI)] <- NA
+df_m$max_ARI[is.infinite(df_m$max_ARI)] <- NA
+```
+# Tirosh
+
+## Load data set
+
+```{r}
+
+file <- "./data/real/preprocessed/benchmarking/Tirosh_nonmaglignant_filtered.rds"
+tirosh <- readRDS(file)
+```
+
+
+# Run clustering - Tirosh
+
+```{r}
+dft <- df_m %>%
+  filter(dataset == "Tirosh") %>%
+  filter(algorithm == "CAdir_auto") %>%
+  select(
+    algorithm,
+    dataset,
+    ARI,
+    max_ARI,
+    ntop,
+    ngenes,
+    dims,
+    kdir,
+    angle,
+    qcut,
+    apl_quant
+  )
+```
+
+```{r}
+set.seed(2358)
+genevars <- scran::modelGeneVar(tirosh, assay.type = "logcounts")
+chosen <- scran::getTopHVGs(genevars, n = dft$ntop, var.threshold = NULL)
+tirosh <- tirosh[chosen, ]
+
+cnts <- as.matrix(logcounts(tirosh))
+
+caobj <- cacomp(cnts, dims = dft$dims, top = nrow(cnts), python = TRUE)
+
+angle <- as.numeric(dft$angle)
+if (angle == 0) {
+  angle <- NULL
+}
+cadir <- dirclust_splitmerge(
+  caobj = caobj,
+  k = dft$kdir,
+  cutoff = angle,
+  method = "random",
+  apl_quant = dft$apl_quant,
+  qcutoff = dft$qcut,
+  counts = NULL,
+  min_cells = 20,
+  reps = 5,
+  make_plots = FALSE
+)
+
+cadir
+
+tirosh$cadir <- cadir@cell_clusters
+aricode::ARI(tirosh$truth, tirosh$cadir)
+```
+## UMAP
+```{r}
+um1 <- plotUMAP(tirosh, colour = "cadir")
+um2 <- plotUMAP(tirosh, colour = "truth")
+
+um1 + um2
+```
+
+## SM plot
+```{r}
+
+sm <- sm_plot(
+  cadir = cadir,
+  caobj = caobj,
+  rm_redund = TRUE,
+  keep_end = FALSE,
+  highlight_cluster = TRUE,
+  show_genes = FALSE,
+  annotate_clusters = TRUE,
+  org = "hs",
+  inlet_side = 0.11,
+  title_size = 12,
+  show_axis = FALSE,
+  layout = "tree",
+  rotate = FALSE
+)
+```
+
+# Brain organoids
+
+## Load data set
+```{r}
+
+file <- "./data/real/preprocessed/benchmarking/brain_organoids_filtered.rds"
+brain <- readRDS(file)
+```
+
+# Run clustering - Brain Organoids
+
+```{r}
+dft <- df_m %>%
+  filter(dataset == "Brain Organoids") %>%
+  filter(algorithm == "CAdir_auto") %>%
+  select(
+    algorithm,
+    dataset,
+    ARI,
+    max_ARI,
+    ntop,
+    ngenes,
+    dims,
+    kdir,
+    angle,
+    qcut,
+    apl_quant
+  )
+```
+
+```{r}
+set.seed(2358)
+genevars <- scran::modelGeneVar(brain, assay.type = "logcounts")
+chosen <- scran::getTopHVGs(genevars, n = dft$ntop, var.threshold = NULL)
+brain <- brain[chosen, ]
+
+cnts <- as.matrix(logcounts(brain))
+
+caobj <- cacomp(cnts, dims = dft$dims, top = nrow(cnts), python = TRUE)
+
+angle <- as.numeric(dft$angle)
+if (angle == 0) {
+  angle <- NULL
+}
+cadir <- dirclust_splitmerge(
+  caobj = caobj,
+  k = dft$kdir,
+  cutoff = angle,
+  method = "random",
+  apl_quant = dft$apl_quant,
+  qcutoff = dft$qcut,
+  counts = NULL,
+  min_cells = 20,
+  reps = 5,
+  make_plots = FALSE
+)
+
+cadir
+
+brain$cadir <- cadir@cell_clusters
+aricode::ARI(brain$truth, brain$cadir)
+```
+## UMAP
+```{r}
+um1 <- plotUMAP(brain, colour = "cadir")
+um2 <- plotUMAP(brain, colour = "truth")
+
+um1 + um2
+```
+
+## SM plot
+```{r}
+
+sm <- sm_plot(
+  cadir = cadir,
+  caobj = caobj,
+  rm_redund = TRUE,
+  keep_end = FALSE,
+  highlight_cluster = TRUE,
+  show_genes = FALSE,
+  annotate_clusters = TRUE,
+  org = "hs",
+  inlet_side = 0.11,
+  title_size = 12,
+  show_axis = FALSE,
+  layout = "tree",
+  rotate = FALSE
+)
+```
+
