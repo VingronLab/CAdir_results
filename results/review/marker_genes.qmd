@@ -831,6 +831,145 @@ ggsave(
 )
 ```
 
+# Panels
+
+```{r}
+bmarkers <- (bp1 + ggtitle("CAdir: Top 4 genes - B cells")) +
+  plot_spacer() +
+  (bp2 + ggtitle("scran: Top 4 genes - B cells")) +
+  plot_layout(
+    guides = "collect",
+    # axis = "collect",
+    width = c(19, 1, 19)
+  ) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 16),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    legend.position = "none",
+    strip.text.x = element_text(
+      size = 14,
+      face = "bold"
+    ),
+    strip.text.y = element_text(
+      size = 14,
+      face = "bold"
+    )
+  )
+
+ggsave(
+  plot = bmarkers,
+  filename = file.path(imgdir, "bcell_markers_panel.png"),
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+
+ggsave(
+  plot = bmarkers,
+  filename = file.path(imgdir, "bcell_markers_panel.pdf"),
+  device = cairo_pdf,
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+```
+
+```{r}
+
+cd4markers <- (cd4p1 + ggtitle("CAdir: Top 4 genes - Naive CD4+ T cells")) +
+  plot_spacer() +
+  (cd4p2 + ggtitle("scran: Top 4 genes - Naive CD4+ T cells")) +
+  plot_layout(
+    guides = "collect",
+    # axis = "collect",
+    width = c(19, 1, 19)
+  ) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 16),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    legend.position = "none",
+    strip.text.x = element_text(
+      size = 14,
+      face = "bold"
+    ),
+    strip.text.y = element_text(
+      size = 14,
+      face = "bold"
+    )
+  )
+
+ggsave(
+  plot = cd4markers,
+  filename = file.path(imgdir, "cd4tcells_markers_panel.png"),
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+
+ggsave(
+  plot = cd4markers,
+  filename = file.path(imgdir, "cd4tcells_markers_panel.pdf"),
+  device = cairo_pdf,
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+```
+
+## DEG comparison
+```{r}
+deg_comp_panel <- (p_shared +
+  ggtitle(
+    "Overlap between scran and CAdir",
+    subtitle = "all co-clustered genes"
+  )) +
+  (p_salpha +
+    ggtitle(
+      "Overlap between scran and CAdir",
+      subtitle = "genes with Sα-score > 0"
+    )) +
+  plot_layout(guides = "collect") +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 14),
+    axis.text.x = element_text(
+      size = 10,
+      angle = 45,
+      hjust = 1,
+      color = "black"
+    ),
+    axis.text.y = element_text(
+      size = 10,
+      # angle = 45,
+      # hjust = 1,
+      color = "black"
+    ),
+  )
+
+ggsave(
+  plot = deg_comp_panel,
+  filename = file.path(imgdir, "deg_comp_panel_panel.png"),
+  width = 4000,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  plot = deg_comp_panel,
+  filename = file.path(imgdir, "deg_comp_panel_panel.pdf"),
+  device = cairo_pdf,
+  width = 4000,
+  height = 2000,
+  units = "px"
+)
+```
+
+
 # Session Info
 ```{r}
 sessionInfo()
