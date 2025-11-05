@@ -565,17 +565,18 @@ ggsave(
 ## Split Merge Plots
 ```{r}
 
-sm_panel <- t_sm +
-  bo_sm +
-  ts_sm +
-  plot_annotation(tag_levels = "a") &
-  theme(plot.tag = element_text(size = 18, face = "bold"))
+sm_panel <- wrap_plots(t_sm) +
+  wrap_plots(bo_sm) +
+  wrap_plots(ts_sm) +
+  plot_annotation(tag_levels = "a")
+# &
+#   theme(plot.tag = element_text(size = 18, face = "bold"))
 
 ggsave(
   plot = sm_panel,
   filename = file.path(imgdir, "difficult_clusterings_split_merge.png"),
-  width = 6000,
-  height = 8000,
+  width = 8000,
+  height = 4000,
   units = "px"
 )
 ```
