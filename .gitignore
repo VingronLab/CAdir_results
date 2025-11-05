@@ -1,5 +1,6 @@
 .ipynb_checkpoints
 results/img/*/
+data/*
 # results/figure1_files
 # results/figure2_files
 # results/figure3_files

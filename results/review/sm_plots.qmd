@@ -260,7 +260,7 @@ ggsave(
 
 ## SM plot
 ```{r}
-
+pdf(file = NULL)
 t_sm <- sm_plot(
   cadir = t_cadir,
   caobj = t_caobj,
@@ -268,7 +268,7 @@ t_sm <- sm_plot(
   keep_end = FALSE,
   highlight_cluster = TRUE,
   show_genes = FALSE,
-  annotate_clusters = TRUE,
+  annotate_clusters = FALSE,
   org = "hs",
   inlet_side = 0.11,
   title_size = 12,
@@ -276,6 +276,7 @@ t_sm <- sm_plot(
   layout = "tree",
   rotate = FALSE
 )
+dev.off()
 
 ggsave(
   plot = t_sm,
@@ -376,6 +377,7 @@ ggsave(
 ## SM plot
 ```{r}
 
+pdf(file = NULL)
 bo_sm <- sm_plot(
   cadir = bo_cadir,
   caobj = bo_caobj,
@@ -383,7 +385,7 @@ bo_sm <- sm_plot(
   keep_end = FALSE,
   highlight_cluster = TRUE,
   show_genes = FALSE,
-  annotate_clusters = TRUE,
+  annotate_clusters = FALSE,
   org = "hs",
   inlet_side = 0.11,
   title_size = 12,
@@ -391,15 +393,22 @@ bo_sm <- sm_plot(
   layout = "tree",
   rotate = FALSE
 )
+dev.off()
 
 ggsave(
   plot = bo_sm,
-  filename = file.path(imgdir, "split_merge_brain_organoids.png")
-  # width = 6000,
-  # height = 4000,
-  # units = "px"
+  filename = file.path(imgdir, "split_merge_brain_organoids.png"),
+  width = 4000,
+  height = 6000,
+  units = "px"
 )
 ```
+
+
+```{r}
+rm(list = c("brain", "bo_caobj", "bo_cadir", "cnts"))
+```
+
 
 # Tabula Sapiens
 
@@ -408,7 +417,7 @@ ggsave(
 
 file <- "./data/real/preprocessed/benchmarking/tabula_sapiens_tissue_filtered.rds"
 tabulas <- readRDS(file)
-rownames(tabulas) <- rowData(tabulas)$SYMBOL
+# rownames(tabulas) <- rowData(tabulas)$SYMBOL
 ```
 
 # Run clustering - Brain Organoids
@@ -467,8 +476,8 @@ cat("Tabula Sapiens ARI:", ari)
 ```
 ## UMAP
 ```{r}
-ts_um1 <- plotUMAP(brain, colour = "cadir")
-ts_um2 <- plotUMAP(brain, colour = "truth")
+ts_um1 <- plotUMAP(tabulas, colour = "cadir")
+ts_um2 <- plotUMAP(tabulas, colour = "truth")
 
 # ts_um1 + ts_um2
 
@@ -492,6 +501,7 @@ ggsave(
 ## SM plot
 ```{r}
 
+pdf(file = NULL)
 ts_sm <- sm_plot(
   cadir = ts_cadir,
   caobj = ts_caobj,
@@ -499,7 +509,7 @@ ts_sm <- sm_plot(
   keep_end = FALSE,
   highlight_cluster = TRUE,
   show_genes = FALSE,
-  annotate_clusters = TRUE,
+  annotate_clusters = FALSE,
   org = "hs",
   inlet_side = 0.11,
   title_size = 12,
@@ -507,23 +517,24 @@ ts_sm <- sm_plot(
   layout = "tree",
   rotate = FALSE
 )
+dev.off()
 
 ggsave(
   plot = ts_sm,
-  filename = file.path(imgdir, "split_merge_tabula_sapiens.png")
-  # width = 6000,
-  # height = 4000,
-  # units = "px"
+  filename = file.path(imgdir, "split_merge_tabula_sapiens.png"),
+  width = 4000,
+  height = 6000,
+  units = "px"
 )
 ```
 
 
 # Panels
 
-
+## UMAPs
 ```{r}
 
-layout = c(
+layout <- c(
   area(t = 1, b = 4, l = 1, r = 4),
   area(t = 5, b = 8, l = 1, r = 4),
   area(t = 1, b = 4, l = 5, r = 8),
@@ -543,13 +554,32 @@ umap_panel <- t_um1 +
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
 ggsave(
-  plot = sfig1,
-  filename = file.path(imgdir, "difficult_clusterings.png"),
-  width = 6000,
+  plot = umap_panel,
+  filename = file.path(imgdir, "difficult_clusterings_umaps.png"),
+  width = 8000,
   height = 4000,
   units = "px"
 )
 ```
+
+## Split Merge Plots
+```{r}
+
+sm_panel <- t_sm +
+  bo_sm +
+  ts_sm +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 18, face = "bold"))
+
+ggsave(
+  plot = sm_panel,
+  filename = file.path(imgdir, "difficult_clusterings_split_merge.png"),
+  width = 6000,
+  height = 8000,
+  units = "px"
+)
+```
+
 
 
 # Session Info
