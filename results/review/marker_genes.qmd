@@ -706,7 +706,53 @@ ggsave(
 )
 ```
 
-## Comparison ScoreMarkers vs CAdir
+## Naive CD4 T cells
+```{r}
+cadir_mono <- cabic@gene_ranks$Monocyte
+cadir_score <- cadir_mono[cadir_mono$Score > 0, ]
+monodegs <- markers$Monocyte[
+  order(markers$Monocyte$mean.AUC, decreasing = TRUE),
+]
+monop1 <- plotExpression(
+  sce,
+  features = head(cadir_score$Rowname, 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+monop2 <- plotExpression(
+  sce,
+  features = head(rownames(monodegs), 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+# cd4p1 + cd4p2
+
+ggsave(
+  plot = monop1,
+  filename = file.path(imgdir, "monocytes_cadir_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = monop2,
+  filename = file.path(imgdir, "monocytes_bioconductor_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+```
+
+## Comparison CAdir vs ScoreMarkers 
 
 ```{r}
 rnks <- cabic@gene_ranks
@@ -919,6 +965,51 @@ ggsave(
   units = "px"
 )
 ```
+
+```{r}
+monomarkers <- (monop1 + ggtitle("CAdir: Top 4 genes - Monocytes")) +
+  plot_spacer() +
+  (monop2 + ggtitle("scran: Top 4 genes - Monocytes")) +
+  plot_layout(
+    guides = "collect",
+    # axis = "collect",
+    width = c(19, 1, 19)
+  ) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 16),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    legend.position = "none",
+    strip.text.x = element_text(
+      size = 14,
+      face = "bold"
+    ),
+    strip.text.y = element_text(
+      size = 14,
+      face = "bold"
+    )
+  )
+
+ggsave(
+  plot = monomarkers,
+  filename = file.path(imgdir, "monocytes_markers_panel.png"),
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+
+ggsave(
+  plot = monomarkers,
+  filename = file.path(imgdir, "monocytes_markers_panel.pdf"),
+  device = cairo_pdf,
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+```
+
+
 
 ## DEG comparison
 ```{r}
