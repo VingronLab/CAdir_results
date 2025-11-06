@@ -1,0 +1,137 @@
+---
+title: Marker Genes
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  library(CAdir)
+  library(APL)
+
+  library(SingleCellExperiment)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(ggplot2)
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+set.seed(2358)
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review/random_vs_perm/")
+resdir <- file.path(dir, "out/review/random_vs_perm/")
+dir.create(imgdir, recursive = TRUE)
+dir.create(resdir, recursive = TRUE)
+```
+
+```{r}
+data_dir <- file.path(
+  "./data/real/preprocessed/benchmarking/"
+)
+files <- list.files(path = data_dir, pattern = "*.rds", full.names = TRUE)
+```
+
+```{r}
+
+rnd_vec <- vector(mode = "numeric", length = length(files))
+perm_vec <- vector(mode = "numeric", length = length(files))
+nms <- vector(mode = "character", length = length(files))
+
+for (i in seq_len(length(files))) {
+  f <- files[i]
+  fnm <- gsub("_filtered.rds", "", basename(f))
+  sce <- readRDS(f)
+
+  set.seed(1234)
+  sce_var <- scran::modelGeneVar(sce)
+  sce_top <- scran::getTopHVGs(sce_var, n = 2000, var.threshold = NULL) #1000
+  sce <- sce[sce_top, ]
+  cnts <- as.matrix(logcounts(sce))
+
+  ca <- cacomp(
+    obj = cnts,
+    princ_coords = 3,
+    dims = 30, #20
+    top = nrow(cnts),
+    residuals = "pearson",
+    clip = TRUE
+  )
+
+  cadir <- dirclust_splitmerge(
+    caobj = ca,
+    k = 10, #7
+    cutoff = NULL, #50
+    method = "random",
+    apl_quant = 0.99,
+  )
+
+  rnd_cutoff <- CAdir:::get_apl_cutoff(
+    caobj = ca,
+    method = "random",
+    group = which(cadir@cell_clusters == "cluster_1"),
+    counts = NULL,
+    quant = 0.99,
+    apl_cutoff_reps = 100,
+    axis = "cols"
+  )
+
+  perm_cutoff <- CAdir:::get_apl_cutoff(
+    caobj = ca,
+    method = "random",
+    group = which(cadir@cell_clusters == "cluster_1"),
+    counts = NULL,
+    quant = 0.99,
+    apl_cutoff_reps = 10,
+    axis = "cols"
+  )
+
+  rnd_ang <- CAdir:::rad2deg(rnd_cutoff)
+  perm_ang <- CAdir:::rad2deg(perm_cutoff)
+
+  rnd_vec[i] <- rnd_ang
+  names(rnd_vec)[i] <- fnm
+
+  perm_vec[i] <- perm_ang
+  names(perm_vec)[i] <- fnm
+  nms[i] <- fnm
+}
+
+df <- data.frame(
+  "name" = nms,
+  "rnd" = rnd_vec,
+  "perm" = perm_vec
+)
+
+saveRDS(df, file = file.path(resdir, "ang_df.rds"))
+```
+
+# sessionInfo
+```{r}
+sessionInfo()
+```
+
+
+
+
+
+
