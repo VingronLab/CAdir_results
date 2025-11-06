@@ -639,7 +639,7 @@ bp2 <- plotExpression(
   scale_color_mpimg() +
   labs(x = "Clusters")
 
-# bp1 + bp2
+bp1 + bp2
 
 ggsave(
   plot = bp1,
@@ -685,7 +685,7 @@ cd4p2 <- plotExpression(
   scale_color_mpimg() +
   labs(x = "Clusters")
 
-# cd4p1 + cd4p2
+cd4p1 + cd4p2
 
 ggsave(
   plot = cd4p1,
@@ -706,7 +706,7 @@ ggsave(
 )
 ```
 
-## Naive CD4 T cells
+## Monocytes
 ```{r}
 cadir_mono <- cabic@gene_ranks$Monocyte
 cadir_score <- cadir_mono[cadir_mono$Score > 0, ]
@@ -731,7 +731,7 @@ monop2 <- plotExpression(
   scale_color_mpimg() +
   labs(x = "Clusters")
 
-# cd4p1 + cd4p2
+monop1 + monop2
 
 ggsave(
   plot = monop1,
@@ -745,6 +745,196 @@ ggsave(
 ggsave(
   plot = monop2,
   filename = file.path(imgdir, "monocytes_bioconductor_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+```
+
+## Megakaryocyte
+```{r}
+cadir_mega <- cabic@gene_ranks$Megakaryocyte
+cadir_score <- cadir_mega[cadir_mega$Score > 0, ]
+megadegs <- markers$Megakaryocyte[
+  order(markers$Megakaryocyte$mean.AUC, decreasing = TRUE),
+]
+megap1 <- plotExpression(
+  sce,
+  features = head(cadir_score$Rowname, 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+megap2 <- plotExpression(
+  sce,
+  features = head(rownames(megadegs), 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+megap1 + megap2
+
+ggsave(
+  plot = megap1,
+  filename = file.path(imgdir, "megakaryocytes_cadir_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = megap2,
+  filename = file.path(imgdir, "megakaryocytes_bioconductor_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+```
+
+## Dendritic Cell
+```{r}
+cadir_dend <- cabic@gene_ranks$Dendritic_cell
+cadir_score <- cadir_dend[cadir_dend$Score > 0, ]
+denddegs <- markers$Dendritic_cell[
+  order(markers$Dendritic_cell$mean.AUC, decreasing = TRUE),
+]
+dendp1 <- plotExpression(
+  sce,
+  features = head(cadir_score$Rowname, 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+dendp2 <- plotExpression(
+  sce,
+  features = head(rownames(denddegs), 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+dendp1 + dendp2
+
+ggsave(
+  plot = dendp1,
+  filename = file.path(imgdir, "dendritic_cells_cadir_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = dendp2,
+  filename = file.path(imgdir, "dendritic_cells_bioconductor_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+```
+
+## CD8+ T cells
+```{r}
+cadir_cd8 <- cabic@gene_ranks$`CD8+_T_cell`
+cadir_score <- cadir_cd8[cadir_cd8$Score > 0, ]
+cd8degs <- markers$`CD8+_T_cell`[
+  order(markers$`CD8+_T_cell`$mean.AUC, decreasing = TRUE),
+]
+cd8p1 <- plotExpression(
+  sce,
+  features = head(cadir_score$Rowname, 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+cd8p2 <- plotExpression(
+  sce,
+  features = head(rownames(cd8degs), 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+cd8p1 + cd8p2
+
+ggsave(
+  plot = cd8p1,
+  filename = file.path(imgdir, "cd8_t_cells_cadir_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = cd8p2,
+  filename = file.path(
+    imgdir,
+    "cd8_t_cells_bioconductor_markers.png"
+  ),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+```
+
+## Cytotoxic CD4+ T cell
+```{r}
+cadir_ctcd4 <- cabic@gene_ranks$`Cytotoxic_CD4+_T_cell`
+cadir_score <- cadir_ctcd4[cadir_ctcd4$Score > 0, ]
+ctcd4degs <- markers$`Cytotoxic_CD4+_T_cell`[
+  order(markers$`Cytotoxic_CD4+_T_cell`$mean.AUC, decreasing = TRUE),
+]
+ctcd4p1 <- plotExpression(
+  sce,
+  features = head(cadir_score$Rowname, 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+ctcd4p2 <- plotExpression(
+  sce,
+  features = head(rownames(ctcd4degs), 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+ctcd4p1 + ctcd4p2
+
+ggsave(
+  plot = ctcd4p1,
+  filename = file.path(imgdir, "cytotoxic_cd4_t_cells_cadir_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = ctcd4p2,
+  filename = file.path(
+    imgdir,
+    "cytotoxic_cd4_t_cells_bioconductor_markers.png"
+  ),
   device = cairo_pdf,
   width = 3000,
   height = 3000,
@@ -1002,6 +1192,222 @@ ggsave(
 ggsave(
   plot = monomarkers,
   filename = file.path(imgdir, "monocytes_markers_panel.pdf"),
+  device = cairo_pdf,
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+```
+
+```{r}
+megamarkers <- (megap1 + ggtitle("CAdir: Top 4 genes - Megakaryocytes")) +
+  plot_spacer() +
+  (megap2 + ggtitle("scran: Top 4 genes - Megakaryocytes")) +
+  plot_layout(
+    guides = "collect",
+    # axis = "collect",
+    width = c(19, 1, 19)
+  ) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 16),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    legend.position = "none",
+    strip.text.x = element_text(
+      size = 14,
+      face = "bold"
+    ),
+    strip.text.y = element_text(
+      size = 14,
+      face = "bold"
+    )
+  )
+
+ggsave(
+  plot = megamarkers,
+  filename = file.path(imgdir, "megakaryocytes_markers_panel.png"),
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+
+ggsave(
+  plot = megamarkers,
+  filename = file.path(imgdir, "megakaryocytes_markers_panel.pdf"),
+  device = cairo_pdf,
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+```
+
+```{r}
+dendmarkers <- (dendp1 + ggtitle("CAdir: Top 4 genes - Dendritic cells")) +
+  plot_spacer() +
+  (dendp2 + ggtitle("scran: Top 4 genes - Dendritic cells")) +
+  plot_layout(
+    guides = "collect",
+    # axis = "collect",
+    width = c(19, 1, 19)
+  ) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 16),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    legend.position = "none",
+    strip.text.x = element_text(
+      size = 14,
+      face = "bold"
+    ),
+    strip.text.y = element_text(
+      size = 14,
+      face = "bold"
+    )
+  )
+
+ggsave(
+  plot = dendmarkers,
+  filename = file.path(imgdir, "dendritic_cells_markers_panel.png"),
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+
+ggsave(
+  plot = dendmarkers,
+  filename = file.path(imgdir, "dendritic_cells_markers_panel.pdf"),
+  device = cairo_pdf,
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+```
+
+```{r}
+cd8markers <- (cd8p1 + ggtitle("CAdir: Top 4 genes - CD8+ T cells")) +
+  plot_spacer() +
+  (cd8p2 + ggtitle("scran: Top 4 genes - CD8+ T cells")) +
+  plot_layout(
+    guides = "collect",
+    # axis = "collect",
+    width = c(19, 1, 19)
+  ) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 16),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    legend.position = "none",
+    strip.text.x = element_text(
+      size = 14,
+      face = "bold"
+    ),
+    strip.text.y = element_text(
+      size = 14,
+      face = "bold"
+    )
+  )
+
+ggsave(
+  plot = cd8markers,
+  filename = file.path(imgdir, "cd8_t_cells_markers_panel.png"),
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+
+ggsave(
+  plot = cd8markers,
+  filename = file.path(imgdir, "cd8_t_cells_markers_panel.pdf"),
+  device = cairo_pdf,
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+```
+```{r}
+ctcd4markers <- (ctcd4p1 +
+  ggtitle("CAdir: Top 4 genes - Cytotoxic CD4+ T cells")) +
+  plot_spacer() +
+  (ctcd4p2 + ggtitle("scran: Top 4 genes - Cytotoxic CD4+ T cells")) +
+  plot_layout(
+    guides = "collect",
+    # axis = "collect",
+    width = c(19, 1, 19)
+  ) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 16),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    legend.position = "none",
+    strip.text.x = element_text(
+      size = 14,
+      face = "bold"
+    ),
+    strip.text.y = element_text(
+      size = 14,
+      face = "bold"
+    )
+  )
+
+ggsave(
+  plot = ctcd4markers,
+  filename = file.path(imgdir, "cytotoxic_cd4_t_cells_markers_panel.png"),
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+
+ggsave(
+  plot = ctcd4markers,
+  filename = file.path(imgdir, "cytotoxic_cd4_t_cells_markers_panel.pdf"),
+  device = cairo_pdf,
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+```
+
+```{r}
+ctcd4markers <- (ctcd4p1 +
+  ggtitle("CAdir: Top 4 genes - Cytotoxic CD4+ T cells")) +
+  plot_spacer() +
+  (ctcd4p2 + ggtitle("scran: Top 4 genes - Cytotoxic CD4+ T cells")) +
+  plot_layout(
+    guides = "collect",
+    # axis = "collect",
+    width = c(19, 1, 19)
+  ) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 16),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    legend.position = "none",
+    strip.text.x = element_text(
+      size = 14,
+      face = "bold"
+    ),
+    strip.text.y = element_text(
+      size = 14,
+      face = "bold"
+    )
+  )
+
+ggsave(
+  plot = ctcd4markers,
+  filename = file.path(imgdir, "cytotoxic_cd4_t_cells_markers_panel.png"),
+  width = 5200,
+  height = 2400,
+  units = "px"
+)
+
+ggsave(
+  plot = ctcd4markers,
+  filename = file.path(imgdir, "cytotoxic_cd4_t_cells_markers_panel.pdf"),
   device = cairo_pdf,
   width = 5200,
   height = 2400,
