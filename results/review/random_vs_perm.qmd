@@ -31,6 +31,8 @@ suppressPackageStartupMessages({
   library(scuttle)
   library(scran)
 
+  library(tidyr)
+
   library(ggplot2)
   library(patchwork)
 })
@@ -60,6 +62,8 @@ nms <- vector(mode = "character", length = length(files))
 for (i in seq_len(length(files))) {
   f <- files[i]
   fnm <- gsub("_filtered.rds", "", basename(f))
+  fnm <- gsub(".rds", "", fnm)
+
   sce <- readRDS(f)
 
   set.seed(1234)
@@ -125,13 +129,81 @@ df <- data.frame(
 saveRDS(df, file = file.path(resdir, "ang_df.rds"))
 ```
 
-# sessionInfo
+# Panel
+
 ```{r}
-sessionInfo()
+
+df$name[df$name == "FreytagGold"] <- "Freytag Gold"
+df$name[df$name == "PBMC_10X"] <- "PBMC10x"
+df$name[df$name == "Tirosh_nonmaglignant"] <- "Tirosh"
+df$name[df$name == "ZeiselBrain"] <- "Zeisel"
+df$name[df$name == "BaronPancreas"] <- "Baron Pancreas"
+df$name[df$name == "dmel_E14-16h"] <- "Dmel Spatial"
+df$name[df$name == "tabula_sapiens_tissue"] <- "Tabula Sapiens"
+df$name[df$name == "brain_organoids"] <- "Brain Organoids"
+df$name[df$name == "tabula_muris_sub"] <- "Tabula Muris"
+
+
+dfl <- df %>%
+  pivot_longer(cols = rnd:perm, names_to = "method", values_to = "angle") %>%
+  dplyr::mutate(name = gsub("_", " ", name))
+
+dfl$name <- factor(
+  dfl$name,
+  levels = c(
+    "Darmanis",
+    "Freytag Gold",
+    "Tabula Muris",
+    "PBMC10x",
+    "Tirosh",
+    "Zeisel",
+    "Baron Pancreas",
+    "Dmel Spatial",
+    "Tabula Sapiens",
+    "Brain Organoids"
+  )
+)
+```
+
+```{r}
+
+ang_comp <- ggplot(dfl, aes(x = name, y = angle, fill = method)) +
+  geom_line(aes(group = name), color = "#777777") +
+  geom_point(size = 3, shape = 21, color = "#777777") +
+  CAdir::scale_fill_mpimg() +
+  labs(x = "dataset", y = "angle [degrees]") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(
+      size = 10,
+      angle = 45,
+      hjust = 1,
+      color = "black"
+    ),
+    axis.text.y = element_text(size = 10, color = "black")
+  )
+
+ggsave(
+  plot = ang_comp,
+  file = file.path(imgdir, "comparison_angle.pdf"),
+  width = 2000,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  plot = ang_comp,
+  file = file.path(imgdir, "comparison_angle.png"),
+  width = 2000,
+  height = 2000,
+  units = "px"
+)
 ```
 
 
 
-
-
+# sessionInfo
+```{r}
+sessionInfo()
+```
 

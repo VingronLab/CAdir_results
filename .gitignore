@@ -17,3 +17,4 @@ benchmarking/algorithms/scASDC/__pycache__
 benchmarking/algorithms/scASDC/utils/__pycache__
 benchmarking/algorithms/scDeepCluster_pytorch/__pycache__
 benchmarking/algorithms/scG-cluster/__pycache__
+results/out/review/random_vs_perm
