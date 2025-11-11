@@ -57,14 +57,23 @@ files <- list.files(path = data_dir, pattern = "*.rds", full.names = TRUE)
 
 rnd_vec <- vector(mode = "numeric", length = length(files))
 perm_vec <- vector(mode = "numeric", length = length(files))
+
+rnd_ari_vec <- vector(mode = "numeric", length = length(files))
+perm_ari_vec <- vector(mode = "numeric", length = length(files))
+
 nms <- vector(mode = "character", length = length(files))
 
+options(rlib_message_verbosity = "quiet")
 for (i in seq_len(length(files))) {
   f <- files[i]
   fnm <- gsub("_filtered.rds", "", basename(f))
   fnm <- gsub(".rds", "", fnm)
 
   sce <- readRDS(f)
+
+  if (fnm == "tabula_muris_sub") {
+    sce$truth <- sce$cell_ontology_class
+  }
 
   set.seed(1234)
   sce_var <- scran::modelGeneVar(sce)
@@ -83,10 +92,10 @@ for (i in seq_len(length(files))) {
 
   cadir <- dirclust_splitmerge(
     caobj = ca,
-    k = 10, #7
-    cutoff = NULL, #50
+    k = 10,
+    cutoff = NULL,
     method = "random",
-    apl_quant = 0.99,
+    apl_quant = 0.99
   )
 
   rnd_cutoff <- CAdir:::get_apl_cutoff(
@@ -112,19 +121,49 @@ for (i in seq_len(length(files))) {
   rnd_ang <- CAdir:::rad2deg(rnd_cutoff)
   perm_ang <- CAdir:::rad2deg(perm_cutoff)
 
+  cadir_rnd <- dirclust_splitmerge(
+    caobj = ca,
+    k = 10,
+    cutoff = rnd_ang,
+    apl_quant = 0.99
+  )
+
+  cadir_perm <- dirclust_splitmerge(
+    caobj = ca,
+    k = 10,
+    cutoff = perm_ang,
+    apl_quant = 0.99
+  )
+
+  sce$cadir_rnd <- cadir_rnd@cell_clusters
+  sce$cadir_perm <- cadir_perm@cell_clusters
+
+  ari_rnd <- aricode::clustComp(sce$cadir_rnd, sce$truth)$ARI
+  ari_perm <- aricode::clustComp(sce$cadir_perm, sce$truth)$ARI
+
   rnd_vec[i] <- rnd_ang
   names(rnd_vec)[i] <- fnm
 
   perm_vec[i] <- perm_ang
   names(perm_vec)[i] <- fnm
   nms[i] <- fnm
+
+  rnd_ari_vec[i] <- ari_rnd
+  names(rnd_ari_vec)[i] <- fnm
+
+  perm_ari_vec[i] <- ari_perm
+  names(perm_ari_vec)[i] <- fnm
 }
 
 df <- data.frame(
   "name" = nms,
   "rnd" = rnd_vec,
-  "perm" = perm_vec
+  "perm" = perm_vec,
+  "ARI_rnd" = rnd_ari_vec,
+  "ARI_perm" = perm_ari_vec
 )
+
+options(rlib_message_verbosity = "default")
 
 saveRDS(df, file = file.path(resdir, "ang_df.rds"))
 ```
@@ -146,7 +185,8 @@ df$name[df$name == "tabula_muris_sub"] <- "Tabula Muris"
 
 dfl <- df %>%
   pivot_longer(cols = rnd:perm, names_to = "method", values_to = "angle") %>%
-  dplyr::mutate(name = gsub("_", " ", name))
+  dplyr::mutate(name = gsub("_", " ", name)) %>%
+  dplyr::mutate(ARI = ifelse(method == "rnd", ARI_rnd, ARI_perm))
 
 dfl$name <- factor(
   dfl$name,
@@ -169,9 +209,13 @@ dfl$name <- factor(
 
 ang_comp <- ggplot(dfl, aes(x = name, y = angle, fill = method)) +
   geom_line(aes(group = name), color = "#777777") +
-  geom_point(size = 3, shape = 21, color = "#777777") +
+  geom_point(size = 4, shape = 21, color = "#777777") +
   CAdir::scale_fill_mpimg() +
-  labs(x = "dataset", y = "angle [degrees]") +
+  labs(
+    title = "Random vs. permuted θ: Angle",
+    x = "dataset",
+    y = "angle [degrees]"
+  ) +
   theme_bw() +
   theme(
     axis.text.x = element_text(
@@ -183,23 +227,45 @@ ang_comp <- ggplot(dfl, aes(x = name, y = angle, fill = method)) +
     axis.text.y = element_text(size = 10, color = "black")
   )
 
+ari_comp <- ggplot(dfl, aes(x = name, y = ARI, fill = method)) +
+  geom_line(aes(group = name), color = "#777777") +
+  geom_point(size = 4, shape = 21, color = "#777777") +
+  CAdir::scale_fill_mpimg() +
+  labs(title = "Random vs. permuted θ: ARI", x = "dataset", y = "ARI") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(
+      size = 10,
+      angle = 45,
+      hjust = 1,
+      color = "black"
+    ),
+    axis.text.y = element_text(size = 10, color = "black")
+  )
+
+panel <- ang_comp +
+  ari_comp +
+  plot_layout(guides = "collect") +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 18, face = "bold"))
+
+
 ggsave(
-  plot = ang_comp,
+  plot = panel,
   file = file.path(imgdir, "comparison_angle.pdf"),
-  width = 2000,
+  width = 4000,
   height = 2000,
   units = "px"
 )
 
 ggsave(
-  plot = ang_comp,
+  plot = panel,
   file = file.path(imgdir, "comparison_angle.png"),
-  width = 2000,
+  width = 4000,
   height = 2000,
   units = "px"
 )
 ```
-
 
 
 # sessionInfo
