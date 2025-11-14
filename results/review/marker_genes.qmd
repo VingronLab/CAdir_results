@@ -91,7 +91,7 @@ cabic <- dirclust_splitmerge(
   convergence_thr = 0.001
 )
 
-cabic <- CAdir::annotate_biclustering(
+cabic <- CAdir::annotate_biclusters(
   obj = cabic,
   universe = rownames(sce),
   org = "hs"

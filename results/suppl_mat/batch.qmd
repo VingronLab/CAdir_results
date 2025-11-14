@@ -99,7 +99,7 @@ cabic <- dirclust_splitmerge(
 Annotate biclustering:
 
 ```{r}
-cabic <- annotate_biclustering(
+cabic <- annotate_biclusters(
   obj = cabic,
   universe = rownames(sce_sub),
   org = "hs"
@@ -308,7 +308,7 @@ cat("ARI:", ari2$ARI, "\n")
 ```
 
 ```{r}
-cabic_corr <- annotate_biclustering(
+cabic_corr <- annotate_biclusters(
   obj = cabic_corr,
   universe = rownames(sce_corr),
   org = "hs"

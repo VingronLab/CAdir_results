@@ -107,7 +107,7 @@ top <- top_genes(cak)
 ### Annotate clusters
 
 ```{r}
-cak <- annotate_biclustering(
+cak <- annotate_biclusters(
   obj = cak,
   universe = rownames(sce),
   org = "hs"
@@ -351,7 +351,7 @@ cak_corr <- dirclust_splitmerge(
   qcutoff = 0.6
 )
 
-cak_corr <- annotate_biclustering(
+cak_corr <- annotate_biclusters(
   obj = cak_corr,
   universe = rownames(sce_corr),
   org = "hs"
