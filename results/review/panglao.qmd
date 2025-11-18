@@ -1,0 +1,645 @@
+---
+title: Panglao DB annotation
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
+  library(APL)
+  library(SingleCellExperiment)
+  library(dplyr)
+
+  # To load the data set
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(patchwork)
+  library(ggtext)
+  library(ggsankey)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review/panglao/")
+dir.create(imgdir, recursive = TRUE)
+```
+
+# Tabula Muris
+## Load data
+
+```{r}
+data_dir <- "./data/real/discussed/"
+
+marker_genes <- readr::read_csv(file.path(
+  data_dir,
+  "tabula_muris_marker_genes.csv"
+))
+sce <- readRDS(file.path(
+  data_dir,
+  "preprocessed/tabula_muris_preprocessed_filtered.rds"
+))
+
+genevars <- modelGeneVar(sce, assay.type = "logcounts")
+chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)
+
+# add marker_genes
+expr_markers <- marker_genes[marker_genes$gene %in% rownames(sce), ]
+chosen <- c(chosen, expr_markers$gene)
+chosen <- unique(chosen)
+tm <- sce[chosen, ]
+
+ca <- cacomp(
+  obj = logcounts(tm),
+  princ_coords = 3,
+  dims = 30,
+  top = nrow(tm),
+  residuals = "pearson",
+  python = TRUE
+)
+
+cell_types <- sce$cell_ontology_class
+cat("Number of cell types:", length(unique(cell_types)), "\n")
+```
+
+## CAdir
+
+```{r}
+set.seed(2358)
+cak <- dirclust_splitmerge(
+  caobj = ca,
+  k = 8,
+  cutoff = 55,
+  method = "random",
+  apl_quant = 0.99,
+  counts = NULL,
+  min_cells = 20,
+  reps = NULL,
+  make_plots = TRUE,
+  qcutoff = 0.8,
+  convergence_thr = 0.001
+)
+```
+
+Annotate biclustering:
+
+```{r}
+cak_cellm <- annotate_biclusters(
+  obj = cak,
+  caobj = ca,
+  universe = rownames(tm),
+  org = "mm",
+  method = "goa",
+  filter_literature = FALSE,
+  set = "CellMarker"
+)
+
+cak_panglao <- annotate_biclusters(
+  obj = cak,
+  caobj = ca,
+  universe = rownames(tm),
+  org = "mm",
+  method = "goa",
+  filter_literature = FALSE,
+  set = "PanglaoDB"
+)
+
+
+tm$cadir_cellm <- cak_cellm@cell_clusters
+tm$cadir_panglao <- cak_panglao@cell_clusters
+```
+## Plots
+```{r}
+cellm_umap <- plotUMAP(tm, color_by = "cadir_cellm") +
+  scale_color_mpimg()
+panglao_umap <- plotUMAP(tm, color_by = "cadir_panglao") +
+  scale_color_mpimg()
+
+p <- cellm_umap +
+  panglao_umap +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 14),
+    axis.text.x = element_text(
+      color = "black"
+    ),
+    axis.text.y = element_text(
+      color = "black"
+    ),
+  )
+
+
+ggsave(
+  plot = p,
+  filename = file.path(imgdir, "pbmc_umaps.png"),
+  width = 4000,
+  height = 2000,
+  units = "px"
+)
+```
+
+
+### Sankey
+```{r}
+data <- colData(tm) %>%
+  as.data.frame() %>%
+  rename(
+    "CellMarker" = "cadir_cellm",
+    "Annotation" = "cell_ontology_class",
+    "PanglaoDB" = "cadir_panglao"
+  )
+
+df <- data %>%
+  make_long(CellMarker, Annotation, PanglaoDB)
+
+info <- data.frame(
+  CellMarker = as.factor(data$CellMarker),
+  Annotation = as.character(data$Annotation),
+  PanglaoDB = as.character(data$PanglaoDB)
+) %>%
+  as_tibble() %>%
+  group_by(CellMarker, Annotation, PanglaoDB) %>%
+  summarise(n = n()) %>%
+  group_by(Annotation) %>%
+  mutate(Partition = n / sum(n)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  group_by(Annotation) %>%
+  filter(Partition == max(Partition)) %>%
+  dplyr::select(CellMarker, Annotation, PanglaoDB) %>%
+  distinct(CellMarker, .keep_all = TRUE)
+
+info2 <- data.frame(
+  CellMarker = as.factor(data$CellMarker),
+  Annotation = as.character(data$Annotation),
+  PanglaoDB = as.character(data$PanglaoDB)
+) %>%
+  as_tibble() %>%
+  group_by(CellMarker, Annotation, PanglaoDB) %>%
+  summarise(n = n()) %>%
+  group_by(CellMarker) %>%
+  mutate(Partition = n / sum(n)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  group_by(CellMarker) %>%
+  filter(Partition == max(Partition)) %>%
+  dplyr::select(CellMarker, Annotation, PanglaoDB) %>%
+  distinct(CellMarker, .keep_all = TRUE)
+
+pal <- mpi_extend_pal()
+
+cols <- pal(length(unique(tm$cadir_cellm)))
+names(cols) <- unique(tm$cadir_cellm)
+
+info <- left_join(
+  data.frame("CellMarker" = names(cols), "col" = cols),
+  info,
+  by = "CellMarker"
+)
+
+idx <- which(is.na(info$PanglaoDB))
+sel <- which(info2$CellMarker == info$CellMarker[idx])
+info$PanglaoDB[idx] <- info2$PanglaoDB[sel]
+
+sel1 <- which(!is.na(info$Annotation) & (!info$Annotation %in% info$CellMarker))
+sel2 <- which(
+  !is.na(info$PanglaoDB) &
+    (!info$PanglaoDB %in% unique(c(info$CellMarker, info$Annotation)))
+)
+cols <- c(info$col, info$col[sel1], info$col[sel2])
+names(cols) <- c(info$CellMarker, info$Annotation[sel1], info$PanglaoDB[sel2])
+
+order <- c(
+  "cluster_1",
+  "Vascular_endothelial_cell",
+  "Endothelial_cell",
+  "Schwalie_et_al.Nature.P1",
+  "cluster_6",
+  "Immune_cell",
+  "B_cell",
+  "T_cell",
+  "skeletal muscle satellite stem cell",
+  "skeletal muscle satellite cell",
+  "endothelial cell",
+  "mesenchymal stem cell",
+  "macrophage",
+  "B cell",
+  "lymphocyte",
+  "T cell",
+  "Endothelial_cells",
+  "Smooth_muscle_cells",
+  "Mesothelial_cells",
+  "Macrophages",
+  "B_cells_naive",
+  "T_memory_cells"
+)
+
+wrap <- 15
+names(cols) <- gsub("\\.", "-", names(cols))
+order <- gsub("\\.", "-", order)
+df$node <- gsub("\\.", "-", df$node)
+df$next_node <- gsub("\\.", "-", df$next_node)
+
+df$node <- factor(
+  stringr::str_wrap(df$node, wrap, whitespace_only = FALSE),
+  levels = stringr::str_wrap(order, wrap, whitespace_only = FALSE)
+)
+df$next_node <- factor(
+  stringr::str_wrap(df$next_node, wrap, whitespace_only = FALSE),
+  levels = stringr::str_wrap(order, wrap, whitespace_only = FALSE)
+)
+
+names(cols) <- stringr::str_wrap(names(cols), wrap, whitespace_only = FALSE)
+
+df <- df %>%
+  mutate(
+    col = ifelse(x == "Annotation", as.character(next_node), as.character(node))
+  )
+
+df$col <- as.factor(df$col)
+# df$col <- as.factor(cols[df$col])
+
+tm_sank <- ggplot(
+  df,
+  aes(
+    x = x,
+    next_x = next_x,
+    node = node,
+    next_node = next_node,
+    fill = node,
+    label = as.character(node)
+  )
+) +
+  geom_sankey(,
+    node.alpha = 0.8,
+    flow.alpha = 0.6,
+    flow.fill = c("#777777")
+    # flow.fill = "grey"
+  ) +
+  geom_sankey_label(size = 6) +
+  labs(x = "") +
+  scale_fill_manual(values = cols) +
+  theme_sankey(base_size = 26, base_family = "sans") +
+  theme(
+    legend.position = "none"
+  )
+
+# NOTE: Uncomment to plot
+tm_sank
+
+ggsave(
+  plot = tm_sank,
+  filename = file.path(imgdir, "sankey_plot_TM_clustering.pdf"),
+  width = 2700,
+  height = 2400,
+  device = cairo_pdf,
+  units = "px"
+)
+
+ggsave(
+  plot = tm_sank,
+  filename = file.path(imgdir, "sankey_plot_TM_clustering.png"),
+  width = 2700,
+  height = 2400,
+  units = "px"
+)
+```
+
+# PBMC
+
+
+## Load data
+
+```{r}
+options(future.globals.maxSize = 850 * 1024^2)
+sce_org <- sce_pbmc3k()
+```
+
+# CAdir
+
+```{r}
+set.seed(1234)
+
+sce <- sce_org
+sce_var <- scran::modelGeneVar(sce)
+sce_top <- scran::getTopHVGs(sce_var, n = 1000, var.threshold = NULL) #1000
+pbmc <- sce[sce_top, ]
+
+ca <- cacomp(
+  obj = as.matrix(logcounts(pbmc)),
+  princ_coords = 3,
+  dims = 20, #20
+  top = nrow(pbmc),
+  residuals = "pearson",
+  clip = TRUE
+)
+```
+
+## Split & Merge Clustering
+
+```{r}
+
+set.seed(8) #8
+cabic <- dirclust_splitmerge(
+  caobj = ca,
+  k = 7, #7
+  cutoff = 50, #50
+  method = "random",
+  apl_quant = 0.999,
+  min_cells = 15,
+  apl_cutoff_reps = 100,
+  qcutoff = 0.30, #0.4
+  convergence_thr = 0.001
+)
+
+cabic <- CAdir::annotate_biclusters(
+  obj = cabic,
+  universe = rownames(pbmc),
+  org = "hs"
+)
+
+cabic <- rank_genes(cadir = cabic, caobj = ca)
+cabic
+
+topg <- top_genes(cabic)
+
+pbmc$cadir <- cabic@cell_clusters
+ari <- aricode::clustComp(pbmc$cadir, pbmc$cell_type)
+cat("\nARI:", ari$ARI, "\n")
+```
+
+### Annotate clusters
+```{r}
+cabic_cellm <- annotate_biclusters(
+  obj = cabic,
+  caobj = ca,
+  universe = rownames(pbmc),
+  org = "hs",
+  method = "goa",
+  filter_literature = FALSE,
+  set = "CellMarker"
+)
+
+cabic_panglao <- annotate_biclusters(
+  obj = cabic,
+  caobj = ca,
+  universe = rownames(pbmc),
+  org = "hs",
+  method = "goa",
+  filter_literature = FALSE,
+  set = "PanglaoDB"
+)
+
+
+pbmc$cadir_cellm <- cabic_cellm@cell_clusters
+pbmc$cadir_panglao <- cabic_panglao@cell_clusters
+```
+
+
+```{r}
+cellm_umap <- plotUMAP(pbmc, color_by = "cadir_cellm") +
+  scale_color_mpimg()
+panglao_umap <- plotUMAP(pbmc, color_by = "cadir_panglao") +
+  scale_color_mpimg()
+
+p <- cellm_umap +
+  panglao_umap +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 14),
+    axis.text.x = element_text(
+      color = "black"
+    ),
+    axis.text.y = element_text(
+      color = "black"
+    ),
+  )
+
+
+ggsave(
+  plot = p,
+  filename = file.path(imgdir, "pbmc_umaps.png"),
+  width = 4000,
+  height = 2000,
+  units = "px"
+)
+```
+
+## Sankey
+```{r}
+data <- colData(pbmc) %>%
+  as.data.frame() %>%
+  rename(
+    "CellMarker" = "cadir_cellm",
+    "Annotation" = "cell_type",
+    "PanglaoDB" = "cadir_panglao"
+  )
+
+df <- data %>%
+  make_long(CellMarker, Annotation, PanglaoDB)
+
+info <- data.frame(
+  CellMarker = as.factor(data$CellMarker),
+  Annotation = as.character(data$Annotation),
+  PanglaoDB = as.character(data$PanglaoDB)
+) %>%
+  as_tibble() %>%
+  group_by(CellMarker, Annotation, PanglaoDB) %>%
+  summarise(n = n()) %>%
+  group_by(Annotation) %>%
+  mutate(Partition = n / sum(n)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  group_by(Annotation) %>%
+  filter(Partition == max(Partition)) %>%
+  dplyr::select(CellMarker, Annotation, PanglaoDB) %>%
+  distinct(CellMarker, .keep_all = TRUE)
+
+info2 <- data.frame(
+  CellMarker = as.factor(data$CellMarker),
+  Annotation = as.character(data$Annotation),
+  PanglaoDB = as.character(data$PanglaoDB)
+) %>%
+  as_tibble() %>%
+  group_by(CellMarker, Annotation, PanglaoDB) %>%
+  summarise(n = n()) %>%
+  group_by(CellMarker) %>%
+  mutate(Partition = n / sum(n)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  group_by(CellMarker) %>%
+  filter(Partition == max(Partition)) %>%
+  dplyr::select(CellMarker, Annotation, PanglaoDB) %>%
+  distinct(CellMarker, .keep_all = TRUE)
+
+pal <- mpi_extend_pal()
+
+cols <- pal(length(unique(pbmc$cadir_cellm)))
+names(cols) <- unique(pbmc$cadir_cellm)
+
+info <- left_join(
+  data.frame("CellMarker" = names(cols), "col" = cols),
+  info,
+  by = "CellMarker"
+)
+
+idx <- which(is.na(info$PanglaoDB))
+sel <- which(info2$CellMarker == info$CellMarker[idx])
+info$PanglaoDB[idx] <- info2$PanglaoDB[sel]
+
+sel1 <- which(!is.na(info$Annotation) & (!info$Annotation %in% info$CellMarker))
+sel2 <- which(
+  !is.na(info$PanglaoDB) &
+    (!info$PanglaoDB %in% unique(c(info$CellMarker, info$Annotation)))
+)
+cols <- c(info$col, info$col[sel1], info$col[sel2])
+names(cols) <- c(info$CellMarker, info$Annotation[sel1], info$PanglaoDB[sel2])
+order <- c()
+order <- c(
+  "Naive_CD4+_T_cell",
+  "CD8+_T_cell",
+  "Cytotoxic_CD4+_T_cell",
+  "B_cell",
+  "Monocyte",
+  "Dendritic_cell",
+  "Megakaryocyte",
+  "0 - Naive CD4 T",
+  "2 - Memory CD4 T",
+  "4 - CD8 T",
+  "6 - NK",
+  "3 - B",
+  "1 - CD14+ Mono",
+  "5 - FCGR3A+ Mono",
+  "7 - DC",
+  "8 - Platelet",
+  "T_memory_cells",
+  "NK_cells",
+  "Gamma_delta_T_cells",
+  "B_cells_naive",
+  "Monocytes",
+  "Langerhans_cells",
+  "Platelets"
+)
+
+wrap <- 17
+df$node <- factor(
+  stringr::str_wrap(df$node, wrap),
+  levels = stringr::str_wrap(order, wrap)
+)
+df$next_node <- factor(
+  stringr::str_wrap(df$next_node, wrap),
+  levels = stringr::str_wrap(order, wrap)
+)
+
+names(cols) <- stringr::str_wrap(names(cols), wrap)
+
+df <- df %>%
+  mutate(
+    col = ifelse(x == "Annotation", as.character(next_node), as.character(node))
+  )
+
+df$col <- as.factor(df$col)
+# df$col <- as.factor(cols[df$col])
+
+pbmc_sank <- ggplot(
+  df,
+  aes(
+    x = x,
+    next_x = next_x,
+    node = node,
+    next_node = next_node,
+    fill = node,
+    label = as.character(node)
+  )
+) +
+  geom_sankey(,
+    node.alpha = 0.8,
+    flow.alpha = 0.6,
+    flow.fill = c("#777777")
+    # flow.fill = "grey"
+  ) +
+  geom_sankey_label(size = 6) +
+  labs(x = "") +
+  scale_fill_manual(values = cols) +
+  theme_sankey(base_size = 26, base_family = "sans") +
+  theme(
+    legend.position = "none"
+  )
+
+# NOTE: Uncomment to plot
+pbmc_sank
+
+ggsave(
+  plot = pbmc_sank,
+  filename = file.path(imgdir, "sankey_plot_pbmc_clustering.pdf"),
+  width = 2700,
+  height = 2400,
+  device = cairo_pdf,
+  units = "px"
+)
+
+ggsave(
+  plot = pbmc_sank,
+  filename = file.path(imgdir, "sankey_plot_pbmc_clustering.png"),
+  width = 2700,
+  height = 2400,
+  units = "px"
+)
+```
+
+
+# Panel
+
+```{r}
+
+sank_panel <- (tm_sank + ggtitle("Tabula Muris LM data")) +
+  (pbmc_sank + ggtitle("PBMC3k data")) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    title = element_text(size = 14)
+  )
+
+
+ggsave(
+  plot = sank_panel,
+  filename = file.path(imgdir, "sankeys_panel_anno.png"),
+  width = 2 * 2500,
+  height = 4000,
+  units = "px"
+)
+
+ggsave(
+  plot = sank_panel,
+  filename = file.path(imgdir, "sankeys_panel_anno.pdf"),
+  width = 2 * 2500,
+  height = 4000,
+  units = "px"
+)
+```
+
+
