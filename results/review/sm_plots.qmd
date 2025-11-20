@@ -228,6 +228,26 @@ t_cadir <- dirclust_splitmerge(
   make_plots = FALSE
 )
 
+t_cadir_anno_cm <- annotate_biclusters(
+  obj = t_cadir,
+  caobj = t_caobj,
+  org = "hs",
+  universe = rownames(cnts),
+  set = "CellMarker",
+  method = "gsea",
+  cost = "NES"
+)
+
+t_cadir_anno_pdb <- annotate_biclusters(
+  obj = t_cadir,
+  caobj = t_caobj,
+  org = "hs",
+  universe = rownames(cnts),
+  set = "PanglaoDB",
+  method = "gsea",
+  cost = "NES"
+)
+
 t_cadir
 
 tirosh$cadir <- t_cadir@cell_clusters
@@ -269,13 +289,15 @@ t_sm <- sm_plot(
   keep_end = FALSE,
   highlight_cluster = TRUE,
   show_genes = FALSE,
-  annotate_clusters = FALSE,
+  annotate_clusters = TRUE,
   org = "hs",
   inlet_side = 0.11,
-  title_size = 12,
+  title_size = 3,
   show_axis = FALSE,
   layout = "tree",
-  rotate = FALSE
+  rotate = FALSE,
+  show_apl = FALSE,
+  annotate_leafs = FALSE
 )
 dev.off()
 
@@ -355,6 +377,9 @@ cat("Brain Organoids ARI:", ari)
 ```{r}
 bo_um1 <- plotUMAP(brain, colour = "cadir")
 bo_um2 <- plotUMAP(brain, colour = "truth")
+bo_um3 <- plotUMAP(brain, colour = "cell_line")
+bo_um4 <- plotUMAP(brain, colour = "protocol")
+bo_um5 <- plotUMAP(brain, colour = "sample")
 
 # bo_um1 + bo_um2
 
@@ -386,13 +411,15 @@ bo_sm <- sm_plot(
   keep_end = FALSE,
   highlight_cluster = TRUE,
   show_genes = FALSE,
-  annotate_clusters = FALSE,
+  annotate_clusters = TRUE,
   org = "hs",
   inlet_side = 0.11,
-  title_size = 12,
+  title_size = 3,
   show_axis = FALSE,
   layout = "tree",
-  rotate = FALSE
+  rotate = FALSE,
+  show_apl = FALSE,
+  annotate_leafs = TRUE
 )
 dev.off()
 
@@ -475,6 +502,31 @@ tabulas$cadir <- ts_cadir@cell_clusters
 ari <- aricode::ARI(tabulas$truth, tabulas$cadir)
 cat("Tabula Sapiens ARI:", ari)
 ```
+
+```{r}
+
+# ts_cadir_anno_cm <- annotate_biclusters(
+#   obj = ts_cadir,
+#   caobj = ts_caobj,
+#   org = "hs",
+#   universe = rownames(cnts),
+#   set = "CellMarker",
+#   method = "gsea",
+#   cost = "NES"
+# )
+#
+# ts_cadir_anno_pdb <- annotate_biclusters(
+#   obj = ts_cadir,
+#   caobj = ts_caobj,
+#   org = "hs",
+#   universe = rownames(cnts),
+#   set = "PanglaoDB",
+#   method = "gsea",
+#   cost = "NES"
+# )
+```
+
+
 ## UMAP
 ```{r}
 ts_um1 <- plotUMAP(tabulas, colour = "cadir")
@@ -510,13 +562,15 @@ ts_sm <- sm_plot(
   keep_end = FALSE,
   highlight_cluster = TRUE,
   show_genes = FALSE,
-  annotate_clusters = FALSE,
+  annotate_clusters = TRUE,
   org = "hs",
   inlet_side = 0.11,
-  title_size = 12,
+  title_size = 3,
   show_axis = FALSE,
   layout = "tree",
-  rotate = FALSE
+  rotate = FALSE,
+  show_apl = FALSE,
+  annotate_leafs = TRUE
 )
 dev.off()
 
@@ -544,12 +598,12 @@ layout <- c(
   area(t = 5, b = 8, l = 9, r = 12)
 )
 
-umap_panel <- t_um1 +
-  t_um2 +
-  bo_um1 +
-  bo_um2 +
-  ts_um1 +
-  ts_um2 +
+umap_panel <- (t_um1 + ggtitle("Tirosh - CAdir")) +
+  (t_um2 + ggtitle("Tirosh - Annotation")) +
+  (bo_um1 + ggtitle("Brain Organoids - CAdir")) +
+  (bo_um2 + ggtitle("Brain Organoids - Annotation")) +
+  (ts_um1 + ggtitle("Tabula Sapiens - CAdir")) +
+  (ts_um2 + ggtitle("Tabula Sapiens - Annotation")) +
   plot_layout(design = layout) +
   plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
@@ -566,10 +620,14 @@ ggsave(
 ## Split Merge Plots
 ```{r}
 
-sm_panel <- wrap_plots(t_sm) +
-  wrap_plots(bo_sm) +
-  wrap_plots(ts_sm) +
-  plot_annotation(tag_levels = "a")
+sm_panel <- wrap_plots(t_sm + ggtitle("Tirosh")) +
+  wrap_plots(bo_sm + ggtitle("Brain Organoids")) +
+  wrap_plots(ts_sm + ggtitle("Tabula Sapiens")) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 24, face = "bold"),
+    plot.title = element_text(size = 26, hjust = 0.5, face = "bold")
+  )
 # &
 #   theme(plot.tag = element_text(size = 18, face = "bold"))
 
