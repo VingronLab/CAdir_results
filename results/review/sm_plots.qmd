@@ -583,6 +583,119 @@ ggsave(
 )
 ```
 
+# Darmanis
+
+## Load data set
+```{r}
+
+file <- "./data/real/preprocessed/benchmarking/Darmanis_filtered.rds"
+darmanis <- readRDS(file)
+# rownames(darmanis) <- rowData(darmanis)$SYMBOL
+```
+
+# Run clustering - Brain Organoids
+
+```{r}
+dfts <- df_m %>%
+  filter(dataset == "Darmanis") %>%
+  filter(algorithm == "CAdir_auto") %>%
+  select(
+    algorithm,
+    dataset,
+    ARI,
+    max_ARI,
+    ntop,
+    ngenes,
+    dims,
+    kdir,
+    angle,
+    qcut,
+    apl_quant
+  )
+```
+
+```{r}
+set.seed(2358)
+genevars <- scran::modelGeneVar(darmanis, assay.type = "logcounts")
+chosen <- scran::getTopHVGs(genevars, n = dfts$ntop, var.threshold = NULL)
+darmanis <- darmanis[chosen, ]
+
+cnts <- as.matrix(logcounts(darmanis))
+
+d_caobj <- cacomp(cnts, dims = dfts$dims, top = nrow(cnts), python = TRUE)
+
+angle <- as.numeric(dfts$angle)
+if (angle == 0) {
+  angle <- NULL
+}
+d_cadir <- dirclust_splitmerge(
+  caobj = d_caobj,
+  k = dfts$kdir,
+  cutoff = angle,
+  method = "random",
+  apl_quant = dfts$apl_quant,
+  qcutoff = dfts$qcut,
+  counts = NULL,
+  min_cells = 20,
+  reps = 5,
+  make_plots = FALSE
+)
+
+d_cadir
+
+darmanis$cadir <- d_cadir@cell_clusters
+ari <- aricode::ARI(darmanis$truth, darmanis$cadir)
+cat("Darmanis ARI:", ari)
+```
+
+```{r}
+
+# ts_cadir_anno_cm <- annotate_biclusters(
+#   obj = d_cadir,
+#   caobj = d_caobj,
+#   org = "hs",
+#   universe = rownames(cnts),
+#   set = "CellMarker",
+#   method = "gsea",
+#   cost = "NES"
+# )
+#
+# ts_cadir_anno_pdb <- annotate_biclusters(
+#   obj = d_cadir,
+#   caobj = d_caobj,
+#   org = "hs",
+#   universe = rownames(cnts),
+#   set = "PanglaoDB",
+#   method = "gsea",
+#   cost = "NES"
+# )
+```
+
+
+## UMAP
+```{r}
+d_um1 <- plotUMAP(darmanis, colour = "cadir")
+d_um2 <- plotUMAP(darmanis, colour = "truth")
+
+# ts_um1 + ts_um2
+
+ggsave(
+  plot = d_um1,
+  filename = file.path(imgdir, "cadir_umap_darmanis.png")
+  # width = 6000,
+  # height = 4000,
+  # units = "px"
+)
+
+ggsave(
+  plot = d_um2,
+  filename = file.path(imgdir, "truth_umap_darmanis.png")
+  # width = 6000,
+  # height = 4000,
+  # units = "px"
+)
+```
+
 
 # Panels
 
@@ -616,6 +729,40 @@ ggsave(
   units = "px"
 )
 ```
+
+```{r}
+layout <- c(
+  area(t = 1, b = 4, l = 1, r = 4),
+  area(t = 5, b = 8, l = 1, r = 4),
+  area(t = 1, b = 4, l = 5, r = 8),
+  area(t = 5, b = 8, l = 5, r = 8),
+  area(t = 1, b = 4, l = 9, r = 12),
+  area(t = 5, b = 8, l = 9, r = 12),
+  area(t = 1, b = 4, l = 13, r = 16),
+  area(t = 5, b = 8, l = 13, r = 16)
+)
+
+umap_panel <- (t_um1 + ggtitle("Tirosh - CAdir")) +
+  (t_um2 + ggtitle("Tirosh - Annotation")) +
+  (bo_um1 + ggtitle("Brain Organoids - CAdir")) +
+  (bo_um2 + ggtitle("Brain Organoids - Annotation")) +
+  (ts_um1 + ggtitle("Tabula Sapiens - CAdir")) +
+  (ts_um2 + ggtitle("Tabula Sapiens - Annotation")) +
+  (d_um1 + ggtitle("Darmanis - CAdir")) +
+  (d_um2 + ggtitle("Darmanis - Annotation")) +
+  plot_layout(design = layout) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 18, face = "bold"))
+
+ggsave(
+  plot = umap_panel,
+  filename = file.path(imgdir, "difficult_clusterings_ALL_umaps.png"),
+  width = 10000,
+  height = 4000,
+  units = "px"
+)
+```
+
 
 ## Split Merge Plots
 ```{r}

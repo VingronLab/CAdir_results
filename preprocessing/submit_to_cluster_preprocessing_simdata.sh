@@ -11,8 +11,10 @@ MINUTES=120
 TMPDIR=10G
 
 datadir="./data/sim"
-indir="${datadir}/raw"
-outdir="${datadir}/preprocessed"
+# indir="${datadir}/raw"
+indir="${datadir}/raw_sparse"
+# outdir="${datadir}/preprocessed"
+outdir="${datadir}/preprocessed_sparse"
 logdir=${outdir}/log
 
 SCRIPT="./preprocessing/data_preprocessing_splatter.R"

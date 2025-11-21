@@ -1,0 +1,124 @@
+---
+title: Figure 2
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
+  library(APL)
+  library(SingleCellExperiment)
+  library(dplyr)
+
+  library(splatter)
+
+  # To load the data set
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review/")
+dir.create(imgdir, recursive = TRUE)
+```
+
+# Generate simulations
+
+```{r}
+    full_sparsity <- sum(counts(sim_full) == 0) /
+      (nrow(counts(sim_full)) *
+        ncol(counts(sim_full)))
+
+    sim <- splatSimulate(
+      params,
+      nGenes = ngene,
+      batchCells = ncell,
+      group.prob = c(0.25, 0.1, 0.1, 0.2, 0.3, 0.05),
+      method = "groups",
+      de.prob = 0.1,
+      de.facLoc = 1.5,
+      de.facScale = 1.5,
+      out.prob = 0.001,
+      de.downProb = c(0),
+      dropout.type = "experiment",
+      dropout.mid = 20,
+      dropout.shape = -0.05,
+      verbose = FALSE,
+      seed = 1234
+    )
+    sparse_sparsity <- sum(counts(sim) == 0) /
+      (nrow(counts(sim)) *
+        ncol(counts(sim)))
+    sparse_sparsity
+
+    pnts <- seq(0, max(counts(sim)), by = 0.01)
+    splat_log <- function(x, xz, k) 1 / (1 + exp(-k * (x - xz)))
+    log_pnts <- splat_log(
+      x = pnts,
+      xz = 20,
+      k = -0.05
+    )
+    # plot(log_pnts[1:1000])
+    df <- data.frame(exprs = pnts, prob = log_pnts)
+    log_prob <- ggplot(df, aes(x = exprs, y = prob)) +
+      geom_line() +
+      xlim(x = c(0, quantile(counts(sim_full), 0.995))) +
+      theme_bw()
+```
+
+# Clustering
+```{r}
+
+ca <- cacomp(
+  obj = logcounts(sim),
+  princ_coords = 3,
+  dims = 30,
+  top = nrow(sim),
+  residuals = "pearson",
+  python = TRUE
+)
+set.seed(2358)
+cak <- dirclust_splitmerge(
+  caobj = ca,
+  k = 6,
+  cutoff = NULL,
+  method = "random",
+  apl_quant = 0.99,
+  counts = NULL,
+  min_cells = 20,
+  reps = NULL,
+  make_plots = TRUE,
+  qcutoff = 0.8,
+  convergence_thr = 0.001
+)
+
+
+ari <- aricode::clustComp(cak@cell_clusters, sim$Group)
+cat("ARI:", ari$ARI)
+```
+
+
