@@ -1,5 +1,5 @@
 algorithm <- "SC3"
-source("./setup_split.R")
+source("./benchmarking/setup_split.R")
 
 if (is.null(sc3_k)) {
   k_est <- TRUE

@@ -33,7 +33,7 @@ backspin <- function(
   low_thrs = 0.2,
   verbose = T
 ) {
-  source_python("./algorithms/backspin/backspin.py")
+  source_python("./benchmarking/algorithms/backspin/backspin.py")
 
   backspin_args <- c(list(
     data = data,

@@ -1,5 +1,5 @@
 algorithm <- "QUBIC"
-source("./setup_split.R")
+source("./benchmarking/setup_split.R")
 
 # QUBIC
 cat("\nStarting QUBIC.\n")

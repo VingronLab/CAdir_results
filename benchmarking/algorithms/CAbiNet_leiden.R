@@ -1,5 +1,5 @@
 algorithm <- "CAbiNet_leiden"
-source("./setup.R")
+source("./benchmarking/setup.R")
 
 
 if (is.na(dims)) {

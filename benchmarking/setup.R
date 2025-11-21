@@ -26,9 +26,9 @@ library(pdist)
 
 set.seed(2358)
 
-source("./helpers/sim_eval.R")
-source("./helpers/utils.R")
-source("./algorithms/biclustlib/clustering_error.R")
+source("./benchmarking/helpers/sim_eval.R")
+source("./benchmarking/helpers/utils.R")
+source("./benchmarking/algorithms/biclustlib/clustering_error.R")
 
 
 option_list <- list(

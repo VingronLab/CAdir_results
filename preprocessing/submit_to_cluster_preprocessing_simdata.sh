@@ -22,7 +22,7 @@ SCRIPT="./preprocessing/data_preprocessing_splatter.R"
 mkdir -p $outdir
 mkdir -p $logdir
 
-truth='Group'
+truth="Group"
 pcts=0.01 # percent of cells a gene needs to be expressed in.
 ntop=NULL
 
@@ -42,6 +42,7 @@ for f in ${files[@]}; do
 
        filename=`basename $f .rds`
 
+       # Rscript 4.4.1
        mxqsub --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
               --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
               --group-name="${filename}" \
@@ -49,7 +50,7 @@ for f in ${files[@]}; do
               --memory=$MEMORY \
               --tmpdir=$TMPDIR \
               -t $MINUTES \
-             Rscript-4.4 $SCRIPT   \
+             Rscript $SCRIPT   \
               --outdir $resdir \
               --file $f \
               --name "${filename}_preproc" \
@@ -74,7 +75,8 @@ mkdir -p $resdir
 for f in ${files[@]}; do
 
        filename=`basename $f .rds`
-
+      
+       # Rscript 4.4.1
        mxqsub --stdout="${logdir}/${filename}_preproc-${pcts}.stdout.log" \
               --stderr="${logdir}/${filename}_preproc-${pcts}.stderr.log" \
               --group-name="${filename}" \
@@ -82,7 +84,7 @@ for f in ${files[@]}; do
               --memory=$MEMORY \
               --tmpdir=$TMPDIR \
               -t $MINUTES \
-             Rscript-4.4 $SCRIPT   \
+             Rscript $SCRIPT   \
               --outdir $resdir \
               --file $f \
               --name "${filename}_preproc" \

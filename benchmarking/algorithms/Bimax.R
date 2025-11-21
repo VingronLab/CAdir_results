@@ -1,4 +1,4 @@
-source("./setup.R")
+source("./benchmarking/setup.R")
 
 algorithm <- "Bimax"
 

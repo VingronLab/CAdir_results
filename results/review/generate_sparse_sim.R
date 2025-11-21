@@ -234,4 +234,5 @@ for (dataset in datasets) {
       dev.off()
     }
   }
+  system(paste0("ln -rs ", maindir, "/*/*.rds ", maindir))
 }

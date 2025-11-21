@@ -1,5 +1,5 @@
 algorithm <- "CAbiNet_spectral"
-source("./setup.R")
+source("./benchmarking/setup.R")
 
 
 cat("\nStarting CA.\n")

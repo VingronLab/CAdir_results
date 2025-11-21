@@ -1,5 +1,5 @@
 algorithm <- "BackSPIN"
-source("./setup_split.R")
+source("./benchmarking/setup_split.R")
 
 ##################################
 cat("\nStarting backSPIN.\n")

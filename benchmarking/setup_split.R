@@ -15,10 +15,10 @@ library(tibble)
 
 set.seed(2358)
 
-source("./helpers/sim_eval.R")
-source("./helpers/cell_clustering_eval.R")
-source("./helpers/utils.R")
-source("./algorithms/biclustlib/clustering_error.R")
+source("./benchmarking/helpers/sim_eval.R")
+source("./benchmarking/helpers/cell_clustering_eval.R")
+source("./benchmarking/helpers/utils.R")
+source("./benchmarking/algorithms/biclustlib/clustering_error.R")
 
 # Set to false unless set to TRUE by CAbiNet
 graph_select_by_prop <- FALSE
@@ -92,7 +92,7 @@ option_list <- list(
   )
 )
 
-alg_params <- file.path("./setup_params", paste0(algorithm, ".R"))
+alg_params <- file.path("./benchmarking/setup_params", paste0(algorithm, ".R"))
 source(alg_params)
 
 # Misc

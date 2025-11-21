@@ -1,5 +1,5 @@
 algorithm <- "scG-cluster"
-source("./setup_split.R")
+source("./benchmarking/setup_split.R")
 
 if (!isTRUE(is_cell_clustering)) {
   stop("Not a biclustering algorithm.")
