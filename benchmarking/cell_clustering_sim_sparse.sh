@@ -33,7 +33,7 @@ for dataset in "${datasets[@]}"; do
 	cc=1  # set is_cell_clustering to TRUE
 	sim=1 # set simulation to TRUE
 
-	test_run=true
+	test_run=false
 
 	if [[ $sim -eq 0 ]]; then
 		mode="real"

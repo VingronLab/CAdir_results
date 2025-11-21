@@ -41,7 +41,7 @@ res <- cadir_to_biclust(cadir)
 
 if (isTRUE(is_cell_clustering)) {
   eval_res <- eval_cell_clustering(
-    clustering = cell_clusters(cadir),
+    clustering = cadir@cell_clusters,
     reference = colData(data)[, truth]
   )
 
@@ -51,7 +51,7 @@ if (isTRUE(is_cell_clustering)) {
     list(
       "ngenes" = nrow(cnts),
       "ncells" = ncol(cnts),
-      "nclust_found" = length(unique(cell_clusters(cadir))),
+      "nclust_found" = length(unique(cadir@cell_clusters)),
       "runtime" = t.run,
       "runtime_dimreduc" = t.CA
     )

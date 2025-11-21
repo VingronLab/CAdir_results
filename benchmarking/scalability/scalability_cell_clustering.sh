@@ -101,52 +101,52 @@ for dataset in ${datasets[@]}; do
 			###########
 			# CAbiNet #
 			###########
-			# source ./scalability/submit_scripts/CAbiNet.sh
+			# source ./benchmarking/scalability/submit_scripts/CAbiNet.sh
 
 			##########
 			# Seurat #
 			##########
-			# source ./scalability/submit_scripts/Seurat.sh
+			# source ./benchmarking/scalability/submit_scripts/Seurat.sh
 
 			############
 			# Monocle3 #
 			############
-			# source ./scalability/submit_scripts/Monocle3.sh
+			# source ./benchmarking/scalability/submit_scripts/Monocle3.sh
 
 			###########
 			# CAdir   #
 			###########
-			# source ./scalability/submit_scripts/CAdir.sh
+			# source ./benchmarking/scalability/submit_scripts/CAdir.sh
 
 			############
 			# kmeans   #
 			############
-			# source ./scalability/submit_scripts/kmeans.sh
+			# source ./benchmarking/scalability/submit_scripts/kmeans.sh
 
 			############
 			# RaceID   #
 			############
-			# source ./scalability/submit_scripts/RaceID.sh
+			# source ./benchmarking/scalability/submit_scripts/RaceID.sh
 
 			########
 			# SC3  #
 			########
-			# source ./scalability/submit_scripts/SC3.sh
+			# source ./benchmarking/scalability/submit_scripts/SC3.sh
 
 			##########
 			# SIMLR  #
 			##########
-			# source ./scalability/submit_scripts/SIMLR.sh
+			# source ./benchmarking/scalability/submit_scripts/SIMLR.sh
 
       ##################
 			# scDeepCluster  #
       ##################
-			source ./scalability/submit_scripts/scDeepCluster.sh
+			source ./benchmarking/scalability/submit_scripts/scDeepCluster.sh
 
       ###############
       # scG-cluster #
       ###############
-      # source ./scalability/submit_scripts/scG-cluster.sh
+      # source ./benchmarking/scalability/submit_scripts/scG-cluster.sh
 
 			if [ "$test_run" = true ]; then
 				break 3

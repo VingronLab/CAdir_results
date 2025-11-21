@@ -60,6 +60,7 @@ for f in ${files[@]}; do
 
 done
 
+ln -rs $resdir/*/*.rds $resdir/
 
 #########################################
 #### Sim. data based on pbmc3k data #####
@@ -92,3 +93,5 @@ for f in ${files[@]}; do
               --truth $truth \
 
 done
+
+ln -rs $resdir/*/*.rds $resdir/

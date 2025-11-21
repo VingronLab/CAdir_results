@@ -1,5 +1,5 @@
 renv::load("./")
-library(CAdir)
+devtools::load_all("/home/kohl/gits/ClemensKohl/CAdir/")
 library(APL)
 library(aricode)
 library(SingleCellExperiment)

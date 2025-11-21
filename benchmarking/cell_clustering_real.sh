@@ -50,7 +50,7 @@ for dataset in "${datasets[@]}"; do
 		MINUTES=80
 	fi
 
-	scripts_path="./algorithms/"
+	scripts_path="./benchmarking/algorithms/"
 
 	outdir="./results/benchmarking/results/real/${date}"
 
@@ -92,52 +92,52 @@ for dataset in "${datasets[@]}"; do
 			###########
 			# CAbiNet #
 			###########
-			# source ./submit_scripts/CAbiNet.sh
+			# source ./benchmarking/submit_scripts/CAbiNet.sh
 
 			##########
 			# Seurat #
 			##########
-			# source ./submit_scripts/Seurat.sh
+			# source ./benchmarking/submit_scripts/Seurat.sh
 
 			############
 			# Monocle3 #
 			############
-			# source ./submit_scripts/Monocle3.sh
+			# source ./benchmarking/submit_scripts/Monocle3.sh
 
 			###########
 			# CAdir   #
 			###########
-			# source ./submit_scripts/CAdir.sh
+			# source ./benchmarking/submit_scripts/CAdir.sh
 
 			############
 			# kmeans   #
 			############
-			# source ./submit_scripts/kmeans.sh
+			# source ./benchmarking/submit_scripts/kmeans.sh
 
 			############
 			# RaceID   #
 			############
-			# source ./submit_scripts/RaceID.sh
+			# source ./benchmarking/submit_scripts/RaceID.sh
 
 			########
 			# SC3  #
 			########
-			# source ./submit_scripts/SC3.sh
+			# source ./benchmarking/submit_scripts/SC3.sh
 
 			##########
 			# SIMLR  #
 			##########
-			# source ./submit_scripts/SIMLR.sh
+			# source ./benchmarking/submit_scripts/SIMLR.sh
 
       ##################
 			# scDeepCluster  #
       ##################
-			source ./submit_scripts/scDeepCluster.sh
+			source ./benchmarking/submit_scripts/scDeepCluster.sh
 
       ###############
       # scG-cluster #
       ###############
-      source ./submit_scripts/scG-cluster.sh
+      source ./benchmarking/submit_scripts/scG-cluster.sh
 
 			if [ "$test_run" = true ]; then
 				break 3

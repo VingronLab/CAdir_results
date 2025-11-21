@@ -10,7 +10,7 @@ MINUTES=240
 dataset="pbmc3k"
 # dataset="zeisel"
 
-scripts_path="./algorithms/"
+scripts_path="./benchmarking/algorithms/"
 
 outdir="./results/benchmarking/results/biclustering/${date}"
 
@@ -53,52 +53,55 @@ for f in ${files[@]}; do
 		###########
 		# CAbiNet #
 		###########
-		source ./submit_scripts/CAbiNet.sh
+		source ./benchmarking/submit_scripts/CAbiNet.sh
 
 		#########
 		# QUBIC #
 		#########
-		source ./submit_scripts/QUBIC.sh
+		source ./benchmarking/submit_scripts/QUBIC.sh
 
 		########
 		# s4vd #
 		########
-		source ./submit_scripts/s4vd.sh
+		source ./benchmarking/submit_scripts/s4vd.sh
 
 		#########
 		# Plaid #
 		#########
-		source ./submit_scripts/Plaid.sh
+		source ./benchmarking/submit_scripts/Plaid.sh
 
 		#######
 		# CCA #
 		#######
-		source ./submit_scripts/CCA.sh
+		source ./benchmarking/submit_scripts/CCA.sh
 
 		##########
 		# Seurat #
 		##########
-		source ./submit_scripts/Seurat.sh
+		source ./benchmarking/submit_scripts/Seurat.sh
 
 		############
 		# Monocle3 #
 		############
-		source ./submit_scripts/Monocle3.sh
+		source ./benchmarking/submit_scripts/Monocle3.sh
 
 		############
 		# BackSPIN #
 		############
-		source ./submit_scripts/backSPIN.sh
+		source ./benchmarking/submit_scripts/backSPIN.sh
 
 		###########
 		# CAdir   #
 		###########
-		source ./submit_scripts/CAdir.sh
+		source ./benchmarking/submit_scripts/CAdir.sh
 
 		############
 		# kmeans   #
 		############
-		source ./submit_scripts/kmeans.sh
+		source ./benchmarking/submit_scripts/kmeans.sh
 
+			if [ "$test_run" = true ]; then
+				break 2
+			fi
 	done
 done
