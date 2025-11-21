@@ -4,7 +4,9 @@ THREADS=6
 MEMORY=3G
 MINUTES=500
 
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="20251121"
+
 outdir="./results/benchmarking/results/simulated_sparse/${date}/eval"
 indir="./results/benchmarking/results/simulated_sparse/${date}/out/"
 
