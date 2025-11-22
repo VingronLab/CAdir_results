@@ -4,7 +4,8 @@
 # nruns: 0 #
 ############
 
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="20251121"
 OUTDIR="./results/benchmarking/results/biclustering_sparse/${date}"
 
 dataset_list=("zeisel" "pbmc3k")

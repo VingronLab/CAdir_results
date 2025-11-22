@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ############
-# nruns: 0 #
+# nruns: 1 #
 ############
 
 # date=$(date '+%Y%m%d')

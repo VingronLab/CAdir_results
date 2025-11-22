@@ -1,14 +1,15 @@
 #!/bin/bash
 
 # add date to output folder
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="20251121"
 
 THREADS=6
 MEMORY=4G
 MINUTES=240
 
-dataset="pbmc3k"
-# dataset="zeisel"
+# dataset="pbmc3k"
+dataset="zeisel"
 
 scripts_path="./benchmarking/algorithms/"
 
