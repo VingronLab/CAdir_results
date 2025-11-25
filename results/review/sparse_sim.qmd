@@ -34,7 +34,7 @@ suppressPackageStartupMessages({
 })
 
 dir <- "./results/"
-imgdir <- file.path(dir, "img/figure4/")
+imgdir <- file.path(dir, "img/review/sparse_bench/")
 
 dir.create(imgdir, recursive = TRUE)
 
@@ -579,7 +579,7 @@ df_max$max_ARI_cells[is.infinite(df_max$max_ARI_genes)] <- 0
 ### Biclustering - Max Results
 
 ```{r}
-p_max_ari <- df_max %>%
+p_max_ari_bicl <- df_max %>%
   ggplot(aes(
     x = algorithm,
     y = max_ARI_cells
@@ -627,17 +627,17 @@ p_max_ari <- df_max %>%
   ) +
   guides(fill = "none")
 
-p_max_ari
+p_max_ari_bicl
 
 ggsave(
-  plot = p_max_ari,
+  plot = p_max_ari_bicl,
   filename = file.path(imgdir, "bicl_max_ARI_cells.pdf"),
   width = 3000,
   height = 2000,
   units = "px"
 )
 ggsave(
-  plot = p_max_ari,
+  plot = p_max_ari_bicl,
   filename = file.path(imgdir, "bicl_max_ARI_cells.png"),
   width = 3000,
   height = 2000,
@@ -646,7 +646,7 @@ ggsave(
 ```
 
 ```{r}
-p_max_ce <- df_max %>%
+p_max_ce_bicl <- df_max %>%
   ggplot(aes(
     x = algorithm,
     y = max_CE
@@ -694,17 +694,17 @@ p_max_ce <- df_max %>%
   ) +
   guides(fill = "none")
 
-p_max_ce
+p_max_ce_bicl
 
 ggsave(
-  plot = p_max_ce,
+  plot = p_max_ce_bicl,
   filename = file.path(imgdir, "bicl_max_CE.pdf"),
   width = 3000,
   height = 2000,
   units = "px"
 )
 ggsave(
-  plot = p_max_ce,
+  plot = p_max_ce_bicl,
   filename = file.path(imgdir, "bicl_max_CE.png"),
   width = 3000,
   height = 2000,
@@ -715,7 +715,7 @@ ggsave(
 ### Biclustering - Average Results
 
 ```{r}
-p_mean_ari <- df_mean %>%
+p_mean_ari_bicl <- df_mean %>%
   ggplot(aes(
     x = algorithm,
     y = mean_ARI_cells
@@ -763,18 +763,18 @@ p_mean_ari <- df_mean %>%
   ) +
   guides(fill = "none")
 
-p_mean_ari
+p_mean_ari_bicl
 
 
 ggsave(
-  plot = p_mean_ari,
+  plot = p_mean_ari_bicl,
   filename = file.path(imgdir, "bicl_mean_ARI_cells.pdf"),
   width = 2500,
   height = 1650,
   units = "px"
 )
 ggsave(
-  plot = p_mean_ari,
+  plot = p_mean_ari_bicl,
   filename = file.path(imgdir, "bicl_mean_ARI_cells.png"),
   width = 2500,
   height = 1650,
@@ -783,7 +783,7 @@ ggsave(
 ```
 
 ```{r}
-p_mean_ce <- df_mean %>%
+p_mean_ce_bicl <- df_mean %>%
   ggplot(aes(
     x = algorithm,
     y = mean_CE
@@ -831,18 +831,18 @@ p_mean_ce <- df_mean %>%
   ) +
   guides(fill = "none")
 
-p_mean_ce
+p_mean_ce_bicl
 
 
 ggsave(
-  plot = p_mean_ce,
+  plot = p_mean_ce_bicl,
   filename = file.path(imgdir, "bicl_mean_CE.pdf"),
   width = 2500,
   height = 1650,
   units = "px"
 )
 ggsave(
-  plot = p_mean_ce,
+  plot = p_mean_ce_bicl,
   filename = file.path(imgdir, "bicl_mean_CE.png"),
   width = 2500,
   height = 1650,
@@ -854,7 +854,7 @@ ggsave(
 
 ## max ARI
 ```{r}
-p_max_ari_g <- df_max %>%
+p_max_ari_g_bicl <- df_max %>%
   ggplot(aes(
     x = algorithm,
     y = max_ARI_genes
@@ -902,18 +902,18 @@ p_max_ari_g <- df_max %>%
   ) +
   guides(fill = "none")
 
-p_max_ari_g
+p_max_ari_g_bicl
 
 
 ggsave(
-  plot = p_max_ari_g,
+  plot = p_max_ari_g_bicl,
   filename = file.path(imgdir, "bicl_max_ARI_genes.pdf"),
   width = 2500,
   height = 1650,
   units = "px"
 )
 ggsave(
-  plot = p_max_ari_g,
+  plot = p_max_ari_g_bicl,
   filename = file.path(imgdir, "bicl_max_ARI_genes.png"),
   width = 2500,
   height = 1650,
@@ -922,7 +922,7 @@ ggsave(
 ```
 
 ```{r}
-p_mean_ari_g <- df_mean %>%
+p_mean_ari_g_bicl <- df_mean %>%
   ggplot(aes(
     x = algorithm,
     y = mean_ARI_genes
@@ -970,18 +970,18 @@ p_mean_ari_g <- df_mean %>%
   ) +
   guides(fill = "none")
 
-p_mean_ari_g
+p_mean_ari_g_bicl
 
 
 ggsave(
-  plot = p_mean_ari_g,
+  plot = p_mean_ari_g_bicl,
   filename = file.path(imgdir, "bicl_mean_ARI_genes.pdf"),
   width = 2500,
   height = 1650,
   units = "px"
 )
 ggsave(
-  plot = p_mean_ari_g,
+  plot = p_mean_ari_g_bicl,
   filename = file.path(imgdir, "bicl_mean_ARI_genes.png"),
   width = 2500,
   height = 1650,
@@ -993,7 +993,7 @@ ggsave(
 # Figure panels
 
 ```{r}
-fig <- (p_max_ce + p_max_ari_g + p_mean_ce + p_mean_ari_g) +
+fig <- (p_max_ce_bicl + p_max_ari_g_bicl + p_mean_ce_bicl + p_mean_ari_g_bicl) +
   plot_layout(guides = "collect") +
   scale_shape_manual(values = seq_len(length(df_all$simulation))) +
   scale_fill_mpimg(name = "mpi_extend") +
@@ -1027,7 +1027,6 @@ ggsave(
 ## Review Panel
 ```{r}
 fig1 <- (p_max_ari + p_mean_ari + plot_layout(guides = "collect")) +
-  p_tile +
   plot_annotation(tag_levels = "a") &
   theme(
     text = element_text(size = 18),
@@ -1057,74 +1056,336 @@ ggsave(
 )
 ```
 
-## Figure Panel Max
-```{r}
+# Panel biclustering & cell clustering combined
 
-fig4 <- (p_max_ari + p_tile) +
+```{r}
+bicl_cc <- (p_max_ari + p_mean_ari + plot_layout(guides = "collect")) /
+  (p_max_ce_bicl + p_mean_ce_bicl + plot_layout(guides = "collect")) +
   plot_annotation(tag_levels = "a") &
   theme(
-    text = element_text(size = 20),
-    plot.title = element_text(size = 22, face = "plain"),
-    plot.tag = element_text(size = 22, face = "bold")
+    text = element_text(size = 18),
+    plot.title = element_text(size = 18, face = "plain"),
+    plot.tag = element_text(size = 20, face = "bold"),
+    legend.text = element_text(size = 14)
   )
 
+bicl_cc
+
 ggsave(
-  plot = fig4,
-  filename = file.path(imgdir, "figure4_panel.pdf"),
-  width = 5600,
-  height = 2240,
+  plot = bicl_cc,
+  filename = file.path(imgdir, "bicl_and_cell_cl_sparse.pdf"),
+  width = 6400,
+  height = 4400,
   units = "px"
 )
 ggsave(
-  plot = fig4,
-  filename = file.path(imgdir, "figure4_panel.png"),
-  width = 5600,
-  height = 2240,
+  plot = bicl_cc,
+  filename = file.path(imgdir, "bicl_and_cell_cl_sparse.png"),
+  width = 6400,
+  height = 4400,
   units = "px"
+)
+```
+
+# Log-distribution
+
+```{r}
+library(splatter)
+library(SingleCellExperiment)
+library(scater)
+library(scuttle)
+library(scran)
+library(scRNAseq)
+library(TENxPBMCData)
+library(Seurat)
+```
+
+
+```{r}
+zce <- ZeiselBrainData()
+clust.sce <- quickCluster(zce)
+zce <- computeSumFactors(zce, cluster = clust.sce, min.mean = 0.1)
+zce <- logNormCounts(zce)
+zce <- runUMAP(zce)
+counts(zce) <- as.matrix(counts(zce))
+logcounts(zce) <- as.matrix(logcounts(zce))
+```
+
+```{r}
+pce <- TENxPBMCData(dataset = "pbmc3k")
+rownames(pce) <- make.names(rowData(pce)$Symbol_TENx, unique = TRUE)
+colnames(pce) <- colData(pce)$Barcode
+
+# For pre-processing we used Seurat.
+pbmc <- CreateSeuratObject(
+  counts = as.matrix(counts(pce)),
+  assay = "RNA",
+  project = "pbmc3k",
+  min.cells = 3,
+  min.features = 200,
+  meta.data = as.data.frame(colData(pce))
 )
 
-# fig4
+pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT-")
+
+# Filter data
+pbmc <- subset(
+  pbmc,
+  subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5
+)
+no_zeros_rows <- rowSums(pbmc, slot = "counts") > 0
+pbmc <- pbmc[no_zeros_rows, ]
+
+# Normalization
+pbmc <- NormalizeData(
+  pbmc,
+  normalization.method = "LogNormalize",
+  scale.factor = 10000,
+  verbose = FALSE
+)
+
+pbmc <- FindVariableFeatures(pbmc, nfeatures = 2000, verbose = FALSE)
+
+# Scaling
+all.genes <- rownames(pbmc)
+pbmc <- ScaleData(pbmc, features = all.genes, verbose = FALSE)
+
+# Run PCA
+pbmc <- RunPCA(
+  pbmc,
+  features = VariableFeatures(object = pbmc),
+  verbose = FALSE
+)
+
+# Cell clustering
+pbmc <- FindNeighbors(pbmc, dims = 1:10, verbose = FALSE)
+pbmc <- FindClusters(pbmc, resolution = 0.5, verbose = FALSE)
+
+pbmc <- RunUMAP(pbmc, dims = 1:10, verbose = FALSE)
+# DimPlot(pbmc, reduction = "umap", label = FALSE, pt.size = 0.5)
+
+new.cluster.ids <- c(
+  "naive_CD4_Tcell",
+  "CD14_monocyte",
+  "memory_CD4_Tcell",
+  "Bcell",
+  "CD8_Tcell",
+  "FCGR3A_monocyte",
+  "NKcell",
+  "DC",
+  "platelet"
+)
+
+names(new.cluster.ids) <- levels(pbmc)
+pbmc <- RenameIdents(pbmc, new.cluster.ids)
+pbmc$cell_type <- Idents(pbmc)
+
+pce <- as.SingleCellExperiment(pbmc)
+logcounts(pce) <- as.matrix(logcounts(pce))
+counts(pce) <- as.matrix(counts(pce))
+```
+
+```{r}
+zeisel_params <- splatEstimate(zce)
+```
+
+```{r}
+pbmc_params <- splatEstimate(pce)
+```
+
+```{r}
+pnts <- seq(0, 500, by = 0.01)
+
+splat_log <- function(x, xz, k) 1 / (1 + exp(-k * (x - xz)))
+
+log_pnts <- splat_log(
+  x = pnts,
+  xz = 20,
+  k = -0.05
+)
+
+df <- data.frame(exprs = pnts, prob = log_pnts)
+log_prob <- ggplot(df, aes(x = exprs, y = prob)) +
+  geom_line() +
+  xlim(x = c(0, 200)) +
+  ggtitle("Dropout Probability - Sparse Data") +
+  labs(x = "Expression", y = "Probability") +
+  theme_bw()
+```
+
+```{r}
+zeisel_log_pnts <- splat_log(
+  x = pnts,
+  xz = zeisel_params@dropout.mid,
+  k = zeisel_params@dropout.shape
+)
+
+df <- data.frame(exprs = pnts, prob = zeisel_log_pnts)
+zeisel_log_prob <- ggplot(df, aes(x = exprs, y = prob)) +
+  geom_line() +
+  xlim(x = c(0, 200)) +
+  ggtitle("Dropout Probability - Zeisel") +
+  labs(x = "Expression", y = "Probability") +
+  theme_bw()
+```
+
+
+```{r}
+pbmc_log_pnts <- splat_log(
+  x = pnts,
+  xz = pbmc_params@dropout.mid,
+  k = pbmc_params@dropout.shape
+)
+
+df <- data.frame(exprs = pnts, prob = pbmc_log_pnts)
+pbmc_log_prob <- ggplot(df, aes(x = exprs, y = prob)) +
+  geom_line() +
+  xlim(x = c(0, 200)) +
+  ggtitle("Dropout Probability - PBMC3k") +
+  labs(x = "Expression", y = "Probability") +
+  theme_bw()
+```
+
+```{r}
+dropouts <- log_prob +
+  zeisel_log_prob +
+  pbmc_log_prob +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    text = element_text(size = 18),
+    plot.title = element_text(size = 18, face = "plain"),
+    plot.tag = element_text(size = 20, face = "bold"),
+    legend.text = element_text(size = 14)
+  )
+
+dropouts
+ggsave(
+  plot = dropouts,
+  filename = file.path(imgdir, "dropout_probs.pdf"),
+  width = 6400,
+  height = 2200,
+  units = "px"
+)
+ggsave(
+  plot = dropouts,
+  filename = file.path(imgdir, "dropout_probs.png"),
+  width = 6400,
+  height = 2200,
+  units = "px"
+)
+```
+
+# Sparsity
+```{r}
+csv_dir <- file.path("./data/sim/raw_sparse/zeisel")
+zeisel_dirs <- list.dirs(csv_dir, full.names = TRUE)
+zeisel_csvs <- list.files(
+  zeisel_dirs,
+  pattern = "sparsity.csv",
+  full.names = TRUE
+)
+
+csv_dir <- file.path("./data/sim/raw_sparse/pbmc3k")
+pbmc3k_dirs <- list.dirs(csv_dir)
+pbmc3k_csvs <- list.files(
+  pbmc3k_dirs,
+  pattern = "sparsity.csv",
+  full.names = TRUE
+)
+
+zdf <- list()
+pdf <- list()
+
+for (i in seq_len(length(zeisel_csvs))) {
+  f <- zeisel_csvs[i]
+  zdf[[i]] <- readr::read_csv(f)
+}
+
+for (i in seq_len(length(pbmc3k_csvs))) {
+  f <- pbmc3k_csvs[i]
+  pdf[[i]] <- readr::read_csv(f)
+}
+
+zdf <- do.call("rbind", zdf)
+pdf <- do.call("rbind", pdf)
+
+mean(zdf$original)
+mean(zdf$sparse)
+
+mean(pdf$original)
+mean(pdf$sparse)
+```                       
+
+
+
+## Figure Panel Max
+```{r}
+#
+# fig4 <- (p_max_ari + p_tile) +
+#   plot_annotation(tag_levels = "a") &
+#   theme(
+#     text = element_text(size = 20),
+#     plot.title = element_text(size = 22, face = "plain"),
+#     plot.tag = element_text(size = 22, face = "bold")
+#   )
+#
+# ggsave(
+#   plot = fig4,
+#   filename = file.path(imgdir, "figure4_panel.pdf"),
+#   width = 5600,
+#   height = 2240,
+#   units = "px"
+# )
+# ggsave(
+#   plot = fig4,
+#   filename = file.path(imgdir, "figure4_panel.png"),
+#   width = 5600,
+#   height = 2240,
+#   units = "px"
+# )
+#
+# # fig4
 ```
 
 ## Figure Panel Mean
 ```{r}
-
-suppl_panel <- (((free(p_mean_ari, type = "label") +
-  theme(legend.position = "none") +
-  p_mean_nmi) +
-  plot_layout(guides = "collect") +
-  scale_shape_manual(values = seq_len(length(df_all$simulation))) +
-  scale_fill_mpimg(name = "mpi_extend") +
-  scale_color_manual(
-    values = list(
-      "zeisel" = "#60636a",
-      "pbmc3k" = "#a5acaf"
-    )
-  )) /
-  (plot_spacer() + p_succ + plot_spacer() + plot_layout(width = c(1, 6, 1)))) +
-  plot_annotation(tag_levels = "a") &
-  theme(
-    text = element_text(size = 20),
-    plot.title = element_text(size = 22, face = "plain"),
-    plot.tag = element_text(size = 22, face = "bold")
-  )
-
-ggsave(
-  plot = suppl_panel,
-  filename = file.path(imgdir, "suppl_mean_panel.pdf"),
-  width = 5600,
-  height = 4200,
-  units = "px"
-)
-ggsave(
-  plot = suppl_panel,
-  filename = file.path(imgdir, "suppl_mean_panel.png"),
-  width = 5600,
-  height = 4200,
-  units = "px"
-)
-
-# suppl_panel
+#
+# suppl_panel <- (((free(p_mean_ari, type = "label") +
+#   theme(legend.position = "none") +
+#   p_mean_nmi) +
+#   plot_layout(guides = "collect") +
+#   scale_shape_manual(values = seq_len(length(df_all$simulation))) +
+#   scale_fill_mpimg(name = "mpi_extend") +
+#   scale_color_manual(
+#     values = list(
+#       "zeisel" = "#60636a",
+#       "pbmc3k" = "#a5acaf"
+#     )
+#   )) /
+#   (plot_spacer() + p_succ + plot_spacer() + plot_layout(width = c(1, 6, 1)))) +
+#   plot_annotation(tag_levels = "a") &
+#   theme(
+#     text = element_text(size = 20),
+#     plot.title = element_text(size = 22, face = "plain"),
+#     plot.tag = element_text(size = 22, face = "bold")
+#   )
+#
+# ggsave(
+#   plot = suppl_panel,
+#   filename = file.path(imgdir, "suppl_mean_panel.pdf"),
+#   width = 5600,
+#   height = 4200,
+#   units = "px"
+# )
+# ggsave(
+#   plot = suppl_panel,
+#   filename = file.path(imgdir, "suppl_mean_panel.png"),
+#   width = 5600,
+#   height = 4200,
+#   units = "px"
+# )
+#
+# # suppl_panel
 ```
 # Environment
 
