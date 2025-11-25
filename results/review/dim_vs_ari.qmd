@@ -1,0 +1,363 @@
+---
+title: Dimensions 
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+
+suppressPackageStartupMessages({
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
+  library(scater)
+  library(dplyr)
+  library(tidyr)
+  library(readr)
+  library(ggplot2)
+  library(patchwork)
+  library(ggthemes)
+})
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review/dim_vs_ari/")
+
+dir.create(imgdir, recursive = TRUE)
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+```
+
+# Cell clustering benchmarking
+
+```{r}
+date <- "20250528"
+base_dir <- file.path("./results/benchmarking/results/simulated", date)
+indir <- file.path(base_dir, "eval")
+```
+
+## simulated data
+Benchmarking results based on Zeisel Brain data:
+
+```{r}
+zeisel_eval <- readRDS(
+  file.path(
+    indir,
+    paste0(date, "_zeisel_collated.rds")
+  )
+)
+
+dfz <- zeisel_eval %>%
+  mutate(dataset = "zeisel") %>%
+  mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep = "_")) %>%
+  mutate(
+    simulation = factor(
+      simulation,
+      levels = c(
+        "0.02_0.75_0.75",
+        "0.06_0.75_0.75",
+        "0.1_0.75_0.75",
+        "0.02_1.5_1.5",
+        "0.06_1.5_1.5",
+        "0.1_1.5_1.5"
+      )
+    )
+  )
+
+table(
+  zeisel_eval$algorithm,
+  paste(
+    zeisel_eval$dePROB,
+    zeisel_eval$defacLOC,
+    zeisel_eval$defacSCALE,
+    sep = "_"
+  )
+)
+```
+
+Benchmarking results based on PBMC3k data:
+
+```{r}
+pbmc_eval <- readRDS(
+  file.path(
+    indir,
+    paste0(date, "_pbmc3k_collated.rds")
+  )
+)
+
+dfp <- pbmc_eval %>%
+  mutate(dataset = "pbmc3k") %>%
+  mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep = "_")) %>%
+  mutate(
+    simulation = factor(
+      simulation,
+      levels = c(
+        "0.02_0.75_0.75",
+        "0.06_0.75_0.75",
+        "0.1_0.75_0.75",
+        "0.02_1.5_1.5",
+        "0.06_1.5_1.5",
+        "0.1_1.5_1.5"
+      )
+    )
+  )
+
+table(
+  pbmc_eval$algorithm,
+  paste(pbmc_eval$dePROB, pbmc_eval$defacLOC, pbmc_eval$defacSCALE, sep = "_")
+)
+```
+
+Combining the benchmarking resuls:
+
+```{r}
+df_all <- rbind(dfz, dfp)
+
+df_all$algorithm <- gsub("CAbiNet_igraph", "CAbiNet", df_all$algorithm)
+
+df_all$algorithm <- factor(
+  df_all$algorithm,
+  levels = c(
+    "CAdir",
+    "CAdir_auto",
+    "kmeans",
+    "CAbiNet",
+    "RaceID",
+    "RaceID_auto",
+    "Seurat",
+    "Monocle3",
+    "SC3",
+    "SIMLR",
+    "scDeepCluster",
+    "scG-cluster"
+  )
+)
+
+
+df_mean <- df_all %>%
+  group_by(simulation, algorithm, dataset) %>%
+  mutate(mean_ARI = mean(ARI, na.rm = TRUE)) %>%
+  mutate(mean_NMI = mean(NMI, na.rm = TRUE)) %>%
+  select(dataset, simulation, algorithm, mean_ARI, mean_NMI, dims) %>%
+  distinct() %>%
+  ungroup()
+```
+
+### Simulated data benchmarking - Max Results
+
+```{r}
+df_max <- df_all %>%
+  filter(algorithm == "CAdir_auto") %>%
+  group_by(simulation, algorithm, dataset, dims) %>%
+  mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
+  mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
+  mutate(mean_ARI = mean(ARI)) %>%
+  mutate(mean_NMI = mean(NMI)) %>%
+  select(
+    dataset,
+    simulation,
+    algorithm,
+    mean_ARI,
+    mean_NMI,
+    max_ARI,
+    max_NMI,
+    dims
+  ) %>%
+  distinct() %>%
+  ungroup()
+
+df_max$max_ARI[is.infinite(df$max_ARI)] <- 0
+df_max$max_NMI[is.infinite(df$max_NMI)] <- 0
+```
+
+```{r}
+max_sim <- ggplot(df_max, aes(x = dims, y = max_ARI, color = simulation)) +
+  facet_wrap(~dataset) +
+  geom_point() +
+  geom_line() +
+  scale_color_mpimg(name = "mpi_extend") +
+  labs(x = "dimensions", y = "max ARI", title = "Maximum ARI") +
+  theme_bw()
+```
+```{r}
+mean_sim <- ggplot(df_max, aes(x = dims, y = mean_ARI, color = simulation)) +
+  facet_wrap(~dataset) +
+  geom_point() +
+  geom_line() +
+  scale_color_mpimg(name = "mpi_extend") +
+  labs(x = "dimensions", y = "mean ARI", title = "Mean ARI") +
+  theme_bw()
+```
+
+# Experimental
+
+```{r}
+date <- "20250528_cpu"
+evldir <- file.path("./results/benchmarking/results/real/", date, "eval")
+
+options(repr.plot.width = 15, repr.plot.height = 10)
+```
+
+```{r}
+### Load the results of real data sets
+files <- list.files(evldir, "*.rds", full.names = TRUE)
+
+df <- data.frame()
+for (file in files) {
+  data <- readRDS(file)
+  df <- bind_rows(df, data)
+}
+
+df$dataset <- gsub("_filtered", "", df$dataset)
+
+### Simulated data sets
+
+# simdf <- df_all
+# simdf$dataset <- paste0(simdf$dataset, "_", simdf$simulation)
+#
+# commoncols <- intersect(colnames(df), colnames(simdf))
+#
+# ### Merge two data frames
+# df <- rbind(df[, commoncols], simdf[, commoncols])
+```
+
+```{r}
+df$dataset[df$dataset == "FreytagGold"] <- "Freytag Gold"
+df$dataset[df$dataset == "PBMC_10X"] <- "PBMC10x"
+df$dataset[df$dataset == "Tirosh_nonmaglignant"] <- "Tirosh"
+df$dataset[df$dataset == "ZeiselBrain"] <- "Zeisel"
+df$dataset[df$dataset == "BaronPancreas"] <- "Baron Pancreas"
+df$dataset[df$dataset == "dmel_E14-16h"] <- "Dmel Spatial"
+df$dataset[df$dataset == "tabula_sapiens_tissue"] <- "Tabula Sapiens"
+df$dataset[df$dataset == "brain_organoids"] <- "Brain Organoids"
+
+df <- df %>%
+  mutate(algorithm = gsub("CAbiNet_igraph", "CAbiNet", algorithm)) %>%
+  mutate(pattern = paste0(algorithm, dataset))
+```
+```{r}
+df_real <- df %>%
+  filter(algorithm == "CAdir_auto") %>%
+  group_by(algorithm, dataset, dims) %>%
+  mutate(
+    mean_ARI = mean(ARI),
+    mean_NMI = mean(NMI),
+  ) %>%
+  mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
+  mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
+  select(
+    dataset,
+    algorithm,
+    ARI,
+    mean_ARI,
+    mean_NMI,
+    max_NMI,
+    max_ARI,
+    dims
+  ) %>%
+  distinct() %>%
+  ungroup()
+
+df_m$max_NMI[is.infinite(df_m$max_NMI)] <- NA
+df_m$max_ARI[is.infinite(df_m$max_ARI)] <- NA
+```
+
+```{r}
+real_max <- ggplot(df_real, aes(x = dims, y = max_ARI, color = dataset)) +
+  geom_point() +
+  geom_line() +
+  scale_color_mpimg(name = "mpi_extend") +
+  labs(x = "dimensions", y = "max ARI", title = "Maximum ARI") +
+  theme_bw()
+```
+
+```{r}
+
+real_mean <- ggplot(df_real, aes(x = dims, y = mean_ARI, color = dataset)) +
+  geom_point() +
+  geom_line() +
+  scale_color_mpimg(name = "mpi_extend") +
+  labs(x = "dimensions", y = "mean ARI", title = "Mean ARI") +
+  theme_bw()
+```
+
+
+
+# Panel
+```{r}
+panel <- real_max +
+  real_mean +
+  plot_layout(guides = "collect") +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    text = element_text(size = 18),
+    plot.title = element_text(size = 18, face = "plain"),
+    plot.tag = element_text(size = 20, face = "bold"),
+    legend.text = element_text(size = 14)
+  )
+
+ggsave(
+  plot = panel,
+  filename = file.path(imgdir, "dim_vs_ari_real.pdf"),
+  width = 5000,
+  height = 2200,
+  units = "px"
+)
+
+ggsave(
+  plot = panel,
+  filename = file.path(imgdir, "dim_vs_ari_real.png"),
+  width = 6400,
+  height = 2200,
+  units = "px"
+)
+```
+
+```{r}
+panel2 <- max_sim +
+  mean_sim +
+  plot_layout(guides = "collect") +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    text = element_text(size = 18),
+    plot.title = element_text(size = 18, face = "plain"),
+    plot.tag = element_text(size = 20, face = "bold"),
+    legend.text = element_text(size = 14)
+  )
+
+ggsave(
+  plot = panel2,
+  filename = file.path(imgdir, "dim_vs_ari_sim.pdf"),
+  width = 5000,
+  height = 2200,
+  units = "px"
+)
+
+ggsave(
+  plot = panel2,
+  filename = file.path(imgdir, "dim_vs_ari_sim.png"),
+  width = 6400,
+  height = 2200,
+  units = "px"
+)
+```
+
+# Session Info
+```{r}
+sessionInfo()
+```
+
+
