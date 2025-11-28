@@ -755,6 +755,100 @@ p_tile <- ggplot(df_tile, aes(x = algorithm, y = dataset, fill = Max_ARI)) +
   )
 ```
 
+```{r}
+df_tile_mean <- df_real %>%
+  select(algorithm, dataset, Mean_ARI) %>%
+  distinct() %>%
+  group_by(dataset) %>%
+  mutate(
+    ismax = (round(Mean_ARI, 2) == max(round(pick(Mean_ARI), 2), na.rm = TRUE))
+  ) %>%
+  mutate(
+    is2nd = (round(Mean_ARI, 2) ==
+      round(
+        sort(Mean_ARI, decreasing = TRUE, na.last = NA)[2],
+        2
+      ))
+  ) %>%
+  ungroup() %>%
+  arrange(desc(ismax))
+
+df_tile_mean$ismax[is.na(df_tile_mean$ismax)] <- FALSE
+df_tile_mean$is2nd[is.na(df_tile_mean$is2nd)] <- FALSE
+```
+
+
+```{r}
+# NOTE: Mean ARI panel
+p_tile_mean <- ggplot(
+  df_tile_mean,
+  aes(x = algorithm, y = dataset, fill = Mean_ARI)
+) +
+  geom_tile() +
+  geom_tile(
+    data = df_tile_mean[df_tile_mean$ismax, ],
+    aes(x = algorithm, y = dataset),
+    fill = NA,
+    color = "#d44a3d",
+    linewidth = 1
+  ) +
+  # geom_tile(data = df_tile_mean[df_tile_mean$is2nd & !df_tile_mean$ismax, ],
+  #   aes(x = algorithm, y = dataset),
+  #   fill = NA,
+  #   color = "#8c5fa8",
+  #   size = 1) +
+  geom_text(
+    aes(label = round(Mean_ARI, 2)),
+    color = "white",
+    # size = 3,
+    size = 12,
+    size.unit = "pt",
+    check_overlap = TRUE,
+  ) +
+  geom_text(
+    data = na_txt,
+    aes(x = algorithm, y = dataset, label = NAs),
+    color = "white",
+    # size = 3,
+    size = 12,
+    size.unit = "pt",
+    check_overlap = TRUE
+  ) +
+  scale_fill_gradientn(
+    colours = c("#29485d", "#006c66", "#c6d325", "#ef7c00"),
+    limits = c(0, 1),
+    na.value = "#777777",
+    name = "Mean ARI"
+  ) +
+  scale_color_manual(values = c("transparent", "red")) +
+  coord_fixed() +
+  theme_minimal() +
+  theme(
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    axis.text.y = element_text(color = "black"),
+    axis.text.x = element_text(angle = 30, hjust = 1, color = "black"),
+    text = element_text(size = 16),
+    plot.title = element_text(size = 16, face = "plain")
+  ) +
+  labs(
+    x = "Algorithm",
+    y = "Dataset",
+    title = "Mean ARI on experimental data"
+  )
+
+ggsave(
+  plot = p_tile_mean,
+  filename = file.path(imgdir, "real_bench_mean_ARI_cells.png"),
+  width = 2000,
+  height = 1750,
+  units = "px"
+)
+```
+
+
 ## Calculate % successful runs
 
 ```{r}
@@ -1549,7 +1643,7 @@ suppl_panel <- (((free(p_mean_ari, type = "label") +
       "pbmc3k" = "#a5acaf"
     )
   )) /
-  (plot_spacer() + p_succ + plot_spacer() + plot_layout(width = c(1, 6, 1)))) +
+  (p_tile_mean + p_succ + plot_layout(width = c(1, 1)))) +
   plot_annotation(tag_levels = "a") &
   theme(
     text = element_text(size = 20),
@@ -1560,15 +1654,15 @@ suppl_panel <- (((free(p_mean_ari, type = "label") +
 ggsave(
   plot = suppl_panel,
   filename = file.path(imgdir, "suppl_mean_panel.pdf"),
-  width = 5600,
+  width = 6000,
   height = 4200,
   units = "px"
 )
 ggsave(
   plot = suppl_panel,
   filename = file.path(imgdir, "suppl_mean_panel.png"),
-  width = 5600,
-  height = 4200,
+  width = 6000,
+  height = 4500,
   units = "px"
 )
 

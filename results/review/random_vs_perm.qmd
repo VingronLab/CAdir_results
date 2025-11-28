@@ -167,6 +167,7 @@ df <- data.frame(
 options(rlib_message_verbosity = "default")
 
 saveRDS(df, file = file.path(resdir, "ang_df.rds"))
+# df <- readRDS(file = file.path(resdir, "ang_df.rds"))
 ```
 
 # Panel
@@ -267,6 +268,13 @@ ggsave(
   units = "px"
 )
 ```
+
+```{r}
+df <- df %>%
+  mutate(diff = perm - rnd)
+mean(df$diff)
+```
+
 
 
 # sessionInfo
