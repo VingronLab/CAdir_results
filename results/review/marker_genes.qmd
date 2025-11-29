@@ -640,7 +640,7 @@ bp2 <- plotExpression(
   scale_color_mpimg() +
   labs(x = "Clusters")
 
-bp1 + bp2
+# bp1 + bp2
 
 ggsave(
   plot = bp1,
@@ -686,7 +686,7 @@ cd4p2 <- plotExpression(
   scale_color_mpimg() +
   labs(x = "Clusters")
 
-cd4p1 + cd4p2
+# cd4p1 + cd4p2
 
 ggsave(
   plot = cd4p1,
@@ -732,7 +732,7 @@ monop2 <- plotExpression(
   scale_color_mpimg() +
   labs(x = "Clusters")
 
-monop1 + monop2
+# monop1 + monop2
 
 ggsave(
   plot = monop1,
@@ -778,7 +778,7 @@ megap2 <- plotExpression(
   scale_color_mpimg() +
   labs(x = "Clusters")
 
-megap1 + megap2
+# megap1 + megap2
 
 ggsave(
   plot = megap1,
@@ -824,7 +824,7 @@ dendp2 <- plotExpression(
   scale_color_mpimg() +
   labs(x = "Clusters")
 
-dendp1 + dendp2
+# dendp1 + dendp2
 
 ggsave(
   plot = dendp1,
@@ -870,7 +870,7 @@ cd8p2 <- plotExpression(
   scale_color_mpimg() +
   labs(x = "Clusters")
 
-cd8p1 + cd8p2
+# cd8p1 + cd8p2
 
 ggsave(
   plot = cd8p1,
@@ -919,7 +919,7 @@ ctcd4p2 <- plotExpression(
   scale_color_mpimg() +
   labs(x = "Clusters")
 
-ctcd4p1 + ctcd4p2
+# ctcd4p1 + ctcd4p2
 
 ggsave(
   plot = ctcd4p1,
@@ -1466,6 +1466,73 @@ ggsave(
   units = "px"
 )
 ```
+
+```{r}
+bmarkers <- (bp1 + ggtitle("CAdir: Top 4 genes - B cells")) +
+  plot_spacer() +
+  (bp2 + ggtitle("scran: Top 4 genes - B cells")) +
+  plot_layout(
+    guides = "collect",
+    # axis = "collect",
+    width = c(19, 1, 19)
+  )
+
+monomarkers <- (monop1 + ggtitle("CAdir: Top 4 genes - Monocytes")) +
+  plot_spacer() +
+  (monop2 + ggtitle("scran: Top 4 genes - Monocytes")) +
+  plot_layout(
+    guides = "collect",
+    # axis = "collect",
+    width = c(19, 1, 19)
+  )
+
+ctcd4markers <- (ctcd4p1 +
+  ggtitle("CAdir: Top 4 genes - Cytotoxic CD4+ T cells")) +
+  plot_spacer() +
+  (ctcd4p2 + ggtitle("scran: Top 4 genes - Cytotoxic CD4+ T cells")) +
+  plot_layout(
+    guides = "collect",
+    # axis = "collect",
+    width = c(19, 1, 19)
+  )
+
+marker_panel <- (bmarkers / monomarkers / ctcd4markers) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 14),
+    axis.text.x = element_text(
+      size = 10,
+      angle = 45,
+      hjust = 1,
+      color = "black"
+    ),
+    axis.text.y = element_text(
+      size = 10,
+      # angle = 45,
+      # hjust = 1,
+      color = "black"
+    ),
+  )
+
+ggsave(
+  plot = marker_panel,
+  filename = file.path(imgdir, "violin_panel.png"),
+  width = 5000,
+  height = 6000,
+  units = "px"
+)
+
+ggsave(
+  plot = marker_panel,
+  filename = file.path(imgdir, "violin_panel.pdf"),
+  device = cairo_pdf,
+  width = 4000,
+  height = 6000,
+  units = "px"
+)
+```
+
 
 
 # Session Info

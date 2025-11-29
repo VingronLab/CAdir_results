@@ -214,7 +214,7 @@ ang_comp <- ggplot(dfl, aes(x = name, y = angle, fill = method)) +
   geom_point(size = 4, shape = 21, color = "#777777") +
   CAdir::scale_fill_mpimg() +
   labs(
-    title = "Random vs. permuted θ: Angle",
+    title = "Random vs. permuted \u03B8: Angle",
     x = "dataset",
     y = "angle [degrees]"
   ) +
@@ -233,7 +233,11 @@ ari_comp <- ggplot(dfl, aes(x = name, y = ARI, fill = method)) +
   geom_line(aes(group = name), color = "#777777") +
   geom_point(size = 4, shape = 21, color = "#777777") +
   CAdir::scale_fill_mpimg() +
-  labs(title = "Random vs. permuted θ: ARI", x = "dataset", y = "ARI") +
+  labs(
+    title = "Random vs. permuted \u03B8: ARI",
+    x = "dataset",
+    y = "ARI"
+  ) +
   theme_bw() +
   theme(
     axis.text.x = element_text(
