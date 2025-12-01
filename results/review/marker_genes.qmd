@@ -95,7 +95,8 @@ cabic <- dirclust_splitmerge(
 cabic <- CAdir::annotate_biclusters(
   obj = cabic,
   universe = rownames(sce),
-  org = "hs"
+  org = "hs",
+  cost = "logpval"
 )
 
 cabic <- rank_genes(cadir = cabic, caobj = ca)
