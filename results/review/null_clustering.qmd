@@ -43,7 +43,7 @@ suppressPackageStartupMessages({
 options(repr.plot.width = 20, repr.plot.height = 15)
 
 dir <- "./results/"
-imgdir <- file.path(dir, "img/suppl_mat/null_clustering/")
+imgdir <- file.path(dir, "img/review/null_clustering/")
 dir.create(imgdir, recursive = TRUE)
 ```
 
@@ -121,7 +121,7 @@ sim <- sim[sim_top, ]
 ca <- cacomp(
   obj = as.matrix(logcounts(sim)),
   princ_coords = 3,
-  dims = 30,
+  dims = 50,
   top = nrow(sim),
   residuals = "pearson",
   clip = TRUE
@@ -132,18 +132,23 @@ ca <- cacomp(
 set.seed(2358)
 cabic <- dirclust_splitmerge(
   caobj = ca,
+  counts = logcounts(sim),
   k = 1,
   cutoff = NULL,
   method = "random",
   apl_quant = 0.99,
   min_cells = 30,
   make_plots = TRUE,
-  apl_cutoff_reps = 500,
+  apl_cutoff_reps = 5,
   qcutoff = 0.8,
   convergence_thr = 0.001
 )
 
 cabic
+```
+
+```{r}
+ca_biplot(ca)
 ```
 
 
@@ -154,7 +159,58 @@ plotUMAP(sim, color_by = "cadir")
 
 ## Plot results.
 ```{r}
-plot_clusters(cadir = cabic, caobj = ca)
+pcs <- plot_clusters(cadir = cabic, caobj = ca, point_size = 2, axis = TRUE)
+
+ggsave(
+  plot = pcs,
+  file = file.path(imgdir, "null_clustering_cluster_apls.png"),
+  width = 6000,
+  height = 6000,
+  units = "px"
+)
+```
+
+```{r}
+
+p1 <- cluster_apl(caobj = ca, cadir = cabic, cluster = "cluster_1")
+p2 <- cluster_apl(caobj = ca, cadir = cabic, cluster = "cluster_2")
+p3 <- cluster_apl(caobj = ca, cadir = cabic, cluster = "cluster_3")
+```
+
+
+```{r}
+panel <- p1 +
+  p2 +
+  p3 +
+  plot_layout(guides = "collect") +
+  plot_annotation(tag_levels = "a") &
+  theme_bw() +
+    theme(
+      plot.tag = element_text(size = 18, face = "bold"),
+      axis.text.x = element_text(
+        size = 10,
+        angle = 45,
+        hjust = 1,
+        color = "black"
+      ),
+      axis.text.y = element_text(size = 10, color = "black")
+    )
+
+ggsave(
+  plot = panel,
+  file = file.path(imgdir, "null_clustering_panel.pdf"),
+  width = 4500,
+  height = 1500,
+  units = "px"
+)
+
+ggsave(
+  plot = panel,
+  file = file.path(imgdir, "null_clustering_panel.png"),
+  width = 4500,
+  height = 1500,
+  units = "px"
+)
 ```
 
 

@@ -112,7 +112,8 @@ cak_cellm <- annotate_biclusters(
   org = "mm",
   method = "goa",
   filter_literature = FALSE,
-  set = "CellMarker"
+  set = "CellMarker",
+  cost = "logpval"
 )
 
 cak_panglao <- annotate_biclusters(
@@ -122,7 +123,8 @@ cak_panglao <- annotate_biclusters(
   org = "mm",
   method = "goa",
   filter_literature = FALSE,
-  set = "PanglaoDB"
+  set = "PanglaoDB",
+  cost = "logpval"
 )
 
 
@@ -233,11 +235,11 @@ names(cols) <- c(info$CellMarker, info$Annotation[sel1], info$PanglaoDB[sel2])
 
 order <- c(
   "cluster_1",
-  "Vascular_endothelial_cell",
   "Endothelial_cell",
+  "Vascular_endothelial_cell",
   "Schwalie_et_al.Nature.P1",
   "cluster_6",
-  "Immune_cell",
+  "Macrophage",
   "B_cell",
   "T_cell",
   "skeletal muscle satellite stem cell",
@@ -399,7 +401,8 @@ cabic_cellm <- annotate_biclusters(
   org = "hs",
   method = "goa",
   filter_literature = FALSE,
-  set = "CellMarker"
+  set = "CellMarker",
+  cost = "logpval"
 )
 
 cabic_panglao <- annotate_biclusters(
@@ -409,7 +412,8 @@ cabic_panglao <- annotate_biclusters(
   org = "hs",
   method = "goa",
   filter_literature = FALSE,
-  set = "PanglaoDB"
+  set = "PanglaoDB",
+  cost = "logpval"
 )
 
 
@@ -629,7 +633,7 @@ ggsave(
   plot = sank_panel,
   filename = file.path(imgdir, "sankeys_panel_anno.png"),
   width = 2 * 2500,
-  height = 4000,
+  height = 4100,
   units = "px"
 )
 
@@ -637,7 +641,7 @@ ggsave(
   plot = sank_panel,
   filename = file.path(imgdir, "sankeys_panel_anno.pdf"),
   width = 2 * 2500,
-  height = 4000,
+  height = 4100,
   units = "px"
 )
 ```

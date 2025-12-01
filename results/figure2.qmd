@@ -28,6 +28,7 @@ suppressPackageStartupMessages({
   library(APL)
   library(SingleCellExperiment)
   library(dplyr)
+  library(tidyr)
 
   # To load the data set
   library(TENxPBMCData)
@@ -39,6 +40,7 @@ suppressPackageStartupMessages({
 
   library(patchwork)
   library(ggtext)
+  library(gguidance)
 })
 
 options(repr.plot.width = 20, repr.plot.height = 15)
@@ -112,6 +114,7 @@ cak <- annotate_biclusters(
   universe = rownames(sce_sub),
   org = "mm",
   method = "goa",
+  cost = "logpval",
   filter_literature = FALSE
 )
 
@@ -215,8 +218,8 @@ t_dir <- t_dir / ca@D # prin_coords to std_coords
 t_dir <- model(t_dir)
 
 ics_coords <- model(ca@std_coords_cols)
-ics_coords <- ics_coords[cak@cell_clusters == "Immune_cell", ]
-i_dir <- cak@directions[cak@dict[["Immune_cell"]], ]
+ics_coords <- ics_coords[cak@cell_clusters == "Macrophage", ]
+i_dir <- cak@directions[cak@dict[["Macrophage"]], ]
 i_dir <- i_dir / ca@D # prin_coords to std_coords
 i_dir <- model(i_dir)
 ```
@@ -270,7 +273,7 @@ p_bt_std <- cluster_apl(
   geom_label(
     data = as.data.frame(i_dir * 7),
     aes(x, y, text = NULL),
-    label = "Immune_cell",
+    label = "Macrophage",
     color = "#00b1ea",
     vjust = 1,
     hjust = -0.4
@@ -301,7 +304,7 @@ ggsave(
 ## Endothelial cells - Standard coordinates APL
 
 ```{r}
-cls <- "Vascular_endothelial_cell"
+cls <- "Endothelial_cell"
 group <- which(cak@cell_clusters == cls)
 direction <- cak@directions[cak@dict[[cls]], ] / ca@D
 
@@ -312,8 +315,8 @@ model <- apl_model(
 )
 
 ecs_coords <- model(ca@std_coords_cols)
-ecs_coords <- ecs_coords[cak@cell_clusters == "Endothelial_cell", ]
-e_dir <- cak@directions[cak@dict[["Endothelial_cell"]], ]
+ecs_coords <- ecs_coords[cak@cell_clusters == "Vascular_endothelial_cell", ]
+e_dir <- cak@directions[cak@dict[["Vascular_endothelial_cell"]], ]
 e_dir <- e_dir / ca@D # prin_coords to std_coords
 e_dir <- model(e_dir)
 ```
@@ -393,8 +396,8 @@ t_dir <- cak@directions[cak@dict[["T_cell"]], ]
 t_dir <- model(t_dir)
 
 ics_coords <- model(ca@prin_coords_cols)
-ics_coords <- ics_coords[cak@cell_clusters == "Immune_cell", ]
-i_dir <- cak@directions[cak@dict[["Immune_cell"]], ]
+ics_coords <- ics_coords[cak@cell_clusters == "Macrophage", ]
+i_dir <- cak@directions[cak@dict[["Macrophage"]], ]
 i_dir <- model(i_dir)
 ```
 
@@ -446,7 +449,7 @@ p_bt_prin <- cluster_apl(
   geom_label(
     data = as.data.frame(i_dir * 3),
     aes(x, y, text = NULL),
-    label = "Immune_cell",
+    label = "Macrophage",
     color = "#00b1ea",
     vjust = 1
   ) +
@@ -477,7 +480,7 @@ ggsave(
 ## Endothelial cells - principal coordinates APL
 
 ```{r}
-cls <- "Vascular_endothelial_cell"
+cls <- "Endothelial_cell"
 group <- which(cak@cell_clusters == cls)
 direction <- cak@directions[cak@dict[[cls]], ]
 
@@ -488,8 +491,8 @@ model <- apl_model(
 )
 
 ecs_coords <- model(ca@prin_coords_cols)
-ecs_coords <- ecs_coords[cak@cell_clusters == "Endothelial_cell", ]
-e_dir <- cak@directions[cak@dict[["Endothelial_cell"]], ]
+ecs_coords <- ecs_coords[cak@cell_clusters == "Vascular_endothelial_cell", ]
+e_dir <- cak@directions[cak@dict[["Vascular_endothelial_cell"]], ]
 e_dir <- model(e_dir)
 ```
 
@@ -549,6 +552,80 @@ ggsave(
   units = "px"
 )
 ```
+
+### GOA
+```{r}
+
+goa_res <- goa_per_cluster(
+  cadir = cak,
+  universe = rownames(sce_sub),
+  set = "CellMarker",
+  org = "mm",
+  min_size = 10,
+  max_size = 500,
+  filter_literature = FALSE
+)
+```
+
+```{r}
+nclust <- length(goa_res)
+
+goa_mat <- lapply(goa_res, function(x, nc = nclust) {
+  subs <- min(nrow(x), nc)
+  x[seq_len(subs), ]
+})
+
+goa_mat <- dplyr::bind_rows(goa_mat, .id = "cluster")
+
+gr <- goa_mat[, c("cluster", "gene_set", "padj")]
+gr <- complete(gr, cluster, gene_set, fill = list(padj = 1))
+gr$gene_set <- gsub("_", " ", gr$gene_set)
+gr$cluster <- gsub("_", " ", gr$cluster)
+
+p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
+  geom_tile() +
+  scale_fill_gradientn(
+    colours = c("#29485d", "#006c66", "#c6d325", "#ef7c00"),
+    limits = c(0, 30),
+    # limits = c(0, quantile(-log10(gr$padj), 0.99)),
+    oob = scales::squish,
+    guide = "colourbar_custom"
+  ) +
+  coord_fixed() +
+  theme_bw() +
+  labs(
+    x = "Cluster",
+    y = "Gene Set",
+    title = "Gene Set enrichment",
+    fill = expression(atop("-log"[10], "\npadj"))
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
+    axis.text.y = element_text(color = "black"),
+    text = element_text(size = 18),
+    plot.title = element_text(size = 16, face = "plain", hjust = 0.5)
+  ) # "bold"
+
+# NOTE: Uncomment to plot
+p_gs_enr
+
+ggsave(
+  plot = p_gs_enr,
+  file = file.path(imgdir, "gene_set_enr_hm_tm.pdf"),
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+ggsave(
+  plot = p_gs_enr,
+  file = file.path(imgdir, "gene_set_enr_hm_tm.png"),
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+```
+
+
 
 # Further Plots
 ## SM plot
@@ -684,7 +761,7 @@ order <- c(
   "Vascular_endothelial_cell",
   "Endothelial_cell",
   "Schwalie_et_al.Nature.P1",
-  "Immune_cell",
+  "Macrophage",
   "B_cell",
   "T_cell",
   "skeletal muscle satellite stem cell",

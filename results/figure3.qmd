@@ -111,7 +111,8 @@ top <- top_genes(cak)
 cak <- annotate_biclusters(
   obj = cak,
   universe = rownames(sce),
-  org = "hs"
+  org = "hs",
+  cost = "logpval"
 )
 
 cak <- rank_genes(cadir = cak, caobj = ca)
@@ -355,7 +356,8 @@ cak_corr <- dirclust_splitmerge(
 cak_corr <- annotate_biclusters(
   obj = cak_corr,
   universe = rownames(sce_corr),
-  org = "hs"
+  org = "hs",
+  cost = "logpval"
 )
 
 sce_corr$cadir_corr <- cak_corr@cell_clusters
@@ -568,8 +570,8 @@ ggsave(
 ```{r}
 cak_corr_mod <- cak_corr
 
-goa_res <- CAbiNet::per_cluster_goa(
-  cabic = cak_corr_mod,
+goa_res <- goa_per_cluster(
+  cadir = cak_corr_mod,
   universe = rownames(sce_corr),
   set = "CellMarker",
   org = "hs",
