@@ -1064,9 +1064,11 @@ bicl_cc <- (p_max_ari + p_mean_ari + plot_layout(guides = "collect")) /
   plot_annotation(tag_levels = "a") &
   theme(
     text = element_text(size = 18),
-    plot.title = element_text(size = 18, face = "plain"),
+    plot.title = element_text(size = 24, face = "plain"),
     plot.tag = element_text(size = 20, face = "bold"),
-    legend.text = element_text(size = 14)
+    legend.text = element_text(size = 18),
+    axis.text.x = element_text(size = 18),
+    axis.text.y = element_text(size = 18)
   )
 
 bicl_cc
