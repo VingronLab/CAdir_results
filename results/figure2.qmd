@@ -350,11 +350,11 @@ p_ecs_std <- cluster_apl(
   geom_label(
     data = as.data.frame(e_dir * 2),
     aes(x, y, text = NULL),
-    label = "Endothelial_cell",
+    label = "Vascular endothelial cell",
     color = "#d44a3d",
     hjust = 0
   ) +
-  ggtitle("Vascular endothelial cell") +
+  ggtitle("Endothelial_cell") +
   theme_bw(base_size = 16)
 
 # NOTE: Uncomment to plot
@@ -524,12 +524,12 @@ p_ecs_prin <- cluster_apl(
   ) +
   geom_label(
     data = as.data.frame(e_dir * 2),
-    aes(x, y, text = NULL),
-    label = "Endothelial_cell",
-    color = "#d44a3d",
-    hjust = -0.3,
+    aes((x + 0.3), y, text = NULL),
+    label = "Vascular\nendothelial cell",
+    color = "#d44a3d"
+    # hjust = -0.3
   ) +
-  ggtitle("Vascular endothelial cell") +
+  ggtitle("Endothelial_cell") +
   theme_bw(base_size = 18) +
   theme(plot.title = element_text(size = 22))
 
@@ -1042,7 +1042,11 @@ for (i in seq_len(length(pcl_panel))) {
 fig2 <- (((wrap_plots(pcl_panel, ncol = 3) +
   guide_area() +
   plot_layout(guides = "collect") &
-  theme(legend.box = "horizontal")) /
+  theme(
+    legend.box = "horizontal",
+    legend.text = element_text(size = 16),
+    legend.title = element_text(size = 18)
+  )) /
   (p_bt_prin +
     p_ecs_prin +
     guide_area() +
