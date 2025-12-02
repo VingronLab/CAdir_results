@@ -93,13 +93,13 @@ for dataset in "${datasets[@]}"; do
       ##################
 			# scDeepCluster  #
       ##################
-			source ./benchmarking/submit_scripts/scDeepCluster.sh
+			# source ./benchmarking/submit_scripts/scDeepCluster.sh
 
       ###############
       # scG-cluster #
       ###############
-      source ./benchmarking/submit_scripts/scG-cluster.sh
-
+      # source ./benchmarking/submit_scripts/scG-cluster.sh
+      
 			if [ "$test_run" = true ]; then
 				break 3
 			fi

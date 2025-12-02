@@ -752,7 +752,11 @@ umap_panel <- (t_um1 + ggtitle("Tirosh - CAdir")) +
   (d_um2 + ggtitle("Darmanis - Annotation")) +
   plot_layout(design = layout) +
   plot_annotation(tag_levels = "a") &
-  theme(plot.tag = element_text(size = 18, face = "bold"))
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    legend.text = element_text(size = 16),
+    legend.title = element_text(size = 18)
+  )
 
 ggsave(
   plot = umap_panel,
