@@ -616,6 +616,7 @@ gr <- goa_mat[, c("cluster", "gene_set", "padj")]
 gr <- complete(gr, cluster, gene_set, fill = list(padj = 1))
 gr$gene_set <- gsub("_", " ", gr$gene_set)
 gr$cluster <- gsub("_", " ", gr$cluster)
+gr$gene_set <- stringr::str_wrap(gr$gene_set, width = 25)
 
 p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
   geom_tile() +
@@ -874,7 +875,12 @@ fig3 <- wrap_elements(wrap_plots(pcl_panel, ncol = 3)) +
   p_expr +
   free(sank, type = "panel", side = "tbl") +
   free(
-    p_gs_enr + theme(plot.title = element_text(hjust = 0.5)),
+    p_gs_enr +
+      theme(
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 16)
+      ),
     type = "label",
     side = "tbr"
   ) +
@@ -910,8 +916,10 @@ pcc_panel <- wrap_plots(pcc_panel, ncol = 2, nrow = 3) +
   guide_area() +
   plot_layout(guides = "collect") &
   theme(
-    legend.text = element_text(size = 14),
-    legend.title = element_text(size = 16)
+    legend.text = element_text(size = 18),
+    legend.title = element_text(size = 20),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(size = 14)
   )
 
 
