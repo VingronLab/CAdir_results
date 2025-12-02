@@ -1,0 +1,323 @@
+---
+title: Figure 2
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
+  library(APL)
+  library(SingleCellExperiment)
+  library(dplyr)
+  library(tidyr)
+
+  # To load the data set
+  library(Seurat)
+  library(SeuratObject)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(patchwork)
+  library(ggtext)
+  library(gguidance)
+
+  library(RcppML)
+  library(Matrix)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review/nmf/")
+dir.create(imgdir, recursive = TRUE)
+```
+
+## Load data
+
+```{r}
+data_dir <- "./data/real/discussed/"
+
+marker_genes <- readr::read_csv(file.path(
+  data_dir,
+  "tabula_muris_marker_genes.csv"
+))
+sce <- readRDS(file.path(
+  data_dir,
+  "preprocessed/tabula_muris_preprocessed_filtered.rds"
+))
+
+genevars <- modelGeneVar(sce, assay.type = "logcounts")
+chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)
+
+# add marker_genes
+expr_markers <- marker_genes[marker_genes$gene %in% rownames(sce), ]
+chosen <- c(chosen, expr_markers$gene)
+chosen <- unique(chosen)
+sce_ca <- sce[chosen, ]
+
+ca <- cacomp(
+  obj = logcounts(sce_ca),
+  princ_coords = 3,
+  dims = 30,
+  top = nrow(sce_ca),
+  residuals = "pearson",
+  python = TRUE
+)
+
+cell_types <- sce$cell_ontology_class
+cat("Number of cell types:", length(unique(cell_types)), "\n")
+```
+
+# CAdir
+```{r}
+set.seed(2358)
+cak <- dirclust_splitmerge(
+  caobj = ca,
+  k = 8,
+  cutoff = 55,
+  method = "random",
+  apl_quant = 0.99,
+  counts = NULL,
+  min_cells = 20,
+  reps = NULL,
+  make_plots = TRUE,
+  qcutoff = 0.8,
+  convergence_thr = 0.001
+)
+ari <- aricode::clustComp(sce_ca$cadir, sce_ca$cell_ontology_class)
+cat("ARI:", ari$ARI, "\n")
+```
+
+```{r}
+cak <- annotate_biclusters(
+  obj = cak,
+  caobj = ca,
+  universe = rownames(sce_sub),
+  org = "mm",
+  method = "goa",
+  cost = "logpval",
+  filter_literature = FALSE
+)
+sce_ca$cadir <- cak@cell_clusters
+```
+
+
+```{r}
+
+um1 <- plotUMAP(sce_ca, colour = "cadir")
+um2 <- plotUMAP(sce_ca, colour = "cell_ontology_class")
+```
+
+
+
+# NMF
+```{r}
+genevars <- modelGeneVar(sce, assay.type = "logcounts")
+chosen <- getTopHVGs(genevars, n = 2000, var.threshold = NULL)
+
+# add marker_genes
+expr_markers <- marker_genes[marker_genes$gene %in% rownames(sce), ]
+chosen <- c(chosen, expr_markers$gene)
+chosen <- unique(chosen)
+sce_nmf <- sce[chosen, ]
+```
+
+```{r}
+A <- logcounts(sce_nmf)
+model <- RcppML::nmf(A, seed = 1:10, k = 8, L1 = 0.1)
+evaluate(model, A) # calculate mean squared error
+
+w <- model@w
+h <- model@h
+```
+
+```{r}
+cell_cls <- apply(h, 2, function(x) which(x == max(x)))
+genes_cls <- apply(w, 1, function(x) which(x == max(x)))
+```
+
+```{r}
+sce_nmf$nmf <- cell_cls
+ari <- aricode::clustComp(sce_nmf$nmf, sce_nmf$cell_ontology_class)
+cat("ARI:", ari$ARI, "\n")
+```
+
+```{r}
+nmf_ranks <- list()
+for (i in seq_len(ncol(w))) {
+  idx <- which(genes_cls == i)
+  genes <- w[idx, i]
+  df <- tibble(
+    "gene" = rownames(w)[idx],
+    "score" = genes
+  ) %>%
+    arrange(desc(score))
+  nmf_ranks[[i]] <- df
+}
+```
+
+
+
+
+## GOA
+```{r}
+set <- "CellMarker"
+org <- "mm"
+filter_literature <- FALSE
+universe <- rownames(sce_nmf)
+
+gs <- load_ct_gene_set(set = set, org = org)
+gene_sets <- make_gene_set_list(
+  gs,
+  filter_literature = filter_literature
+)
+
+gc <- genes_cls
+gc_names <- sort(unique(gc))
+
+gc_list <- lapply(X = gc_names, FUN = function(x) {
+  names(gc[which(gc == gc_names[x])])
+})
+
+names(gc_list) <- gc_names
+
+# Perform goa for each cluster
+gse_res <- list()
+
+for (c in seq_len(length(gc_list))) {
+  gene <- gc_list[[c]]
+  clst_name <- names(gc_list)[c]
+
+  goa <- compute_goa(
+    gois = gene,
+    gene_sets = gene_sets,
+    universe = universe,
+    min_size = 10,
+    max_size = 500,
+    verbose = TRUE
+  )
+
+  gse_res[[clst_name]] <- goa
+}
+```
+
+
+
+```{r}
+cost <- "logpval"
+alpha <- 0.05
+
+ccs <- cell_cls
+ccs_nm <- names(ccs)
+unccs <- unique(ccs)
+
+# gene clusters
+gcs <- genes_cls
+gcs_nm <- names(gcs)
+ungcs <- unique(gcs)
+
+# Combine clusters
+allcs <- unique(c(unccs, ungcs))
+
+# Convert to character
+ccs <- as.character(ccs)
+unccs <- as.character(unccs)
+gcs <- as.character(gcs)
+ungcs <- as.character(ungcs)
+allcs <- as.character(allcs)
+
+
+# Create dataframe with all goa results
+nclust <- length(unccs)
+
+gse_res <- lapply(gse_res, function(x, nc = nclust) {
+  subs <- min(nrow(x), nc)
+  x[seq_len(subs), ]
+})
+
+cluster_anno <- run_hungarian(gse_res, cost = cost)
+
+# Rename clusters based on GSE.
+for (c in seq_len(length(allcs))) {
+  noanno <- allcs[c]
+
+  if (!allcs[c] %in% cluster_anno$cluster) {
+    ct <- noanno
+  } else {
+    ct <- cluster_anno[cluster_anno$cluster == allcs[c], "cell_type"]
+    cost_val <- cluster_anno[cluster_anno$cluster == allcs[c], "cost"]
+
+    if (cost == "pval") {
+      if (cost_val > alpha) ct <- noanno
+    } else if (cost == "logpval") {
+      if (cost_val < (-log10(alpha))) ct <- noanno
+    } else if (cost == "NES") {
+      # if (cost_val < (-log10(alpha))) ct <- noanno
+    } else {
+      rlang::abort()
+    }
+  }
+
+  if (allcs[c] %in% ungcs) {
+    sel <- which(gcs == allcs[c])
+
+    if (length(ct) == 0) {
+      gcs[sel] <- noanno
+    } else {
+      gcs[sel] <- ct
+    }
+  }
+
+  if (allcs[c] %in% unccs) {
+    sel <- which(ccs == allcs[c])
+
+    if (length(ct) == 0) {
+      ccs[sel] <- noanno
+    } else {
+      ccs[sel] <- ct
+    }
+  }
+}
+
+names(gcs) <- gcs_nm
+names(ccs) <- ccs_nm
+
+sce_nmf$nmf <- ccs
+```
+
+```{r}
+um3 <- plotUMAP(sce_nmf, colour = "nmf")
+um <- um2 + um1 + um3
+
+ggsave(
+  plot = um,
+  filename = file.path(imgdir, "umap.png"),
+  width = 6000,
+  height = 2000,
+  units = "px"
+)
+```
+
+
+
+
