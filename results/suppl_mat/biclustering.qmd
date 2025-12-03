@@ -232,7 +232,7 @@ p_max_ari <- df_max %>%
   ) +
   guides(fill = "none")
 
-p_max_ari
+# p_max_ari
 
 ggsave(
   plot = p_max_ari,
@@ -299,7 +299,7 @@ p_max_ce <- df_max %>%
   ) +
   guides(fill = "none")
 
-p_max_ce
+# p_max_ce
 
 ggsave(
   plot = p_max_ce,
@@ -368,8 +368,7 @@ p_mean_ari <- df_mean %>%
   ) +
   guides(fill = "none")
 
-p_mean_ari
-
+# p_mean_ari
 
 ggsave(
   plot = p_mean_ari,
@@ -436,8 +435,7 @@ p_mean_ce <- df_mean %>%
   ) +
   guides(fill = "none")
 
-p_mean_ce
-
+# p_mean_ce
 
 ggsave(
   plot = p_mean_ce,
@@ -507,8 +505,7 @@ p_max_ari_g <- df_max %>%
   ) +
   guides(fill = "none")
 
-p_max_ari_g
-
+# p_max_ari_g
 
 ggsave(
   plot = p_max_ari_g,
@@ -575,8 +572,7 @@ p_mean_ari_g <- df_mean %>%
   ) +
   guides(fill = "none")
 
-p_mean_ari_g
-
+# p_mean_ari_g
 
 ggsave(
   plot = p_mean_ari_g,
@@ -598,8 +594,13 @@ ggsave(
 # Figure panels
 
 ```{r}
-fig <- (p_max_ce + p_max_ari_g + p_mean_ce + p_mean_ari_g) +
-  plot_layout(guides = "collect") +
+fig <- (p_max_ce +
+  p_max_ari_g +
+  p_mean_ce +
+  p_mean_ari_g +
+  (p_max_ari + guides(fill = "none", shape = "none", colour = "none")) +
+  (p_mean_ari + guides(fill = "none", shape = "none", colour = "none"))) +
+  plot_layout(guides = "collect", ncol = 2) +
   scale_shape_manual(values = seq_len(length(df_all$simulation))) +
   scale_fill_mpimg(name = "mpi_extend") +
   scale_color_manual(
@@ -614,17 +615,42 @@ ggsave(
   plot = fig,
   filename = file.path(imgdir, "bicl_panel.pdf"),
   width = 3800,
-  height = 3200,
+  height = 5000,
   units = "px"
 )
 ggsave(
   plot = fig,
   filename = file.path(imgdir, "bicl_panel.png"),
   width = 3800,
-  height = 3200,
+  height = 5000,
   units = "px"
 )
 ```
+
+```{r}
+
+fig_cells <- (p_max_ari +
+  (p_mean_ari + guides(fill = "none", shape = "none", colour = "none"))) +
+  plot_layout(guides = "collect") +
+  scale_shape_manual(values = seq_len(length(df_all$simulation))) +
+  scale_fill_mpimg(name = "mpi_extend") +
+  scale_color_manual(
+    values = list(
+      "zeisel" = "#60636a",
+      "pbmc3k" = "#a5acaf"
+    )
+  ) +
+  plot_annotation(tag_levels = "a")
+
+ggsave(
+  plot = fig_cells,
+  filename = file.path(imgdir, "ari_cells.pdf"),
+  width = 3800,
+  height = 2000,
+  units = "px"
+)
+```
+
 
 # Environment
 

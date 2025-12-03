@@ -179,8 +179,8 @@ df_max <- df_all %>%
   distinct() %>%
   ungroup()
 
-df_max$max_ARI[is.infinite(df$max_ARI)] <- 0
-df_max$max_NMI[is.infinite(df$max_NMI)] <- 0
+df_max$max_ARI[is.infinite(df_max$max_ARI)] <- 0
+df_max$max_NMI[is.infinite(df_max$max_NMI)] <- 0
 ```
 
 ```{r}
@@ -248,6 +248,8 @@ df <- df %>%
   mutate(algorithm = gsub("CAbiNet_igraph", "CAbiNet", algorithm)) %>%
   mutate(pattern = paste0(algorithm, dataset))
 ```
+
+
 ```{r}
 df_real <- df %>%
   filter(algorithm == "CAdir_auto") %>%
@@ -271,8 +273,8 @@ df_real <- df %>%
   distinct() %>%
   ungroup()
 
-df_m$max_NMI[is.infinite(df_m$max_NMI)] <- NA
-df_m$max_ARI[is.infinite(df_m$max_ARI)] <- NA
+df_real$max_NMI[is.infinite(df_real$max_NMI)] <- NA
+df_real$max_ARI[is.infinite(df_real$max_ARI)] <- NA
 ```
 
 ```{r}
@@ -293,6 +295,60 @@ real_mean <- ggplot(df_real, aes(x = dims, y = mean_ARI, color = dataset)) +
   labs(x = "dimensions", y = "mean ARI", title = "Mean ARI") +
   theme_bw()
 ```
+
+# apl quantile
+```{r}
+df_real_q <- df %>%
+  filter(algorithm == "CAdir_auto") %>%
+  group_by(algorithm, dataset, apl_quant) %>%
+  mutate(
+    mean_ARI = mean(ARI),
+    mean_NMI = mean(NMI),
+  ) %>%
+  mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
+  mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
+  select(
+    dataset,
+    algorithm,
+    ARI,
+    mean_ARI,
+    mean_NMI,
+    max_NMI,
+    max_ARI,
+    apl_quant
+  ) %>%
+  distinct() %>%
+  ungroup()
+
+df_real_q$max_NMI[is.infinite(df_real_q$max_NMI)] <- NA
+df_real_q$max_ARI[is.infinite(df_real_q$max_ARI)] <- NA
+```
+
+```{r}
+real_max_q <- ggplot(
+  df_real_q,
+  aes(x = apl_quant, y = max_ARI, color = dataset)
+) +
+  geom_point() +
+  geom_line() +
+  scale_color_mpimg(name = "mpi_extend") +
+  labs(x = "cutoff quantile", y = "max ARI", title = "Maximum ARI") +
+  theme_bw()
+```
+
+```{r}
+
+real_mean_q <- ggplot(
+  df_real_q,
+  aes(x = apl_quant, y = mean_ARI, color = dataset)
+) +
+  geom_point() +
+  geom_line() +
+  scale_color_mpimg(name = "mpi_extend") +
+  labs(x = "cutoff quantile", y = "mean ARI", title = "Mean ARI") +
+  theme_bw()
+```
+
 
 
 
@@ -320,7 +376,7 @@ ggsave(
 ggsave(
   plot = panel,
   filename = file.path(imgdir, "dim_vs_ari_real.png"),
-  width = 6400,
+  width = 5000,
   height = 2200,
   units = "px"
 )
@@ -349,11 +405,41 @@ ggsave(
 ggsave(
   plot = panel2,
   filename = file.path(imgdir, "dim_vs_ari_sim.png"),
-  width = 6400,
+  width = 5000,
   height = 2200,
   units = "px"
 )
 ```
+
+```{r}
+panel_q <- real_max_q +
+  real_mean_q +
+  plot_layout(guides = "collect") +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    text = element_text(size = 18),
+    plot.title = element_text(size = 18, face = "plain"),
+    plot.tag = element_text(size = 20, face = "bold"),
+    legend.text = element_text(size = 14)
+  )
+
+ggsave(
+  plot = panel_q,
+  filename = file.path(imgdir, "apl_q_vs_ari_real.pdf"),
+  width = 5000,
+  height = 2200,
+  units = "px"
+)
+
+ggsave(
+  plot = panel_q,
+  filename = file.path(imgdir, "apl_q_vs_ari_real.png"),
+  width = 5000,
+  height = 2200,
+  units = "px"
+)
+```
+
 
 # Session Info
 ```{r}

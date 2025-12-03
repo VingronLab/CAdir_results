@@ -279,6 +279,84 @@ ggsave(
 )
 ```
 
+### Tirosh marker genes T cells
+
+```{r}
+t_cadir <- rank_genes(cadir = t_cadir, caobj = t_caobj)
+cl3 <- t_cadir@gene_ranks$cluster_3
+cl4 <- t_cadir@gene_ranks$cluster_4
+
+cl3 <- cl3[cl3$Score >= 0, ]
+cl4 <- cl4[cl4$Score >= 0, ]
+```
+
+```{r}
+pc3 <- plotExpression(
+  tirosh[, tirosh$cadir %in% c("cluster_3", "cluster_4")],
+  features = cl3$Rowname[1:4],
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  guides(colour = "none") +
+  scale_color_mpimg()
+
+pc4 <- plotExpression(
+  tirosh[, tirosh$cadir %in% c("cluster_3", "cluster_4")],
+  features = cl4$Rowname[1:4],
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  guides(colour = "none") +
+  scale_color_mpimg()
+
+pcd4 <- plotExpression(
+  tirosh[, tirosh$cadir %in% c("cluster_3", "cluster_4")],
+  features = "CD4",
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  guides(colour = "none") +
+  scale_color_mpimg()
+
+ggsave(plot = pc3, filename = file.path(imgdir, "tirosh_cluster3.png"))
+ggsave(plot = pc4, filename = file.path(imgdir, "tirosh_cluster4.png"))
+
+ggsave(plot = pcd4, filename = file.path(imgdir, "tirosh_CD4.png"))
+```
+
+```{r}
+
+layout <- c(
+  area(t = 1, b = 4, l = 1, r = 4),
+  area(t = 1, b = 4, l = 5, r = 8),
+  area(t = 1, b = 2, l = 9, r = 10)
+)
+
+t_cell_panel <- pc3 +
+  pc4 +
+  pcd4 +
+  plot_layout(guides = "collect", design = layout) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 16, face = "bold"),
+    plot.title = element_text(size = 20, hjust = 0.5, face = "bold")
+    # text = element_text(size = 14)
+  )
+# &
+#   theme(plot.tag = element_text(size = 18, face = "bold"))
+
+ggsave(
+  plot = t_cell_panel,
+  filename = file.path(imgdir, "t_cell_panel.png"),
+  width = 3000,
+  height = 1800,
+  units = "px"
+)
+```
+
+
+
+
 ## SM plot
 ```{r}
 pdf(file = NULL)
@@ -702,13 +780,22 @@ ggsave(
 ## UMAPs
 ```{r}
 
+# layout <- c(
+#   area(t = 1, b = 4, l = 1, r = 4),
+#   area(t = 5, b = 8, l = 1, r = 4),
+#   area(t = 1, b = 4, l = 5, r = 8),
+#   area(t = 5, b = 8, l = 5, r = 8),
+#   area(t = 1, b = 4, l = 9, r = 12),
+#   area(t = 5, b = 8, l = 9, r = 12)
+# )
+
 layout <- c(
   area(t = 1, b = 4, l = 1, r = 4),
-  area(t = 5, b = 8, l = 1, r = 4),
   area(t = 1, b = 4, l = 5, r = 8),
+  area(t = 5, b = 8, l = 1, r = 4),
   area(t = 5, b = 8, l = 5, r = 8),
-  area(t = 1, b = 4, l = 9, r = 12),
-  area(t = 5, b = 8, l = 9, r = 12)
+  area(t = 9, b = 12, l = 1, r = 4),
+  area(t = 9, b = 12, l = 5, r = 8)
 )
 
 umap_panel <- (t_um1 + ggtitle("Tirosh - CAdir")) +
@@ -719,27 +806,43 @@ umap_panel <- (t_um1 + ggtitle("Tirosh - CAdir")) +
   (ts_um2 + ggtitle("Tabula Sapiens - Annotation")) +
   plot_layout(design = layout) +
   plot_annotation(tag_levels = "a") &
-  theme(plot.tag = element_text(size = 18, face = "bold"))
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    plot.title = element_text(size = 20),
+    legend.text = element_text(size = 16),
+    legend.title = element_text(size = 18)
+  )
 
 ggsave(
   plot = umap_panel,
   filename = file.path(imgdir, "difficult_clusterings_umaps.png"),
   width = 8000,
-  height = 4000,
+  height = 8000,
   units = "px"
 )
 ```
 
 ```{r}
+# layout <- c(
+#   area(t = 1, b = 4, l = 1, r = 4),
+#   area(t = 5, b = 8, l = 1, r = 4),
+#   area(t = 1, b = 4, l = 5, r = 8),
+#   area(t = 5, b = 8, l = 5, r = 8),
+#   area(t = 1, b = 4, l = 9, r = 12),
+#   area(t = 5, b = 8, l = 9, r = 12),
+#   area(t = 1, b = 4, l = 13, r = 16),
+#   area(t = 5, b = 8, l = 13, r = 16)
+# )
+
 layout <- c(
   area(t = 1, b = 4, l = 1, r = 4),
   area(t = 5, b = 8, l = 1, r = 4),
   area(t = 1, b = 4, l = 5, r = 8),
   area(t = 5, b = 8, l = 5, r = 8),
-  area(t = 1, b = 4, l = 9, r = 12),
-  area(t = 5, b = 8, l = 9, r = 12),
-  area(t = 1, b = 4, l = 13, r = 16),
-  area(t = 5, b = 8, l = 13, r = 16)
+  area(t = 9, b = 12, l = 1, r = 4),
+  area(t = 13, b = 16, l = 1, r = 4),
+  area(t = 9, b = 12, l = 5, r = 8),
+  area(t = 13, b = 16, l = 5, r = 8)
 )
 
 umap_panel <- (t_um1 + ggtitle("Tirosh - CAdir")) +
@@ -754,6 +857,7 @@ umap_panel <- (t_um1 + ggtitle("Tirosh - CAdir")) +
   plot_annotation(tag_levels = "a") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
+    plot.title = element_text(size = 20),
     legend.text = element_text(size = 16),
     legend.title = element_text(size = 18)
   )
@@ -761,8 +865,8 @@ umap_panel <- (t_um1 + ggtitle("Tirosh - CAdir")) +
 ggsave(
   plot = umap_panel,
   filename = file.path(imgdir, "difficult_clusterings_ALL_umaps.png"),
-  width = 10000,
-  height = 4000,
+  width = 8000,
+  height = 8000,
   units = "px"
 )
 ```
@@ -777,7 +881,8 @@ sm_panel <- wrap_plots(t_sm + ggtitle("Tirosh")) +
   plot_annotation(tag_levels = "a") &
   theme(
     plot.tag = element_text(size = 24, face = "bold"),
-    plot.title = element_text(size = 26, hjust = 0.5, face = "bold")
+    plot.title = element_text(size = 26, hjust = 0.5, face = "bold"),
+    text = element_text(size = 14)
   )
 # &
 #   theme(plot.tag = element_text(size = 18, face = "bold"))
