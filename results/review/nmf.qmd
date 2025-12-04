@@ -121,6 +121,7 @@ cak <- annotate_biclusters(
   filter_literature = FALSE
 )
 sce_ca$cadir <- cak@cell_clusters
+cak <- rank_genes(cak, ca)
 ```
 
 
@@ -260,6 +261,7 @@ gse_res <- lapply(gse_res, function(x, nc = nclust) {
 })
 
 cluster_anno <- run_hungarian(gse_res, cost = cost)
+names(nmf_ranks) <- cluster_anno$cell_type
 
 # Rename clusters based on GSE.
 for (c in seq_len(length(allcs))) {
@@ -323,16 +325,15 @@ ggsave(
 ```
 
 
-# Marker genes
+# B cells
 ```{r}
-# FIXME: not working
-cadir_bcell <- cabic@gene_ranks$B_cell
+cadir_bcell <- cak@gene_ranks$B_cell
 cadir_score <- cadir_bcell[cadir_bcell$Score > 0, ]
 bdegs <- nmf_ranks$B_cell[
   order(nmf_ranks$B_cell$score, decreasing = TRUE),
 ]
 bp1 <- plotExpression(
-  sce_nmf,
+  sce_ca,
   features = head(cadir_score$Rowname, 4),
   x = "cadir",
   colour_by = "cadir"
@@ -342,11 +343,11 @@ bp1 <- plotExpression(
 
 bp2 <- plotExpression(
   sce_nmf,
-  features = head(rownames(bdegs), 4),
-  x = "cadir",
-  colour_by = "cadir"
+  features = head(bdegs$gene, 4),
+  x = "nmf",
+  colour_by = "nmf"
 ) +
-  scale_color_mpimg() +
+  scale_color_mpimg(name = "mpi_extend") +
   labs(x = "Clusters")
 
 # bp1 + bp2
@@ -362,7 +363,7 @@ ggsave(
 
 ggsave(
   plot = bp2,
-  filename = file.path(imgdir, "bcell_bioconductor_markers.png"),
+  filename = file.path(imgdir, "bcell_nmf_markers.png"),
   device = cairo_pdf,
   width = 3000,
   height = 3000,
@@ -370,6 +371,130 @@ ggsave(
 )
 ```
 
+```{r}
+
+bcell_marker_panel <- bp1 +
+  bp2 +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 14),
+    axis.text.x = element_text(
+      size = 10,
+      angle = 45,
+      hjust = 1,
+      color = "black"
+    ),
+    axis.text.y = element_text(
+      size = 10,
+      # angle = 45,
+      # hjust = 1,
+      color = "black"
+    ),
+  )
+
+ggsave(
+  plot = bcell_marker_panel,
+  filename = file.path(imgdir, "bcell_violin_panel.png"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = bcell_marker_panel,
+  filename = file.path(imgdir, "bcell_violin_panel.pdf"),
+  device = cairo_pdf,
+  width = 4000,
+  height = 4000,
+  units = "px"
+)
+```
+
+# endothelial cells
 
 
+```{r}
+cadir_endo <- cak@gene_ranks$Endothelial_cell
+cadir_score <- cadir_endo[cadir_endo$Score > 0, ]
+endo_degs <- nmf_ranks$Vascular_endothelial_cell[
+  order(nmf_ranks$Vascular_endothelial_cell$score, decreasing = TRUE),
+]
+endop1 <- plotExpression(
+  sce_ca,
+  features = head(cadir_score$Rowname, 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
 
+endop2 <- plotExpression(
+  sce_nmf,
+  features = head(endo_degs$gene, 4),
+  x = "nmf",
+  colour_by = "nmf"
+) +
+  scale_color_mpimg(name = "mpi_extend") +
+  labs(x = "Clusters")
+
+# bp1 + bp2
+
+ggsave(
+  plot = endop1,
+  filename = file.path(imgdir, "endothelial_cadir_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = endop2,
+  filename = file.path(imgdir, "endothelial_nmf_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+```
+
+```{r}
+
+endo_marker_panel <- endop1 +
+  endop2 +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 14),
+    axis.text.x = element_text(
+      size = 10,
+      angle = 45,
+      hjust = 1,
+      color = "black"
+    ),
+    axis.text.y = element_text(
+      size = 10,
+      # angle = 45,
+      # hjust = 1,
+      color = "black"
+    ),
+  )
+
+ggsave(
+  plot = endo_marker_panel,
+  filename = file.path(imgdir, "endo_violin_panel.png"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = endo_marker_panel,
+  filename = file.path(imgdir, "endo_violin_panel.pdf"),
+  device = cairo_pdf,
+  width = 4000,
+  height = 4000,
+  units = "px"
+)
+```

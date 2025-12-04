@@ -19,38 +19,41 @@ h <- model@h
 cell_cls <- apply(h, 2, function(x) which(x == max(x))[1])
 genes_cls <- apply(w, 1, function(x) which(x == max(x))[1])
 
-
 ccs <- sort(unique(cell_cls))
 nclusts <- length(ccs)
 
 gcs <- sort(unique(genes_cls))
 
-nmf_cells <- matrix(FALSE, nrow = k_nmf, ncol = length(cell_cls))
-rownames(nmf_cells) <- paste0("Bic_", ccs)
+allcls <- sort(unique(c(ccs, gcs)))
+
+nmf_cells <- matrix(FALSE, nrow = length(allcls), ncol = length(cell_cls))
+rownames(nmf_cells) <- paste0("Bic_", allcls)
 colnames(nmf_cells) <- colnames(h)
 
-for (i in seq_along(ccs)) {
-  clust_cells <- names(cell_cls)[which(cell_cls == ccs[i])]
+for (i in seq_along(allcls)) {
+  if (!allcls[i] %in% ccs) {
+    next
+  }
+  clust_cells <- names(cell_cls)[which(cell_cls == allcls[i])]
   idx <- which(colnames(nmf_cells) %in% clust_cells)
   nmf_cells[i, idx] <- TRUE
 }
 
-
 nmf_genes <- matrix(
   FALSE,
   nrow = length(genes_cls),
-  ncol = k_nmf
+  ncol = length(allcls)
 )
 
 rownames(nmf_genes) <- names(genes_cls)
-colnames(nmf_genes) <- paste0("Bic_", ccs)
+colnames(nmf_genes) <- paste0("Bic_", allcls)
 
-for (i in seq_along(ccs)) {
-  if (!ccs[i] %in% gcs) {
+for (i in seq_along(allcls)) {
+  if (!allcls[i] %in% gcs) {
     next
   }
 
-  clust_genes <- names(genes_cls)[which(genes_cls == ccs[i])]
+  clust_genes <- names(genes_cls)[which(genes_cls == allcls[i])]
   idx <- which(rownames(nmf_genes) %in% clust_genes)
   nmf_genes[idx, i] <- TRUE
 }
