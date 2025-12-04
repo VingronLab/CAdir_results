@@ -145,9 +145,10 @@ sce_nmf <- sce[chosen, ]
 ```
 
 ```{r}
-k_nmf = 5
-nseed = 10
-l1 = 0.01
+k_nmf <- 8
+nseed <- 10
+l1 <- 0.01
+
 A <- logcounts(sce_nmf)
 model <- RcppML::nmf(A, seed = seq_len(nseed), k = k_nmf, L1 = l1)
 evaluate(model, A) # calculate mean squared error
@@ -180,8 +181,6 @@ for (i in seq_len(ncol(w))) {
   nmf_ranks[[i]] <- df
 }
 ```
-
-
 
 
 ## GOA
@@ -319,6 +318,54 @@ ggsave(
   filename = file.path(imgdir, "umap.png"),
   width = 6000,
   height = 2000,
+  units = "px"
+)
+```
+
+
+# Marker genes
+```{r}
+# FIXME: not working
+cadir_bcell <- cabic@gene_ranks$B_cell
+cadir_score <- cadir_bcell[cadir_bcell$Score > 0, ]
+bdegs <- nmf_ranks$B_cell[
+  order(nmf_ranks$B_cell$score, decreasing = TRUE),
+]
+bp1 <- plotExpression(
+  sce_nmf,
+  features = head(cadir_score$Rowname, 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+bp2 <- plotExpression(
+  sce_nmf,
+  features = head(rownames(bdegs), 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  scale_color_mpimg() +
+  labs(x = "Clusters")
+
+# bp1 + bp2
+
+ggsave(
+  plot = bp1,
+  filename = file.path(imgdir, "bcell_cadir_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = bp2,
+  filename = file.path(imgdir, "bcell_bioconductor_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
   units = "px"
 )
 ```

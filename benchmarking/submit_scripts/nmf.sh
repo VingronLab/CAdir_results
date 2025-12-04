@@ -1,7 +1,7 @@
 #!/bin/bash
 
 k_nmf=(5 6 7)
-l_sparse=(0.01 0.1 0.25 0.5)
+l_sparse=(0 0.001 0.01 0.1)
 nseeds=(10 25 50)
 
 algorithm="nmf"

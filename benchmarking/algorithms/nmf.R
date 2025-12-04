@@ -16,8 +16,8 @@ model <- RcppML::nmf(
 w <- model@w
 h <- model@h
 
-cell_cls <- apply(h, 2, function(x) which(x == max(x)))
-genes_cls <- apply(w, 1, function(x) which(x == max(x)))
+cell_cls <- apply(h, 2, function(x) which(x == max(x))[1])
+genes_cls <- apply(w, 1, function(x) which(x == max(x))[1])
 
 
 ccs <- sort(unique(cell_cls))
