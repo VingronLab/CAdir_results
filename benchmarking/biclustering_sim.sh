@@ -34,7 +34,7 @@ truth='Group'
 cc=0  # set is_cell_clustering to FALSE
 sim=1 # set simulation to TRUE
 
-test_run=true
+test_run=false
 
 if [[ $sim -eq 0 ]]; then
 	mode="real"
