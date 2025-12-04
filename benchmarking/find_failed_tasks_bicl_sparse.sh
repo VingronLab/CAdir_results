@@ -1,11 +1,12 @@
 #!/bin/bash
 
 ############
-# nruns: 2 #
+# nruns: 0 #
 ############
 
 # date=$(date '+%Y%m%d')
-date="20251121"
+date="20251204"
+
 OUTDIR="./results/benchmarking/results/biclustering_sparse/${date}"
 
 dataset_list=("zeisel" "pbmc3k")

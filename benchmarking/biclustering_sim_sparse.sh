@@ -2,7 +2,7 @@
 
 # add date to output folder
 # date=$(date '+%Y%m%d')
-date="20251121"
+date="20251204"
 
 THREADS=6
 MEMORY=4G
@@ -54,52 +54,57 @@ for f in ${files[@]}; do
 		###########
 		# CAbiNet #
 		###########
-		source ./benchmarking/submit_scripts/CAbiNet.sh
+		# source ./benchmarking/submit_scripts/CAbiNet.sh
 
 		#########
 		# QUBIC #
 		#########
-		source ./benchmarking/submit_scripts/QUBIC.sh
+		# source ./benchmarking/submit_scripts/QUBIC.sh
 
 		########
 		# s4vd #
 		########
-		source ./benchmarking/submit_scripts/s4vd.sh
+		# source ./benchmarking/submit_scripts/s4vd.sh
 
 		#########
 		# Plaid #
 		#########
-		source ./benchmarking/submit_scripts/Plaid.sh
+		# source ./benchmarking/submit_scripts/Plaid.sh
 
 		#######
 		# CCA #
 		#######
-		source ./benchmarking/submit_scripts/CCA.sh
+		# source ./benchmarking/submit_scripts/CCA.sh
 
 		##########
 		# Seurat #
 		##########
-		source ./benchmarking/submit_scripts/Seurat.sh
+		# source ./benchmarking/submit_scripts/Seurat.sh
 
 		############
 		# Monocle3 #
 		############
-		source ./benchmarking/submit_scripts/Monocle3.sh
+		# source ./benchmarking/submit_scripts/Monocle3.sh
 
 		############
 		# BackSPIN #
 		############
-		source ./benchmarking/submit_scripts/backSPIN.sh
+		# source ./benchmarking/submit_scripts/backSPIN.sh
 
 		###########
 		# CAdir   #
 		###########
-		source ./benchmarking/submit_scripts/CAdir.sh
+		# source ./benchmarking/submit_scripts/CAdir.sh
 
 		############
 		# kmeans   #
 		############
-		source ./benchmarking/submit_scripts/kmeans.sh
+		# source ./benchmarking/submit_scripts/kmeans.sh
+    
+    #########
+		# NMF   #
+		#########
+		source ./benchmarking/submit_scripts/nmf.sh
 
 			if [ "$test_run" = true ]; then
 				break 2

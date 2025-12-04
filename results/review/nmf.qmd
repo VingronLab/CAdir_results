@@ -104,6 +104,8 @@ cak <- dirclust_splitmerge(
   qcutoff = 0.8,
   convergence_thr = 0.001
 )
+
+sce_ca$cadir <- cak@cell_clusters
 ari <- aricode::clustComp(sce_ca$cadir, sce_ca$cell_ontology_class)
 cat("ARI:", ari$ARI, "\n")
 ```
@@ -112,7 +114,7 @@ cat("ARI:", ari$ARI, "\n")
 cak <- annotate_biclusters(
   obj = cak,
   caobj = ca,
-  universe = rownames(sce_sub),
+  universe = rownames(sce_ca),
   org = "mm",
   method = "goa",
   cost = "logpval",
@@ -143,8 +145,11 @@ sce_nmf <- sce[chosen, ]
 ```
 
 ```{r}
+k_nmf = 5
+nseed = 10
+l1 = 0.01
 A <- logcounts(sce_nmf)
-model <- RcppML::nmf(A, seed = 1:10, k = 8, L1 = 0.1)
+model <- RcppML::nmf(A, seed = seq_len(nseed), k = k_nmf, L1 = l1)
 evaluate(model, A) # calculate mean squared error
 
 w <- model@w
