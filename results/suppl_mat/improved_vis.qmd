@@ -261,20 +261,21 @@ p_bt4 <- cluster_apl(
 
 ```{r}
 
-grp_idx <- which(
-  cak@cell_clusters == base::sample(unique(cak@cell_clusters), 1)
-)
+# grp_idx <- which(
+#   cak@cell_clusters == base::sample(unique(cak@cell_clusters), 1)
+# )
+#
+# cutoff <- get_apl_cutoff(
+#   caobj = ca,
+#   method = "random",
+#   group = grp_idx,
+#   quant = 0.99,
+#   apl_cutoff_reps = 100,
+#   axis = "cols"
+# )
 
-cutoff <- get_apl_cutoff(
-  caobj = ca,
-  method = "random",
-  group = grp_idx,
-  quant = 0.99,
-  apl_cutoff_reps = 100,
-  axis = "cols"
-)
-
-cak@parameters$sa_cutoff <- cutoff
+# cak@parameters$sa_cutoff <- cutoff
+cak@parameters$sa_cutoff <- deg2rad(55)
 
 cls <- "B_cell"
 p_bt5 <- cluster_apl(
