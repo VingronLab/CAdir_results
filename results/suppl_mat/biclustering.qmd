@@ -42,7 +42,8 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 # Cell clustering benchmarking
 
 ```{r}
-date <- "20250403"
+# date <- "20250403"
+date <- "20251204"
 base_dir <- file.path("./results/benchmarking/results/biclustering", date)
 indir <- file.path(base_dir, "eval")
 ```
@@ -125,6 +126,7 @@ Combining the benchmarking resuls:
 df_all <- rbind(dfz, dfp)
 
 df_all$algorithm <- gsub("CAbiNet_igraph", "CAbiNet", df_all$algorithm)
+df_all$algorithm <- gsub("nmf", "NMF", df_all$algorithm)
 df_all <- df_all %>% filter(algorithm != "kmeans")
 
 df_all$algorithm <- factor(
@@ -140,7 +142,8 @@ df_all$algorithm <- factor(
     "CCA",
     "Plaid",
     "QUBIC",
-    "s4vd"
+    "s4vd",
+    "NMF"
   )
 )
 df_mean <- df_all %>%
@@ -595,8 +598,8 @@ ggsave(
 
 ```{r}
 fig <- (p_max_ce +
-  p_max_ari_g +
   p_mean_ce +
+  p_max_ari_g +
   p_mean_ari_g +
   (p_max_ari + guides(fill = "none", shape = "none", colour = "none")) +
   (p_mean_ari + guides(fill = "none", shape = "none", colour = "none"))) +

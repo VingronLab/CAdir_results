@@ -45,6 +45,7 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 
 ```{r}
 date <- "20251121"
+# date <- "20251204"
 base_dir <- file.path("./results/benchmarking/results/simulated_sparse", date)
 indir <- file.path(base_dir, "eval")
 ```
@@ -434,7 +435,8 @@ ggsave(
 # Biclustering
 
 ```{r}
-date <- "20251121"
+date <- "20251204"
+# date <- "20251121"
 base_dir <- file.path(
   "./results/benchmarking/results/biclustering_sparse",
   date
@@ -520,6 +522,7 @@ Combining the benchmarking resuls:
 df_all <- rbind(dfz, dfp)
 
 df_all$algorithm <- gsub("CAbiNet_igraph", "CAbiNet", df_all$algorithm)
+df_all$algorithm <- gsub("nmf", "NMF", df_all$algorithm)
 df_all <- df_all %>% filter(algorithm != "kmeans")
 
 df_all$algorithm <- factor(
@@ -535,7 +538,8 @@ df_all$algorithm <- factor(
     "CCA",
     "Plaid",
     "QUBIC",
-    "s4vd"
+    "s4vd",
+    "NMF"
   )
 )
 df_mean <- df_all %>%
