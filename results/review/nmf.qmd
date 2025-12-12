@@ -311,18 +311,6 @@ names(ccs) <- ccs_nm
 sce_nmf$nmf <- ccs
 ```
 
-```{r}
-um3 <- plotUMAP(sce_nmf, colour = "nmf")
-um <- um2 + um1 + um3
-
-ggsave(
-  plot = um,
-  filename = file.path(imgdir, "umap.png"),
-  width = 6000,
-  height = 2000,
-  units = "px"
-)
-```
 
 
 # B cells
@@ -339,7 +327,8 @@ bp1 <- plotExpression(
   colour_by = "cadir"
 ) +
   scale_color_mpimg() +
-  labs(x = "Clusters")
+  ggtitle("CAdir - B cells") +
+  labs(x = "Clusters", colour = "Cluster")
 
 bp2 <- plotExpression(
   sce_nmf,
@@ -347,8 +336,9 @@ bp2 <- plotExpression(
   x = "nmf",
   colour_by = "nmf"
 ) +
+  ggtitle("NMF - B cells") +
   scale_color_mpimg(name = "mpi_extend") +
-  labs(x = "Clusters")
+  labs(x = "Clusters", colour = "Cluster")
 
 # bp1 + bp2
 
@@ -405,8 +395,8 @@ ggsave(
   plot = bcell_marker_panel,
   filename = file.path(imgdir, "bcell_violin_panel.pdf"),
   device = cairo_pdf,
-  width = 4000,
-  height = 4000,
+  width = 5000,
+  height = 3000,
   units = "px"
 )
 ```
@@ -427,7 +417,8 @@ endop1 <- plotExpression(
   colour_by = "cadir"
 ) +
   scale_color_mpimg() +
-  labs(x = "Clusters")
+  ggtitle("CAdir - Vascular endothelial cells") +
+  labs(x = "Clusters", colour = "Cluster")
 
 endop2 <- plotExpression(
   sce_nmf,
@@ -435,8 +426,9 @@ endop2 <- plotExpression(
   x = "nmf",
   colour_by = "nmf"
 ) +
+  ggtitle("NMF - Endothelial cells") +
   scale_color_mpimg(name = "mpi_extend") +
-  labs(x = "Clusters")
+  labs(x = "Clusters", colour = "Cluster")
 
 # bp1 + bp2
 
@@ -493,8 +485,163 @@ ggsave(
   plot = endo_marker_panel,
   filename = file.path(imgdir, "endo_violin_panel.pdf"),
   device = cairo_pdf,
-  width = 4000,
-  height = 4000,
+  width = 5000,
+  height = 3000,
   units = "px"
 )
 ```
+
+## Fibroblasts
+```{r}
+cadir_fibro <- cak@gene_ranks$Schwalie_et_al.Nature.P1
+cadir_score <- cadir_fibro[cadir_fibro$Score > 0, ]
+fibrodegs <- nmf_ranks$Fibroblast[
+  order(nmf_ranks$Fibroblast$score, decreasing = TRUE),
+]
+fp1 <- plotExpression(
+  sce_ca,
+  features = head(cadir_score$Rowname, 4),
+  x = "cadir",
+  colour_by = "cadir"
+) +
+  ggtitle("CAdir - Schwalie et al.") +
+  scale_color_mpimg() +
+  labs(x = "Clusters", colour = "Cluster")
+
+fp2 <- plotExpression(
+  sce_nmf,
+  features = head(fibrodegs$gene, 4),
+  x = "nmf",
+  colour_by = "nmf"
+) +
+  ggtitle("NMF - Fibroblasts") +
+  scale_color_mpimg(name = "mpi_extend") +
+  labs(x = "Clusters", colour = "Cluster")
+
+# fp1 + fp2
+
+ggsave(
+  plot = fp1,
+  filename = file.path(imgdir, "fibroblasts_cadir_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = fp2,
+  filename = file.path(imgdir, "fibroblasts_nmf_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+```
+
+```{r}
+fibro_marker_panel <- fp1 +
+  fp2 +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 14),
+    axis.text.x = element_text(
+      size = 10,
+      angle = 45,
+      hjust = 1,
+      color = "black"
+    ),
+    axis.text.y = element_text(
+      size = 10,
+      # angle = 45,
+      # hjust = 1,
+      color = "black"
+    ),
+  )
+
+ggsave(
+  plot = fibro_marker_panel,
+  filename = file.path(imgdir, "fibroblasts_violin_panel.png"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = fibro_marker_panel,
+  filename = file.path(imgdir, "fibroblasts_violin_panel.pdf"),
+  device = cairo_pdf,
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+```
+# Panel of panels
+```{r}
+the_panel <- bp1 +
+  bp2 +
+  endop1 +
+  endop2 +
+  fp1 +
+  fp2 +
+  plot_layout(ncol = 2) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    title = element_text(size = 14),
+    axis.text.x = element_text(
+      size = 10,
+      angle = 45,
+      hjust = 1,
+      color = "black"
+    ),
+    axis.text.y = element_text(
+      size = 10,
+      # angle = 45,
+      # hjust = 1,
+      color = "black"
+    ),
+  )
+
+ggsave(
+  plot = the_panel,
+  filename = file.path(imgdir, "marker_genes_violin_panel.png"),
+  width = 4000,
+  height = 6000,
+  units = "px"
+)
+
+ggsave(
+  plot = the_panel,
+  filename = file.path(imgdir, "marker_genes_violin_panel.pdf"),
+  width = 4000,
+  height = 6000,
+  units = "px"
+)
+```
+
+
+# UMAPs
+```{r}
+um3 <- plotUMAP(sce_nmf, colour = "nmf")
+um <-
+  (um2 + scale_color_mpimg(name = "mpi_extend")) +
+  (um1 + scale_color_mpimg(name = "mpi_extend")) +
+  (um3 + scale_color_mpimg(name = "mpi_extend"))
+
+ggsave(
+  plot = um,
+  filename = file.path(imgdir, "umap.png"),
+  width = 6000,
+  height = 2000,
+  units = "px"
+)
+```
+
+# Environment
+```{r}
+sessionInfo()
+```
+
+
