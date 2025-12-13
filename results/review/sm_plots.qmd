@@ -820,6 +820,21 @@ ggsave(
   height = 8000,
   units = "px"
 )
+
+ggsave(
+  plot = umap_panel,
+  filename = file.path(imgdir, "difficult_clusterings_umaps.pdf"),
+  width = 8000,
+  height = 8000,
+  units = "px"
+)
+ggsave(
+  plot = umap_panel,
+  filename = file.path(imgdir, "difficult_clusterings_umaps.tiff"),
+  width = 8000,
+  height = 8000,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -869,6 +884,22 @@ ggsave(
   height = 8000,
   units = "px"
 )
+
+ggsave(
+  plot = umap_panel,
+  filename = file.path(imgdir, "difficult_clusterings_ALL_umaps.pdf"),
+  width = 8000,
+  height = 8000,
+  units = "px"
+)
+
+ggsave(
+  plot = umap_panel,
+  filename = file.path(imgdir, "difficult_clusterings_ALL_umaps.tiff"),
+  width = 8000,
+  height = 8000,
+  units = "px"
+)
 ```
 
 
@@ -890,6 +921,23 @@ sm_panel <- wrap_plots(t_sm + ggtitle("Tirosh")) +
 ggsave(
   plot = sm_panel,
   filename = file.path(imgdir, "difficult_clusterings_split_merge.png"),
+  width = 8000,
+  height = 4000,
+  units = "px"
+)
+
+ggsave(
+  plot = sm_panel,
+  filename = file.path(imgdir, "difficult_clusterings_split_merge.pdf"),
+  width = 8000,
+  height = 4000,
+  device = cairo_pdf,
+  units = "px"
+)
+
+ggsave(
+  plot = sm_panel,
+  filename = file.path(imgdir, "difficult_clusterings_split_merge.tiff"),
   width = 8000,
   height = 4000,
   units = "px"
