@@ -851,16 +851,17 @@ ggsave(
 
 layout <- c(
   area(t = 1, b = 4, l = 1, r = 4),
-  area(t = 5, b = 8, l = 1, r = 4),
   area(t = 1, b = 4, l = 5, r = 8),
+  area(t = 5, b = 8, l = 1, r = 4),
   area(t = 5, b = 8, l = 5, r = 8),
   area(t = 9, b = 12, l = 1, r = 4),
-  area(t = 13, b = 16, l = 1, r = 4),
   area(t = 9, b = 12, l = 5, r = 8),
+  area(t = 13, b = 16, l = 1, r = 4),
   area(t = 13, b = 16, l = 5, r = 8)
 )
 
-umap_panel <- (t_um1 + ggtitle("Tirosh - CAdir")) +
+umap_panel <-
+  (t_um1 + ggtitle("Tirosh - CAdir")) +
   (t_um2 + ggtitle("Tirosh - Annotation")) +
   (bo_um1 + ggtitle("Brain Organoids - CAdir")) +
   (bo_um2 + ggtitle("Brain Organoids - Annotation")) +
@@ -880,7 +881,7 @@ umap_panel <- (t_um1 + ggtitle("Tirosh - CAdir")) +
 ggsave(
   plot = umap_panel,
   filename = file.path(imgdir, "difficult_clusterings_ALL_umaps.png"),
-  width = 8000,
+  width = 7000,
   height = 8000,
   units = "px"
 )
@@ -888,7 +889,7 @@ ggsave(
 ggsave(
   plot = umap_panel,
   filename = file.path(imgdir, "difficult_clusterings_ALL_umaps.pdf"),
-  width = 8000,
+  width = 7000,
   height = 8000,
   units = "px"
 )
@@ -896,7 +897,7 @@ ggsave(
 ggsave(
   plot = umap_panel,
   filename = file.path(imgdir, "difficult_clusterings_ALL_umaps.tiff"),
-  width = 8000,
+  width = 7000,
   height = 8000,
   units = "px"
 )
