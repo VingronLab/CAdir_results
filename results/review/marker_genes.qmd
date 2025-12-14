@@ -1460,6 +1460,14 @@ ggsave(
 
 ggsave(
   plot = deg_comp_panel,
+  filename = file.path(imgdir, "deg_comp_panel_panel.tiff"),
+  width = 4000,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  plot = deg_comp_panel,
   filename = file.path(imgdir, "deg_comp_panel_panel.pdf"),
   device = cairo_pdf,
   width = 4000,
@@ -1526,6 +1534,14 @@ ggsave(
 
 ggsave(
   plot = marker_panel,
+  filename = file.path(imgdir, "violin_panel.tiff"),
+  width = 5000,
+  height = 6000,
+  units = "px"
+)
+
+ggsave(
+  plot = marker_panel,
   filename = file.path(imgdir, "violin_panel.pdf"),
   device = cairo_pdf,
   width = 4000,
@@ -1533,8 +1549,6 @@ ggsave(
   units = "px"
 )
 ```
-
-
 
 # Session Info
 ```{r}

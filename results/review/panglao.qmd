@@ -309,7 +309,7 @@ tm_sank <- ggplot(
   )
 
 # NOTE: Uncomment to plot
-tm_sank
+# tm_sank
 
 ggsave(
   plot = tm_sank,
@@ -323,6 +323,14 @@ ggsave(
 ggsave(
   plot = tm_sank,
   filename = file.path(imgdir, "sankey_plot_TM_clustering.png"),
+  width = 2700,
+  height = 2400,
+  units = "px"
+)
+
+ggsave(
+  plot = tm_sank,
+  filename = file.path(imgdir, "sankey_plot_TM_clustering.tiff"),
   width = 2700,
   height = 2400,
   units = "px"
@@ -446,6 +454,14 @@ p <- cellm_umap +
 ggsave(
   plot = p,
   filename = file.path(imgdir, "pbmc_umaps.png"),
+  width = 4000,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  plot = p,
+  filename = file.path(imgdir, "pbmc_umaps.tiff"),
   width = 4000,
   height = 2000,
   units = "px"
@@ -612,6 +628,14 @@ ggsave(
   height = 2400,
   units = "px"
 )
+
+ggsave(
+  plot = pbmc_sank,
+  filename = file.path(imgdir, "sankey_plot_pbmc_clustering.tiff"),
+  width = 2700,
+  height = 2400,
+  units = "px"
+)
 ```
 
 
@@ -632,6 +656,14 @@ sank_panel <- (tm_sank + ggtitle("Tabula Muris LM data")) +
 ggsave(
   plot = sank_panel,
   filename = file.path(imgdir, "sankeys_panel_anno.png"),
+  width = 2 * 2500,
+  height = 4100,
+  units = "px"
+)
+
+ggsave(
+  plot = sank_panel,
+  filename = file.path(imgdir, "sankeys_panel_anno.tiff"),
   width = 2 * 2500,
   height = 4100,
   units = "px"

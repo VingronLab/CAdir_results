@@ -899,6 +899,14 @@ ggsave(
 
 ggsave(
   plot = fig3,
+  filename = file.path(imgdir, "figure3_patchwork_panel.tiff"),
+  height = 3600,
+  width = 5000,
+  units = "px"
+)
+
+ggsave(
+  plot = fig3,
   filename = file.path(imgdir, "figure3_patchwork_panel.pdf"),
   height = 3600,
   width = 5000,
@@ -938,6 +946,14 @@ suppl_fig2 <-
 ggsave(
   plot = suppl_fig2,
   filename = file.path(imgdir, "suppl_figure2_patchwork_panel.png"),
+  height = 3600,
+  width = 5000,
+  units = "px"
+)
+
+ggsave(
+  plot = suppl_fig2,
+  filename = file.path(imgdir, "suppl_figure2_patchwork_panel.tiff"),
   height = 3600,
   width = 5000,
   units = "px"

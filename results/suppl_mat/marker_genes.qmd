@@ -23,7 +23,8 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  library(CAdir)
+  # library(CAdir)
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
   library(APL)
 
   library(SingleCellExperiment)
@@ -111,7 +112,7 @@ um2 <- plotUMAP(sce, colour = "cell_type")
 
 ari <- aricode::clustComp(sce$cadir, sce$cell_type)
 p <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
-p
+# p
 
 ggsave(
   plot = p,
@@ -265,7 +266,7 @@ sank <- ggplot(
     legend.position = "none"
   )
 
-sank
+# sank
 
 ggsave(
   plot = sank,
@@ -454,6 +455,17 @@ png(
   plot_layout(ncol = 3) +
   plot_annotation(tag_levels = "a")
 dev.off()
+
+tiff(
+  file = file.path(imgdir, "pies.tiff"),
+  width = 900,
+  height = 600,
+  units = "px"
+)
+(pie1 + pie2 + pie3 + pie4 + pie5) +
+  plot_layout(ncol = 3) +
+  plot_annotation(tag_levels = "a")
+dev.off()
 ```
 
 # Pie + Sankey
@@ -466,6 +478,17 @@ dev.off()
 
 png(
   file = file.path(imgdir, "pies_and_sankey.png"),
+  width = 1200,
+  height = 600,
+  units = "px"
+)
+((pie1 + pie2 + pie3 + pie4 + pie5 + pie6) | sank) +
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 16))
+dev.off()
+
+tiff(
+  file = file.path(imgdir, "pies_and_sankey.tiff"),
   width = 1200,
   height = 600,
   units = "px"
@@ -511,3 +534,4 @@ print(
 ```{r}
 sessionInfo()
 ```
+

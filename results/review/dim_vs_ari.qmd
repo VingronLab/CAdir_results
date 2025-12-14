@@ -380,6 +380,14 @@ ggsave(
   height = 2200,
   units = "px"
 )
+
+ggsave(
+  plot = panel,
+  filename = file.path(imgdir, "dim_vs_ari_real.tiff"),
+  width = 5000,
+  height = 2200,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -409,6 +417,14 @@ ggsave(
   height = 2200,
   units = "px"
 )
+
+ggsave(
+  plot = panel2,
+  filename = file.path(imgdir, "dim_vs_ari_sim.tiff"),
+  width = 5000,
+  height = 2200,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -434,6 +450,14 @@ ggsave(
 ggsave(
   plot = panel_q,
   filename = file.path(imgdir, "apl_q_vs_ari_real.png"),
+  width = 5000,
+  height = 2200,
+  units = "px"
+)
+
+ggsave(
+  plot = panel_q,
+  filename = file.path(imgdir, "apl_q_vs_ari_real.tiff"),
   width = 5000,
   height = 2200,
   units = "px"

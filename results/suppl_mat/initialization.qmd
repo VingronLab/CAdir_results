@@ -23,7 +23,8 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  library(CAdir)
+  # library(CAdir)
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
   library(APL)
 
   library(SingleCellExperiment)
@@ -49,8 +50,14 @@ dir.create(imgdir, recursive = TRUE)
 ```{r}
 data_dir <- "./data/real/discussed/"
 
-marker_genes <- readr::read_csv(file.path(data_dir, "tabula_muris_marker_genes.csv"))
-sce <- readRDS(file.path(data_dir, "preprocessed/tabula_muris_preprocessed_filtered.rds"))
+marker_genes <- readr::read_csv(file.path(
+  data_dir,
+  "tabula_muris_marker_genes.csv"
+))
+sce <- readRDS(file.path(
+  data_dir,
+  "preprocessed/tabula_muris_preprocessed_filtered.rds"
+))
 
 genevars <- modelGeneVar(sce, assay.type = "logcounts")
 chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)
@@ -63,12 +70,14 @@ sce_sub <- sce[chosen, ]
 ```
 
 ```{r}
-ca <- cacomp(obj = logcounts(sce_sub),
-             princ_coords = 3,
-             dims = 30,
-             top = nrow(sce_sub),
-             residuals = "pearson",
-             python = TRUE)
+ca <- cacomp(
+  obj = logcounts(sce_sub),
+  princ_coords = 3,
+  dims = 30,
+  top = nrow(sce_sub),
+  residuals = "pearson",
+  python = TRUE
+)
 
 cell_types <- sce$cell_ontology_class
 cat("Number of cell types:", length(unique(cell_types)), "\n")
@@ -86,7 +95,6 @@ set.seed(2358)
 kpp <- vector(mode = "numeric", length = nreps)
 
 for (i in seq(nreps)) {
-
   t <- Sys.time()
   cabic <- dirclust_splitmerge(
     caobj = ca,
@@ -116,7 +124,6 @@ set.seed(2358)
 krnd <- vector(mode = "numeric", length = nreps)
 
 for (i in seq(nreps)) {
-
   t <- Sys.time()
   cabic <- dirclust_splitmerge(
     caobj = ca,
@@ -137,7 +144,6 @@ for (i in seq(nreps)) {
   ari <- aricode::clustComp(sce_sub$cadir, sce_sub$cell_ontology_class)
   krnd[i] <- ari$ARI
 }
-
 ```
 
 ### sub-optimal k
@@ -149,7 +155,6 @@ set.seed(2358)
 sub_kpp <- vector(mode = "numeric", length = nreps)
 
 for (i in seq(nreps)) {
-
   t <- Sys.time()
   cabic <- dirclust_splitmerge(
     caobj = ca,
@@ -179,7 +184,6 @@ set.seed(2358)
 sub_krnd <- vector(mode = "numeric", length = nreps)
 
 for (i in seq(nreps)) {
-
   t <- Sys.time()
   cabic <- dirclust_splitmerge(
     caobj = ca,
@@ -222,4 +226,13 @@ p <- ggplot(df, aes(x = method, y = ARI, fill = method)) +
   theme_bw()
 
 ggsave(filename = file.path(imgdir, "init_bench_boxplot.pdf"), plot = p)
+ggsave(filename = file.path(imgdir, "init_bench_boxplot.png"), plot = p)
+ggsave(filename = file.path(imgdir, "init_bench_boxplot.tiff"), plot = p)
 ```
+
+# Environment
+```{r}
+sessionInfo()
+```
+
+

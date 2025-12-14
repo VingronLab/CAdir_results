@@ -271,6 +271,14 @@ ggsave(
   height = 2000,
   units = "px"
 )
+
+ggsave(
+  plot = panel,
+  file = file.path(imgdir, "comparison_angle.tiff"),
+  width = 4000,
+  height = 2000,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -278,8 +286,6 @@ df <- df %>%
   mutate(diff = perm - rnd)
 mean(df$diff)
 ```
-
-
 
 # sessionInfo
 ```{r}

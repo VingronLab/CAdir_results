@@ -607,7 +607,7 @@ p_gs_enr <- ggplot(gr, aes(x = cluster, y = gene_set, fill = -log10(padj))) +
   ) # "bold"
 
 # NOTE: Uncomment to plot
-p_gs_enr
+# p_gs_enr
 
 ggsave(
   plot = p_gs_enr,
@@ -976,6 +976,14 @@ ggsave(
 
 ggsave(
   plot = first_half_fig2,
+  filename = file.path(imgdir, "fig2_1st_half.tiff"),
+  width = 6372,
+  height = 3312,
+  units = "px"
+)
+
+ggsave(
+  plot = first_half_fig2,
   filename = file.path(imgdir, "fig2_1st_half.pdf"),
   width = 6372,
   height = 3312,
@@ -1011,11 +1019,19 @@ second_half_fig2 <- p_bt_prin +
     legend.box = "vertical"
   )
 
-second_half_fig2
+# second_half_fig2
 
 ggsave(
   plot = second_half_fig2,
   filename = file.path(imgdir, "figure2_2ndhalf.png"),
+  width = 5372,
+  height = 3312,
+  units = "px"
+)
+
+ggsave(
+  plot = second_half_fig2,
+  filename = file.path(imgdir, "figure2_2ndhalf.tiff"),
   width = 5372,
   height = 3312,
   units = "px"
@@ -1060,9 +1076,15 @@ ggsave(
   plot = fig2,
   filename = file.path(imgdir, "figure2_patchwork_panel.png"),
   width = 6372,
-  # width = 3186,
   height = 3312,
-  # height = 1656,
+  units = "px"
+)
+
+ggsave(
+  plot = fig2,
+  filename = file.path(imgdir, "figure2_patchwork_panel.tiff"),
+  width = 6372,
+  height = 3312,
   units = "px"
 )
 
@@ -1070,9 +1092,7 @@ ggsave(
   plot = fig2,
   filename = file.path(imgdir, "figure2_patchwork_panel.pdf"),
   width = 6372,
-  # width = 3186,
   height = 3312,
-  # height = 1656,
   device = cairo_pdf,
   units = "px"
 )
@@ -1127,9 +1147,7 @@ ggsave(
   plot = sfig1,
   filename = file.path(imgdir, "suppl_figure1_patchwork_panel.png"),
   width = 4802,
-  # width = 2251,
   height = 4502,
-  # height = 2251,
   units = "px"
 )
 
@@ -1137,10 +1155,16 @@ ggsave(
   plot = sfig1,
   filename = file.path(imgdir, "suppl_figure1_patchwork_panel.pdf"),
   width = 4802,
-  # width = 2251,
   height = 4502,
-  # height = 2251,
   device = cairo_pdf,
+  units = "px"
+)
+
+ggsave(
+  plot = sfig1,
+  filename = file.path(imgdir, "suppl_figure1_patchwork_panel.tiff"),
+  width = 4802,
+  height = 4502,
   units = "px"
 )
 ```

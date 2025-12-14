@@ -21,7 +21,8 @@ jupyter:
 renv::load()
 
 suppressPackageStartupMessages({
-  library(CAdir)
+  # library(CAdir)
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
   library(scater)
   library(dplyr)
   library(tidyr)
@@ -621,9 +622,18 @@ ggsave(
   height = 5000,
   units = "px"
 )
+
 ggsave(
   plot = fig,
   filename = file.path(imgdir, "bicl_panel.png"),
+  width = 3800,
+  height = 5000,
+  units = "px"
+)
+
+ggsave(
+  plot = fig,
+  filename = file.path(imgdir, "bicl_panel.tiff"),
   width = 3800,
   height = 5000,
   units = "px"
@@ -652,6 +662,22 @@ ggsave(
   height = 2000,
   units = "px"
 )
+
+ggsave(
+  plot = fig_cells,
+  filename = file.path(imgdir, "ari_cells.png"),
+  width = 3800,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  plot = fig_cells,
+  filename = file.path(imgdir, "ari_cells.tiff"),
+  width = 3800,
+  height = 2000,
+  units = "px"
+)
 ```
 
 ```{r}
@@ -675,9 +701,23 @@ ggsave(
   height = 2000,
   units = "px"
 )
+
+ggsave(
+  plot = fig_ce,
+  filename = file.path(imgdir, "CE_bicl_panel.png"),
+  width = 3800,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  plot = fig_ce,
+  filename = file.path(imgdir, "CE_bicl_panel.tiff"),
+  width = 3800,
+  height = 2000,
+  units = "px"
+)
 ```
-
-
 
 # Environment
 

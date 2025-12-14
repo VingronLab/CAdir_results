@@ -352,8 +352,26 @@ ggsave(
 )
 
 ggsave(
+  plot = bp1,
+  filename = file.path(imgdir, "bcell_cadir_markers.tiff"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
   plot = bp2,
   filename = file.path(imgdir, "bcell_nmf_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = bp2,
+  filename = file.path(imgdir, "bcell_nmf_markers.tiff"),
   device = cairo_pdf,
   width = 3000,
   height = 3000,
@@ -386,6 +404,14 @@ bcell_marker_panel <- bp1 +
 ggsave(
   plot = bcell_marker_panel,
   filename = file.path(imgdir, "bcell_violin_panel.png"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = bcell_marker_panel,
+  filename = file.path(imgdir, "bcell_violin_panel.tiff"),
   width = 5000,
   height = 3000,
   units = "px"
@@ -442,8 +468,26 @@ ggsave(
 )
 
 ggsave(
+  plot = endop1,
+  filename = file.path(imgdir, "endothelial_cadir_markers.tiff"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
   plot = endop2,
   filename = file.path(imgdir, "endothelial_nmf_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = endop2,
+  filename = file.path(imgdir, "endothelial_nmf_markers.tiff"),
   device = cairo_pdf,
   width = 3000,
   height = 3000,
@@ -476,6 +520,14 @@ endo_marker_panel <- endop1 +
 ggsave(
   plot = endo_marker_panel,
   filename = file.path(imgdir, "endo_violin_panel.png"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = endo_marker_panel,
+  filename = file.path(imgdir, "endo_violin_panel.tiff"),
   width = 5000,
   height = 3000,
   units = "px"
@@ -530,8 +582,26 @@ ggsave(
 )
 
 ggsave(
+  plot = fp1,
+  filename = file.path(imgdir, "fibroblasts_cadir_markers.tiff"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
   plot = fp2,
   filename = file.path(imgdir, "fibroblasts_nmf_markers.png"),
+  device = cairo_pdf,
+  width = 3000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = fp2,
+  filename = file.path(imgdir, "fibroblasts_nmf_markers.tiff"),
   device = cairo_pdf,
   width = 3000,
   height = 3000,
@@ -563,6 +633,14 @@ fibro_marker_panel <- fp1 +
 ggsave(
   plot = fibro_marker_panel,
   filename = file.path(imgdir, "fibroblasts_violin_panel.png"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = fibro_marker_panel,
+  filename = file.path(imgdir, "fibroblasts_violin_panel.tiff"),
   width = 5000,
   height = 3000,
   units = "px"
@@ -614,6 +692,14 @@ ggsave(
 
 ggsave(
   plot = the_panel,
+  filename = file.path(imgdir, "marker_genes_violin_panel.tiff"),
+  width = 4000,
+  height = 6000,
+  units = "px"
+)
+
+ggsave(
+  plot = the_panel,
   filename = file.path(imgdir, "marker_genes_violin_panel.pdf"),
   width = 4000,
   height = 6000,
@@ -626,9 +712,18 @@ ggsave(
 ```{r}
 um3 <- plotUMAP(sce_nmf, colour = "nmf")
 um <-
-  (um2 + scale_color_mpimg(name = "mpi_extend") + labs(colour = "cell type")) +
-  (um1 + scale_color_mpimg(name = "mpi_extend") + labs(colour = "cluster")) +
-  (um3 + scale_color_mpimg(name = "mpi_extend") + labs(colour = "cluster")) +
+  (um2 +
+    ggtitle("Ground truth") +
+    scale_color_mpimg(name = "mpi_extend") +
+    labs(colour = "cell type")) +
+  (um1 +
+    ggtitle("CAdir") +
+    scale_color_mpimg(name = "mpi_extend") +
+    labs(colour = "cluster")) +
+  (um3 +
+    ggtitle("NMF") +
+    scale_color_mpimg(name = "mpi_extend") +
+    labs(colour = "cluster")) +
   plot_annotation(tag_levels = "a") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
@@ -650,6 +745,14 @@ um <-
 ggsave(
   plot = um,
   filename = file.path(imgdir, "umap_nmf.png"),
+  width = 6000,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  plot = um,
+  filename = file.path(imgdir, "umap_nmf.tiff"),
   width = 6000,
   height = 2000,
   units = "px"

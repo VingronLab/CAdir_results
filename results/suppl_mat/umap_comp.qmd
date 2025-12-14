@@ -23,7 +23,8 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  library(CAdir)
+  # library(CAdir)
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
   library(APL)
 
   library(SingleCellExperiment)
@@ -87,7 +88,6 @@ cabic <- dirclust_splitmerge(
   qcutoff = 0.9,
   convergence_thr = 0.001
 )
-
 ```
 
 ### Annotate clusters
@@ -111,7 +111,7 @@ um2 <- plotUMAP(sce, colour = "cell_type")
 
 ari <- aricode::clustComp(sce$cadir, sce$cell_type)
 p <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
-p
+# p
 
 ggsave(
   plot = p,
@@ -227,7 +227,9 @@ ggsave(
 # Brain organoids
 
 ```{r}
-sce <- readRDS("./data/real/preprocessed/benchmarking/brain_organoids_filtered.rds")
+sce <- readRDS(
+  "./data/real/preprocessed/benchmarking/brain_organoids_filtered.rds"
+)
 ```
 
 ```{r}
@@ -287,7 +289,7 @@ um2 <- plotUMAP(sce, colour = "truth") + cowplot::theme_cowplot()
 
 ari <- aricode::clustComp(sce$cadir, sce$cell_type)
 p <- um1 + ggtitle(paste0("ARI: ", round(ari$ARI, 2))) + um2
-p
+# p
 
 ggsave(
   plot = p,
@@ -300,8 +302,7 @@ ggsave(
 
 
 ```{r}
-plot_clusters(cabic, ca)
-
+# plot_clusters(cabic, ca)
 ```
 
 ```{r}
@@ -346,7 +347,7 @@ cl_apl_cl7 <- cluster_apl(
   show_lines = FALSE,
   size_factor = 0.5,
   ntop = 10
-) + 
+) +
   ggtitle("Cluster 7") +
   cowplot::theme_cowplot()
 
@@ -374,7 +375,7 @@ cl_apl_cl6 <- cluster_apl(
   show_lines = FALSE,
   size_factor = 0.5,
   ntop = 10
-)+
+) +
   ggtitle("Cluster 6") +
   cowplot::theme_cowplot()
 
@@ -405,9 +406,16 @@ ggsave(
   units = "px"
 )
 
-
+ggsave(
+  filename = file.path(imgdir, "brain_panel.tiff"),
+  plot = patch,
+  width = 3600,
+  height = 3200,
+  units = "px"
+)
 ```
 
 ```{r}
 sessionInfo()
 ```
+
