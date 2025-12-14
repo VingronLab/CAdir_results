@@ -283,7 +283,7 @@ ggsave(
 
 ```{r}
 df <- df %>%
-  mutate(diff = perm - rnd)
+  dplyr::mutate(diff = perm - rnd)
 mean(df$diff)
 ```
 

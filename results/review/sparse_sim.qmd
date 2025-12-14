@@ -1297,7 +1297,7 @@ dropouts <- log_prob +
     legend.text = element_text(size = 14)
   )
 
-dropouts
+# dropouts
 ggsave(
   plot = dropouts,
   filename = file.path(imgdir, "dropout_probs.pdf"),

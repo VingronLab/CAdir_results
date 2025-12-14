@@ -610,7 +610,7 @@ pbmc_sank <- ggplot(
   )
 
 # NOTE: Uncomment to plot
-pbmc_sank
+# pbmc_sank
 
 ggsave(
   plot = pbmc_sank,
@@ -676,6 +676,11 @@ ggsave(
   height = 4100,
   units = "px"
 )
+```
+
+# Environment
+```{r}
+sessionInfo()
 ```
 
 
