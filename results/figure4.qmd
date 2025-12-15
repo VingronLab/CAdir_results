@@ -1599,7 +1599,7 @@ ggsave(
   plot = fig1,
   filename = file.path(imgdir, "upd_figure4_panel.pdf"),
   width = 6400,
-  height = 2200,
+  height = 4400,
   units = "px"
 )
 
