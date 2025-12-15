@@ -354,9 +354,6 @@ ggsave(
 )
 ```
 
-
-
-
 ## SM plot
 ```{r}
 pdf(file = NULL)
@@ -387,6 +384,7 @@ ggsave(
   # units = "px"
 )
 ```
+
 
 # Brain organoids
 
