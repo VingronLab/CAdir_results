@@ -101,15 +101,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="27315416" class="cell" data-execution_count="1">
+<div id="94ad5a21" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Working directory should be the root directory of repository.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("./")</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>()</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./results/utils.R"</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># library(CAdir)</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">"~/gits/ClemensKohl/CAdir/"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># devtools::load_all("~/gits/ClemensKohl/CAdir/")</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(CAdir)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(APL)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(SingleCellExperiment)</span>
@@ -132,15 +132,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>- The project is out-of-sync -- use `renv::status()` for details.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>ℹ Loading CAdir
-Warning message in dir.create(imgdir, recursive = TRUE):
+<pre><code>Warning message in dir.create(imgdir, recursive = TRUE):
 “'./results//img/suppl_mat/batch' already exists”</code></pre>
 </div>
 </div>
 <section id="load-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-data">Load data</h2>
 <p><a href="https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968?file=24539828" class="uri">https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968?file=24539828</a></p>
-<div id="0dc450d1" class="cell" data-execution_count="2">
+<div id="ed11152c" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="st">"./data/real/raw/"</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>sce <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(data_dir, <span class="st">"human_pancreas_norm_complexBatch.rds"</span>))</span>
@@ -157,7 +156,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 </section>
 <section id="ca" class="level1">
 <h1>CA</h1>
-<div id="314917b9" class="cell" data-execution_count="3">
+<div id="05834942" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ca <span class="ot">&lt;-</span> <span class="fu">cacomp</span>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> <span class="fu">logcounts</span>(sce_sub),</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">princ_coords =</span> <span class="dv">3</span>,</span>
@@ -175,7 +174,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 </section>
 <section id="cadir" class="level1">
 <h1>CAdir</h1>
-<div id="87a398af" class="cell" data-execution_count="4">
+<div id="0da49adc" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>cabic <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -192,26 +191,14 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Iteration 1
-    Splitting cluster cluster_13
-    Splitting cluster cluster_11
     Splitting cluster cluster_7
-    Splitting cluster cluster_12
-    Splitting cluster cluster_14
-    Splitting cluster cluster_15
-    Splitting cluster cluster_19
     Merging cluster_3 with cluster_9
-    Merging cluster_4 with cluster_5
-•   Merging cluster_4 with cluster_9
-    Merging cluster_6 with cluster_8
-    Merging cluster_6 with cluster_8
-    Merging cluster_9 with cluster_14
-Iteration 2
-    Merging cluster_6 with cluster_15
-Iteration 3</code></pre>
+    Merging cluster_6 with cluster_13
+Iteration 2</code></pre>
 </div>
 </div>
 <p>Annotate biclustering:</p>
-<div id="06ca5094" class="cell" data-execution_count="5">
+<div id="d770283d" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cabic <span class="ot">&lt;-</span> <span class="fu">annotate_biclusters</span>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> cabic,</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe =</span> <span class="fu">rownames</span>(sce_sub),</span>
@@ -223,27 +210,26 @@ Iteration 3</code></pre>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>cabic</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>cadir object with 16382 cells and 1200 genes.
-14 clusters found.
+13 clusters found.
 Clustering results:
 
  cluster                     ncells ngenes
- Acinar_cell                 1058    80   
- Hepatocyte                   817    87   
- Epithelial_cell             1949   180   
- Fibroblast                   675   247   
- cluster_5                    574    45   
- Pancreatic_polypeptide_cell 1610    34   
- Schwann_cell                  27    66   
- Endothelial_cell             309   159   
- Beta_cell(β_cell)           3061    45   
- Paneth_cell                   92    97   
- cluster_11                  2612    19   
- cluster_12                  1534    38   
- Delta_cell                  2000    35   
- Mast_cell                     64    68   </code></pre>
+ Hepatocyte                   817    88   
+ Pancreatic_polypeptide_cell 1611    34   
+ Epithelial_cell             1949   187   
+ Fibroblast                   696   278   
+ Endothelial_cell             309   168   
+ Beta_cell(β_cell)           3062    53   
+ cluster_7                   1534    39   
+ Paneth_cell                  100   104   
+ Mast_cell                     55    64   
+ Delta_cell                  1999    36   
+ cluster_11                  2613    19   
+ Acinar_cell                 1058    84   
+ cluster_13                   579    46   </code></pre>
 </div>
 </div>
-<div id="38e6d2f5" class="cell" data-execution_count="6">
+<div id="9060ea05" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>um1 <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(sce_sub, <span class="at">colour_by =</span> <span class="st">"cadir"</span>) <span class="sc">+</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"CAdir"</span>))</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>um2 <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(sce_sub, <span class="at">colour_by =</span> <span class="st">"celltype"</span>) <span class="sc">+</span></span>
@@ -275,13 +261,13 @@ Warning message in res$nij * res$ni.[res$pair_c1 + 1] * res$n.j[res$pair_c2 + 1]
 “NAs produced by integer overflow”</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>ARI: 0.3842501 </code></pre>
+<pre><code>ARI: 0.3840096 </code></pre>
 </div>
 </div>
 </section>
 <section id="cluster-association-plots" class="level1">
 <h1>Cluster Association Plots</h1>
-<div id="a01278ac" class="cell" data-execution_count="7">
+<div id="318709bb" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pcl <span class="ot">&lt;-</span> <span class="fu">plot_clusters</span>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cadir =</span> cabic,</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -326,7 +312,7 @@ Warning message in res$nij * res$ni.[res$pair_c1 + 1] * res$n.j[res$pair_c2 + 1]
 <span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="d59cc3b8" class="cell" data-execution_count="8">
+<div id="e5387487" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cact <span class="ot">&lt;-</span> cabic</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>cact<span class="sc">@</span>cell_clusters <span class="ot">&lt;-</span> sce_sub<span class="sc">$</span>celltype</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cact<span class="sc">@</span>cell_clusters) <span class="ot">&lt;-</span> <span class="fu">names</span>(cabic<span class="sc">@</span>cell_clusters)</span>
@@ -356,7 +342,7 @@ Warning message in res$nij * res$ni.[res$pair_c1 + 1] * res$n.j[res$pair_c2 + 1]
 <span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co"># cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="29fc3fa9" class="cell" data-execution_count="9">
+<div id="9a31bb32" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cact2 <span class="ot">&lt;-</span> cabic</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>cact2<span class="sc">@</span>cell_clusters <span class="ot">&lt;-</span> sce_sub<span class="sc">$</span>tech</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cact2<span class="sc">@</span>cell_clusters) <span class="ot">&lt;-</span> <span class="fu">names</span>(cabic<span class="sc">@</span>cell_clusters)</span>
@@ -389,7 +375,7 @@ Warning message in res$nij * res$ni.[res$pair_c1 + 1] * res$n.j[res$pair_c2 + 1]
 </section>
 <section id="batch-correction" class="level1">
 <h1>Batch correction</h1>
-<div id="e64a1d18" class="cell" data-execution_count="10">
+<div id="b70e8983" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>batch_corr <span class="ot">&lt;-</span> <span class="fu">quickCorrect</span>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  sce_sub,</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">batch =</span> sce_sub<span class="sc">$</span>tech,</span>
@@ -399,7 +385,7 @@ Warning message in res$nij * res$ni.[res$pair_c1 + 1] * res$n.j[res$pair_c2 + 1]
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>sce_corr <span class="ot">&lt;-</span> batch_corr<span class="sc">$</span>corrected</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="7359cb88" class="cell" data-execution_count="11">
+<div id="54bbe4a8" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">identical</span>(<span class="fu">rownames</span>(<span class="fu">colData</span>(sce_corr)), <span class="fu">rownames</span>(<span class="fu">colData</span>(sce_sub))))</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>sce_corr<span class="sc">$</span>celltype <span class="ot">&lt;-</span> sce_sub<span class="sc">$</span>celltype</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -409,7 +395,7 @@ Warning message in res$nij * res$ni.[res$pair_c1 + 1] * res$n.j[res$pair_c2 + 1]
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>um5 <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(sce_corr, <span class="at">colour =</span> <span class="st">"celltype"</span>) <span class="sc">+</span></span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Cell Type"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="09a1e8e7" class="cell" data-execution_count="12">
+<div id="cd6525f7" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>reconstr <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">assay</span>(sce_corr, <span class="st">"reconstructed"</span>))</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>reconstr <span class="ot">&lt;-</span> reconstr <span class="sc">+</span> <span class="fu">abs</span>(<span class="fu">min</span>(reconstr))</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -434,7 +420,7 @@ Warning message in res$nij * res$ni.[res$pair_c1 + 1] * res$n.j[res$pair_c2 + 1]
 </section>
 <section id="cadir-1" class="level1">
 <h1>CAdir</h1>
-<div id="067b9f68" class="cell" data-execution_count="13">
+<div id="05508ad9" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>cabic_corr <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca_corr,</span>
@@ -451,16 +437,18 @@ Warning message in res$nij * res$ni.[res$pair_c1 + 1] * res$n.j[res$pair_c2 + 1]
 <span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Iteration 1
-    Merging cluster_1 with cluster_2
-•   Merging cluster_1 with cluster_10
-    Merging cluster_4 with cluster_8
-    Merging cluster_4 with cluster_9
-    Merging cluster_5 with cluster_7
-    Merging cluster_6 with cluster_7
+    Splitting cluster cluster_10
+    Merging cluster_1 with cluster_5
+    Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_11
+•   Merging cluster_2 with cluster_13
+    Merging cluster_3 with cluster_10
+    Merging cluster_4 with cluster_5
+    Merging cluster_6 with cluster_8
 Iteration 2</code></pre>
 </div>
 </div>
-<div id="a4a64e9e" class="cell" data-execution_count="14">
+<div id="20ae330b" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>sce_corr<span class="sc">$</span>cadir <span class="ot">&lt;-</span> cabic_corr<span class="sc">@</span>cell_clusters</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>ari2 <span class="ot">&lt;-</span> aricode<span class="sc">::</span><span class="fu">clustComp</span>(sce_corr<span class="sc">$</span>cadir, sce_corr<span class="sc">$</span>celltype)</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"ARI:"</span>, ari2<span class="sc">$</span>ARI, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -471,10 +459,10 @@ Warning message in res$nij * res$ni.[res$pair_c1 + 1] * res$n.j[res$pair_c2 + 1]
 “NAs produced by integer overflow”</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>ARI: 0.9349523 </code></pre>
+<pre><code>ARI: 0.935165 </code></pre>
 </div>
 </div>
-<div id="eebb3bc6" class="cell" data-execution_count="15">
+<div id="0e2142b0" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>cabic_corr <span class="ot">&lt;-</span> <span class="fu">annotate_biclusters</span>(</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> cabic_corr,</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe =</span> <span class="fu">rownames</span>(sce_corr),</span>
@@ -485,27 +473,26 @@ Warning message in res$nij * res$ni.[res$pair_c1 + 1] * res$n.j[res$pair_c2 + 1]
 <span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>cabic</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>cadir object with 16382 cells and 1200 genes.
-14 clusters found.
+13 clusters found.
 Clustering results:
 
  cluster                     ncells ngenes
- Acinar_cell                 1058    80   
- Hepatocyte                   817    87   
- Epithelial_cell             1949   180   
- Fibroblast                   675   247   
- cluster_5                    574    45   
- Pancreatic_polypeptide_cell 1610    34   
- Schwann_cell                  27    66   
- Endothelial_cell             309   159   
- Beta_cell(β_cell)           3061    45   
- Paneth_cell                   92    97   
- cluster_11                  2612    19   
- cluster_12                  1534    38   
- Delta_cell                  2000    35   
- Mast_cell                     64    68   </code></pre>
+ Hepatocyte                   817    88   
+ Pancreatic_polypeptide_cell 1611    34   
+ Epithelial_cell             1949   187   
+ Fibroblast                   696   278   
+ Endothelial_cell             309   168   
+ Beta_cell(β_cell)           3062    53   
+ cluster_7                   1534    39   
+ Paneth_cell                  100   104   
+ Mast_cell                     55    64   
+ Delta_cell                  1999    36   
+ cluster_11                  2613    19   
+ Acinar_cell                 1058    84   
+ cluster_13                   579    46   </code></pre>
 </div>
 </div>
-<div id="71053756" class="cell" data-execution_count="16">
+<div id="f5645586" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>um6 <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(sce_corr, <span class="at">colour =</span> <span class="st">"cadir"</span>) <span class="sc">+</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"CAdir"</span>))</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -531,7 +518,7 @@ Clustering results:
 <span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5571a7d1" class="cell" data-execution_count="17">
+<div id="0f1824d6" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>cact <span class="ot">&lt;-</span> cabic_corr</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>cact<span class="sc">@</span>cell_clusters <span class="ot">&lt;-</span> sce_corr<span class="sc">$</span>celltype</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cact<span class="sc">@</span>cell_clusters) <span class="ot">&lt;-</span> <span class="fu">names</span>(cabic_corr<span class="sc">@</span>cell_clusters)</span>
@@ -560,7 +547,7 @@ Clustering results:
 <span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
 <span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a><span class="co"># cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="6cc3968a" class="cell" data-execution_count="18">
+<div id="3d137326" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>cact2 <span class="ot">&lt;-</span> cabic_corr</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>cact2<span class="sc">@</span>cell_clusters <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sce_corr<span class="sc">$</span>batch)</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cact2<span class="sc">@</span>cell_clusters) <span class="ot">&lt;-</span> <span class="fu">names</span>(cabic_corr<span class="sc">@</span>cell_clusters)</span>
@@ -589,7 +576,7 @@ Clustering results:
 <span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
 <span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a><span class="co"># cluster_apl(cadir = cabic, caobj = ca, cluster = "Mast_cell")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="3a8a10db" class="cell" data-execution_count="19">
+<div id="567e0b67" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>capl3 <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(<span class="at">cadir =</span> cabic, <span class="at">caobj =</span> ca, <span class="at">cluster =</span> <span class="st">"Beta_cell(β_cell)"</span>) <span class="sc">+</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Beta_cell(β_cell) - no batch correction"</span>)</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>capl4 <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
@@ -603,7 +590,7 @@ Clustering results:
 <span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co"># capl4 &lt;- cluster_apl(cadir = cabic_corr, caobj = ca_corr, cluster = "Acinar_cell")</span></span>
 <span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co"># capl3 + capl4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="8bbed7e6" class="cell" data-execution_count="20">
+<div id="4eb2580a" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>um_batch <span class="ot">&lt;-</span> (um2 <span class="sc">|</span> um3) <span class="sc">/</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  (um1 <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">"ARI: "</span>, <span class="fu">round</span>(ari1<span class="sc">$</span>ARI, <span class="dv">2</span>))) <span class="sc">+</span> (capl1 <span class="sc">/</span> capl12)) <span class="sc">+</span></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"a"</span>) <span class="sc">&amp;</span></span>
@@ -646,7 +633,7 @@ Clustering results:
 <span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="b9f439ac" class="cell" data-execution_count="21">
+<div id="fd057a19" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>all <span class="ot">&lt;-</span> (((um2 <span class="sc">|</span> um3) <span class="sc">/</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  (um1 <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">"ARI: "</span>, <span class="fu">round</span>(ari1<span class="sc">$</span>ARI, <span class="dv">2</span>))) <span class="sc">+</span> capl1)) <span class="sc">|</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  ((um4 <span class="sc">|</span> um5) <span class="sc">/</span></span>
@@ -670,7 +657,7 @@ Clustering results:
 <span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="c58dd7f5" class="cell" data-execution_count="22">
+<div id="84a922e2" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>cabic <span class="ot">&lt;-</span> <span class="fu">rank_genes</span>(cabic, ca)</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>top <span class="ot">&lt;-</span> cabic<span class="sc">@</span>gene_ranks<span class="sc">$</span><span class="st">"Beta_cell(β_cell)"</span></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(top[top<span class="sc">$</span>Score <span class="sc">&gt;=</span> <span class="dv">0</span>, ])</span>
@@ -679,13 +666,13 @@ Clustering results:
 <span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>top_corr <span class="ot">&lt;-</span> cabic_corr<span class="sc">@</span>gene_ranks<span class="sc">$</span><span class="st">"Beta_cell(β_cell)"</span></span>
 <span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(top_corr[top_corr<span class="sc">$</span>Score <span class="sc">&gt;=</span> <span class="dv">0</span>, ])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-3
+2
 </div>
 <div class="cell-output cell-output-display">
-45
+49
 </div>
 </div>
-<div id="f8546958" class="cell" data-execution_count="23">
+<div id="b408b3e6" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>R version 4.4.1 (2024-06-14)
@@ -722,103 +709,88 @@ other attached packages:
 [19] CAdir_0.0.99                colorout_1.3-0.2           
 
 loaded via a namespace (and not attached):
-  [1] fs_1.6.4                  spatstat.sparse_3.0-3    
-  [3] devtools_2.4.5            httr_1.4.7               
-  [5] RColorBrewer_1.1-3        repr_1.1.7               
-  [7] profvis_0.3.8             tools_4.4.1              
-  [9] sctransform_0.4.1         backports_1.4.1          
- [11] ResidualMatrix_1.14.0     utf8_1.2.4               
- [13] R6_2.5.1                  lazyeval_0.2.2           
- [15] uwot_0.2.2                urlchecker_1.0.1         
- [17] withr_3.0.0               sp_2.1-4                 
- [19] gridExtra_2.3             progressr_0.14.0         
- [21] textshaping_0.3.7         cli_3.6.2                
- [23] spatstat.explore_3.2-5    fastDummies_1.7.3        
- [25] labeling_0.4.3            topGO_2.56.0             
- [27] Seurat_5.0.1              spatstat.data_3.0-4      
- [29] ggridges_0.5.6            pbapply_1.7-2            
- [31] systemfonts_1.1.0         pbdZMQ_0.3-13            
- [33] aricode_1.0.3             parallelly_1.37.1        
- [35] sessioninfo_1.2.2         limma_3.60.2             
- [37] rstudioapi_0.16.0         RSQLite_2.3.6            
- [39] generics_0.1.3            ica_1.0-3                
- [41] spatstat.random_3.2-2     car_3.1-2                
- [43] GO.db_3.19.1              Matrix_1.7-0             
- [45] ggbeeswarm_0.7.2          fansi_1.0.6              
- [47] abind_1.4-5               lifecycle_1.0.4          
- [49] edgeR_4.2.0               yaml_2.3.8               
- [51] carData_3.0-5             SparseArray_1.4.5        
- [53] Rtsne_0.17                grid_4.4.1               
- [55] blob_1.2.4                dqrng_0.4.0              
- [57] promises_1.3.0            crayon_1.5.2             
- [59] miniUI_0.1.1.1            lattice_0.22-6           
- [61] beachmat_2.20.0           cowplot_1.1.3            
- [63] KEGGREST_1.44.0           metapod_1.12.0           
- [65] pillar_1.9.0              fgsea_1.30.0             
- [67] future.apply_1.11.2       codetools_0.2-20         
- [69] fastmatch_1.1-4           leiden_0.4.3.1           
- [71] glue_1.7.0                data.table_1.15.4        
- [73] remotes_2.5.0             vctrs_0.6.5              
- [75] png_0.1-8                 spam_2.10-0              
- [77] org.Mm.eg.db_3.19.1       gtable_0.3.6             
- [79] cachem_1.1.0              S4Arrays_1.4.1           
- [81] mime_0.12                 tidygraph_1.2.3          
- [83] survival_3.6-4            RcppHungarian_0.3        
- [85] statmod_1.5.0             bluster_1.14.0           
- [87] ellipsis_0.3.2            fitdistrplus_1.1-11      
- [89] ROCR_1.0-11               nlme_3.1-164             
- [91] usethis_2.2.3             bit64_4.0.5              
- [93] RcppAnnoy_0.0.22          rprojroot_2.0.4          
- [95] irlba_2.3.5.1             vipor_0.4.7              
- [97] KernSmooth_2.23-24        colorspace_2.1-0         
- [99] DBI_1.2.2                 tidyselect_1.2.1         
-[101] bit_4.0.5                 compiler_4.4.1           
-[103] graph_1.82.0              BiocNeighbors_1.22.0     
-[105] SparseM_1.81              desc_1.4.3               
-[107] DelayedArray_0.30.1       plotly_4.10.4            
-[109] scales_1.3.0              lmtest_0.9-40            
-[111] stringr_1.5.1             digest_0.6.35            
-[113] goftest_1.2-3             ggsankey_0.0.99999       
-[115] spatstat.utils_3.0-4      XVector_0.44.0           
-[117] htmltools_0.5.8.1         pkgconfig_2.0.3          
-[119] base64enc_0.1-3           sparseMatrixStats_1.16.0 
-[121] fastmap_1.2.0             rlang_1.1.3              
-[123] htmlwidgets_1.6.4         UCSC.utils_1.0.0         
-[125] shiny_1.8.1.1             DelayedMatrixStats_1.26.0
-[127] farver_2.1.2              zoo_1.8-12               
-[129] jsonlite_1.8.8            BiocParallel_1.38.0      
-[131] BiocSingular_1.20.0       magrittr_2.0.3           
-[133] GenomeInfoDbData_1.2.12   dotCall64_1.1-1          
-[135] IRkernel_1.3.2            munsell_0.5.1            
-[137] Rcpp_1.0.12               viridis_0.6.5            
-[139] reticulate_1.37.0         stringi_1.8.4            
-[141] ggraph_2.1.0              zlibbioc_1.50.0          
-[143] MASS_7.3-60.2             plyr_1.8.9               
-[145] org.Hs.eg.db_3.19.1       pkgbuild_1.4.4           
-[147] parallel_4.4.1            listenv_0.9.1            
-[149] ggrepel_0.9.5             deldir_2.0-4             
-[151] Biostrings_2.72.0         graphlayouts_1.1.1       
-[153] IRdisplay_1.1             splines_4.4.1            
-[155] tensor_1.5                locfit_1.5-9.9           
-[157] igraph_2.0.3              ggpubr_0.6.0             
-[159] uuid_1.2-0                spatstat.geom_3.2-9      
-[161] ggsignif_0.6.4            RcppHNSW_0.6.0           
-[163] ScaledMatrix_1.12.0       reshape2_1.4.4           
-[165] pkgload_1.3.4             evaluate_0.23            
-[167] SeuratObject_5.0.2        renv_1.0.7               
-[169] BiocManager_1.30.23       tweenr_2.0.3             
-[171] httpuv_1.6.15             networkD3_0.4            
-[173] RANN_2.6.1                tidyr_1.3.1              
-[175] purrr_1.0.2               polyclip_1.10-6          
-[177] future_1.33.2             scattermore_1.2          
-[179] ggforce_0.4.2             rsvd_1.0.5               
-[181] broom_1.0.6               xtable_1.8-4             
-[183] RSpectra_0.16-1           rstatix_0.7.2            
-[185] later_1.3.2               ragg_1.3.2               
-[187] viridisLite_0.4.2         tibble_3.2.1             
-[189] beeswarm_0.4.0            memoise_2.0.1            
-[191] AnnotationDbi_1.66.0      cluster_2.1.6            
-[193] globals_0.16.3           </code></pre>
+  [1] RcppHungarian_0.3         RcppAnnoy_0.0.22         
+  [3] splines_4.4.1             later_1.3.2              
+  [5] pbdZMQ_0.3-13             tibble_3.2.1             
+  [7] polyclip_1.10-6           graph_1.82.0             
+  [9] fastDummies_1.7.3         lifecycle_1.0.4          
+ [11] aricode_1.0.3             edgeR_4.2.0              
+ [13] topGO_2.56.0              globals_0.16.3           
+ [15] lattice_0.22-6            MASS_7.3-60.2            
+ [17] magrittr_2.0.3            limma_3.60.2             
+ [19] plotly_4.10.4             yaml_2.3.8               
+ [21] metapod_1.12.0            httpuv_1.6.15            
+ [23] Seurat_5.0.1              sctransform_0.4.1        
+ [25] spam_2.10-0               sp_2.1-4                 
+ [27] spatstat.sparse_3.0-3     reticulate_1.37.0        
+ [29] cowplot_1.1.3             pbapply_1.7-2            
+ [31] DBI_1.2.2                 RColorBrewer_1.1-3       
+ [33] ResidualMatrix_1.14.0     abind_1.4-5              
+ [35] zlibbioc_1.50.0           Rtsne_0.17               
+ [37] purrr_1.0.2               GenomeInfoDbData_1.2.12  
+ [39] ggrepel_0.9.5             irlba_2.3.5.1            
+ [41] listenv_0.9.1             spatstat.utils_3.0-4     
+ [43] goftest_1.2-3             RSpectra_0.16-1          
+ [45] dqrng_0.4.0               spatstat.random_3.2-2    
+ [47] fitdistrplus_1.1-11       parallelly_1.37.1        
+ [49] DelayedMatrixStats_1.26.0 leiden_0.4.3.1           
+ [51] codetools_0.2-20          DelayedArray_0.30.1      
+ [53] tidyselect_1.2.1          UCSC.utils_1.0.0         
+ [55] farver_2.1.2              viridis_0.6.5            
+ [57] ScaledMatrix_1.12.0       base64enc_0.1-3          
+ [59] spatstat.explore_3.2-5    jsonlite_1.8.8           
+ [61] BiocNeighbors_1.22.0      progressr_0.14.0         
+ [63] ggridges_0.5.6            survival_3.6-4           
+ [65] systemfonts_1.1.0         tools_4.4.1              
+ [67] ragg_1.3.2                ica_1.0-3                
+ [69] Rcpp_1.0.12               glue_1.7.0               
+ [71] gridExtra_2.3             SparseArray_1.4.5        
+ [73] IRdisplay_1.1             withr_3.0.0              
+ [75] BiocManager_1.30.23       fastmap_1.2.0            
+ [77] bluster_1.14.0            fansi_1.0.6              
+ [79] SparseM_1.81              rsvd_1.0.5               
+ [81] digest_0.6.35             R6_2.5.1                 
+ [83] mime_0.12                 textshaping_0.3.7        
+ [85] colorspace_2.1-0          scattermore_1.2          
+ [87] GO.db_3.19.1              tensor_1.5               
+ [89] spatstat.data_3.0-4       RSQLite_2.3.6            
+ [91] utf8_1.2.4                tidyr_1.3.1              
+ [93] generics_0.1.3            renv_1.0.7               
+ [95] data.table_1.15.4         httr_1.4.7               
+ [97] htmlwidgets_1.6.4         S4Arrays_1.4.1           
+ [99] org.Mm.eg.db_3.19.1       uwot_0.2.2               
+[101] pkgconfig_2.0.3           gtable_0.3.6             
+[103] blob_1.2.4                lmtest_0.9-40            
+[105] XVector_0.44.0            htmltools_0.5.8.1        
+[107] dotCall64_1.1-1           SeuratObject_5.0.2       
+[109] scales_1.3.0              png_0.1-8                
+[111] reshape2_1.4.4            uuid_1.2-0               
+[113] nlme_3.1-164              org.Hs.eg.db_3.19.1      
+[115] repr_1.1.7                cachem_1.1.0             
+[117] zoo_1.8-12                stringr_1.5.1            
+[119] KernSmooth_2.23-24        vipor_0.4.7              
+[121] parallel_4.4.1            miniUI_0.1.1.1           
+[123] AnnotationDbi_1.66.0      pillar_1.9.0             
+[125] grid_4.4.1                vctrs_0.6.5              
+[127] RANN_2.6.1                promises_1.3.0           
+[129] BiocSingular_1.20.0       beachmat_2.20.0          
+[131] xtable_1.8-4              cluster_2.1.6            
+[133] beeswarm_0.4.0            evaluate_0.23            
+[135] locfit_1.5-9.9            cli_3.6.2                
+[137] compiler_4.4.1            rlang_1.1.3              
+[139] crayon_1.5.2              future.apply_1.11.2      
+[141] labeling_0.4.3            ggbeeswarm_0.7.2         
+[143] plyr_1.8.9                stringi_1.8.4            
+[145] BiocParallel_1.38.0       viridisLite_0.4.2        
+[147] deldir_2.0-4              munsell_0.5.1            
+[149] Biostrings_2.72.0         lazyeval_0.2.2           
+[151] spatstat.geom_3.2-9       Matrix_1.7-0             
+[153] IRkernel_1.3.2            RcppHNSW_0.6.0           
+[155] sparseMatrixStats_1.16.0  bit64_4.0.5              
+[157] future_1.33.2             statmod_1.5.0            
+[159] KEGGREST_1.44.0           shiny_1.8.1.1            
+[161] ROCR_1.0-11               igraph_2.0.3             
+[163] memoise_2.0.1             bit_4.0.5                </code></pre>
 </div>
 </div>
 </section>

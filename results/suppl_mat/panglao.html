@@ -98,15 +98,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="812eb6f1" class="cell" data-execution_count="1">
+<div id="db7ffe43" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Working directory should be the root directory of repository.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("./")</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>()</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./results/utils.R"</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">"~/gits/ClemensKohl/CAdir/"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># library(CAdir)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># devtools::load_all("~/gits/ClemensKohl/CAdir/")</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(CAdir)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(APL)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(SingleCellExperiment)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(dplyr)</span>
@@ -130,8 +130,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>- The project is out-of-sync -- use `renv::status()` for details.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>ℹ Loading CAdir
-Warning message in dir.create(imgdir, recursive = TRUE):
+<pre><code>Warning message in dir.create(imgdir, recursive = TRUE):
 “'./results//img/suppl_mat/panglao' already exists”</code></pre>
 </div>
 </div>
@@ -140,7 +139,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 <h1>Tabula Muris</h1>
 <section id="load-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-data">Load data</h2>
-<div id="fcbb7c20" class="cell" data-execution_count="2">
+<div id="c7033074" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="st">"./data/real/discussed/"</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>marker_genes <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">file.path</span>(</span>
@@ -188,7 +187,7 @@ chr (2): cell_type, gene
 </section>
 <section id="cadir" class="level2">
 <h2 class="anchored" data-anchor-id="cadir">CAdir</h2>
-<div id="d9c78171" class="cell" data-execution_count="3">
+<div id="309078f4" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>cak <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -213,7 +212,7 @@ Iteration 3</code></pre>
 </div>
 </div>
 <p>Annotate biclustering:</p>
-<div id="c129eaf8" class="cell" data-execution_count="4">
+<div id="fb8d1d5e" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cak_cellm <span class="ot">&lt;-</span> <span class="fu">annotate_biclusters</span>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> cak,</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -243,7 +242,7 @@ Iteration 3</code></pre>
 </section>
 <section id="plots" class="level2">
 <h2 class="anchored" data-anchor-id="plots">Plots</h2>
-<div id="1ca5dbd4" class="cell" data-execution_count="5">
+<div id="cce9e083" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cellm_umap <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(tm, <span class="at">color_by =</span> <span class="st">"cadir_cellm"</span>) <span class="sc">+</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_mpimg</span>()</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>panglao_umap <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(tm, <span class="at">color_by =</span> <span class="st">"cadir_panglao"</span>) <span class="sc">+</span></span>
@@ -280,7 +279,7 @@ Adding another scale for colour, which will replace the existing scale.</code></
 </div>
 <section id="sankey" class="level3">
 <h3 class="anchored" data-anchor-id="sankey">Sankey</h3>
-<div id="ab650f66" class="cell" data-execution_count="6">
+<div id="78ed9a51" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">colData</span>(tm) <span class="sc">%&gt;%</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
@@ -467,7 +466,7 @@ override using the `.groups` argument.</code></pre>
 <h1>PBMC</h1>
 <section id="load-data-1" class="level2">
 <h2 class="anchored" data-anchor-id="load-data-1">Load data</h2>
-<div id="94f8a43a" class="cell" data-execution_count="7">
+<div id="e758593c" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">future.globals.maxSize =</span> <span class="dv">850</span> <span class="sc">*</span> <span class="dv">1024</span><span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>sce_org <span class="ot">&lt;-</span> <span class="fu">sce_pbmc3k</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -489,7 +488,7 @@ This message will be shown once per session”</code></pre>
 </section>
 <section id="cadir-1" class="level1">
 <h1>CAdir</h1>
-<div id="ba7120d9" class="cell" data-execution_count="8">
+<div id="47b680c4" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>sce <span class="ot">&lt;-</span> sce_org</span>
@@ -508,7 +507,7 @@ This message will be shown once per session”</code></pre>
 </div>
 <section id="split-merge-clustering" class="level2">
 <h2 class="anchored" data-anchor-id="split-merge-clustering">Split &amp; Merge Clustering</h2>
-<div id="d13748a0" class="cell" data-execution_count="9">
+<div id="d62be47c" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8</span>) <span class="co">#8</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>cabic <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -563,7 +562,7 @@ ARI: 0.6266396 </code></pre>
 </div>
 <section id="annotate-clusters" class="level3">
 <h3 class="anchored" data-anchor-id="annotate-clusters">Annotate clusters</h3>
-<div id="9367b8fd" class="cell" data-execution_count="10">
+<div id="8aed3024" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cabic_cellm <span class="ot">&lt;-</span> <span class="fu">annotate_biclusters</span>(</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> cabic,</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -590,7 +589,7 @@ ARI: 0.6266396 </code></pre>
 <span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>pbmc<span class="sc">$</span>cadir_cellm <span class="ot">&lt;-</span> cabic_cellm<span class="sc">@</span>cell_clusters</span>
 <span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>pbmc<span class="sc">$</span>cadir_panglao <span class="ot">&lt;-</span> cabic_panglao<span class="sc">@</span>cell_clusters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="1216badb" class="cell" data-execution_count="11">
+<div id="991aefc8" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cellm_umap <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(pbmc, <span class="at">color_by =</span> <span class="st">"cadir_cellm"</span>) <span class="sc">+</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_mpimg</span>()</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>panglao_umap <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(pbmc, <span class="at">color_by =</span> <span class="st">"cadir_panglao"</span>) <span class="sc">+</span></span>
@@ -637,7 +636,7 @@ Adding another scale for colour, which will replace the existing scale.</code></
 </section>
 <section id="sankey-1" class="level2">
 <h2 class="anchored" data-anchor-id="sankey-1">Sankey</h2>
-<div id="1dc2c299" class="cell" data-execution_count="12">
+<div id="1bd67542" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">colData</span>(pbmc) <span class="sc">%&gt;%</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
@@ -817,7 +816,7 @@ override using the `.groups` argument.</code></pre>
 </section>
 <section id="panel" class="level1">
 <h1>Panel</h1>
-<div id="22edd278" class="cell" data-execution_count="13">
+<div id="e25af5d9" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>sank_panel <span class="ot">&lt;-</span> (tm_sank <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Tabula Muris LM data"</span>)) <span class="sc">+</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  (pbmc_sank <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"PBMC3k data"</span>)) <span class="sc">+</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"a"</span>) <span class="sc">&amp;</span></span>
@@ -855,7 +854,7 @@ override using the `.groups` argument.</code></pre>
 </section>
 <section id="environment" class="level1">
 <h1>Environment</h1>
-<div id="8ccdd5d7" class="cell" data-execution_count="14">
+<div id="9634078e" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>R version 4.4.1 (2024-06-14)
@@ -897,107 +896,93 @@ other attached packages:
 [29] colorout_1.3-0.2           
 
 loaded via a namespace (and not attached):
-  [1] fs_1.6.4                  spatstat.sparse_3.0-3    
-  [3] devtools_2.4.5            httr_1.4.7               
-  [5] RColorBrewer_1.1-3        repr_1.1.7               
-  [7] profvis_0.3.8             tools_4.4.1              
-  [9] sctransform_0.4.1         backports_1.4.1          
- [11] utf8_1.2.4                R6_2.5.1                 
- [13] lazyeval_0.2.2            uwot_0.2.2               
- [15] rhdf5filters_1.16.0       urlchecker_1.0.1         
- [17] withr_3.0.0               sp_2.1-4                 
- [19] gridExtra_2.3             progressr_0.14.0         
- [21] textshaping_0.3.7         cli_3.6.2                
- [23] spatstat.explore_3.2-5    fastDummies_1.7.3        
- [25] labeling_0.4.3            topGO_2.56.0             
- [27] Seurat_5.0.1              spatstat.data_3.0-4      
- [29] readr_2.1.5               ggridges_0.5.6           
- [31] pbapply_1.7-2             systemfonts_1.1.0        
- [33] pbdZMQ_0.3-13             aricode_1.0.3            
- [35] parallelly_1.37.1         sessioninfo_1.2.2        
- [37] limma_3.60.2              rstudioapi_0.16.0        
- [39] RSQLite_2.3.6             generics_0.1.3           
- [41] vroom_1.6.5               ica_1.0-3                
- [43] spatstat.random_3.2-2     car_3.1-2                
- [45] GO.db_3.19.1              ggbeeswarm_0.7.2         
- [47] fansi_1.0.6               lifecycle_1.0.4          
- [49] edgeR_4.2.0               yaml_2.3.8               
- [51] carData_3.0-5             BiocFileCache_2.12.0     
- [53] Rtsne_0.17                grid_4.4.1               
- [55] blob_1.2.4                dqrng_0.4.0              
- [57] promises_1.3.0            ExperimentHub_2.12.0     
- [59] crayon_1.5.2              miniUI_0.1.1.1           
- [61] lattice_0.22-6            beachmat_2.20.0          
- [63] cowplot_1.1.3             KEGGREST_1.44.0          
- [65] metapod_1.12.0            pillar_1.9.0             
- [67] fgsea_1.30.0              future.apply_1.11.2      
- [69] codetools_0.2-20          fastmatch_1.1-4          
- [71] leiden_0.4.3.1            glue_1.7.0               
- [73] data.table_1.15.4         remotes_2.5.0            
- [75] vctrs_0.6.5               png_0.1-8                
- [77] spam_2.10-0               org.Mm.eg.db_3.19.1      
- [79] gtable_0.3.6              cachem_1.1.0             
- [81] mime_0.12                 tidygraph_1.2.3          
- [83] survival_3.6-4            RcppHungarian_0.3        
- [85] statmod_1.5.0             bluster_1.14.0           
- [87] ellipsis_0.3.2            fitdistrplus_1.1-11      
- [89] ROCR_1.0-11               nlme_3.1-164             
- [91] usethis_2.2.3             bit64_4.0.5              
- [93] filelock_1.0.3            RcppAnnoy_0.0.22         
- [95] rprojroot_2.0.4           irlba_2.3.5.1            
- [97] vipor_0.4.7               KernSmooth_2.23-24       
- [99] colorspace_2.1-0          DBI_1.2.2                
-[101] tidyselect_1.2.1          curl_5.2.1               
-[103] bit_4.0.5                 compiler_4.4.1           
-[105] graph_1.82.0              BiocNeighbors_1.22.0     
-[107] SparseM_1.81              xml2_1.3.6               
-[109] desc_1.4.3                plotly_4.10.4            
-[111] scales_1.3.0              lmtest_0.9-40            
-[113] rappdirs_0.3.3            stringr_1.5.1            
-[115] digest_0.6.35             goftest_1.2-3            
-[117] spatstat.utils_3.0-4      XVector_0.44.0           
-[119] htmltools_0.5.8.1         pkgconfig_2.0.3          
-[121] base64enc_0.1-3           sparseMatrixStats_1.16.0 
-[123] dbplyr_2.4.0              fastmap_1.2.0            
-[125] rlang_1.1.3               htmlwidgets_1.6.4        
-[127] UCSC.utils_1.0.0          shiny_1.8.1.1            
-[129] DelayedMatrixStats_1.26.0 farver_2.1.2             
-[131] zoo_1.8-12                jsonlite_1.8.8           
-[133] BiocParallel_1.38.0       BiocSingular_1.20.0      
-[135] magrittr_2.0.3            GenomeInfoDbData_1.2.12  
-[137] dotCall64_1.1-1           Rhdf5lib_1.26.0          
-[139] IRkernel_1.3.2            munsell_0.5.1            
-[141] Rcpp_1.0.12               viridis_0.6.5            
-[143] reticulate_1.37.0         stringi_1.8.4            
-[145] ggraph_2.1.0              zlibbioc_1.50.0          
-[147] MASS_7.3-60.2             AnnotationHub_3.12.0     
-[149] plyr_1.8.9                org.Hs.eg.db_3.19.1      
-[151] pkgbuild_1.4.4            parallel_4.4.1           
-[153] listenv_0.9.1             ggrepel_0.9.5            
-[155] deldir_2.0-4              Biostrings_2.72.0        
-[157] graphlayouts_1.1.1        IRdisplay_1.1            
-[159] splines_4.4.1             gridtext_0.1.5           
-[161] tensor_1.5                hms_1.1.3                
-[163] locfit_1.5-9.9            igraph_2.0.3             
-[165] ggpubr_0.6.0              uuid_1.2-0               
-[167] spatstat.geom_3.2-9       ggsignif_0.6.4           
-[169] RcppHNSW_0.6.0            ScaledMatrix_1.12.0      
-[171] reshape2_1.4.4            pkgload_1.3.4            
-[173] BiocVersion_3.19.1        evaluate_0.23            
-[175] SeuratObject_5.0.2        renv_1.0.7               
-[177] BiocManager_1.30.23       tzdb_0.4.0               
-[179] tweenr_2.0.3              httpuv_1.6.15            
-[181] networkD3_0.4             RANN_2.6.1               
-[183] tidyr_1.3.1               purrr_1.0.2              
-[185] polyclip_1.10-6           future_1.33.2            
-[187] scattermore_1.2           ggforce_0.4.2            
-[189] rsvd_1.0.5                broom_1.0.6              
-[191] xtable_1.8-4              RSpectra_0.16-1          
-[193] rstatix_0.7.2             later_1.3.2              
-[195] ragg_1.3.2                viridisLite_0.4.2        
-[197] tibble_3.2.1              beeswarm_0.4.0           
-[199] memoise_2.0.1             AnnotationDbi_1.66.0     
-[201] cluster_2.1.6             globals_0.16.3           </code></pre>
+  [1] spatstat.sparse_3.0-3     httr_1.4.7               
+  [3] RColorBrewer_1.1-3        repr_1.1.7               
+  [5] tools_4.4.1               sctransform_0.4.1        
+  [7] utf8_1.2.4                R6_2.5.1                 
+  [9] lazyeval_0.2.2            uwot_0.2.2               
+ [11] rhdf5filters_1.16.0       withr_3.0.0              
+ [13] sp_2.1-4                  gridExtra_2.3            
+ [15] progressr_0.14.0          cli_3.6.2                
+ [17] textshaping_0.3.7         spatstat.explore_3.2-5   
+ [19] fastDummies_1.7.3         labeling_0.4.3           
+ [21] topGO_2.56.0              Seurat_5.0.1             
+ [23] spatstat.data_3.0-4       readr_2.1.5              
+ [25] ggridges_0.5.6            pbapply_1.7-2            
+ [27] systemfonts_1.1.0         pbdZMQ_0.3-13            
+ [29] aricode_1.0.3             parallelly_1.37.1        
+ [31] limma_3.60.2              RSQLite_2.3.6            
+ [33] generics_0.1.3            ica_1.0-3                
+ [35] spatstat.random_3.2-2     vroom_1.6.5              
+ [37] GO.db_3.19.1              ggbeeswarm_0.7.2         
+ [39] fansi_1.0.6               lifecycle_1.0.4          
+ [41] yaml_2.3.8                edgeR_4.2.0              
+ [43] BiocFileCache_2.12.0      Rtsne_0.17               
+ [45] grid_4.4.1                blob_1.2.4               
+ [47] promises_1.3.0            dqrng_0.4.0              
+ [49] ExperimentHub_2.12.0      crayon_1.5.2             
+ [51] miniUI_0.1.1.1            lattice_0.22-6           
+ [53] beachmat_2.20.0           cowplot_1.1.3            
+ [55] KEGGREST_1.44.0           pillar_1.9.0             
+ [57] metapod_1.12.0            future.apply_1.11.2      
+ [59] codetools_0.2-20          leiden_0.4.3.1           
+ [61] glue_1.7.0                data.table_1.15.4        
+ [63] vctrs_0.6.5               png_0.1-8                
+ [65] spam_2.10-0               org.Mm.eg.db_3.19.1      
+ [67] gtable_0.3.6              cachem_1.1.0             
+ [69] mime_0.12                 survival_3.6-4           
+ [71] RcppHungarian_0.3         statmod_1.5.0            
+ [73] bluster_1.14.0            fitdistrplus_1.1-11      
+ [75] ROCR_1.0-11               nlme_3.1-164             
+ [77] bit64_4.0.5               filelock_1.0.3           
+ [79] RcppAnnoy_0.0.22          irlba_2.3.5.1            
+ [81] vipor_0.4.7               KernSmooth_2.23-24       
+ [83] colorspace_2.1-0          DBI_1.2.2                
+ [85] tidyselect_1.2.1          curl_5.2.1               
+ [87] bit_4.0.5                 compiler_4.4.1           
+ [89] graph_1.82.0              BiocNeighbors_1.22.0     
+ [91] SparseM_1.81              xml2_1.3.6               
+ [93] plotly_4.10.4             scales_1.3.0             
+ [95] lmtest_0.9-40             rappdirs_0.3.3           
+ [97] stringr_1.5.1             digest_0.6.35            
+ [99] goftest_1.2-3             spatstat.utils_3.0-4     
+[101] XVector_0.44.0            htmltools_0.5.8.1        
+[103] pkgconfig_2.0.3           base64enc_0.1-3          
+[105] sparseMatrixStats_1.16.0  dbplyr_2.4.0             
+[107] fastmap_1.2.0             rlang_1.1.3              
+[109] htmlwidgets_1.6.4         UCSC.utils_1.0.0         
+[111] shiny_1.8.1.1             DelayedMatrixStats_1.26.0
+[113] farver_2.1.2              zoo_1.8-12               
+[115] jsonlite_1.8.8            BiocParallel_1.38.0      
+[117] BiocSingular_1.20.0       magrittr_2.0.3           
+[119] GenomeInfoDbData_1.2.12   dotCall64_1.1-1          
+[121] Rhdf5lib_1.26.0           IRkernel_1.3.2           
+[123] munsell_0.5.1             Rcpp_1.0.12              
+[125] viridis_0.6.5             reticulate_1.37.0        
+[127] stringi_1.8.4             zlibbioc_1.50.0          
+[129] MASS_7.3-60.2             AnnotationHub_3.12.0     
+[131] plyr_1.8.9                org.Hs.eg.db_3.19.1      
+[133] parallel_4.4.1            listenv_0.9.1            
+[135] ggrepel_0.9.5             deldir_2.0-4             
+[137] Biostrings_2.72.0         IRdisplay_1.1            
+[139] splines_4.4.1             gridtext_0.1.5           
+[141] tensor_1.5                hms_1.1.3                
+[143] locfit_1.5-9.9            igraph_2.0.3             
+[145] uuid_1.2-0                spatstat.geom_3.2-9      
+[147] RcppHNSW_0.6.0            reshape2_1.4.4           
+[149] ScaledMatrix_1.12.0       BiocVersion_3.19.1       
+[151] evaluate_0.23             SeuratObject_5.0.2       
+[153] renv_1.0.7                BiocManager_1.30.23      
+[155] tzdb_0.4.0                httpuv_1.6.15            
+[157] RANN_2.6.1                tidyr_1.3.1              
+[159] purrr_1.0.2               polyclip_1.10-6          
+[161] future_1.33.2             scattermore_1.2          
+[163] rsvd_1.0.5                xtable_1.8-4             
+[165] RSpectra_0.16-1           later_1.3.2              
+[167] viridisLite_0.4.2         ragg_1.3.2               
+[169] tibble_3.2.1              memoise_2.0.1            
+[171] beeswarm_0.4.0            AnnotationDbi_1.66.0     
+[173] cluster_2.1.6             globals_0.16.3           </code></pre>
 </div>
 </div>
 </section>

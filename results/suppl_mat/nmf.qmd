@@ -191,8 +191,8 @@ org <- "mm"
 filter_literature <- FALSE
 universe <- rownames(sce_nmf)
 
-gs <- load_ct_gene_set(set = set, org = org)
-gene_sets <- make_gene_set_list(
+gs <- CAdir:::load_ct_gene_set(set = set, org = org)
+gene_sets <- CAdir:::make_gene_set_list(
   gs,
   filter_literature = filter_literature
 )
@@ -213,7 +213,7 @@ for (c in seq_len(length(gc_list))) {
   gene <- gc_list[[c]]
   clst_name <- names(gc_list)[c]
 
-  goa <- compute_goa(
+  goa <- CAdir:::compute_goa(
     gois = gene,
     gene_sets = gene_sets,
     universe = universe,
@@ -260,7 +260,7 @@ gse_res <- lapply(gse_res, function(x, nc = nclust) {
   x[seq_len(subs), ]
 })
 
-cluster_anno <- run_hungarian(gse_res, cost = cost)
+cluster_anno <- CAdir:::run_hungarian(gse_res, cost = cost)
 names(nmf_ranks) <- cluster_anno$cell_type
 
 # Rename clusters based on GSE.

@@ -275,7 +275,7 @@ p_bt4 <- cluster_apl(
 # )
 
 # cak@parameters$sa_cutoff <- cutoff
-cak@parameters$sa_cutoff <- deg2rad(55)
+cak@parameters$sa_cutoff <- CAdir:::deg2rad(55)
 
 cls <- "B_cell"
 p_bt5 <- cluster_apl(

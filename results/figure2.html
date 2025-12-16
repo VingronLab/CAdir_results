@@ -98,15 +98,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="405ffca3" class="cell" data-execution_count="1">
+<div id="92509439" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Working directory should be the root directory of repository.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("./")</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>()</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./results/utils.R"</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">"~/gits/ClemensKohl/CAdir/"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># library(CAdir)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># devtools::load_all("~/gits/ClemensKohl/CAdir/")</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(CAdir)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(APL)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(SingleCellExperiment)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(dplyr)</span>
@@ -134,14 +134,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>- The project is out-of-sync -- use `renv::status()` for details.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>ℹ Loading CAdir
-Warning message in dir.create(imgdir, recursive = TRUE):
+<pre><code>Warning message in dir.create(imgdir, recursive = TRUE):
 “'./results//img/figure2' already exists”</code></pre>
 </div>
 </div>
 <section id="load-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-data">Load data</h2>
-<div id="70089fa6" class="cell" data-execution_count="2">
+<div id="3338b827" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="st">"./data/real/discussed/"</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>marker_genes <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">file.path</span>(</span>
@@ -190,7 +189,7 @@ chr (2): cell_type, gene
 </section>
 <section id="cadir" class="level1">
 <h1>CAdir</h1>
-<div id="c16e2851" class="cell" data-execution_count="3">
+<div id="fab5ede4" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>cak <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -215,7 +214,7 @@ Iteration 3</code></pre>
 </div>
 </div>
 <p>Annotate biclustering:</p>
-<div id="2c36b081" class="cell" data-execution_count="4">
+<div id="0378d328" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cak <span class="ot">&lt;-</span> <span class="fu">annotate_biclusters</span>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> cak,</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -244,7 +243,7 @@ Clustering results:
  Endothelial_cell          187    270   </code></pre>
 </div>
 </div>
-<div id="5a366031" class="cell" data-execution_count="5">
+<div id="38c158bf" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>um1 <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(sce_sub, <span class="at">colour =</span> <span class="st">"cadir"</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>um2 <span class="ot">&lt;-</span> <span class="fu">plotUMAP</span>(sce_sub, <span class="at">colour =</span> <span class="st">"cell_ontology_class"</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -269,7 +268,7 @@ Clustering results:
 </section>
 <section id="cluster-association-plots" class="level1">
 <h1>Cluster Association Plots</h1>
-<div id="d1683ed5" class="cell" data-execution_count="6">
+<div id="8527c18c" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pcll <span class="ot">&lt;-</span> <span class="fu">plot_clusters</span>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cadir =</span> cak,</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -326,7 +325,7 @@ Clustering results:
 </div>
 <section id="b-t-cells---standard-coordinates-apl" class="level2">
 <h2 class="anchored" data-anchor-id="b-t-cells---standard-coordinates-apl">B &amp; T cells - standard coordinates APL</h2>
-<div id="7b6ebfd2" class="cell" data-execution_count="7">
+<div id="ae56309e" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"B_cell"</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">which</span>(cak<span class="sc">@</span>cell_clusters <span class="sc">==</span> cls)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>direction <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[cls]], ] <span class="sc">/</span> ca<span class="sc">@</span>D</span>
@@ -349,7 +348,7 @@ Clustering results:
 <span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>i_dir <span class="ot">&lt;-</span> i_dir <span class="sc">/</span> ca<span class="sc">@</span>D <span class="co"># prin_coords to std_coords</span></span>
 <span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>i_dir <span class="ot">&lt;-</span> <span class="fu">model</span>(i_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cbc6e928" class="cell" data-execution_count="8">
+<div id="a3d61bc1" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p_bt_std <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  ca,</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  cak,</span>
@@ -428,7 +427,7 @@ Clustering results:
 </section>
 <section id="endothelial-cells---standard-coordinates-apl" class="level2">
 <h2 class="anchored" data-anchor-id="endothelial-cells---standard-coordinates-apl">Endothelial cells - Standard coordinates APL</h2>
-<div id="d7962604" class="cell" data-execution_count="9">
+<div id="133decc6" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"Endothelial_cell"</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">which</span>(cak<span class="sc">@</span>cell_clusters <span class="sc">==</span> cls)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>direction <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[cls]], ] <span class="sc">/</span> ca<span class="sc">@</span>D</span>
@@ -445,7 +444,7 @@ Clustering results:
 <span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>e_dir <span class="ot">&lt;-</span> e_dir <span class="sc">/</span> ca<span class="sc">@</span>D <span class="co"># prin_coords to std_coords</span></span>
 <span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>e_dir <span class="ot">&lt;-</span> <span class="fu">model</span>(e_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="85a88896" class="cell" data-execution_count="10">
+<div id="0ce20540" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p_ecs_std <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  ca,</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  cak,</span>
@@ -508,7 +507,7 @@ Clustering results:
 </section>
 <section id="b-t-cells---principal-coordinates-apl" class="level2">
 <h2 class="anchored" data-anchor-id="b-t-cells---principal-coordinates-apl">B &amp; T cells - principal coordinates APL</h2>
-<div id="f3b342a3" class="cell" data-execution_count="11">
+<div id="d0dc3efb" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"B_cell"</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">which</span>(cak<span class="sc">@</span>cell_clusters <span class="sc">==</span> cls)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>direction <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[cls]], ]</span>
@@ -529,7 +528,7 @@ Clustering results:
 <span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>i_dir <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[<span class="st">"Macrophage"</span>]], ]</span>
 <span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>i_dir <span class="ot">&lt;-</span> <span class="fu">model</span>(i_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="6dd6279e" class="cell" data-execution_count="12">
+<div id="7be29493" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>p_bt_prin <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  ca,</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  cak,</span>
@@ -607,7 +606,7 @@ Clustering results:
 </section>
 <section id="endothelial-cells---principal-coordinates-apl" class="level2">
 <h2 class="anchored" data-anchor-id="endothelial-cells---principal-coordinates-apl">Endothelial cells - principal coordinates APL</h2>
-<div id="86921cca" class="cell" data-execution_count="13">
+<div id="c69e97ff" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="st">"Endothelial_cell"</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">which</span>(cak<span class="sc">@</span>cell_clusters <span class="sc">==</span> cls)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>direction <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[cls]], ]</span>
@@ -623,7 +622,7 @@ Clustering results:
 <span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>e_dir <span class="ot">&lt;-</span> cak<span class="sc">@</span>directions[cak<span class="sc">@</span>dict[[<span class="st">"Vascular_endothelial_cell"</span>]], ]</span>
 <span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>e_dir <span class="ot">&lt;-</span> <span class="fu">model</span>(e_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="25c97e5c" class="cell" data-execution_count="14">
+<div id="860dbac9" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>p_ecs_prin <span class="ot">&lt;-</span> <span class="fu">cluster_apl</span>(</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  ca,</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  cak,</span>
@@ -681,7 +680,7 @@ Clustering results:
 </div>
 <section id="goa" class="level3">
 <h3 class="anchored" data-anchor-id="goa">GOA</h3>
-<div id="60917669" class="cell" data-execution_count="15">
+<div id="bf2aed20" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>goa_res <span class="ot">&lt;-</span> <span class="fu">goa_per_cluster</span>(</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cadir =</span> cak,</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe =</span> <span class="fu">rownames</span>(sce_sub),</span>
@@ -692,7 +691,7 @@ Clustering results:
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter_literature =</span> <span class="cn">FALSE</span></span>
 <span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="266b1950" class="cell" data-execution_count="16">
+<div id="157a017c" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nclust <span class="ot">&lt;-</span> <span class="fu">length</span>(goa_res)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>goa_mat <span class="ot">&lt;-</span> <span class="fu">lapply</span>(goa_res, <span class="cf">function</span>(x, <span class="at">nc =</span> nclust) {</span>
@@ -782,7 +781,7 @@ Warning message in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$
 <h1>Further Plots</h1>
 <section id="sm-plot" class="level2">
 <h2 class="anchored" data-anchor-id="sm-plot">SM plot</h2>
-<div id="5bfd7d06" class="cell" data-execution_count="17">
+<div id="f1a9fe9d" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sm <span class="ot">&lt;-</span> <span class="fu">sm_plot</span>(</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cadir =</span> cak,</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -819,7 +818,7 @@ Warning message in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$
 <span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="d03125e2" class="cell" data-execution_count="18">
+<div id="e57eb779" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>sm_rot <span class="ot">&lt;-</span> <span class="fu">sm_plot</span>(</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cadir =</span> cak,</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">caobj =</span> ca,</span>
@@ -859,7 +858,7 @@ Warning message in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$
 </section>
 <section id="sankey" class="level2">
 <h2 class="anchored" data-anchor-id="sankey">Sankey</h2>
-<div id="57a735dd" class="cell" data-execution_count="19">
+<div id="e57da010" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggsankey)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>sce_sank <span class="ot">&lt;-</span> sce_sub</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -987,7 +986,7 @@ Warning message in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$
 </section>
 <section id="angle-between-clusters" class="level2">
 <h2 class="anchored" data-anchor-id="angle-between-clusters">Angle between clusters</h2>
-<div id="144147f2" class="cell" data-execution_count="20">
+<div id="386afa30" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ang_rad <span class="ot">&lt;-</span> CAdir<span class="sc">:::</span><span class="fu">get_angle</span>(cak<span class="sc">@</span>directions, cak<span class="sc">@</span>directions)</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ang_rad) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_|</span><span class="sc">\\</span><span class="st">."</span>, <span class="st">" "</span>, <span class="fu">rownames</span>(ang_rad))</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ang_rad) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_|</span><span class="sc">\\</span><span class="st">."</span>, <span class="st">" "</span>, <span class="fu">colnames</span>(ang_rad))</span>
@@ -1028,7 +1027,7 @@ Warning message in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$
 <span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="ab122abb" class="cell" data-execution_count="21">
+<div id="d342afd0" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>prl <span class="ot">&lt;-</span> <span class="fu">plot_results</span>(</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  cak,</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  ca,</span>
@@ -1092,7 +1091,7 @@ data's size values.”</code></pre>
 </section>
 <section id="panel-figure-2" class="level1">
 <h1>Panel Figure 2</h1>
-<div id="ef857c49" class="cell" data-execution_count="22">
+<div id="91b88de5" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pcll_nolegend <span class="ot">&lt;-</span> <span class="fu">lapply</span>(pcll, <span class="cf">function</span>(x) {</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">+</span> <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>)</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>})</span>
@@ -1169,7 +1168,7 @@ data's size values.”</code></pre>
 <span id="cb34-74"><a href="#cb34-74" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb34-75"><a href="#cb34-75" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="1ee4edec" class="cell" data-execution_count="23">
+<div id="793bfb35" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fmt: skip</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>layout <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># left column no label</span></span>
@@ -1221,7 +1220,7 @@ data's size values.”</code></pre>
 <span id="cb35-49"><a href="#cb35-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb35-50"><a href="#cb35-50" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="12aae29a" class="cell" data-execution_count="24">
+<div id="21a58209" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>pcl_panel <span class="ot">&lt;-</span> pcll</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">length</span>(pcl_panel))) {</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">!=</span> <span class="dv">1</span>) pcl_panel[[i]] <span class="ot">&lt;-</span> pcl_panel[[i]] <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">tag_level =</span> <span class="st">"new"</span>)</span>
@@ -1272,7 +1271,7 @@ data's size values.”</code></pre>
 </section>
 <section id="panel-suppl.-figure-1" class="level1">
 <h1>Panel Suppl. Figure 1</h1>
-<div id="197e634a" class="cell" data-execution_count="25">
+<div id="cc2de3b2" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>pr_panel <span class="ot">&lt;-</span> <span class="fu">lapply</span>(</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">seq_along</span>(prl),</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> <span class="cf">function</span>(i) {</span>
@@ -1366,7 +1365,7 @@ data's size values.”</code></pre>
 </section>
 <section id="session-info" class="level1">
 <h1>Session Info</h1>
-<div id="cff11200" class="cell" data-execution_count="26">
+<div id="5972aa77" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>R version 4.4.1 (2024-06-14)
@@ -1410,107 +1409,99 @@ other attached packages:
 [33] CAdir_0.0.99                colorout_1.3-0.2           
 
 loaded via a namespace (and not attached):
-  [1] vroom_1.6.5               urlchecker_1.0.1         
-  [3] goftest_1.2-3             Biostrings_2.72.0        
-  [5] vctrs_0.6.5               spatstat.random_3.2-2    
-  [7] digest_0.6.35             png_0.1-8                
-  [9] ggrepel_0.9.5             org.Mm.eg.db_3.19.1      
- [11] IRdisplay_1.1             deldir_2.0-4             
- [13] parallelly_1.37.1         renv_1.0.7               
- [15] MASS_7.3-60.2             reshape2_1.4.4           
- [17] httpuv_1.6.15             withr_3.0.0              
- [19] xfun_0.44                 ggpubr_0.6.0             
- [21] ellipsis_0.3.2            survival_3.6-4           
- [23] commonmark_1.9.1          memoise_2.0.1            
- [25] ggbeeswarm_0.7.2          profvis_0.3.8            
- [27] systemfonts_1.1.0         ragg_1.3.2               
- [29] networkD3_0.4             zoo_1.8-12               
- [31] pbapply_1.7-2             IRkernel_1.3.2           
- [33] KEGGREST_1.44.0           promises_1.3.0           
- [35] httr_1.4.7                rstatix_0.7.2            
- [37] globals_0.16.3            fitdistrplus_1.1-11      
- [39] rhdf5filters_1.16.0       rstudioapi_0.16.0        
- [41] UCSC.utils_1.0.0          miniUI_0.1.1.1           
- [43] generics_0.1.3            base64enc_0.1-3          
- [45] curl_5.2.1                repr_1.1.7               
- [47] zlibbioc_1.50.0           ScaledMatrix_1.12.0      
- [49] ggraph_2.1.0              polyclip_1.10-6          
- [51] GenomeInfoDbData_1.2.12   ExperimentHub_2.12.0     
- [53] xtable_1.8-4              stringr_1.5.1            
- [55] desc_1.4.3                evaluate_0.23            
- [57] BiocFileCache_2.12.0      hms_1.1.3                
- [59] irlba_2.3.5.1             colorspace_2.1-0         
- [61] filelock_1.0.3            ROCR_1.0-11              
- [63] reticulate_1.37.0         spatstat.data_3.0-4      
- [65] magrittr_2.0.3            lmtest_0.9-40            
- [67] readr_2.1.5               later_1.3.2              
- [69] viridis_0.6.5             lattice_0.22-6           
- [71] spatstat.geom_3.2-9       future.apply_1.11.2      
- [73] SparseM_1.81              scattermore_1.2          
- [75] cowplot_1.1.3             RcppAnnoy_0.0.22         
- [77] pillar_1.9.0              nlme_3.1-164             
- [79] compiler_4.4.1            beachmat_2.20.0          
- [81] RSpectra_0.16-1           stringi_1.8.4            
- [83] tensor_1.5                devtools_2.4.5           
- [85] plyr_1.8.9                crayon_1.5.2             
- [87] locfit_1.5-9.9            graphlayouts_1.1.1       
- [89] org.Hs.eg.db_3.19.1       bit_4.0.5                
- [91] fastmatch_1.1-4           codetools_0.2-20         
- [93] textshaping_0.3.7         BiocSingular_1.20.0      
- [95] plotly_4.10.4             mime_0.12                
- [97] splines_4.4.1             markdown_1.12            
- [99] Rcpp_1.0.12               fastDummies_1.7.3        
-[101] dbplyr_2.4.0              sparseMatrixStats_1.16.0 
-[103] gridtext_0.1.5            blob_1.2.4               
-[105] utf8_1.2.4                BiocVersion_3.19.1       
-[107] pbdZMQ_0.3-13             fs_1.6.4                 
-[109] listenv_0.9.1             DelayedMatrixStats_1.26.0
-[111] pkgbuild_1.4.4            ggsignif_0.6.4           
-[113] RcppHungarian_0.3         tibble_3.2.1             
-[115] statmod_1.5.0             tzdb_0.4.0               
-[117] tweenr_2.0.3              pkgconfig_2.0.3          
-[119] tools_4.4.1               cachem_1.1.0             
-[121] aricode_1.0.3             RSQLite_2.3.6            
-[123] viridisLite_0.4.2         DBI_1.2.2                
-[125] fastmap_1.2.0             scales_1.3.0             
-[127] grid_4.4.1                usethis_2.2.3            
-[129] ica_1.0-3                 broom_1.0.6              
-[131] AnnotationHub_3.12.0      BiocManager_1.30.23      
-[133] dotCall64_1.1-1           graph_1.82.0             
-[135] carData_3.0-5             RANN_2.6.1               
-[137] farver_2.1.2              tidygraph_1.2.3          
-[139] yaml_2.3.8                cli_3.6.2                
-[141] purrr_1.0.2               leiden_0.4.3.1           
-[143] lifecycle_1.0.4           uwot_0.2.2               
-[145] bluster_1.14.0            sessioninfo_1.2.2        
-[147] backports_1.4.1           BiocParallel_1.38.0      
-[149] gtable_0.3.6              ggridges_0.5.6           
-[151] progressr_0.14.0          parallel_4.4.1           
-[153] limma_3.60.2              jsonlite_1.8.8           
-[155] edgeR_4.2.0               RcppHNSW_0.6.0           
-[157] bit64_4.0.5               Rtsne_0.17               
-[159] spatstat.utils_3.0-4      BiocNeighbors_1.22.0     
-[161] metapod_1.12.0            dqrng_0.4.0              
-[163] lazyeval_0.2.2            shiny_1.8.1.1            
-[165] htmltools_0.5.8.1         GO.db_3.19.1             
-[167] sctransform_0.4.1         rappdirs_0.3.3           
-[169] glue_1.7.0                spam_2.10-0              
-[171] XVector_0.44.0            rprojroot_2.0.4          
-[173] gridExtra_2.3             igraph_2.0.3             
-[175] R6_2.5.1                  labeling_0.4.3           
-[177] cluster_2.1.6             pkgload_1.3.4            
-[179] Rhdf5lib_1.26.0           tidyselect_1.2.1         
-[181] vipor_0.4.7               ggforce_0.4.2            
-[183] xml2_1.3.6                car_3.1-2                
-[185] AnnotationDbi_1.66.0      future_1.33.2            
-[187] rsvd_1.0.5                munsell_0.5.1            
-[189] KernSmooth_2.23-24        topGO_2.56.0             
-[191] data.table_1.15.4         htmlwidgets_1.6.4        
-[193] fgsea_1.30.0              RColorBrewer_1.1-3       
-[195] rlang_1.1.3               spatstat.sparse_3.0-3    
-[197] spatstat.explore_3.2-5    uuid_1.2-0               
-[199] remotes_2.5.0             fansi_1.0.6              
-[201] beeswarm_0.4.0           </code></pre>
+  [1] spatstat.sparse_3.0-3     httr_1.4.7               
+  [3] RColorBrewer_1.1-3        repr_1.1.7               
+  [5] backports_1.4.1           tools_4.4.1              
+  [7] sctransform_0.4.1         utf8_1.2.4               
+  [9] R6_2.5.1                  lazyeval_0.2.2           
+ [11] uwot_0.2.2                rhdf5filters_1.16.0      
+ [13] withr_3.0.0               gridExtra_2.3            
+ [15] progressr_0.14.0          textshaping_0.3.7        
+ [17] cli_3.6.2                 spatstat.explore_3.2-5   
+ [19] fastDummies_1.7.3         labeling_0.4.3           
+ [21] topGO_2.56.0              spatstat.data_3.0-4      
+ [23] readr_2.1.5               ggridges_0.5.6           
+ [25] pbapply_1.7-2             commonmark_1.9.1         
+ [27] systemfonts_1.1.0         pbdZMQ_0.3-13            
+ [29] aricode_1.0.3             parallelly_1.37.1        
+ [31] limma_3.60.2              RSQLite_2.3.6            
+ [33] generics_0.1.3            vroom_1.6.5              
+ [35] ica_1.0-3                 spatstat.random_3.2-2    
+ [37] car_3.1-2                 GO.db_3.19.1             
+ [39] ggbeeswarm_0.7.2          fansi_1.0.6              
+ [41] lifecycle_1.0.4           yaml_2.3.8               
+ [43] edgeR_4.2.0               carData_3.0-5            
+ [45] BiocFileCache_2.12.0      Rtsne_0.17               
+ [47] grid_4.4.1                blob_1.2.4               
+ [49] promises_1.3.0            dqrng_0.4.0              
+ [51] ExperimentHub_2.12.0      crayon_1.5.2             
+ [53] miniUI_0.1.1.1            lattice_0.22-6           
+ [55] beachmat_2.20.0           cowplot_1.1.3            
+ [57] KEGGREST_1.44.0           pillar_1.9.0             
+ [59] metapod_1.12.0            future.apply_1.11.2      
+ [61] codetools_0.2-20          leiden_0.4.3.1           
+ [63] glue_1.7.0                data.table_1.15.4        
+ [65] vctrs_0.6.5               png_0.1-8                
+ [67] spam_2.10-0               org.Mm.eg.db_3.19.1      
+ [69] gtable_0.3.6              cachem_1.1.0             
+ [71] xfun_0.44                 mime_0.12                
+ [73] tidygraph_1.2.3           survival_3.6-4           
+ [75] RcppHungarian_0.3         statmod_1.5.0            
+ [77] bluster_1.14.0            fitdistrplus_1.1-11      
+ [79] ROCR_1.0-11               nlme_3.1-164             
+ [81] bit64_4.0.5               filelock_1.0.3           
+ [83] RcppAnnoy_0.0.22          irlba_2.3.5.1            
+ [85] vipor_0.4.7               KernSmooth_2.23-24       
+ [87] colorspace_2.1-0          DBI_1.2.2                
+ [89] tidyselect_1.2.1          bit_4.0.5                
+ [91] compiler_4.4.1            curl_5.2.1               
+ [93] graph_1.82.0              BiocNeighbors_1.22.0     
+ [95] SparseM_1.81              xml2_1.3.6               
+ [97] plotly_4.10.4             scales_1.3.0             
+ [99] lmtest_0.9-40             rappdirs_0.3.3           
+[101] stringr_1.5.1             digest_0.6.35            
+[103] goftest_1.2-3             spatstat.utils_3.0-4     
+[105] XVector_0.44.0            htmltools_0.5.8.1        
+[107] pkgconfig_2.0.3           base64enc_0.1-3          
+[109] sparseMatrixStats_1.16.0  dbplyr_2.4.0             
+[111] fastmap_1.2.0             rlang_1.1.3              
+[113] htmlwidgets_1.6.4         UCSC.utils_1.0.0         
+[115] shiny_1.8.1.1             DelayedMatrixStats_1.26.0
+[117] farver_2.1.2              zoo_1.8-12               
+[119] jsonlite_1.8.8            BiocParallel_1.38.0      
+[121] BiocSingular_1.20.0       magrittr_2.0.3           
+[123] GenomeInfoDbData_1.2.12   dotCall64_1.1-1          
+[125] Rhdf5lib_1.26.0           IRkernel_1.3.2           
+[127] munsell_0.5.1             Rcpp_1.0.12              
+[129] viridis_0.6.5             reticulate_1.37.0        
+[131] stringi_1.8.4             ggraph_2.1.0             
+[133] zlibbioc_1.50.0           MASS_7.3-60.2            
+[135] AnnotationHub_3.12.0      plyr_1.8.9               
+[137] org.Hs.eg.db_3.19.1       parallel_4.4.1           
+[139] listenv_0.9.1             ggrepel_0.9.5            
+[141] deldir_2.0-4              graphlayouts_1.1.1       
+[143] Biostrings_2.72.0         IRdisplay_1.1            
+[145] splines_4.4.1             gridtext_0.1.5           
+[147] tensor_1.5                hms_1.1.3                
+[149] locfit_1.5-9.9            ggpubr_0.6.0             
+[151] igraph_2.0.3              uuid_1.2-0               
+[153] spatstat.geom_3.2-9       markdown_1.12            
+[155] ggsignif_0.6.4            RcppHNSW_0.6.0           
+[157] reshape2_1.4.4            ScaledMatrix_1.12.0      
+[159] BiocVersion_3.19.1        evaluate_0.23            
+[161] renv_1.0.7                BiocManager_1.30.23      
+[163] tweenr_2.0.3              tzdb_0.4.0               
+[165] httpuv_1.6.15             RANN_2.6.1               
+[167] purrr_1.0.2               polyclip_1.10-6          
+[169] future_1.33.2             scattermore_1.2          
+[171] ggforce_0.4.2             rsvd_1.0.5               
+[173] broom_1.0.6               xtable_1.8-4             
+[175] RSpectra_0.16-1           rstatix_0.7.2            
+[177] later_1.3.2               ragg_1.3.2               
+[179] viridisLite_0.4.2         tibble_3.2.1             
+[181] memoise_2.0.1             beeswarm_0.4.0           
+[183] AnnotationDbi_1.66.0      cluster_2.1.6            
+[185] globals_0.16.3           </code></pre>
 </div>
 </div>
 </section>

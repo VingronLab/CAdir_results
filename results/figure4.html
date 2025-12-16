@@ -98,14 +98,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="6defec62" class="cell" data-execution_count="1">
+<div id="7ef0c62b" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Working directory should be the root directory of repository.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("./")</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>()</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">"~/gits/ClemensKohl/CAdir/"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># library(CAdir)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># devtools::load_all("~/gits/ClemensKohl/CAdir/")</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(CAdir)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(scater)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(dplyr)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyr)</span>
@@ -125,15 +125,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>- The project is out-of-sync -- use `renv::status()` for details.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>ℹ Loading CAdir
-Warning message in dir.create(imgdir, recursive = TRUE):
+<pre><code>Warning message in dir.create(imgdir, recursive = TRUE):
 “'./results//img/figure4' already exists”</code></pre>
 </div>
 </div>
 </section>
 <section id="cell-clustering-benchmarking" class="level1">
 <h1>Cell clustering benchmarking</h1>
-<div id="9595a903" class="cell" data-execution_count="2">
+<div id="3adac05b" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>date <span class="ot">&lt;-</span> <span class="st">"20250528"</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>base_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"./results/benchmarking/results/simulated"</span>, date)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>indir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(base_dir, <span class="st">"eval"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -141,7 +140,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 <section id="simulated-data" class="level2">
 <h2 class="anchored" data-anchor-id="simulated-data">simulated data</h2>
 <p>Benchmarking results based on Zeisel Brain data:</p>
-<div id="db1e3ce7" class="cell" data-execution_count="3">
+<div id="a2c5378c" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>zeisel_eval <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    indir,</span>
@@ -207,7 +206,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 </div>
 </div>
 <p>Benchmarking results based on PBMC3k data:</p>
-<div id="cbd6918c" class="cell" data-execution_count="4">
+<div id="e256ffb4" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pbmc_eval <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    indir,</span>
@@ -268,7 +267,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 </div>
 </div>
 <p>Combining the benchmarking resuls:</p>
-<div id="d4c0e30a" class="cell" data-execution_count="5">
+<div id="7cb3e6d0" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df_all <span class="ot">&lt;-</span> <span class="fu">rbind</span>(dfz, dfp)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>df_all<span class="sc">$</span>algorithm <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"CAbiNet_igraph"</span>, <span class="st">"CAbiNet"</span>, df_all<span class="sc">$</span>algorithm)</span>
@@ -302,7 +301,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 </div>
 <section id="simulated-data-benchmarking---max-results" class="level3">
 <h3 class="anchored" data-anchor-id="simulated-data-benchmarking---max-results">Simulated data benchmarking - Max Results</h3>
-<div id="625b9be1" class="cell" data-execution_count="6">
+<div id="23dee543" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df_all <span class="sc">%&gt;%</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(simulation, algorithm, dataset) <span class="sc">%&gt;%</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">max_ARI =</span> <span class="fu">max</span>(ARI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
@@ -314,7 +313,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>max_ARI[<span class="fu">is.infinite</span>(df<span class="sc">$</span>max_ARI)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>max_NMI[<span class="fu">is.infinite</span>(df<span class="sc">$</span>max_NMI)] <span class="ot">&lt;-</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="e7358059" class="cell" data-execution_count="7">
+<div id="5be3e7cc" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>p_max_ari <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -377,7 +376,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 <span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="45b1da71" class="cell" data-execution_count="8">
+<div id="7909e261" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>p_max_nmi <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -435,7 +434,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 </section>
 <section id="simulated-data-benchmarking---average-results" class="level3">
 <h3 class="anchored" data-anchor-id="simulated-data-benchmarking---average-results">Simulated data benchmarking - Average Results</h3>
-<div id="eeaa0664" class="cell" data-execution_count="9">
+<div id="2a76b6a2" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df_all <span class="sc">%&gt;%</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(simulation, algorithm, dataset) <span class="sc">%&gt;%</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mean_ARI =</span> <span class="fu">mean</span>(ARI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
@@ -444,7 +443,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="35844670" class="cell" data-execution_count="10">
+<div id="1c6a0c05" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p_mean_ari <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -507,7 +506,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 <span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="50a93bc9" class="cell" data-execution_count="11">
+<div id="370f4b3f" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p_mean_nmi <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -574,13 +573,13 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 </section>
 <section id="experimental-data" class="level2">
 <h2 class="anchored" data-anchor-id="experimental-data">Experimental Data</h2>
-<div id="cc2df4bf" class="cell" data-execution_count="12">
+<div id="f2bdd2bc" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>date <span class="ot">&lt;-</span> <span class="st">"20250528_cpu"</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>evldir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"./results/benchmarking/results/real/"</span>, date, <span class="st">"eval"</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repr.plot.width =</span> <span class="dv">15</span>, <span class="at">repr.plot.height =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="7b9131d4" class="cell" data-execution_count="13">
+<div id="c8e37f81" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Load the results of real data sets</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(evldir, <span class="st">"*.rds"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -602,7 +601,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 <span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="do">### Merge two data frames</span></span>
 <span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(df[, commoncols], simdf[, commoncols])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="0f64884e" class="cell" data-execution_count="14">
+<div id="f279bc69" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>dataset[df<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"FreytagGold"</span>] <span class="ot">&lt;-</span> <span class="st">"Freytag Gold"</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>dataset[df<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"PBMC_10X"</span>] <span class="ot">&lt;-</span> <span class="st">"PBMC10x"</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>dataset[df<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"Tirosh_nonmaglignant"</span>] <span class="ot">&lt;-</span> <span class="st">"Tirosh"</span></span>
@@ -616,7 +615,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 <span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">algorithm =</span> <span class="fu">gsub</span>(<span class="st">"CAbiNet_igraph"</span>, <span class="st">"CAbiNet"</span>, algorithm)) <span class="sc">%&gt;%</span></span>
 <span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pattern =</span> <span class="fu">paste0</span>(algorithm, dataset))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="182aded2" class="cell" data-execution_count="15">
+<div id="4d0d55a6" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out combinations where all runs fail.</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(dataset, algorithm) <span class="sc">%&gt;%</span></span>
@@ -719,7 +718,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
   scG-cluster                   108                  108                108</code></pre>
 </div>
 </div>
-<div id="32c43940" class="cell" data-execution_count="16">
+<div id="a36d5422" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find missing runs (no values because crash/error)</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Find row and column indices of cells equal to 0</span></span>
@@ -733,7 +732,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 <span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>df_na <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(df_na, zero_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="03a65ef7" class="cell" data-execution_count="17">
+<div id="26647f81" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out runs which failed</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>subdf <span class="ot">&lt;-</span> df[<span class="sc">!</span>(df<span class="sc">$</span>pattern <span class="sc">%in%</span> test<span class="sc">$</span>pattern), ]</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>subdf <span class="ot">&lt;-</span> subdf[<span class="sc">!</span><span class="fu">is.na</span>(subdf<span class="sc">$</span>ARI), ]</span>
@@ -783,7 +782,7 @@ Warning message in dir.create(imgdir, recursive = TRUE):
 <span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="e8e074f8" class="cell" data-execution_count="18">
+<div id="e260e57e" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df_m <span class="ot">&lt;-</span> df_g <span class="sc">%&gt;%</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sim, algorithm, dataset) <span class="sc">%&gt;%</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">max_NMI =</span> <span class="fu">max</span>(NMI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
@@ -813,7 +812,7 @@ Caused by warning in `max()`:
 ℹ Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.”</code></pre>
 </div>
 </div>
-<div id="30f3bc22" class="cell" data-execution_count="19">
+<div id="4e139cf7" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repr.plot.width =</span> <span class="dv">10</span>, <span class="at">repr.plot.height =</span> <span class="dv">5</span>)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove simulated data sets</span></span>
@@ -840,7 +839,7 @@ Caused by warning in `max()`:
 <span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>na_txt <span class="ot">&lt;-</span> df_real[<span class="fu">is.na</span>(df_real<span class="sc">$</span>Max_ARI), ]</span>
 <span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>na_txt<span class="sc">$</span>NAs <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="st">"N/A"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="c610f354" class="cell" data-execution_count="20">
+<div id="00b37520" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df_tile <span class="ot">&lt;-</span> df_real <span class="sc">%&gt;%</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(algorithm, dataset, Max_ARI) <span class="sc">%&gt;%</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
@@ -861,7 +860,7 @@ Caused by warning in `max()`:
 <span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>df_tile<span class="sc">$</span>ismax[<span class="fu">is.na</span>(df_tile<span class="sc">$</span>ismax)] <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
 <span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>df_tile<span class="sc">$</span>is2nd[<span class="fu">is.na</span>(df_tile<span class="sc">$</span>is2nd)] <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="aa698f84" class="cell" data-execution_count="21">
+<div id="3e880acc" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_tile, <span class="fu">aes</span>(<span class="at">x =</span> algorithm, <span class="at">y =</span> dataset, <span class="at">fill =</span> Max_ARI)) <span class="sc">+</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(</span>
@@ -938,7 +937,7 @@ Warning message:
 (`geom_text()`).”</code></pre>
 </div>
 </div>
-<div id="ba21e2fb" class="cell" data-execution_count="22">
+<div id="6d9c644d" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: For figure4 panel.</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>p_tile <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_tile, <span class="fu">aes</span>(<span class="at">x =</span> algorithm, <span class="at">y =</span> dataset, <span class="at">fill =</span> Max_ARI)) <span class="sc">+</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
@@ -996,7 +995,7 @@ Warning message:
 <span id="cb29-55"><a href="#cb29-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Maximum ARI on experimental data"</span></span>
 <span id="cb29-56"><a href="#cb29-56" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="6fa0ea82" class="cell" data-execution_count="23">
+<div id="553b29b6" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df_tile_mean <span class="ot">&lt;-</span> df_real <span class="sc">%&gt;%</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(algorithm, dataset, Mean_ARI) <span class="sc">%&gt;%</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
@@ -1017,7 +1016,7 @@ Warning message:
 <span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>df_tile_mean<span class="sc">$</span>ismax[<span class="fu">is.na</span>(df_tile_mean<span class="sc">$</span>ismax)] <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
 <span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>df_tile_mean<span class="sc">$</span>is2nd[<span class="fu">is.na</span>(df_tile_mean<span class="sc">$</span>is2nd)] <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="7d0e669b" class="cell" data-execution_count="24">
+<div id="d22f6d4f" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: Mean ARI panel</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>p_tile_mean <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  df_tile_mean,</span>
@@ -1094,7 +1093,7 @@ Warning message:
 </section>
 <section id="calculate-successful-runs" class="level2">
 <h2 class="anchored" data-anchor-id="calculate-successful-runs">Calculate % successful runs</h2>
-<div id="b6dbdced" class="cell" data-execution_count="25">
+<div id="7f6cfba5" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>n_param <span class="ot">&lt;-</span> <span class="dv">108</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>stats <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
@@ -1122,7 +1121,7 @@ Warning message:
 <span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="1c7d6d77" class="cell" data-execution_count="26">
+<div id="9a0fb68c" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>stats<span class="sc">$</span>algorithm <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  stats<span class="sc">$</span>algorithm,</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(</span>
@@ -1157,7 +1156,7 @@ Warning message:
 <span id="cb34-32"><a href="#cb34-32" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb34-33"><a href="#cb34-33" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5a3345d4" class="cell" data-execution_count="27">
+<div id="2df073f8" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>all_comb <span class="ot">&lt;-</span> <span class="fu">crossing</span>(<span class="at">algorithm =</span> stats<span class="sc">$</span>algorithm, <span class="at">dataset =</span> stats<span class="sc">$</span>dataset) <span class="sc">%&gt;%</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">comb =</span> <span class="fu">paste0</span>(algorithm, <span class="st">"_"</span>, dataset))</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1180,7 +1179,7 @@ Warning message:
 <span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>stats <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(stats, missing_comb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="00ae0954" class="cell" data-execution_count="28">
+<div id="882f7b0a" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>p_succ <span class="ot">&lt;-</span> stats <span class="sc">%&gt;%</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>perc_NMI_succ, <span class="sc">-</span>perc_NMI_NA) <span class="sc">%&gt;%</span></span>
@@ -1260,7 +1259,7 @@ Warning message:
 </section>
 <section id="runtime-scalability" class="level1">
 <h1>Runtime &amp; Scalability</h1>
-<div id="8c3e5b66" class="cell" data-execution_count="29">
+<div id="0a7155ac" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># date &lt;- "20240823"</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>date <span class="ot">&lt;-</span> <span class="st">"20250626"</span></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>mpgGreen <span class="ot">&lt;-</span> <span class="st">"#006c66"</span></span>
@@ -1332,7 +1331,7 @@ Warning message:
             4 </code></pre>
 </div>
 </div>
-<div id="1517f665" class="cell" data-execution_count="30">
+<div id="895238a5" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repr.plot.width =</span> <span class="dv">10</span>, <span class="at">repr.plot.height =</span> <span class="dv">10</span>)</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>alph <span class="ot">&lt;-</span> <span class="fl">0.8</span></span>
@@ -1450,7 +1449,7 @@ Warning message:
 <span id="cb39-115"><a href="#cb39-115" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb39-116"><a href="#cb39-116" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="c7e29e9c" class="cell" data-execution_count="31">
+<div id="df08a4cf" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repr.plot.width =</span> <span class="dv">10</span>, <span class="at">repr.plot.height =</span> <span class="dv">10</span>)</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>alph <span class="ot">&lt;-</span> <span class="fl">0.8</span></span>
@@ -1565,7 +1564,7 @@ Warning message:
 </section>
 <section id="detection-of-cluster-number" class="level1">
 <h1>Detection of cluster number</h1>
-<div id="ac11866a" class="cell" data-execution_count="32">
+<div id="4e3a657a" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>date <span class="ot">&lt;-</span> <span class="st">"20240812"</span></span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>indir <span class="ot">&lt;-</span> <span class="st">"./results/benchmarking/results/ct_detection/"</span></span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1595,7 +1594,7 @@ Warning message:
 <span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(res, <span class="at">file =</span> <span class="fu">file.path</span>(indir, date, <span class="st">"eval"</span>, <span class="st">"results.csv"</span>))</span>
 <span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="28a15b31" class="cell" data-execution_count="33">
+<div id="c10b9347" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> res <span class="sc">%&gt;%</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_abs =</span> cts_found <span class="sc">-</span> nr_cts) <span class="sc">%&gt;%</span></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_perc =</span> cts_found <span class="sc">/</span> nr_cts) <span class="sc">%&gt;%</span></span>
@@ -1611,7 +1610,7 @@ Warning message:
 <span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log2fc_sd =</span> <span class="fu">sd</span>(log2fc)) <span class="sc">%&gt;%</span></span>
 <span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="fad924f3" class="cell" data-execution_count="34">
+<div id="52660bda" class="cell" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>devp_single <span class="ot">&lt;-</span> res <span class="sc">%&gt;%</span></span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(apl_q <span class="sc">==</span> <span class="fl">0.9999</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> nr_cts, <span class="at">y =</span> diff_mean, <span class="at">color =</span> apl_q)) <span class="sc">+</span></span>
@@ -1642,7 +1641,7 @@ Warning message:
 <span id="cb43-28"><a href="#cb43-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb43-29"><a href="#cb43-29" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5e879769" class="cell" data-execution_count="35">
+<div id="ba83ee96" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>devp <span class="ot">&lt;-</span> res <span class="sc">%&gt;%</span></span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> nr_cts, <span class="at">y =</span> diff_mean, <span class="at">color =</span> apl_q)) <span class="sc">+</span></span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>k, <span class="at">labeller =</span> label_both) <span class="sc">+</span></span>
@@ -1675,7 +1674,7 @@ Warning message:
 <span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">"px"</span></span>
 <span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="9ddc901b" class="cell" data-execution_count="36">
+<div id="e7b96c37" class="cell" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>log2fc <span class="ot">&lt;-</span> res <span class="sc">%&gt;%</span></span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter(apl_q == 0.9999) %&gt;%</span></span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> nr_cts, <span class="at">y =</span> log2fc_mean, <span class="at">color =</span> apl_q)) <span class="sc">+</span></span>
@@ -1710,7 +1709,7 @@ Warning message:
 </div>
 <section id="comparison-30-clusters" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-30-clusters">Comparison 30 clusters</h2>
-<div id="5c1768b0" class="cell" data-execution_count="37">
+<div id="82c9dbef" class="cell" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./results/cluster_tabula_muris.R"</span>)</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>large_palette <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
@@ -1778,6 +1777,12 @@ Warning message:
 <div class="cell-output cell-output-stderr">
 <pre><code>ℹ Loading CAdir
 
+
+
+
+
+
+
 Inferred cutoff angle: 65.01
 
 Iteration 1
@@ -1827,7 +1832,7 @@ Using 50 dimensions.</code></pre>
 <h1>Panels</h1>
 <section id="suppl-runtime-panel" class="level2">
 <h2 class="anchored" data-anchor-id="suppl-runtime-panel">Suppl Runtime Panel</h2>
-<div id="98611cec" class="cell" data-execution_count="38">
+<div id="20ac9c11" class="cell" data-execution_count="38">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>rt_suppl <span class="ot">&lt;-</span> rt <span class="sc">+</span></span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  devp <span class="sc">+</span></span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"a"</span>) <span class="sc">&amp;</span></span>
@@ -1866,7 +1871,7 @@ Using 50 dimensions.</code></pre>
 </section>
 <section id="review-panel" class="level2">
 <h2 class="anchored" data-anchor-id="review-panel">Review Panel</h2>
-<div id="6f3a2fc5" class="cell" data-execution_count="39">
+<div id="4f4fd723" class="cell" data-execution_count="39">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>fig1 <span class="ot">&lt;-</span> (p_max_ari <span class="sc">+</span> p_mean_ari <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">"collect"</span>)) <span class="sc">/</span></span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  (p_tile <span class="sc">+</span></span>
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    (p_tile_mean <span class="sc">+</span> <span class="fu">guides</span>(<span class="at">fill =</span> <span class="st">"none"</span>)) <span class="sc">+</span></span>
@@ -1932,7 +1937,7 @@ Warning message:
 </section>
 <section id="figure-panel-max" class="level2">
 <h2 class="anchored" data-anchor-id="figure-panel-max">Figure Panel Max</h2>
-<div id="757c3284" class="cell" data-execution_count="40">
+<div id="6f1b33a3" class="cell" data-execution_count="40">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>fig4 <span class="ot">&lt;-</span> (p_max_ari <span class="sc">+</span> p_tile) <span class="sc">+</span></span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"a"</span>) <span class="sc">&amp;</span></span>
 <span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
@@ -1981,7 +1986,7 @@ Warning message:
 </section>
 <section id="figure-panel-mean" class="level2">
 <h2 class="anchored" data-anchor-id="figure-panel-mean">Figure Panel Mean</h2>
-<div id="ec77947e" class="cell" data-execution_count="41">
+<div id="1a64e276" class="cell" data-execution_count="41">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>suppl_panel <span class="ot">&lt;-</span> (((<span class="fu">free</span>(p_mean_ari, <span class="at">type =</span> <span class="st">"label"</span>) <span class="sc">+</span></span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
 <span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  p_mean_nmi) <span class="sc">+</span></span>
@@ -2045,7 +2050,7 @@ Warning message:
 (`geom_text()`).”</code></pre>
 </div>
 </div>
-<div id="ee0ad526" class="cell" data-execution_count="42">
+<div id="02adb324" class="cell" data-execution_count="42">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>suppl_panel <span class="ot">&lt;-</span></span>
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">free</span>(p_mean_nmi, <span class="at">type =</span> <span class="st">"label"</span>) <span class="sc">+</span></span>
 <span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  p_succ <span class="sc">+</span></span>
@@ -2086,7 +2091,7 @@ Warning message:
 </section>
 <section id="environment" class="level1">
 <h1>Environment</h1>
-<div id="c6922ea6" class="cell" data-execution_count="43">
+<div id="2452f333" class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>R version 4.4.1 (2024-06-14)
@@ -2127,14 +2132,14 @@ loaded via a namespace (and not attached):
   [1] fs_1.6.4                  spatstat.sparse_3.0-3    
   [3] devtools_2.4.5            httr_1.4.7               
   [5] RColorBrewer_1.1-3        repr_1.1.7               
-  [7] profvis_0.3.8             tools_4.4.1              
-  [9] sctransform_0.4.1         backports_1.4.1          
+  [7] backports_1.4.1           profvis_0.3.8            
+  [9] tools_4.4.1               sctransform_0.4.1        
  [11] utf8_1.2.4                R6_2.5.1                 
- [13] lazyeval_0.2.2            uwot_0.2.2               
+ [13] uwot_0.2.2                lazyeval_0.2.2           
  [15] urlchecker_1.0.1          withr_3.0.0              
  [17] sp_2.1-4                  gridExtra_2.3            
- [19] progressr_0.14.0          textshaping_0.3.7        
- [21] cli_3.6.2                 spatstat.explore_3.2-5   
+ [19] progressr_0.14.0          cli_3.6.2                
+ [21] textshaping_0.3.7         spatstat.explore_3.2-5   
  [23] fastDummies_1.7.3         labeling_0.4.3           
  [25] topGO_2.56.0              Seurat_5.0.1             
  [27] spatstat.data_3.0-4       ggridges_0.5.6           
@@ -2142,8 +2147,8 @@ loaded via a namespace (and not attached):
  [31] pbdZMQ_0.3-13             parallelly_1.37.1        
  [33] sessioninfo_1.2.2         limma_3.60.2             
  [35] rstudioapi_0.16.0         RSQLite_2.3.6            
- [37] generics_0.1.3            vroom_1.6.5              
- [39] ica_1.0-3                 spatstat.random_3.2-2    
+ [37] generics_0.1.3            spatstat.random_3.2-2    
+ [39] ica_1.0-3                 vroom_1.6.5              
  [41] car_3.1-2                 GO.db_3.19.1             
  [43] Matrix_1.7-0              ggbeeswarm_0.7.2         
  [45] fansi_1.0.6               abind_1.4-5              
@@ -2161,8 +2166,8 @@ loaded via a namespace (and not attached):
  [69] leiden_0.4.3.1            glue_1.7.0               
  [71] data.table_1.15.4         remotes_2.5.0            
  [73] vctrs_0.6.5               png_0.1-8                
- [75] spam_2.10-0               testthat_3.2.1.1         
- [77] org.Mm.eg.db_3.19.1       gtable_0.3.6             
+ [75] spam_2.10-0               org.Mm.eg.db_3.19.1      
+ [77] testthat_3.2.1.1          gtable_0.3.6             
  [79] cachem_1.1.0              S4Arrays_1.4.1           
  [81] mime_0.12                 tidygraph_1.2.3          
  [83] survival_3.6-4            RcppHungarian_0.3        
@@ -2179,8 +2184,8 @@ loaded via a namespace (and not attached):
 [105] SparseM_1.81              desc_1.4.3               
 [107] DelayedArray_0.30.1       plotly_4.10.4            
 [109] scales_1.3.0              lmtest_0.9-40            
-[111] stringr_1.5.1             digest_0.6.35            
-[113] goftest_1.2-3             ggsankey_0.0.99999       
+[111] goftest_1.2-3             stringr_1.5.1            
+[113] digest_0.6.35             ggsankey_0.0.99999       
 [115] spatstat.utils_3.0-4      XVector_0.44.0           
 [117] htmltools_0.5.8.1         pkgconfig_2.0.3          
 [119] base64enc_0.1-3           sparseMatrixStats_1.16.0 
@@ -2199,28 +2204,28 @@ loaded via a namespace (and not attached):
 [145] plyr_1.8.9                org.Hs.eg.db_3.19.1      
 [147] pkgbuild_1.4.4            parallel_4.4.1           
 [149] listenv_0.9.1             ggrepel_0.9.5            
-[151] deldir_2.0-4              Biostrings_2.72.0        
-[153] graphlayouts_1.1.1        IRdisplay_1.1            
+[151] deldir_2.0-4              graphlayouts_1.1.1       
+[153] Biostrings_2.72.0         IRdisplay_1.1            
 [155] splines_4.4.1             tensor_1.5               
 [157] hms_1.1.3                 locfit_1.5-9.9           
-[159] igraph_2.0.3              ggpubr_0.6.0             
+[159] ggpubr_0.6.0              igraph_2.0.3             
 [161] uuid_1.2-0                spatstat.geom_3.2-9      
 [163] ggsignif_0.6.4            RcppHNSW_0.6.0           
-[165] ScaledMatrix_1.12.0       reshape2_1.4.4           
+[165] reshape2_1.4.4            ScaledMatrix_1.12.0      
 [167] pkgload_1.3.4             evaluate_0.23            
 [169] SeuratObject_5.0.2        scran_1.32.0             
 [171] renv_1.0.7                BiocManager_1.30.23      
-[173] tzdb_0.4.0                tweenr_2.0.3             
+[173] tweenr_2.0.3              tzdb_0.4.0               
 [175] httpuv_1.6.15             networkD3_0.4            
-[177] RANN_2.6.1                purrr_1.0.2              
-[179] polyclip_1.10-6           future_1.33.2            
+[177] polyclip_1.10-6           RANN_2.6.1               
+[179] purrr_1.0.2               future_1.33.2            
 [181] scattermore_1.2           ggforce_0.4.2            
 [183] rsvd_1.0.5                broom_1.0.6              
 [185] xtable_1.8-4              RSpectra_0.16-1          
 [187] rstatix_0.7.2             later_1.3.2              
-[189] ragg_1.3.2                viridisLite_0.4.2        
-[191] tibble_3.2.1              beeswarm_0.4.0           
-[193] memoise_2.0.1             AnnotationDbi_1.66.0     
+[189] viridisLite_0.4.2         ragg_1.3.2               
+[191] tibble_3.2.1              memoise_2.0.1            
+[193] beeswarm_0.4.0            AnnotationDbi_1.66.0     
 [195] cluster_2.1.6             globals_0.16.3           </code></pre>
 </div>
 </div>
