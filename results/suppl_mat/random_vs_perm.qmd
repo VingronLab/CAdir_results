@@ -41,8 +41,8 @@ suppressPackageStartupMessages({
 options(repr.plot.width = 20, repr.plot.height = 15)
 set.seed(2358)
 dir <- "./results/"
-imgdir <- file.path(dir, "img/review/random_vs_perm/")
-resdir <- file.path(dir, "out/review/random_vs_perm/")
+imgdir <- file.path(dir, "img/suppl_mat/random_vs_perm/")
+resdir <- file.path(dir, "out/suppl_mat/random_vs_perm/")
 dir.create(imgdir, recursive = TRUE)
 dir.create(resdir, recursive = TRUE)
 ```

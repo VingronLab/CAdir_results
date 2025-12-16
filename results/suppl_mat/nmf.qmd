@@ -48,7 +48,7 @@ suppressPackageStartupMessages({
 options(repr.plot.width = 20, repr.plot.height = 15)
 
 dir <- "./results/"
-imgdir <- file.path(dir, "img/review/nmf/")
+imgdir <- file.path(dir, "img/suppl_mat/nmf/")
 dir.create(imgdir, recursive = TRUE)
 ```
 

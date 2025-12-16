@@ -34,7 +34,7 @@ suppressPackageStartupMessages({
 })
 
 dir <- "./results/"
-imgdir <- file.path(dir, "img/review/dim_vs_ari/")
+imgdir <- file.path(dir, "img/suppl_mat/dim_vs_ari/")
 
 dir.create(imgdir, recursive = TRUE)
 
