@@ -42,7 +42,7 @@ suppressPackageStartupMessages({
 options(repr.plot.width = 20, repr.plot.height = 15)
 set.seed(2358)
 dir <- "./results/"
-imgdir <- file.path(dir, "img/suppl_mat/marker_genes/")
+imgdir <- file.path(dir, "img/suppl_mat/marker_genes_scran/")
 dir.create(imgdir, recursive = TRUE)
 ```
 
