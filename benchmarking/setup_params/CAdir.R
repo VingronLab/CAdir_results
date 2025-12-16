@@ -1,6 +1,7 @@
 library(APL)
 library(CAbiNet)
-devtools::load_all("/home/kohl/gits/ClemensKohl/CAdir/")
+library(CAdir)
+# devtools::load_all("/home/kohl/gits/ClemensKohl/CAdir/")
 
 alg_option_list <- list(
   make_option(
