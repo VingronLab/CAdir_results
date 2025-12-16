@@ -21,8 +21,8 @@ jupyter:
 renv::load()
 
 suppressPackageStartupMessages({
-  # library(CAdir)
-  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  library(CAdir)
   library(scater)
   library(dplyr)
   library(tidyr)

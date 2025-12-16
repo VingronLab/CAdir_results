@@ -23,8 +23,8 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  # library(CAdir)
-  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  library(CAdir)
   library(APL)
 
   library(SingleCellExperiment)
