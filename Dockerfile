@@ -10,11 +10,16 @@ ENV COLORTERM=truecolor
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
+    make \
     git \
     curl \
     wget \
     unzip \
+    zip \
+    locales \
+    apt-transport-https \
     ca-certificates \
+    ucf \
     gpg \
     && rm -rf /var/lib/apt/lists/*
 
@@ -25,19 +30,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install R system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gfortran \
-    libopenblas-dev \
+    libatlas-base-dev \
+    libbz2-dev \
+    libicu-dev \
+    libcurl4-openssl-dev \
+    liblzma-dev \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
+    libx11-6 \
+    tzdata \
+    libopenblas-dev \
+    pandoc \
     libpaper-utils \
     libtcl8.6 \
     libtirpc-dev \
     libtk8.6 \
     libxt6t64 \
-    ucf \
-    zip \
     libxml2-dev \
     libssl-dev \
-    libcurl4-openssl-dev \
+    libcairo2 \
     libcairo2-dev \
     libfontconfig1-dev \
     libharfbuzz-dev \
@@ -88,6 +99,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     liblua5.1-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# FIMXE: Install NEOVIM FROM SOURCE
+# FIXME: Install Neovim dependecies as listed on website
 # Install Neovim (AppImage for latest stable)
 RUN wget -q https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage \
         -O /usr/local/bin/nvim-appimage && \
