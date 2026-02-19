@@ -172,9 +172,15 @@ WORKDIR /root
 RUN nvim --headless "+Lazy! sync" +qa
 
 # Setup RENV
-RUN R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org'))"
-WORKDIR /root/gits/ClemensKohl/CAdir_results
-RUN R -e "renv::restore()"
+ENV RENV_CONFIG_PAK_ENABLED=TRUE
+# RUN R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org'))"
+# WORKDIR /root/tmp
+# RUN mkdir -p renv
+# COPY renv.lock renv.lock
+# COPY .Rprofile .Rprofile
+# COPY renv/activate.R renv/activate.R
+# COPY renv/settings.json renv/settings.json
+# RUN R -s -e "renv::restore()"
 
 
 # Set zsh as default shell
