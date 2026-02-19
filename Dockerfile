@@ -9,6 +9,7 @@ ENV COLORTERM=truecolor
 # =============================================================================
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    gcc \
     cmake \
     make \
     git \
@@ -19,14 +20,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ninja-build \
     gettext \
     locales \
+    openssh-server \
     apt-transport-https \
     ca-certificates \
+    stow \
     ucf \
-    gpg \
-    && rm -rf /var/lib/apt/lists/*
+    gpg
 
 # =============================================================================
-# R & DEPENDENCIES
+# R DEPENDENCIES
 # =============================================================================
 
 # Install R system dependencies
@@ -63,8 +65,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     liblapack-dev \
     libpcre2-dev \
     zlib1g-dev \
-    libgmp3-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libgmp3-dev 
 
 # Install R 4.4.1 from Posit's pre-built deb for Ubuntu 24.04
 RUN wget -q https://cdn.rstudio.com/r/ubuntu-2404/pkgs/r-4.4.1_1_amd64.deb \
@@ -72,8 +73,7 @@ RUN wget -q https://cdn.rstudio.com/r/ubuntu-2404/pkgs/r-4.4.1_1_amd64.deb \
     apt-get install -y /tmp/r-4.4.1.deb && \
     rm /tmp/r-4.4.1.deb && \
     ln -s /opt/R/4.4.1/bin/R /usr/local/bin/R && \
-    ln -s /opt/R/4.4.1/bin/Rscript /usr/local/bin/Rscript && \
-    rm -rf /var/lib/apt/lists/*
+    ln -s /opt/R/4.4.1/bin/Rscript /usr/local/bin/Rscript
 
 # Set CRAN mirror
 RUN echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"))' >> /opt/R/4.4.1/lib/R/etc/Rprofile.site
@@ -82,8 +82,7 @@ RUN echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"))' >> /opt/R/4.4.
 RUN wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v1.8.27/quarto-1.8.27-linux-amd64.deb \
         -O /tmp/quarto.deb && \
     apt-get install -y /tmp/quarto.deb && \
-    rm /tmp/quarto.deb && \
-    rm -rf /var/lib/apt/lists/*
+    rm /tmp/quarto.deb
 
 # =============================================================================
 # DEVELOPMENT TOOLS
@@ -102,14 +101,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zsh \
     lua5.1 \
     liblua5.1-dev \
-    && rm -rf /var/lib/apt/lists/*
+    luarocks \
+    imagemagick
+
+# fd is installed as `fdfind` on Ubuntu — add a `fd` symlink
+RUN ln -s $(which fdfind) /usr/local/bin/fd
 
 # NOTE: INSGTALL NEOVIM FROM BINARY
-RUN curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz; \
-    rm -rf /opt/nvim-linux-x86_64; \
-    tar -C /opt -xzf nvim-linux-x86_64.tar.gz; \
-    ln -s /opt/nvim-linux-x86_64/bin/nvim /bin/nvim; \
-    rm nvim-linux-x86_64.tar.gz;
+RUN curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz && \
+    rm -rf /opt/nvim-linux-x86_64 && \
+    tar -C /opt -xzf nvim-linux-x86_64.tar.gz && \
+    ln -s /opt/nvim-linux-x86_64/bin/nvim /bin/nvim && \
+    rm nvim-linux-x86_64.tar.gz
+
 # Install Neovim (AppImage for latest stable)
 # RUN wget -q https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage \
 #         -O /usr/local/bin/nvim-appimage && \
@@ -119,8 +123,12 @@ RUN curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linu
 #     ln -s /opt/nvim/usr/bin/nvim /usr/local/bin/nvim && \
 #     rm /usr/local/bin/nvim-appimage
 
-# fd is installed as `fdfind` on Ubuntu — add a `fd` symlink
-RUN ln -s $(which fdfind) /usr/local/bin/fd
+# Install Neovim from source.
+# RUN mkdir -p /root/TMP
+# RUN cd /root/TMP && git clone https://github.com/neovim/neovim
+# RUN cd /root/TMP/neovim && git checkout stable && make -j4 && make install
+# RUN rm -rf /root/TMP
+
 
 # Install Rust / Cargo via rustup
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
@@ -131,17 +139,43 @@ RUN curl -sL https://github.com/jesseduffield/lazygit/releases/download/v0.59.0/
         | tar -xz -C /usr/local/bin lazygit
 
 # Install oh-my-zsh and Powerlevel10k
-RUN sh -c "$(wget -qO- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /root/.oh-my-zsh/custom/themes/powerlevel10k && \
-    sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' /root/.zshrc && \
-    cp /root/.oh-my-zsh/custom/themes/powerlevel10k/config/p10k-lean.zsh /root/.p10k.zsh && \
-    echo '[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh' >> /root/.zshrc
+# RUN sh -c "$(wget -qO- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
+#     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /root/.oh-my-zsh/custom/themes/powerlevel10k && \
+#     sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' /root/.zshrc && \
+#     cp /root/.oh-my-zsh/custom/themes/powerlevel10k/config/p10k-lean.zsh /root/.p10k.zsh && \
+#     echo '[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh' >> /root/.zshrc
+
+# Install uv
+ADD https://astral.sh/uv/0.10.4/install.sh /uv-installer.sh
+# Run the installer then remove it
+RUN sh /uv-installer.sh && rm /uv-installer.sh
+# Ensure the installed binary is on the `PATH`
+ENV PATH="/root/.local/bin/:$PATH"
+
+# install lazygit
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN rm -rf /root/.oh-my-zsh/custom
+
+###################
+# Setup DOTFILES ##
+###################
+
+RUN mkdir -p "/root/gits/ClemensKohl/"
+RUN git clone https://github.com/ClemensKohl/dotfiles.git "/root/gits/ClemensKohl/dotfiles"
+WORKDIR "/root/gits/ClemensKohl/dotfiles"
+RUN git submodule init && git submodule update
+RUN stow --target=/root --adopt */
+RUN git restore .
+WORKDIR /root
+
+# Update Neovim
+RUN nvim --headless "+Lazy! sync" +qa
 
 # Set zsh as default shell
 SHELL ["/bin/zsh", "-c"]
 
 # =============================================================================
 
-WORKDIR /CAdir_results
+WORKDIR /root
 
 CMD ["/bin/zsh"]

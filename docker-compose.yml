@@ -2,15 +2,15 @@ services:
   r-dev:
     build: .
     image: r-neovim-dev:4.4.1
-    container_name: r-dev
+    container_name: r4.4.1-nvim
     volumes:
       # Mount your project directory into /project in the container
       # Change ./your-project to your actual project path, e.g. /home/user/myproject
-      - ~/gits/ClemensKohl/CAdir_results:/CAdir_results
+      - ~/gits/ClemensKohl/CAdir_results:/root/gits/ClemensKohl/CAdir_results/
       # Optional: persist R packages between container runs
       - r_libs:/usr/local/lib/R/library
       # Optional: persist neovim config
-      - ~/.config/nvim:/root/.config/nvim
+      # - ~/.config/nvim:/root/.config/nvim
     stdin_open: true
     tty: true
     working_dir: /CAdir_results
