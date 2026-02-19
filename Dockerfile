@@ -7,7 +7,7 @@ ENV COLORTERM=truecolor
 # =============================================================================
 # System Setup
 # =============================================================================
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt update && apt install -y --no-install-recommends \
     build-essential \
     cmake \
     make \
@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # =============================================================================
 
 # Install R system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt update && apt install -y --no-install-recommends \
     gfortran \
     libatlas-base-dev \
     libbz2-dev \
@@ -66,7 +66,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install R 4.4.1 from Posit's pre-built deb for Ubuntu 24.04
 RUN wget -q https://cdn.rstudio.com/r/ubuntu-2404/pkgs/r-4.4.1_1_amd64.deb \
         -O /tmp/r-4.4.1.deb && \
-    apt-get install -y /tmp/r-4.4.1.deb && \
+    apt install -y /tmp/r-4.4.1.deb && \
     rm /tmp/r-4.4.1.deb && \
     ln -s /opt/R/4.4.1/bin/R /usr/local/bin/R && \
     ln -s /opt/R/4.4.1/bin/Rscript /usr/local/bin/Rscript && \
@@ -78,7 +78,7 @@ RUN echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"))' >> /opt/R/4.4.
 # Install Quarto
 RUN wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v1.8.27/quarto-1.8.27-linux-amd64.deb \
         -O /tmp/quarto.deb && \
-    apt-get install -y /tmp/quarto.deb && \
+    apt install -y /tmp/quarto.deb && \
     rm /tmp/quarto.deb && \
     rm -rf /var/lib/apt/lists/*
 
@@ -87,7 +87,7 @@ RUN wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v1.8.27/q
 # =============================================================================
 
 # Install general development dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt update && apt install -y --no-install-recommends \
     python3 \
     python3-pip \
     nodejs \
