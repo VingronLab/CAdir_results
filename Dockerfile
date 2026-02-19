@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM --platform="amd64" ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-256color
@@ -7,7 +7,7 @@ ENV COLORTERM=truecolor
 # =============================================================================
 # System Setup
 # =============================================================================
-RUN apt update && apt install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
     make \
@@ -16,6 +16,8 @@ RUN apt update && apt install -y --no-install-recommends \
     wget \
     unzip \
     zip \
+    ninja-build \
+    gettext \
     locales \
     apt-transport-https \
     ca-certificates \
@@ -28,7 +30,7 @@ RUN apt update && apt install -y --no-install-recommends \
 # =============================================================================
 
 # Install R system dependencies
-RUN apt update && apt install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gfortran \
     libatlas-base-dev \
     libbz2-dev \
@@ -61,12 +63,13 @@ RUN apt update && apt install -y --no-install-recommends \
     liblapack-dev \
     libpcre2-dev \
     zlib1g-dev \
+    libgmp3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install R 4.4.1 from Posit's pre-built deb for Ubuntu 24.04
 RUN wget -q https://cdn.rstudio.com/r/ubuntu-2404/pkgs/r-4.4.1_1_amd64.deb \
         -O /tmp/r-4.4.1.deb && \
-    apt install -y /tmp/r-4.4.1.deb && \
+    apt-get install -y /tmp/r-4.4.1.deb && \
     rm /tmp/r-4.4.1.deb && \
     ln -s /opt/R/4.4.1/bin/R /usr/local/bin/R && \
     ln -s /opt/R/4.4.1/bin/Rscript /usr/local/bin/Rscript && \
@@ -78,7 +81,7 @@ RUN echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"))' >> /opt/R/4.4.
 # Install Quarto
 RUN wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v1.8.27/quarto-1.8.27-linux-amd64.deb \
         -O /tmp/quarto.deb && \
-    apt install -y /tmp/quarto.deb && \
+    apt-get install -y /tmp/quarto.deb && \
     rm /tmp/quarto.deb && \
     rm -rf /var/lib/apt/lists/*
 
@@ -87,28 +90,34 @@ RUN wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v1.8.27/q
 # =============================================================================
 
 # Install general development dependencies
-RUN apt update && apt install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
+    python-is-python3 \
     nodejs \
     npm \
     ripgrep \
     fd-find \
+    fzf \
     zsh \
     lua5.1 \
     liblua5.1-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# FIMXE: Install NEOVIM FROM SOURCE
-# FIXME: Install Neovim dependecies as listed on website
+# NOTE: INSGTALL NEOVIM FROM BINARY
+RUN curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz; \
+    rm -rf /opt/nvim-linux-x86_64; \
+    tar -C /opt -xzf nvim-linux-x86_64.tar.gz; \
+    ln -s /opt/nvim-linux-x86_64/bin/nvim /bin/nvim; \
+    rm nvim-linux-x86_64.tar.gz;
 # Install Neovim (AppImage for latest stable)
-RUN wget -q https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage \
-        -O /usr/local/bin/nvim-appimage && \
-    chmod +x /usr/local/bin/nvim-appimage && \
-    /usr/local/bin/nvim-appimage --appimage-extract > /dev/null && \
-    mv squashfs-root /opt/nvim && \
-    ln -s /opt/nvim/usr/bin/nvim /usr/local/bin/nvim && \
-    rm /usr/local/bin/nvim-appimage
+# RUN wget -q https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage \
+#         -O /usr/local/bin/nvim-appimage && \
+#     chmod +x /usr/local/bin/nvim-appimage && \
+#     /usr/local/bin/nvim-appimage --appimage-extract > /dev/null && \
+#     mv squashfs-root /opt/nvim && \
+#     ln -s /opt/nvim/usr/bin/nvim /usr/local/bin/nvim && \
+#     rm /usr/local/bin/nvim-appimage
 
 # fd is installed as `fdfind` on Ubuntu — add a `fd` symlink
 RUN ln -s $(which fdfind) /usr/local/bin/fd
