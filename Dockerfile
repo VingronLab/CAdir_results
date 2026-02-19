@@ -152,7 +152,7 @@ RUN sh /uv-installer.sh && rm /uv-installer.sh
 # Ensure the installed binary is on the `PATH`
 ENV PATH="/root/.local/bin/:$PATH"
 
-# install lazygit
+# install ohmyzsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 RUN rm -rf /root/.oh-my-zsh/custom
 
@@ -170,6 +170,12 @@ WORKDIR /root
 
 # Update Neovim
 RUN nvim --headless "+Lazy! sync" +qa
+
+# Setup RENV
+RUN R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org'))"
+WORKDIR /root/gits/ClemensKohl/CAdir_results
+RUN R -e "renv::restore()"
+
 
 # Set zsh as default shell
 SHELL ["/bin/zsh", "-c"]

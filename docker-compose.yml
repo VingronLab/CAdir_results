@@ -13,7 +13,7 @@ services:
       # - ~/.config/nvim:/root/.config/nvim
     stdin_open: true
     tty: true
-    working_dir: /CAdir_results
+    working_dir: /root/gits/ClemensKohl/CAdir_results
 
 volumes:
   r_libs:
