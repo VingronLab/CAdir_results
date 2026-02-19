@@ -65,7 +65,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     liblapack-dev \
     libpcre2-dev \
     zlib1g-dev \
-    libgmp3-dev 
+    libgmp3-dev \  
+    libudunits2-dev
 
 # Install R 4.4.1 from Posit's pre-built deb for Ubuntu 24.04
 RUN wget -q https://cdn.rstudio.com/r/ubuntu-2404/pkgs/r-4.4.1_1_amd64.deb \
@@ -172,15 +173,16 @@ WORKDIR /root
 RUN nvim --headless "+Lazy! sync" +qa
 
 # Setup RENV
-ENV RENV_CONFIG_PAK_ENABLED=TRUE
-# RUN R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org'))"
-# WORKDIR /root/tmp
-# RUN mkdir -p renv
-# COPY renv.lock renv.lock
-# COPY .Rprofile .Rprofile
-# COPY renv/activate.R renv/activate.R
-# COPY renv/settings.json renv/settings.json
-# RUN R -s -e "renv::restore()"
+# ENV RENV_CONFIG_PAK_ENABLED=TRUE
+RUN R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org'))"
+WORKDIR /root/renv_library
+RUN mkdir -p renv
+COPY renv.lock renv.lock
+COPY .Rprofile .Rprofile
+COPY renv/activate.R renv/activate.R
+COPY renv/settings.json renv/settings.json
+RUN R -s -e "renv::restore()"
+RUN R -e "renv::isolate()"
 
 
 # Set zsh as default shell
