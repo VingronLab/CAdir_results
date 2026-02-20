@@ -65,8 +65,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     liblapack-dev \
     libpcre2-dev \
     zlib1g-dev \
-    libgmp3-dev \  
-    libudunits2-dev
+    libgmp3-dev \
+    libudunits2-dev \
+    libgdal-dev
 
 # Install R 4.4.1 from Posit's pre-built deb for Ubuntu 24.04
 RUN wget -q https://cdn.rstudio.com/r/ubuntu-2404/pkgs/r-4.4.1_1_amd64.deb \
