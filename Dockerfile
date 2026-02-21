@@ -147,8 +147,8 @@ RUN curl -fsSL https://claude.ai/install.sh | bash
 
 # Install Rust / Cargo via rustup
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
-RUN rustup update
 ENV PATH="/root/.cargo/bin:${PATH}"
+RUN rustup update
 
 #install yazi
 RUN cargo install --force yazi-build
