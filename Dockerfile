@@ -25,7 +25,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     stow \
     ucf \
-    gpg
+    gpg \
+    xclip
 
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
@@ -99,9 +100,11 @@ RUN wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v1.8.27/q
 
 # Install general development dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    tmux \
     python3 \
     python3-pip \
     python-is-python3 \
+    python3-venv \
     nodejs \
     npm \
     ripgrep \
@@ -112,6 +115,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     liblua5.1-dev \
     luarocks \
     imagemagick
+
 
 # fd is installed as `fdfind` on Ubuntu — add a `fd` symlink
 RUN ln -s $(which fdfind) /usr/local/bin/fd
@@ -138,6 +142,8 @@ RUN curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linu
 # RUN cd /root/TMP/neovim && git checkout stable && make -j4 && make install
 # RUN rm -rf /root/TMP
 
+# Install Claude Code
+RUN curl -fsSL https://claude.ai/install.sh | bash
 
 # Install Rust / Cargo via rustup
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
@@ -163,6 +169,11 @@ ADD https://astral.sh/uv/0.10.4/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh && rm /uv-installer.sh
 # Ensure the installed binary is on the `PATH`
 ENV PATH="/root/.local/bin/:$PATH"
+
+# RUN pip install jupytext --break-system-packages
+RUN uv tool install --upgrade pynvim
+RUN uv tool install --upgrade jupytext
+
 
 # install ohmyzsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
