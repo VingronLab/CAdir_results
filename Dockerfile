@@ -203,9 +203,9 @@ COPY renv.lock renv.lock
 COPY .Rprofile .Rprofile
 COPY renv/activate.R renv/activate.R
 COPY renv/settings.json renv/settings.json
-RUN R -s -e "renv::restore()" && \ 
-  rm -rf /root/renv_library
-# RUN R -e "renv::isolate()"
+RUN R -s -e "renv::restore()"
+WORKDIR /root
+RUN rm -rf /root/renv_library
 
 
 # Set zsh as default shell
