@@ -1,5 +1,5 @@
 services:
-  r-dev:
+  r441:
     build: .
     image: r-neovim-dev:4.4.1
     container_name: r4.4.1-nvim
