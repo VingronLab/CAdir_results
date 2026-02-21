@@ -151,7 +151,11 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN rustup update
 
 #install yazi
-RUN cargo install --force yazi-build
+RUN curl -sL https://github.com/sxyazi/yazi/releases/latest/download/yazi-x86_64-unknown-linux-gnu.zip -o /tmp/yazi.zip && \
+    unzip /tmp/yazi.zip -d /tmp/yazi && \
+    mv /tmp/yazi/yazi-x86_64-unknown-linux-gnu/yazi /usr/local/bin/yazi && \
+    chmod +x /usr/local/bin/yazi && \
+    rm -rf /tmp/yazi /tmp/yazi.zip
 
 # Install lazygit
 RUN curl -sL https://github.com/jesseduffield/lazygit/releases/download/v0.59.0/lazygit_0.59.0_Linux_x86_64.tar.gz \
