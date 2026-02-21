@@ -146,7 +146,8 @@ RUN curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linu
 RUN curl -fsSL https://claude.ai/install.sh | bash
 
 # Install Rust / Cargo via rustup
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+RUN rustup update
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 #install yazi
