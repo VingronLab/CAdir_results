@@ -136,6 +136,9 @@ RUN curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linu
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
 ENV PATH="/root/.cargo/bin:${PATH}"
 
+#install yazi
+RUN cargo install --force yazi-build
+
 # Install lazygit
 RUN curl -sL https://github.com/jesseduffield/lazygit/releases/download/v0.59.0/lazygit_0.59.0_Linux_x86_64.tar.gz \
         | tar -xz -C /usr/local/bin lazygit
