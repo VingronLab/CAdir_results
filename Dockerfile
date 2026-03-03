@@ -117,9 +117,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     liblua5.1-dev \
     luarocks \
     imagemagick \
-    tree-sitter-cli \
     fonts-noto-color-emoji
-
+    # tree-sitter-cli
 
 # fd is installed as `fdfind` on Ubuntu — add a `fd` symlink
 RUN ln -s $(which fdfind) /usr/local/bin/fd
