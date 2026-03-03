@@ -168,7 +168,8 @@ RUN apt install -y curl \
     libfreetype6-dev libasound2-dev libexpat1-dev libxcb-composite0-dev \
     libbz2-dev libsndio-dev freeglut3-dev libxmu-dev libxi-dev libfontconfig1-dev \
     libxcursor-dev \
-    libgl1 libgl1-mesa-dri libglx-mesa0 libegl1 libxrandr2 libxss1
+    libgl1 libgl1-mesa-dri libglx-mesa0 libegl1 libxrandr2 libxss1 \
+    libxkbcommon-x11-0
 RUN cargo install --git https://github.com/neovide/neovide
 
 
