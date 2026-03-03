@@ -161,6 +161,17 @@ RUN curl -sL https://github.com/sxyazi/yazi/releases/latest/download/yazi-x86_64
 RUN curl -sL https://github.com/jesseduffield/lazygit/releases/download/v0.59.0/lazygit_0.59.0_Linux_x86_64.tar.gz \
         | tar -xz -C /usr/local/bin lazygit
 
+# Install neovide (build deps + runtime OpenGL/X11 libs)
+RUN apt install -y curl \
+    gnupg ca-certificates git \
+    gcc-multilib g++-multilib cmake libssl-dev pkg-config \
+    libfreetype6-dev libasound2-dev libexpat1-dev libxcb-composite0-dev \
+    libbz2-dev libsndio-dev freeglut3-dev libxmu-dev libxi-dev libfontconfig1-dev \
+    libxcursor-dev \
+    libgl1 libgl1-mesa-dri libglx-mesa0 libegl1 libxrandr2 libxss1
+RUN cargo install --git https://github.com/neovide/neovide
+
+
 # Install oh-my-zsh and Powerlevel10k
 # RUN sh -c "$(wget -qO- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
 #     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /root/.oh-my-zsh/custom/themes/powerlevel10k && \
@@ -202,15 +213,17 @@ RUN nvim --headless "+Lazy! sync" +qa
 # Setup RENV
 # ENV RENV_CONFIG_PAK_ENABLED=TRUE
 RUN R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org'))"
-WORKDIR /root/renv_library
-RUN mkdir -p renv
-COPY renv.lock renv.lock
-COPY .Rprofile .Rprofile
-COPY renv/activate.R renv/activate.R
-COPY renv/settings.json renv/settings.json
-RUN R -s -e "renv::restore()"
-WORKDIR /root
-RUN rm -rf /root/renv_library
+
+# NOTE: Don't bake R libraries into image!
+# WORKDIR /root/renv_library
+# RUN mkdir -p renv
+# COPY renv.lock renv.lock
+# COPY .Rprofile .Rprofile
+# COPY renv/activate.R renv/activate.R
+# COPY renv/settings.json renv/settings.json
+# RUN R -s -e "renv::restore()"
+# WORKDIR /root
+# RUN rm -rf /root/renv_library
 
 
 # Set zsh as default shell

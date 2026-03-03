@@ -1,0 +1,146 @@
+---
+title: n rnd iterations
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  # devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  library(CAdir)
+  library(APL)
+
+  library(SingleCellExperiment)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(tidyr)
+
+  library(ggplot2)
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+set.seed(2358)
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review2/n_rnd_iters/")
+resdir <- file.path(dir, "out/review2/n_rnd_iters/")
+dir.create(imgdir, recursive = TRUE)
+dir.create(resdir, recursive = TRUE)
+```
+
+```{r}
+data_dir <- file.path(
+  "./data/real/preprocessed/benchmarking/"
+)
+files <- list.files(path = data_dir, pattern = "*.rds", full.names = TRUE)
+```
+
+```{r}
+iters <- seq.int(0, 1000, by = 10)
+iters[1] <- 1
+
+iter_list <- vector(mode = "list", length = length(iters))
+
+options(rlib_message_verbosity = "quiet")
+for (n in iters) {
+  cat("\niter", n)
+  for (i in seq_len(length(files))) {
+    rnd_vec <- vector(mode = "numeric", length = length(files))
+    rnd_ari_vec <- vector(mode = "numeric", length = length(files))
+    nms <- vector(mode = "character", length = length(files))
+    f <- files[i]
+    fnm <- gsub("_filtered.rds", "", basename(f))
+    fnm <- gsub(".rds", "", fnm)
+    cat("\n", fnm)
+
+    sce <- readRDS(f)
+
+    if (fnm == "tabula_muris_sub") {
+      sce$truth <- sce$cell_ontology_class
+    }
+
+    set.seed(1234)
+    sce_var <- scran::modelGeneVar(sce)
+    sce_top <- scran::getTopHVGs(sce_var, n = 2000, var.threshold = NULL) #1000
+    sce <- sce[sce_top, ]
+    cnts <- as.matrix(logcounts(sce))
+
+    ca <- cacomp(
+      obj = cnts,
+      princ_coords = 3,
+      dims = 30, #20
+      top = nrow(cnts),
+      residuals = "pearson",
+      clip = TRUE
+    )
+
+    cadir <- dirclust_splitmerge(
+      caobj = ca,
+      k = 10,
+      cutoff = NULL,
+      method = "random",
+      apl_quant = 0.99
+    )
+
+    rnd_cutoff <- CAdir:::get_apl_cutoff(
+      caobj = ca,
+      method = "random",
+      group = which(cadir@cell_clusters == "cluster_1"),
+      counts = NULL,
+      quant = 0.99,
+      apl_cutoff_reps = n,
+      axis = "cols"
+    )
+
+    rnd_ang <- CAdir:::rad2deg(rnd_cutoff)
+
+    cadir_rnd <- dirclust_splitmerge(
+      caobj = ca,
+      k = 10,
+      cutoff = rnd_ang,
+      apl_quant = 0.99
+    )
+
+    sce$cadir_rnd <- cadir_rnd@cell_clusters
+    ari_rnd <- aricode::clustComp(sce$cadir_rnd, sce$truth)$ARI
+
+    rnd_vec[i] <- rnd_ang
+    names(rnd_vec)[i] <- fnm
+
+    rnd_ari_vec[i] <- ari_rnd
+    names(rnd_ari_vec)[i] <- fnm
+
+    nms[i] <- fnm
+  }
+
+  iter_list[[n]] <- data.frame(
+    n_iters = rep(n, length(nms)),
+    dataset = nms,
+    cutoff_angle = rnd_vec,
+    ARI = rnd_ari_vec
+  )
+  break
+}
+```
+
+
+

@@ -5,19 +5,33 @@ services:
     container_name: r4.4.1-nvim
     environment:
       - DISPLAY=${DISPLAY}
+      # Use software rendering so neovide works without GPU passthrough
+      - LIBGL_ALWAYS_SOFTWARE=1
     volumes:
-      # Mount your project directory into /project in the container
-      # Change ./your-project to your actual project path, e.g. /home/user/myproject
-      - ~/gits/ClemensKohl/CAdir_results:/root/gits/ClemensKohl/CAdir_results/
+      # Mount project at the same absolute path as on the host so Claude Code
+      # memory paths match between host and container sessions
+      - ${HOME}/gits/ClemensKohl/CAdir_results:/home/clemens/gits/ClemensKohl/CAdir_results/
+      - ${HOME}/Data/projects/MPIMG/CAdir_results:/home/clemens/Data/projects/MPIMG/CAdir_results
       # Optional: persist R packages between container runs
       - r_libs:/usr/local/lib/R/library
+      - renv_libs:/root/.cache/R
       # Optional: persist neovim config
       # - ~/.config/nvim:/root/.config/nvim
       # enable x11 forwarding
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - "${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority:rw"
+      # Share host Claude auth so no re-login needed.
+      # .claude/ holds session history and memory files.
+      # .claude.json holds OAuth login state — without this mount you must
+      # re-login on every container restart.
+      - ${HOME}/.claude:/root/.claude
+      - ${HOME}/.claude.json:/root/.claude.json
+    ipc: host
     stdin_open: true
     tty: true
-    working_dir: /root/gits/ClemensKohl/CAdir_results
+    working_dir: /home/clemens/gits/ClemensKohl/CAdir_results
 
 volumes:
   r_libs:
+  renv_libs:
+
