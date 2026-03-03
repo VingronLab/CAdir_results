@@ -75,7 +75,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g-dev \
     libgmp3-dev \
     libudunits2-dev \
-    libgdal-dev
+    libgdal-dev \
     libglpk-dev \
     libgit2-dev
 
