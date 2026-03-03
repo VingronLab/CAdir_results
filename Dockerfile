@@ -76,6 +76,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgmp3-dev \
     libudunits2-dev \
     libgdal-dev
+    libglpk-dev \
+    libgit2-dev
 
 # Install R 4.4.1 from Posit's pre-built deb for Ubuntu 24.04
 RUN wget -q https://cdn.rstudio.com/r/ubuntu-2404/pkgs/r-4.4.1_1_amd64.deb \
@@ -187,7 +189,7 @@ RUN sh /uv-installer.sh && rm /uv-installer.sh
 # Ensure the installed binary is on the `PATH`
 ENV PATH="/root/.local/bin/:$PATH"
 
-# RUN pip install jupytext --break-system-packages
+# Install python tools for neovim
 RUN uv tool install --upgrade pynvim
 RUN uv tool install --upgrade jupytext
 
