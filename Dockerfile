@@ -116,7 +116,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lua5.1 \
     liblua5.1-dev \
     luarocks \
-    imagemagick
+    imagemagick \
+    tree-sitter-cli \
+    fonts-noto-color-emoji
 
 
 # fd is installed as `fdfind` on Ubuntu — add a `fd` symlink
@@ -228,6 +230,11 @@ RUN R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org
 # WORKDIR /root
 # RUN rm -rf /root/renv_library
 
+# Install Nerd Fonts
+# RUN mkdir -p /root/.local/share/fonts
+WORKDIR  /root/gits 
+RUN git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git    # warning: takes a while
+RUN nerd-fonts/install.sh JetBrainsMono
 
 # Set zsh as default shell
 SHELL ["/bin/zsh", "-c"]
