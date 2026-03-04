@@ -26,7 +26,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     stow \
     ucf \
     gpg \
-    xclip
+    xclip \
+    libclang-dev
 
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
@@ -152,6 +153,9 @@ RUN curl -fsSL https://claude.ai/install.sh | bash
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
 ENV PATH="/root/.cargo/bin:${PATH}"
 RUN rustup update
+
+# Install tree-sitter-cli
+RUN cargo install tree-sitter-cli
 
 #install yazi
 RUN curl -sL https://github.com/sxyazi/yazi/releases/latest/download/yazi-x86_64-unknown-linux-gnu.zip -o /tmp/yazi.zip && \
