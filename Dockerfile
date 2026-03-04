@@ -119,7 +119,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     luarocks \
     imagemagick \
     fonts-noto-color-emoji
-    # tree-sitter-cli
 
 # fd is installed as `fdfind` on Ubuntu — add a `fd` symlink
 RUN ln -s $(which fdfind) /usr/local/bin/fd
