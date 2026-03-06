@@ -224,3 +224,7 @@ ggsave(
 )
 ```
 
+```{r}
+sessionInfo()
+```
+
