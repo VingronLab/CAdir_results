@@ -1,6 +1,5 @@
-source("./benchmarking/setup.R")
-
 algorithm <- "QUBIC2"
+source("./benchmarking/setup_split.R")
 
 
 tmp_dir <- system("echo $MXQ_JOB_TMPDIR")
@@ -8,7 +7,7 @@ count_matrix <- file.path(tmp_dir, "count_matrix.tsv")
 write.table(cnts, file = count_matrix, quote = FALSE, sep = '\t')
 
 cmd <- paste(
-  "$HOME/bin/qubic -i",
+  "$HOME/bin/qubic2 -i",
   count_matrix,
   "-R -q",
   qQubic2,
@@ -22,11 +21,11 @@ cmd <- paste(
 # QUBIC2
 cat("\nStarting QUBIC2.\n")
 
-t = Sys.time()
+t <- Sys.time()
 
 out <- system(cmd)
 
-t.run = difftime(Sys.time(), t, units = 'secs')
+t.run <- difftime(Sys.time(), t, units = "secs")
 
 res <- get_qubic2_clusts(
   file = count_matrix,
