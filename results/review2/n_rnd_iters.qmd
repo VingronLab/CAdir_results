@@ -141,8 +141,8 @@ for (i in seq_len(length(files))) {
     cutoff_angle = rnd_vec,
     ARI = rnd_ari_vec
   )
-  break
 }
+saveRDS(files_list, file = file.path(resdir, "files_list.rds"))
 ```
 
 ```{r}
