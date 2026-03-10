@@ -23,8 +23,8 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  # devtools::load_all("~/gits/ClemensKohl/CAdir/")
-  library(CAdir)
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
   library(APL)
 
   library(SingleCellExperiment)
@@ -97,7 +97,9 @@ for (i in seq_len(length(files))) {
     k = 10,
     cutoff = NULL,
     method = "random",
-    apl_quant = 0.99
+    apl_quant = 0.99,
+    reps = 15,
+    keep_log = FALSE
   )
 
   for (j in seq_along(iters)) {
@@ -120,7 +122,9 @@ for (i in seq_len(length(files))) {
       caobj = ca,
       k = 10,
       cutoff = rnd_ang,
-      apl_quant = 0.99
+      apl_quant = 0.99,
+      reps = 15,
+      keep_logs = FALSE
     )
 
     sce$cadir_rnd <- cadir_rnd@cell_clusters

@@ -9,10 +9,12 @@ write.table(cnts, file = count_matrix, quote = FALSE, sep = '\t')
 cmd <- paste(
   "$HOME/bin/qubic2 -i",
   count_matrix,
-  "-R -q",
+  "-R", # always left truncated gaussian -> better for scRNA-seq
+  "-q", # quantile threshold
   qQubic2,
   "-o",
-  nclust,
+  q_nclust,
+  "-d",
   objF,
   sep = " "
 )

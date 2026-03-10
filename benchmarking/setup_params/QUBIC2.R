@@ -12,7 +12,7 @@ alg_option_list <- list(
     metavar = "numeric"
   ),
   make_option(
-    c("--nclust"),
+    c("--qnclust"),
     type = "numeric",
     action = "store",
     default = NA,
@@ -46,5 +46,10 @@ if (is.null(opt$file)) {
 }
 
 qQubic2 <- opt$qqubic2
-nclust <- opt$nclust
+q_nclust <- opt$qnclust
 objF <- opt$objF
+if (opt$objF == "C") {
+  objF <- "-C"
+} else if (opt$objF == "d") {
+  objF <- ""
+}
