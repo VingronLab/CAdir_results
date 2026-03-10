@@ -1,10 +1,12 @@
-# -R left truncated gaussian, -n GMM
-#
+#!/bin/bash
+
+MXQ_TMPDIR=100G
+
 qQubic2=(0.02 0.06 0.1)   # quantile threshold for discretiziation
 q_nclust=(4 6 8 10 14 18) # number of clusters
-# -d: KL, -d -C: KL dual, -d -N: qubic1.0 objective function
+# -d: KL, -d -C: KL dual, -d -C -N: qubic1.0 objective function + dual
 # -d tells qubic2 its discretized data
-objF=("C" "d") # objective function, do not test qubic1
+objF=("C" "N") # objective function, do not test regular expansion.
 
 n_loops=3
 for q in "${qQubic2[@]}"; do
@@ -20,6 +22,7 @@ for q in "${qQubic2[@]}"; do
 # BEGIN_MXQ
 # threads=$THREADS
 # memory=$MEM_QUBIC
+# tmpdir=$MXQ_TMPDIR 
 # t=$MINUTES
 # END_MXQ
 
@@ -46,6 +49,7 @@ EOF
 				--group-name="bench_${mode}_${dataset}_${filename}_${algorithm}" \
 				--threads=$THREADS \
 				--memory=$MEM_QUBIC \
+        --tmpdir=$MXQ_TMPDIR \
 				-t $MINUTES \
 				bash "$tmp_sh"
 

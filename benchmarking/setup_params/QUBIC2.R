@@ -8,7 +8,7 @@ alg_option_list <- list(
     type = "numeric",
     action = "store",
     default = NA,
-    help = "?",
+    help = "quantile threshold for discretiziation",
     metavar = "numeric"
   ),
   make_option(
@@ -21,11 +21,11 @@ alg_option_list <- list(
   ),
   make_option(
     c("--objF"),
-    type = "numeric",
+    type = "character",
     action = "store",
-    default = NA,
-    help = "?",
-    metavar = "numeric"
+    default = "",
+    help = "objective function: C for KLDual, N for Dual",
+    metavar = "character"
   )
 )
 
@@ -50,6 +50,6 @@ q_nclust <- opt$qnclust
 objF <- opt$objF
 if (opt$objF == "C") {
   objF <- "-C"
-} else if (opt$objF == "d") {
-  objF <- ""
+} else if (opt$objF == "N") {
+  objF <- "-C -N"
 }

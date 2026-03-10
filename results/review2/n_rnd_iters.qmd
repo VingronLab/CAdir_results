@@ -124,10 +124,11 @@ for (i in seq_len(length(files))) {
       cutoff = rnd_ang,
       apl_quant = 0.99,
       reps = 15,
-      keep_logs = FALSE
+      keep_log = FALSE
     )
 
     sce$cadir_rnd <- cadir_rnd@cell_clusters
+    rm(cadir_rnd)
     ari_rnd <- aricode::clustComp(sce$cadir_rnd, sce$truth)$ARI
 
     rnd_vec[j] <- rnd_ang
