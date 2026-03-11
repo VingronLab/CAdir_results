@@ -1,0 +1,356 @@
+---
+title: Benchmark iterations
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
+  library(APL)
+
+  library(SingleCellExperiment)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(tidyr)
+  library(dplyr)
+
+  library(ggplot2)
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+set.seed(2358)
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review2/iter_bench/")
+resdir <- file.path(dir, "out/review2/iter_bench/")
+dir.create(imgdir, recursive = TRUE)
+dir.create(resdir, recursive = TRUE)
+```
+
+```{r}
+data_dir <- file.path(
+  "./data/real/preprocessed/benchmarking/"
+)
+data_files <- list.files(path = data_dir, pattern = "*.rds", full.names = TRUE)
+data_files <- data_files[-grep("tabula_muris_sub", data_files)]
+```
+
+```{r}
+zeisel_dir <- file.path(
+  "./data/sim/preprocessed/zeisel/"
+)
+zeisel_files <- list.files(
+  path = zeisel_dir,
+  pattern = "*.rds",
+  full.names = TRUE
+)
+
+pbmc3k_dir <- file.path(
+  "./data/sim/preprocessed/pbmc3k/"
+)
+pbmc3k_files <- list.files(
+  path = pbmc3k_dir,
+  pattern = "*.rds",
+  full.names = TRUE
+)
+
+sim_files <- c(zeisel_files, pbmc3k_files)
+```
+
+# Get max benchmarking results
+## real
+```{r}
+date <- "20250528_cpu"
+evldir <- file.path("./results/benchmarking/results/real/", date, "eval")
+```
+
+```{r}
+### Load the results of real data sets
+files <- list.files(evldir, "*.rds", full.names = TRUE)
+
+df_paras <- data.frame()
+for (file in files) {
+  data <- readRDS(file)
+  df_paras <- bind_rows(df_paras, data)
+}
+
+df_paras$dataset <- gsub("_filtered", "", df_paras$dataset)
+```
+
+```{r}
+df_real <- df_paras %>%
+  filter(algorithm == "CAdir_auto") %>%
+  group_by(algorithm, dataset) %>%
+  mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
+  mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
+  filter(ARI == max_ARI) %>%
+  distinct(dataset, algorithm, max_ARI, .keep_all = TRUE) %>%
+  ungroup()
+
+df_real$max_NMI[is.infinite(df_real$max_NMI)] <- NA
+df_real$max_ARI[is.infinite(df_real$max_ARI)] <- NA
+```
+
+## simulated
+```{r}
+
+date <- "20250528"
+base_dir <- file.path("./results/benchmarking/results/simulated", date)
+indir <- file.path(base_dir, "eval")
+```
+
+```{r}
+zeisel_eval <- readRDS(
+  file.path(
+    indir,
+    paste0(date, "_zeisel_collated.rds")
+  )
+)
+
+dfz <- zeisel_eval %>%
+  mutate(dataset = "zeisel") %>%
+  mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep = "_")) %>%
+  mutate(
+    simulation = factor(
+      simulation,
+      levels = c(
+        "0.02_0.75_0.75",
+        "0.06_0.75_0.75",
+        "0.1_0.75_0.75",
+        "0.02_1.5_1.5",
+        "0.06_1.5_1.5",
+        "0.1_1.5_1.5"
+      )
+    )
+  )
+```
+
+```{r}
+pbmc_eval <- readRDS(
+  file.path(
+    indir,
+    paste0(date, "_pbmc3k_collated.rds")
+  )
+)
+
+dfp <- pbmc_eval %>%
+  mutate(dataset = "pbmc3k") %>%
+  mutate(simulation = paste(dePROB, defacLOC, defacSCALE, sep = "_")) %>%
+  mutate(
+    simulation = factor(
+      simulation,
+      levels = c(
+        "0.02_0.75_0.75",
+        "0.06_0.75_0.75",
+        "0.1_0.75_0.75",
+        "0.02_1.5_1.5",
+        "0.06_1.5_1.5",
+        "0.1_1.5_1.5"
+      )
+    )
+  )
+```
+
+```{r}
+df_all <- rbind(dfz, dfp)
+df_sim <- df_all %>%
+  filter(algorithm == "CAdir_auto") %>%
+  mutate(sim = paste0(dataset, "_", simulation)) %>%
+  group_by(simulation, algorithm, dataset) %>%
+  mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
+  mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
+  filter(ARI == max_ARI) %>%
+  distinct(
+    dataset,
+    simulation,
+    algorithm,
+    .keep_all = TRUE
+  ) %>%
+  ungroup()
+
+df_sim$max_ARI[is.infinite(df_sim$max_ARI)] <- 0
+df_sim$max_NMI[is.infinite(df_sim$max_NMI)] <- 0
+```
+
+# Benchmark iterations real
+```{r}
+#iters <- seq.int(0, 100, by = 10)
+iters <- seq.int(0, 10, by = 5)
+iters[1] <- 1
+
+res_list <- vector(mode = "list", length = length(data_files))
+# options(rlib_message_verbosity = "quiet")
+for (i in seq_len(length(data_files))) {
+  iter_vec <- vector(mode = "numeric", length = length(iters))
+  ari_vec <- vector(mode = "numeric", length = length(iters))
+
+  f <- data_files[i]
+  fnm <- gsub("_filtered.rds", "", basename(f))
+  fnm <- gsub(".rds", "", fnm)
+  cat("\n", fnm)
+  sce <- readRDS(f)
+
+  dft <- df_real %>% filter(dataset == fnm)
+
+  if (dft$angle == 0) {
+    cut_ang <- NULL
+  } else {
+    cut_ang <- dft$angle
+  }
+
+  set.seed(1234)
+  sce_var <- scran::modelGeneVar(sce)
+  sce_top <- scran::getTopHVGs(sce_var, n = dft$ntop, var.threshold = NULL)
+  sce <- sce[sce_top, ]
+  cnts <- as.matrix(logcounts(sce))
+
+  ca <- cacomp(
+    obj = cnts,
+    princ_coords = 3,
+    dims = dft$dims, #20
+    top = nrow(cnts),
+    residuals = "pearson",
+    clip = TRUE
+  )
+
+  for (j in seq_along(iters)) {
+    n <- iters[j]
+    cat("\n\titer:", n)
+    cadir <- dirclust_splitmerge(
+      caobj = ca,
+      k = dft$kdir,
+      cutoff = cut_ang,
+      apl_quant = dft$apl_quant,
+      reps = n,
+      convergence_thr = FALSE,
+      keep_log = FALSE
+    )
+
+    ari <- aricode::clustComp(cadir@cell_clusters, sce$truth)$ARI
+    rm(cadir)
+    ari_vec[j] <- ari
+    iter_vec[j] <- n
+  }
+
+  res_list[[i]] <- data.frame(
+    dataset = fnm,
+    n_iters = iter_vec,
+    ARI = ari_vec
+  )
+}
+saveRDS(res_list, file = file.path(resdir, "real_res_list.rds"))
+```
+
+# Benchmark iterations sim
+
+```{r}
+#iters <- seq.int(0, 100, by = 10)
+iters <- seq.int(0, 10, by = 5)
+iters[1] <- 1
+
+res_list <- vector(
+  mode = "list",
+  length = length(sim_files)
+)
+# options(rlib_message_verbosity = "quiet")
+for (i in seq_len(length(sim_files))) {
+  iter_vec <- vector(mode = "numeric", length = length(iters))
+  ari_vec <- vector(mode = "numeric", length = length(iters))
+
+  f <- sim_files[i]
+  fnm <- gsub("_filtered.rds", "", basename(f))
+  fnm <- gsub("dePROB-", "", fnm)
+  fnm <- gsub("defacLOC-", "", fnm)
+  fnm <- gsub("defacSCALE-", "", fnm)
+  fnm <- gsub(".rds", "", fnm)
+  ds <- stringr::str_split(f, "/")[[1]][5]
+  fnm <- paste0(ds, "_", fnm)
+  cat("\n", fnm)
+  sce <- readRDS(f)
+
+  dft <- df_sim %>%
+    mutate(dataset_gsub = gsub("\\.", "_", sim)) %>%
+    filter(dataset_gsub == fnm)
+
+  if (dft$angle == 0) {
+    cut_ang <- NULL
+  } else {
+    cut_ang <- dft$angle
+  }
+
+  set.seed(1234)
+  sce_var <- scran::modelGeneVar(sce)
+  sce_top <- scran::getTopHVGs(sce_var, n = dft$ntop, var.threshold = NULL)
+  sce <- sce[sce_top, ]
+  cnts <- as.matrix(logcounts(sce))
+
+  ca <- cacomp(
+    obj = cnts,
+    princ_coords = 3,
+    dims = dft$dims, #20
+    top = nrow(cnts),
+    residuals = "pearson",
+    clip = TRUE
+  )
+
+  for (j in seq_along(iters)) {
+    n <- iters[j]
+    cat("\n\titer:", n)
+    cadir <- dirclust_splitmerge(
+      caobj = ca,
+      k = dft$kdir,
+      cutoff = cut_ang,
+      apl_quant = dft$apl_quant,
+      reps = n,
+      convergence_thr = FALSE,
+      keep_log = FALSE
+    )
+
+    ari <- aricode::clustComp(cadir@cell_clusters, sce$Group)$ARI
+    rm(cadir)
+    ari_vec[j] <- ari
+    iter_vec[j] <- n
+  }
+
+  res_list[[i]] <- data.frame(
+    dataset = fnm,
+    n_iters = iter_vec,
+    ARI = ari_vec
+  )
+}
+saveRDS(res_list, file = file.path(resdir, "sim_res_list.rds"))
+```
+
+# Benchmark DIRCLUST
+```{r}
+# TODO: Implement simple benchmarking just for dirclust
+```
+
+# Plot panels
+```{r}
+# TODO: make panels for results
+```
+
+
+

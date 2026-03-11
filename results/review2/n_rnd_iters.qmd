@@ -60,8 +60,6 @@ data_files <- data_files[-grep("tabula_muris_sub", data_files)]
 ```{r}
 date <- "20250528_cpu"
 evldir <- file.path("./results/benchmarking/results/real/", date, "eval")
-
-options(repr.plot.width = 15, repr.plot.height = 10)
 ```
 
 ```{r}
