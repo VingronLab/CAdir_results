@@ -8,6 +8,9 @@ q_nclust=(4 6 8 10 14 18) # number of clusters
 # -d tells qubic2 its discretized data
 objF=("C" "N") # objective function, do not test regular expansion.
 
+algorithm="QUBIC2"
+SCRIPT="${scripts_path}/${algorithm}.R"
+
 n_loops=3
 for q in "${qQubic2[@]}"; do
   for o in "${q_nclust[@]}"; do
