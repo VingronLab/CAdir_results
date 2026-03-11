@@ -7,7 +7,7 @@
 # ==============================================================================
 
 start_time <- Sys.time()
-set.seed(1L)
+# set.seed(1L)  # seed is set externally by the benchmarking wrapper
 options(stringsAsFactors = FALSE)
 
 # -------------------------
