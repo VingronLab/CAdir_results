@@ -98,14 +98,14 @@ iters <- seq.int(0, 1000, by = 10)
 # iters <- seq.int(0, 30, by = 10)
 iters[1] <- 1
 
-files_list <- vector(mode = "list", length = length(files))
+files_list <- vector(mode = "list", length = length(data_files))
 
 options(rlib_message_verbosity = "quiet")
-for (i in seq_len(length(files))) {
+for (i in seq_len(length(data_files))) {
   rnd_vec <- vector(mode = "numeric", length = length(iters))
   rnd_ari_vec <- vector(mode = "numeric", length = length(iters))
   n_it <- vector(mode = "character", length = length(iters))
-  f <- files[i]
+  f <- data_files[i]
   fnm <- gsub("_filtered.rds", "", basename(f))
   fnm <- gsub(".rds", "", fnm)
   cat("\n", fnm)
