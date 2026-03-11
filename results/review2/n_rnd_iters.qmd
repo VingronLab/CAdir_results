@@ -53,6 +53,7 @@ data_dir <- file.path(
   "./data/real/preprocessed/benchmarking/"
 )
 data_files <- list.files(path = data_dir, pattern = "*.rds", full.names = TRUE)
+data_files <- data_files[-grep("tabula_muris_sub", data_files)]
 ```
 
 # Get max benchmarking results
