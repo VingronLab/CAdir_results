@@ -195,9 +195,8 @@ df_sim$max_NMI[is.infinite(df_sim$max_NMI)] <- 0
 
 # Benchmark iterations real
 ```{r}
-#iters <- seq.int(0, 100, by = 10)
-iters <- seq.int(0, 10, by = 5)
-iters[1] <- 1
+iters <- seq.int(1, 30, by = 1)
+# iters <- seq.int(0, 10, by = 5)
 
 res_list <- vector(mode = "list", length = length(data_files))
 # options(rlib_message_verbosity = "quiet")
@@ -265,15 +264,15 @@ saveRDS(res_list, file = file.path(resdir, "real_res_list.rds"))
 # Benchmark iterations sim
 
 ```{r}
-#iters <- seq.int(0, 100, by = 10)
-iters <- seq.int(0, 10, by = 5)
-iters[1] <- 1
+iters <- seq.int(1, 30, by = 10)
+# iters <- seq.int(0, 10, by = 5)
+# iters[1] <- 1
 
 res_list <- vector(
   mode = "list",
   length = length(sim_files)
 )
-# options(rlib_message_verbosity = "quiet")
+options(rlib_message_verbosity = "quiet")
 for (i in seq_len(length(sim_files))) {
   iter_vec <- vector(mode = "numeric", length = length(iters))
   ari_vec <- vector(mode = "numeric", length = length(iters))
