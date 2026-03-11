@@ -33,6 +33,7 @@ suppressPackageStartupMessages({
   library(scran)
 
   library(tidyr)
+  library(dplyr)
 
   library(ggplot2)
   library(patchwork)
@@ -51,8 +52,46 @@ dir.create(resdir, recursive = TRUE)
 data_dir <- file.path(
   "./data/real/preprocessed/benchmarking/"
 )
-files <- list.files(path = data_dir, pattern = "*.rds", full.names = TRUE)
+data_files <- list.files(path = data_dir, pattern = "*.rds", full.names = TRUE)
 ```
+
+# Get max benchmarking results
+```{r}
+date <- "20250528_cpu"
+evldir <- file.path("./results/benchmarking/results/real/", date, "eval")
+
+options(repr.plot.width = 15, repr.plot.height = 10)
+```
+
+```{r}
+### Load the results of real data sets
+files <- list.files(evldir, "*.rds", full.names = TRUE)
+
+df_paras <- data.frame()
+for (file in files) {
+  data <- readRDS(file)
+  df_paras <- bind_rows(df_paras, data)
+}
+
+df_paras$dataset <- gsub("_filtered", "", df_paras$dataset)
+```
+
+
+
+```{r}
+df_real <- df_paras %>%
+  filter(algorithm == "CAdir_auto") %>%
+  group_by(algorithm, dataset) %>%
+  mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
+  mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
+  filter(ARI == max_ARI) %>%
+  distinct(dataset, algorithm, max_ARI, .keep_all = TRUE) %>%
+  ungroup()
+
+df_real$max_NMI[is.infinite(df_real$max_NMI)] <- NA
+df_real$max_ARI[is.infinite(df_real$max_ARI)] <- NA
+```
+
 
 ```{r}
 iters <- seq.int(0, 1000, by = 10)
@@ -77,16 +116,22 @@ for (i in seq_len(length(files))) {
     sce$truth <- sce$cell_ontology_class
   }
 
+  dft <- df_real %>% filter(dataset == fnm)
+  if (dft$angle == 0) {
+    cut_ang <- NULL
+  } else {
+    cut_ang <- dft$angle
+  }
   set.seed(1234)
   sce_var <- scran::modelGeneVar(sce)
-  sce_top <- scran::getTopHVGs(sce_var, n = 2000, var.threshold = NULL) #1000
+  sce_top <- scran::getTopHVGs(sce_var, n = dft$ntop, var.threshold = NULL)
   sce <- sce[sce_top, ]
   cnts <- as.matrix(logcounts(sce))
 
   ca <- cacomp(
     obj = cnts,
     princ_coords = 3,
-    dims = 30, #20
+    dims = dft$dims, #20
     top = nrow(cnts),
     residuals = "pearson",
     clip = TRUE
@@ -94,10 +139,10 @@ for (i in seq_len(length(files))) {
 
   cadir <- dirclust_splitmerge(
     caobj = ca,
-    k = 10,
-    cutoff = NULL,
+    k = dft$kdir,
+    cutoff = cut_ang,
     method = "random",
-    apl_quant = 0.99,
+    apl_quant = dft$apl_quant,
     reps = 15,
     keep_log = FALSE
   )
@@ -120,9 +165,9 @@ for (i in seq_len(length(files))) {
 
     cadir_rnd <- dirclust_splitmerge(
       caobj = ca,
-      k = 10,
+      k = dft$kdir,
       cutoff = rnd_ang,
-      apl_quant = 0.99,
+      apl_quant = dft$apl_quant,
       reps = 15,
       keep_log = FALSE
     )
@@ -150,8 +195,20 @@ for (i in seq_len(length(files))) {
 saveRDS(files_list, file = file.path(resdir, "files_list.rds"))
 ```
 
+
 ```{r}
 df <- do.call(rbind, files_list)
+df$dataset[df$dataset == "FreytagGold"] <- "Freytag Gold"
+df$dataset[df$dataset == "PBMC_10X"] <- "PBMC10x"
+df$dataset[df$dataset == "Tirosh_nonmaglignant"] <- "Tirosh"
+df$dataset[df$dataset == "ZeiselBrain"] <- "Zeisel"
+df$dataset[df$dataset == "BaronPancreas"] <- "Baron Pancreas"
+df$dataset[df$dataset == "dmel_E14-16h"] <- "Dmel Spatial"
+df$dataset[df$dataset == "tabula_sapiens_tissue"] <- "Tabula Sapiens"
+df$dataset[df$dataset == "brain_organoids"] <- "Brain Organoids"
+```
+
+```{r}
 # df <- df[!is.na(df$dataset) & df$dataset != "", ]
 
 p_ari <- ggplot(
@@ -160,7 +217,7 @@ p_ari <- ggplot(
 ) +
   geom_line(linewidth = 0.8) +
   geom_point(size = 2) +
-  CAdir::scale_color_mpimg() +
+  CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
     title = "Effect of number of random directions on ARI",
     x = "nr. random iterations",
@@ -181,7 +238,7 @@ p_ang <- ggplot(
 ) +
   geom_line(linewidth = 0.8) +
   geom_point(size = 2) +
-  CAdir::scale_color_mpimg() +
+  CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
     title = "Effect of number of random directions on cutoff angle",
     x = "nr. random iterations",
