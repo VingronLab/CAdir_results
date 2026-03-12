@@ -219,7 +219,7 @@ p_ari <- ggplot(
   CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
     title = "Effect of number of random directions on ARI",
-    x = "nr. random iterations",
+    x = "nr. random directions",
     y = "ARI",
     color = "Dataset"
   ) +
@@ -240,7 +240,7 @@ p_ang <- ggplot(
   CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
     title = "Effect of number of random directions on cutoff angle",
-    x = "nr. random iterations",
+    x = "nr. random directions",
     y = "angle [degrees]",
     color = "Dataset"
   ) +
