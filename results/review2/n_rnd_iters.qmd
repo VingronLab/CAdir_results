@@ -56,6 +56,64 @@ data_files <- list.files(path = data_dir, pattern = "*.rds", full.names = TRUE)
 data_files <- data_files[-grep("tabula_muris_sub", data_files)]
 ```
 
+# get_apl_cutoff function
+```{r}
+#NOTE: Normally CAdir sets apl_cutoff_reps to 100 if <100.
+# This function is adapted to allow for reps <100.
+get_apl_cutoff_mod <- function(
+  caobj,
+  method = "random",
+  group = caobj@group,
+  counts = NULL,
+  quant = 0.99,
+  apl_cutoff_reps = 100,
+  axis = "cols"
+) {
+  if (method == "random") {
+    if (is.null(apl_cutoff_reps)) {
+      apl_cutoff_reps <- 100
+    } else if (apl_cutoff_reps < 100) {
+      # NOTE: commented out to allow for less reps
+      # rlang::warn("Number of repetitions should be set >=100.")
+      # apl_cutoff_reps <- 100
+    }
+
+    apl_cotan <- random_direction_cutoff(
+      caobj = caobj,
+      dims = caobj@dims,
+      apl_cutoff_reps = apl_cutoff_reps,
+      axis = axis
+    )
+  } else if (method == "permutation") {
+    if (is.null(apl_cutoff_reps)) {
+      apl_cutoff_reps <- 5
+    } else if (apl_cutoff_reps > 10) {
+      rlang::inform("Large number of repetitions might take a long time.")
+    }
+
+    apl_cotan <- permutation_cutoff(
+      caobj = caobj,
+      counts = counts,
+      group = group,
+      dims = caobj@dims,
+      apl_cutoff_reps = apl_cutoff_reps,
+      python = TRUE,
+      axis = axis
+    )
+  }
+
+  cutoff_cotan <- stats::quantile(apl_cotan, quant)
+
+  # tan = 1/cotan
+  # angle alpha is in radian.
+  alpha <- atan(1 / cutoff_cotan)
+
+  return(alpha)
+}
+```
+
+
+
 # Get max benchmarking results
 ```{r}
 date <- "20250528_cpu"
@@ -91,7 +149,7 @@ df_real$max_NMI[is.infinite(df_real$max_NMI)] <- NA
 df_real$max_ARI[is.infinite(df_real$max_ARI)] <- NA
 ```
 
-
+# Benchmark number of random directions
 ```{r}
 iters <- seq.int(0, 1000, by = 10)
 # iters <- seq.int(0, 30, by = 10)
@@ -150,7 +208,7 @@ for (i in seq_len(length(data_files))) {
     n <- iters[j]
     cat("\n\titer", n)
 
-    rnd_cutoff <- CAdir:::get_apl_cutoff(
+    rnd_cutoff <- get_apl_cutoff_mod(
       caobj = ca,
       method = "random",
       group = which(cadir@cell_clusters == "cluster_1"),
@@ -194,9 +252,16 @@ for (i in seq_len(length(data_files))) {
 saveRDS(files_list, file = file.path(resdir, "files_list.rds"))
 ```
 
+# Plot panel
+
+```{r}
+files_list <- readRDS(file.path(resdir, "files_list.rds"))
+```
+
 
 ```{r}
 df <- do.call(rbind, files_list)
+df$n_iters <- as.integer(df$n_iters)
 df$dataset[df$dataset == "FreytagGold"] <- "Freytag Gold"
 df$dataset[df$dataset == "PBMC_10X"] <- "PBMC10x"
 df$dataset[df$dataset == "Tirosh_nonmaglignant"] <- "Tirosh"
@@ -215,7 +280,7 @@ p_ari <- ggplot(
   aes(x = n_iters, y = ARI, color = dataset, group = dataset)
 ) +
   geom_line(linewidth = 0.8) +
-  geom_point(size = 2) +
+  geom_point(size = 1.5) +
   CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
     title = "Effect of number of random directions on ARI",
@@ -236,7 +301,7 @@ p_ang <- ggplot(
   aes(x = n_iters, y = cutoff_angle, color = dataset, group = dataset)
 ) +
   geom_line(linewidth = 0.8) +
-  geom_point(size = 2) +
+  geom_point(size = 1.5) +
   CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
     title = "Effect of number of random directions on cutoff angle",
@@ -258,7 +323,12 @@ panel <- p_ang +
   p_ari +
   plot_layout(guides = "collect") +
   plot_annotation(tag_levels = "a") &
-  theme(plot.tag = element_text(size = 18, face = "bold"))
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    legend.position = "bottom",
+    legend.box = "vertical",
+    legend.margin = margin()
+  )
 
 ggsave(
   filename = file.path(imgdir, "n_rnd_iters_panel.pdf"),

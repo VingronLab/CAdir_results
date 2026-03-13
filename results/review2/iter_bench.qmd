@@ -264,7 +264,7 @@ saveRDS(res_list_real, file = file.path(resdir, "real_res_list.rds"))
 # Benchmark iterations sim
 
 ```{r}
-iters <- seq.int(1, 50, by = 10)
+iters <- seq.int(1, 50, by = 1)
 # iters <- seq.int(0, 10, by = 5)
 # iters[1] <- 1
 
@@ -343,6 +343,12 @@ saveRDS(res_list_sim, file = file.path(resdir, "sim_res_list.rds"))
 
 # Plot panels
 ```{r}
+
+res_list_sim <- readRDS(file.path(resdir, "sim_res_list.rds"))
+res_list_real <- readRDS(file.path(resdir, "real_res_list.rds"))
+```
+
+```{r}
 dfr <- do.call(rbind, res_list_real)
 dfr$dataset[dfr$dataset == "FreytagGold"] <- "Freytag Gold"
 dfr$dataset[dfr$dataset == "PBMC_10X"] <- "PBMC10x"
@@ -355,12 +361,10 @@ dfr$dataset[dfr$dataset == "brain_organoids"] <- "Brain Organoids"
 ```
 
 ```{r}
-dfs <- do.call(rbind, sim_res_list_dircl)
+dfs <- do.call(rbind, res_list_sim)
 dfs$base <- sapply(dfs$dataset, function(x) stringr::str_split(x, "_")[[1]][1])
 dfs$params <- gsub("zeisel_|pbmc3k_", "", dfs$dataset)
 ```
-
-
 
 ```{r}
 # TODO: make panels for results
@@ -370,10 +374,10 @@ pr <- ggplot(
   aes(x = n_iters, y = ARI, color = dataset, group = dataset)
 ) +
   geom_line(linewidth = 0.8) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
-    title "Nr. iterations vs. ARI - real data",
+    title = "Nr. iterations vs. ARI - real data",
     x = "nr. iterations",
     y = "ARI",
     color = "Dataset"
@@ -388,9 +392,10 @@ pr <- ggplot(
 
 ps <- ggplot(
   dfs,
-  aes(x = n_iters, y = ARI, color = params, shape = base,  group = params)) +
+  aes(x = n_iters, y = ARI, color = params, linetype = base, group = dataset)
+) +
   geom_line(linewidth = 0.8) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
     title = "Nr. iterations vs. ARI - sim. data",
@@ -411,9 +416,15 @@ ps <- ggplot(
 
 panel <- pr +
   ps +
-  plot_layout(guides = "collect") +
+  # guides(fill = guide_legend(nrow = 3, byrow = TRUE)) +
+  # plot_layout(guides = "collect") +
   plot_annotation(tag_levels = "a") &
-  theme(plot.tag = element_text(size = 18, face = "bold"))
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    legend.position = "bottom",
+    legend.box = "vertical",
+    legend.margin = margin()
+  )
 
 ggsave(
   filename = file.path(imgdir, "n_iter_splitmerge_panel.pdf"),

@@ -349,6 +349,12 @@ saveRDS(
 
 # Plot panels
 ```{r}
+
+sim_res_list_dircl <- readRDS(file.path(resdir, "sim_res_list_dircl.rds"))
+res_list_real_dircl <- readRDS(file.path(resdir, "real_res_list_dircl.rds"))
+```
+
+```{r}
 dfr <- do.call(rbind, res_list_real_dircl)
 dfr$dataset[dfr$dataset == "FreytagGold"] <- "Freytag Gold"
 dfr$dataset[dfr$dataset == "PBMC_10X"] <- "PBMC10x"
@@ -366,8 +372,6 @@ dfs$base <- sapply(dfs$dataset, function(x) stringr::str_split(x, "_")[[1]][1])
 dfs$params <- gsub("zeisel_|pbmc3k_", "", dfs$dataset)
 ```
 
-
-
 ```{r}
 # TODO: make panels for results
 
@@ -376,7 +380,7 @@ pr <- ggplot(
   aes(x = n_iters, y = ARI, color = dataset, group = dataset)
 ) +
   geom_line(linewidth = 0.8) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
     title = "Nr. iterations vs. ARI - real data",
@@ -394,16 +398,10 @@ pr <- ggplot(
 
 ps <- ggplot(
   dfs,
-  aes(
-    x = n_iters,
-    y = ARI,
-    color = params,
-    shape = base,
-    group = dataset
-  )
+  aes(x = n_iters, y = ARI, color = params, linetype = base, group = dataset)
 ) +
   geom_line(linewidth = 0.8) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
     title = "Nr. iterations vs. ARI - sim. data",
@@ -420,13 +418,20 @@ ps <- ggplot(
   )
 ```
 
-
 ```{r}
+
 panel <- pr +
   ps +
-  plot_layout(guides = "collect") +
+  # guides(fill = guide_legend(nrow = 3, byrow = TRUE)) +
+  # plot_layout(guides = "collect") +
   plot_annotation(tag_levels = "a") &
-  theme(plot.tag = element_text(size = 18, face = "bold"))
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    legend.position = "bottom",
+    legend.box = "vertical",
+    legend.margin = margin()
+  )
+
 
 ggsave(
   filename = file.path(imgdir, "n_iter_dircl_panel.pdf"),
