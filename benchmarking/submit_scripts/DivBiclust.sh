@@ -1,0 +1,64 @@
+#!/bin/bash
+
+#FIXME: ADAPT TO NEW setup
+
+# divbiclust
+maxdiffs=(0.15 0.2 0.25)
+seedColSzs=(30 60 90)
+maxColSzs=(100 200)
+do_rates=(0 0.1)
+simThreshs=(0.5)
+
+algorithm="divbiclust"
+SCRIPT="${scripts_path}/${algorithm}.R"
+
+for maxdiff in "${maxdiffs[@]}"; do
+  for seedColSz in "${seedColSzs[@]}"; do
+    for maxColSz in "${maxColSzs[@]}"; do
+      for simThresh in "${simThreshs[@]}"; do
+        for do_rate in "${do_rates[@]}"; do
+
+          nm="${algorithm}_${filename}_ntop-${nt}_maxdiff-${maxdiff}_seedColSz-${seedColSz}_maxColSz-${maxColSz}_simThresh-${simThresh}_doRate-${do_rate}"
+
+          tmp_sh="${here_dir}/bench_sim_${dataset}_${nm}.sh"
+          cat <<EOF >$tmp_sh
+#!/bin/bash
+
+# BEGIN_MXQ
+# threads=$THREADS
+# memory=$MEMORY
+# t=$MINUTES
+# END_MXQ
+
+trap 'echo ERROR_TIMEOUT >&2' SIGXCPU
+
+Rscript-4.2.1 $SCRIPT   \\
+   --outdir $OUTDIR  \\
+   --file $f \\
+   --dataset $filename \\
+   --name $nm \\
+   --ntop $nt \\
+   --sim $sim \\
+   --truth $truth \\
+   --nclust $nclust \\
+   --maxdiff $maxdiff \\
+   --seedColSz $seedColSz \\
+   --maxColSz $maxColSz \\
+   --simThresh $simThresh \\
+   --dorate $do_rate \\
+&& mv $tmp_sh $here_dir/.done/
+EOF
+          chmod +x $tmp_sh
+
+          mxqsub --stdout="${logdir}/bench_sim_${dataset}_${nm}.stdout.log" \
+            --group-name="bench_sim_${dataset}_${filename}_${algorithm}" \
+            --threads=$THREADS \
+            --memory=$MEMORY \
+            -t $MINUTES \
+            bash $tmp_sh
+
+        done
+      done
+    done
+  done
+done

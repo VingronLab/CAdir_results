@@ -131,6 +131,19 @@ if (isTRUE(sim)) {
   opt$defacSCALE <- as.numeric(gsub("_", ".", sim_params[, "defacSCALE"]))
 }
 
+if (algorithm == "DivBiclust") {
+  # prefix of input file name
+  ds_type <- file.path(outdir, paste0(name, "_Ntop_", ntop))
+  in_file <- file.path(outdir, paste0(dataset, "_Ntop_", ntop))
+  # calculate the dropout rates in the input data set (the data that has been preprocessed)
+  filepath <- file.path(outdir, paste0(dataset, "_Ntop_", ntop, "_matrix.txt"))
+  mat <- read.csv(filepath, header = FALSE, skip = 1)
+  mat <- mat[, 2:ncol(mat)]
+  # mat[is.na(mat)] = 0
+  # do_rate = sum(mat == 0)/dim(mat)[1]/dim(mat)[2]
+  ncell <- ncol(mat)
+}
+
 fileformat <- tools::file_ext(filepath)
 
 if (fileformat == "txt") {
