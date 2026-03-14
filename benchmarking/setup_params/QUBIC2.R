@@ -1,7 +1,3 @@
-source("./benchmarking/helpers/sim_eval.R")
-source("./benchmarking/helpers/utils.R")
-source("./benchmarking/algorithms/biclustlib/clustering_error.R")
-
 alg_option_list <- list(
   make_option(
     c("--qqubic2"),
@@ -26,6 +22,14 @@ alg_option_list <- list(
     default = "",
     help = "objective function: C for KLDual, N for Dual",
     metavar = "character"
+  ),
+  make_option(
+    c("--qcons"),
+    type = "numeric",
+    action = "store",
+    default = NA,
+    help = "consistency level of the block",
+    metavar = "numeric"
   )
 )
 
@@ -47,9 +51,12 @@ if (is.null(opt$file)) {
 
 qQubic2 <- opt$qqubic2
 q_nclust <- opt$qnclust
-objF <- opt$objF
+q_cons <- opt$qcons
+
 if (opt$objF == "C") {
   objF <- "-C"
 } else if (opt$objF == "N") {
   objF <- "-C -N"
+} else {
+  stop("invalid objF")
 }

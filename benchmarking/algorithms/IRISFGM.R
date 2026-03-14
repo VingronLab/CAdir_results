@@ -40,7 +40,7 @@ t.run = difftime(Sys.time(), t, units = 'secs')
 
 setwd(old_wd)
 
-res <- qubic2biclust(irisfgm_obj = iris_obj, sce = data, params = opt)
+res <- irisfgm2biclust(irisfgm_obj = iris_obj, sce = data, params = opt)
 
 
 ##########

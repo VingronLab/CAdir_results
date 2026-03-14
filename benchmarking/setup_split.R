@@ -131,7 +131,6 @@ if (isTRUE(sim)) {
   opt$defacSCALE <- as.numeric(gsub("_", ".", sim_params[, "defacSCALE"]))
 }
 
-
 fileformat <- tools::file_ext(filepath)
 
 if (fileformat == "txt") {
