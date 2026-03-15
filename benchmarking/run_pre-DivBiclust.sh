@@ -126,7 +126,7 @@ for dataset in "${datasets[@]}"; do
   for f in "${files[@]}"; do
 
     filename=$(basename "$f" .rds)
-    
+
     logdir="${outdir}/${filename}/log/"
     here_dir="${outdir}/${filename}/sh"
     OUTDIR="${outdir}/${filename}/out"
@@ -170,7 +170,7 @@ for dataset in "${datasets[@]}"; do
   truth="Group"
   sim=1 # set simulation to TRUE
 
-  test_run=true
+  test_run=false
 
   if [[ $sim -eq 0 ]]; then
     mode="real"
@@ -184,7 +184,7 @@ for dataset in "${datasets[@]}"; do
   for f in ${files[@]}; do
 
     filename=$(basename $f .rds)
-    
+
     logdir="${outdir}/${filename}/log/"
     here_dir="${outdir}/${filename}/sh"
     OUTDIR="${outdir}/${filename}/out"
@@ -196,7 +196,7 @@ for dataset in "${datasets[@]}"; do
     mkdir -p "$here_dir/.done/"
 
     for nt in "${ntop[@]}"; do
-      
+
       ##################
       # pre-DivBiclust #
       ##################
@@ -223,14 +223,14 @@ for dataset in ${datasets[@]}; do
 
 	files="${indir}/${dataset}/*.rds"
   
-  outdir="./data/sim/preprocessed/${dataset}/DivBiclust"
+  outdir="./data/sim/preprocessed/scalability/${dataset}/DivBiclust"
 
 	ntop=(2000)
 	truth="Group"
 
 	sim=1 # set simulation to TRUE
 
-	test_run=true
+	test_run=false
 
 	if [[ $sim -eq 0 ]]; then
 		mode="real"
