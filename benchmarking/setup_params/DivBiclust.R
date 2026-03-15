@@ -1,4 +1,6 @@
 #FIXME: CHANGE TO DIVBICLUST PARAMS
+library(Rcpp)
+
 alg_option_list <- list(
   make_option(
     c("--maxdiff"),

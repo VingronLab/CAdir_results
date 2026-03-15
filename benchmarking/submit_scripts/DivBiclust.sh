@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#FIXME: ADAPT TO NEW setup
-
 # divbiclust
 maxdiffs=(0.15 0.2 0.25)
 seedColSzs=(30 60 90)
@@ -9,9 +7,10 @@ maxColSzs=(100 200)
 do_rates=(0 0.1)
 simThreshs=(0.5)
 
-algorithm="divbiclust"
+algorithm="DivBiclust"
 SCRIPT="${scripts_path}/${algorithm}.R"
 
+n_loops=5
 for maxdiff in "${maxdiffs[@]}"; do
   for seedColSz in "${seedColSzs[@]}"; do
     for maxColSz in "${maxColSzs[@]}"; do
@@ -19,8 +18,8 @@ for maxdiff in "${maxdiffs[@]}"; do
         for do_rate in "${do_rates[@]}"; do
 
           nm="${algorithm}_${filename}_ntop-${nt}_maxdiff-${maxdiff}_seedColSz-${seedColSz}_maxColSz-${maxColSz}_simThresh-${simThresh}_doRate-${do_rate}"
+					tmp_sh="${here_dir}/bench_${mode}_${dataset}_${nm}.sh"
 
-          tmp_sh="${here_dir}/bench_sim_${dataset}_${nm}.sh"
           cat <<EOF >$tmp_sh
 #!/bin/bash
 
@@ -32,15 +31,15 @@ for maxdiff in "${maxdiffs[@]}"; do
 
 trap 'echo ERROR_TIMEOUT >&2' SIGXCPU
 
-Rscript-4.2.1 $SCRIPT   \\
+Rscript-4.2.2 $SCRIPT   \\
    --outdir $OUTDIR  \\
    --file $f \\
-   --dataset $filename \\
+   --dataset $dataset \\
    --name $nm \\
    --ntop $nt \\
    --sim $sim \\
    --truth $truth \\
-   --nclust $nclust \\
+   --cell_clustering $cc \\
    --maxdiff $maxdiff \\
    --seedColSz $seedColSz \\
    --maxColSz $maxColSz \\
@@ -50,13 +49,16 @@ Rscript-4.2.1 $SCRIPT   \\
 EOF
           chmod +x $tmp_sh
 
-          mxqsub --stdout="${logdir}/bench_sim_${dataset}_${nm}.stdout.log" \
-            --group-name="bench_sim_${dataset}_${filename}_${algorithm}" \
-            --threads=$THREADS \
-            --memory=$MEMORY \
+					mxqsub --stdout="${logdir}/bench_${mode}_${dataset}_${nm}.stdout.log" \
+						--group-name="bench_${mode}_${dataset}_${filename}_${algorithm}" \
+						--threads=$THREADS \
+						--memory=$MEMORY \
             -t $MINUTES \
             bash $tmp_sh
 
+					if [ "$test_run" = true ]; then
+						break $n_loops
+					fi
         done
       done
     done

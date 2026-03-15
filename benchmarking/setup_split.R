@@ -132,11 +132,23 @@ if (isTRUE(sim)) {
 }
 
 if (algorithm == "DivBiclust") {
+  filename <- gsub(".rds", "", basename(filepath))
+  divbicl_dir <- file.path(
+    dirname(filepath),
+    "DivBiclust",
+    filename,
+    "out"
+  )
   # prefix of input file name
-  ds_type <- file.path(outdir, paste0(name, "_Ntop_", ntop))
-  in_file <- file.path(outdir, paste0(dataset, "_Ntop_", ntop))
+  divbicl_out <- file.path(outdir, "DivBiclust")
+  dir.create(divbicl_out)
+  ds_type <- file.path(divbicl_out, paste0(name, "_Ntop_", ntop))
+  in_file <- file.path(divbicl_dir, paste0(filename, "_Ntop_", ntop))
   # calculate the dropout rates in the input data set (the data that has been preprocessed)
-  filepath <- file.path(outdir, paste0(dataset, "_Ntop_", ntop, "_matrix.txt"))
+  filepath <- file.path(
+    divbicl_dir,
+    paste0(filename, "_Ntop_", ntop, "_matrix.txt")
+  )
   mat <- read.csv(filepath, header = FALSE, skip = 1)
   mat <- mat[, 2:ncol(mat)]
   # mat[is.na(mat)] = 0
@@ -171,10 +183,4 @@ if (fileformat == "txt") {
   cnts <- as.matrix(logcounts(data))
 
   trueclusters <- colData(data)[, colnames(colData(data)) == truth]
-
-  # TODO: Commenting this out will lead to errors!
-  # Add to the setup script iff necessary!
-  # if (is.null(nclust)) {
-  #   nclust <- length(unique(colData(data)[, colnames(colData(data)) == truth]))
-  # }
 }

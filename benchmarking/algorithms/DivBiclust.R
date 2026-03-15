@@ -1,12 +1,10 @@
 ## R wrapper for divbiclust cpp functions
-sourceCpp(".benchmarking/algorithms/src/divbiclust.cpp")
-
 algorithm <- "DivBiclust"
-source(".benchmarking/setup_split.R")
+source("./benchmarking/setup_split.R")
+sourceCpp("./benchmarking/algorithms/src/divbiclust.cpp")
 
 cat("\nStarting DivBiclust...\n")
 t <- Sys.time()
-
 
 res <- DivBiclust(
   ds_type = ds_type,
@@ -24,22 +22,21 @@ ari <- as.numeric(ari)
 ncluster <- stringr::word(res, 2, 2, "_")
 ncluster <- as.numeric(ncluster)
 
-eval_res <- c(
-  list("algorithm" = algorithm),
-  "ARI_cells" = ari,
-  # 'ARI_genes' = NA,
-  # 'relevance' = NA,
-  # 'recovery' = NA,
-  # 'clustering_error' = NA,
-  # 'RNIA' = NA,
-  list(
-    "ngenes" = ntop,
-    "ncells" = ncell,
-    "nclust_found" = ncluster,
-    "runtime" = t.run,
-    "runtime_dimreduc" = NA
+if (isTRUE(is_cell_clustering)) {
+  eval_res <- c(
+    list("algorithm" = algorithm),
+    "ARI_cells" = ari,
+    list(
+      "ngenes" = ntop,
+      "ncells" = ncell,
+      "nclust_found" = ncluster,
+      "runtime" = t.run,
+      "runtime_dimreduc" = NA
+    )
   )
-)
+} else {
+  stop("biclustering not implemented for SC3!")
+}
 
 eval_res <- bind_cols(eval_res, as_tibble(opt))
 

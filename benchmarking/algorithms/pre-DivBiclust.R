@@ -61,11 +61,11 @@ option_list = list(
 
   make_option(
     c("--sim"),
-    type = "logical",
+    type = "numeric",
     action = "store",
-    default = FALSE,
+    default = 0,
     help = "Is the dataset a simulated one or not",
-    metavar = "logical"
+    metavar = "numeric"
   ),
 
   make_option(
@@ -78,8 +78,8 @@ option_list = list(
   )
 )
 
-opt_parser = OptionParser(option_list = option_list)
-opt = parse_args(opt_parser)
+opt_parser <- OptionParser(option_list = option_list)
+opt <- parse_args(opt_parser)
 
 if (is.null(opt$file)) {
   print_help(opt_parser)
@@ -99,8 +99,15 @@ ntop <- opt$ntop
 outdir <- opt$outdir
 name <- opt$name
 truth <- opt$truth
-
 dataset <- opt$dataset
+
+if (opt$sim == 0) {
+  sim <- FALSE
+} else if (opt$sim == 1) {
+  sim <- TRUE
+} else {
+  stop("Invalid value for sim")
+}
 
 if (isTRUE(sim)) {
   sim_params <- stringr::str_match(
@@ -118,11 +125,7 @@ fileformat <- tools::file_ext(filepath)
 
 
 if (fileformat == "txt") {
-  stop("Provided txt file as input. RDS required.")
-
-  # cnts = read.table(opt$file, row.names = 1, header=T, sep = "\t")
-  # cnts = as.matrix(cnts)
-  # data = cnts
+  cat("running divbiclust.....")
 } else if (fileformat %in% c("rds", "RDS")) {
   data <- readRDS(filepath)
 
@@ -131,13 +134,9 @@ if (fileformat == "txt") {
   }
 
   if (!is.na(ntop)) {
-    genevars <- modelGeneVar(data, assay.type = "logcounts")
+    genevars <- scran::modelGeneVar(data, assay.type = "logcounts")
 
-    if (isTRUE(graph_select_by_prop) & isTRUE(graph_select)) {
-      chosen <- getTopHVGs(genevars, prop = 0.8, var.threshold = NULL)
-    } else {
-      chosen <- getTopHVGs(genevars, n = ntop, var.threshold = NULL)
-    }
+    chosen <- scran::getTopHVGs(genevars, n = ntop, var.threshold = NULL)
 
     data_old <- data
     data <- data[chosen, ]
@@ -148,7 +147,7 @@ if (fileformat == "txt") {
   trueclusters <- colData(data)[, colnames(colData(data)) == truth]
 }
 
-
+# pre-DivBiclust
 ngene <- nrow(cnts)
 ncell <- ncol(cnts)
 

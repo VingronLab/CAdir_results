@@ -107,9 +107,9 @@ for dataset in "${datasets[@]}"; do
       #########
       # source ./benchmarking/submit_scripts/nmf.sh
       
-      #########
-      # QUBIC2   #
-      #########
+      ##########
+      # QUBIC2 #
+      ##########
       source ./benchmarking/submit_scripts/QUBIC2.sh
 
       if [ "$test_run" = true ]; then
