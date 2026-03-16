@@ -18,14 +18,6 @@ alg_option_list <- list(
     default = 1,
     help = "Random seed for R-level stochastic steps (walktrap etc.)",
     metavar = "numeric"
-  ),
-  make_option(
-    c("--tmpdir"),
-    type = "character",
-    action = "store",
-    default = tempdir(),
-    help = "Temporary directory for intermediate files",
-    metavar = "character"
   )
 )
 
@@ -46,10 +38,11 @@ if (is.null(opt$file)) {
 }
 
 scdbic_mode <- opt$scdbic_mode
-seed        <- as.integer(opt$seed)
-tmp_dir     <- opt$tmpdir
-conda_env   <- "r-pytorch-txq"
+seed <- as.integer(opt$seed)
 
 if (!scdbic_mode %in% c("biclusters", "cell_assignment")) {
-  stop("--scdbic_mode must be 'biclusters' or 'cell_assignment'.", call. = FALSE)
+  stop(
+    "--scdbic_mode must be 'biclusters' or 'cell_assignment'.",
+    call. = FALSE
+  )
 }

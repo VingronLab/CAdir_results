@@ -3,6 +3,10 @@ renv::load()
 if (algorithm == "scG-cluster" || algorithm == "scDeepCluster") {
   library(reticulate)
   use_condaenv("deep_cluster")
+} else if (algorithm == "scDBic") {
+  conda_env <- "r-pytorch"
+  library(reticulate)
+  use_condaenv(conda_env, required = TRUE)
 }
 library(optparse)
 

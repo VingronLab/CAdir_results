@@ -12,22 +12,25 @@
 
 # --- Environment Settings ---
 # Name of your Conda environment containing PyTorch
-CONDA_ENV_NAME <- "r-pytorch-txq"
+# CONDA_ENV_NAME <- "r-pytorch-txq" # NOTE: Commented out by C.K. -> set in benchmarking
+
 # Path to Conda executable (Optional: set to NULL to let reticulate find it)
 # Example: "/home/username/anaconda3/bin/conda"
-CONDA_PATH <- NULL
+# CONDA_PATH <- NULL # NOTE: Commented out by C.K. -> set in benchmarking
 
 # --- Input/Output Paths ---
 # Path to your expression matrix (Rows=Genes, Cols=Cells)
-INPUT_FILE <- "./data/your_dataset.csv"
+# INPUT_FILE <- "./data/your_dataset.csv" # NOTE: Commented out by C.K. -> set in benchmarking
+
 # Path to cell labels (Optional: set to NULL if no labels)
-LABEL_FILE <- "./data/your_labels.csv"
+# LABEL_FILE <- "./data/your_labels.csv" # NOTE: Commented out by C.K. -> set in benchmarking
+
 # Directory to save results
-OUTPUT_DIR <- "./results/your_dataset_output"
+# OUTPUT_DIR <- "./results/your_dataset_output" # NOTE: Commented out by C.K. -> set in benchmarking
 
 # --- Logging ---
 # Directory to save GPU memory logs
-LOG_DIR <- "./logs"
+# LOG_DIR <- "./logs" # NOTE: Commented out by C.K. -> set in benchmarking
 
 # =========================
 # 2. Initialization
@@ -612,4 +615,3 @@ print(paste(
   "Total Runtime (min):",
   as.numeric(end_time - start_time, units = "mins")
 ))
-
