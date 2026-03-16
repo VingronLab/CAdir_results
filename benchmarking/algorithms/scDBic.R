@@ -41,7 +41,7 @@ if (scdbic_mode == "cell_assignment") {
   )
 
   # Cell clusters come directly from the scDBic output.
-  cell_clust <- setNames(result$v2, result$v1)
+  cell_clust <- setNames(result$v2, result$v1) #TODO: check
 
   #FIXME: Don't do this. Algorithm should output it by itself.
   # Gene assignment (post-hoc): assign each gene to the bicluster in which
@@ -59,7 +59,6 @@ if (scdbic_mode == "cell_assignment") {
   res <- bic_to_biclust(cell_clust, gene_clust)
   res <- name_biclust(res, cnts)
 } else {
-  # ---- algorithms/scDBic/scDBic_output_biclusters.R -----------------------
   # Saves each terminal bicluster as a CSV (rows = genes, cols = cells) to
   # file.path(output_base, "biclusters").
   # Note: rm1() only subsets columns (cells), never rows, so every bicluster
