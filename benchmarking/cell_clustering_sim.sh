@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # add date to output folder
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="test"
 
 THREADS=6
 MEMORY=30G
@@ -29,11 +30,11 @@ for dataset in "${datasets[@]}"; do
 
 	ntop=(2000 4000 6000)
 	# nclust=6
-	truth='Group'
+	truth="Group"
 	cc=1  # set is_cell_clustering to TRUE
 	sim=1 # set simulation to TRUE
 
-	test_run=false
+	test_run=true
 
 	if [[ $sim -eq 0 ]]; then
 		mode="real"
@@ -99,6 +100,11 @@ for dataset in "${datasets[@]}"; do
       # scG-cluster #
       ###############
       # source ./benchmarking/submit_scripts/scG-cluster.sh
+      
+      ##############
+      # DivBiclust #
+      ##############
+      source ./benchmarking/submit_scripts/DivBiclust.sh
       
 			if [ "$test_run" = true ]; then
 				break 3

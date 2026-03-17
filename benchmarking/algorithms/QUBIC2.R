@@ -1,18 +1,19 @@
 algorithm <- "QUBIC2"
 source("./benchmarking/setup_split.R")
 
-
-tmp_dir <- system("echo $MXQ_JOB_TMPDIR")
+tmp_dir <- system("echo $MXQ_JOB_TMPDIR", intern = TRUE)
+cat("\nTMP DIR:", tmp_dir, "\n")
 count_matrix <- file.path(tmp_dir, "count_matrix.tsv")
 write.table(cnts, file = count_matrix, quote = FALSE, sep = "\t")
 
-#  FIXME: double check the command! with github
 cmd <- paste(
   "$HOME/bin/qubic2 -i",
   count_matrix,
   "-R", # always left truncated gaussian -> better for scRNA-seq
   "-q", # quantile threshold
   qQubic2,
+  "-c",
+  q_cons, # consistency
   "-o",
   q_nclust,
   objF,
@@ -29,10 +30,15 @@ out <- system(cmd)
 
 t.run <- difftime(Sys.time(), t, units = "secs")
 
-# FIXME: Adapt function to output!
 res <- get_qubic2_clusts(
   file = count_matrix,
-  params = list("Call" = cmd, "-q" = qQubic2, "-o" = q_nclust, "obj_fun" = objF)
+  params = list(
+    "Call" = cmd,
+    "-q" = qQubic2,
+    "-o" = q_nclust,
+    "obj_fun" = objF,
+    "consistency" = q_cons
+  )
 )
 
 ##########
@@ -72,8 +78,8 @@ if (isTRUE(sim)) {
 
 write_csv(
   eval_res,
-  file.path(outdir, paste0(algorithm, "_", name, '_EVALUATION.csv'))
+  file.path(outdir, paste0(algorithm, "_", name, "_EVALUATION.csv"))
 )
 
-print('All done!')
+print("All done!")
 cat("\nFinished benchmarking!\n")

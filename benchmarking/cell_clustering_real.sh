@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # add date to output folder
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="test"
 
 THREADS=6
 MEMORY=50G
@@ -68,11 +69,11 @@ for dataset in "${datasets[@]}"; do
 	files="./data/real/preprocessed/benchmarking/${dataset}_filtered.rds"
 
 	ntop=(2000 4000 6000)
-	truth='truth'
+	truth="truth"
 	cc=1  #set is_cell_clustering to TRUE
 	sim=0 # set simulation to FALSE
 
-	test_run=false
+	test_run=true
 
 	if [[ $sim -eq 0 ]]; then
 		mode="real"
@@ -132,12 +133,17 @@ for dataset in "${datasets[@]}"; do
       ##################
 			# scDeepCluster  #
       ##################
-			source ./benchmarking/submit_scripts/scDeepCluster.sh
+			# source ./benchmarking/submit_scripts/scDeepCluster.sh
 
       ###############
       # scG-cluster #
       ###############
-      source ./benchmarking/submit_scripts/scG-cluster.sh
+      # source ./benchmarking/submit_scripts/scG-cluster.sh
+      
+      ##############
+      # DivBiclust #
+      ##############
+      source ./benchmarking/submit_scripts/DivBiclust.sh
 
 			if [ "$test_run" = true ]; then
 				break 3

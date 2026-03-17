@@ -663,7 +663,89 @@ name_biclust <- function(biclust, input) {
 }
 
 
-qubic2biclust <- function(irisfgm_obj, sce, params) {
+qubic2biclust <- function(df_C, df_G, cnt_mat, params) {
+  require(biclust)
+
+  cc <- df_C$Condition
+  names(cc) <- df_C$cell_name
+
+  gc <- df_G$Condition
+  names(gc) <- df_G$Gene
+
+  ctypes <- sort(unique(cc))
+  gtypes <- sort(unique(gc))
+  bitypes <- union(ctypes, gtypes)
+
+  Number <- length(bitypes)
+
+  # stopifnot(identical(as.integer(bitypes), seq_len(Number)))
+
+  # stopped here: You need to get the dimensions from the original sce and
+  # then only add the clusters on the ones actually coclustered.
+  cells <- unique(names(cc))
+  genes <- unique(names(gc))
+
+  NumberxCol <- matrix(FALSE, ncol = ncol(cnt_mat), nrow = Number)
+
+  RowxNumber <- matrix(FALSE, ncol = Number, nrow = nrow(cnt_mat))
+
+  rownames(RowxNumber) <- rownames(cnt_mat)
+  colnames(RowxNumber) <- paste0("BC", bitypes)
+
+  rownames(NumberxCol) <- paste0("BC", bitypes)
+  colnames(NumberxCol) <- colnames(cnt_mat)
+
+  # NumberxCol <- matrix(FALSE,
+  #                      ncol = length(cells),
+  #                      nrow = Number)
+
+  # RowxNumber <- matrix(FALSE,
+  #                      ncol = Number,
+  #                      nrow = length(genes))
+
+  if (Number == 0) {
+    NumberxCol <- matrix(0)
+    RowxNumber <- matrix(0)
+
+    bic <- new(
+      "Biclust",
+      "Parameters" = params,
+      "RowxNumber" = RowxNumber,
+      "NumberxCol" = NumberxCol,
+      "Number" = Number,
+      "info" = list("Results of QUBIC2")
+    )
+
+    return(bic)
+  } else {
+    for (x in seq_along(cells)) {
+      colidx <- which(colnames(NumberxCol) == cells[x])
+      pick <- unique(cc[which(names(cc) == cells[x])])
+
+      NumberxCol[pick, colidx] <- TRUE
+    }
+
+    for (y in seq_along(genes)) {
+      rowidx <- which(rownames(RowxNumber) == genes[y])
+      pick <- unique(gc[which(names(gc) == genes[y])])
+
+      RowxNumber[rowidx, pick] <- TRUE
+    }
+  }
+
+  bic <- new(
+    "Biclust",
+    "Parameters" = params,
+    "RowxNumber" = RowxNumber,
+    "NumberxCol" = NumberxCol,
+    "Number" = Number,
+    "info" = list("Results of QUBIC2")
+  )
+
+  return(bic)
+}
+
+irisfgm2biclust <- function(irisfgm_obj, sce, params) {
   require(biclust)
 
   df_C <- irisfgm_obj@BiCluster@CoCond_cell
@@ -750,6 +832,7 @@ qubic2biclust <- function(irisfgm_obj, sce, params) {
 
 get_qubic2_clusts <- function(file, params) {
   tmp.block <- readLines(paste0(file, ".chars.blocks"))
+  cnt_mat <- read.delim(file, sep = "\t")
 
   # Conditions
   keyword <- "Conds"
@@ -797,9 +880,11 @@ get_qubic2_clusts <- function(file, params) {
   tmp.gene.list <- gsub("_[0-9]$", "", tmp.gene.list)
   df_G$Gene <- tmp.gene.list
 
+  #FIXME: not working
   BCres <- qubic2biclust(
     df_C = df_C,
     df_G = df_G,
+    cnt_mat = cnt_mat,
     params = params
   )
 
