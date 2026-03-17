@@ -1,5 +1,6 @@
 algorithm <- "scDBic"
 source("./benchmarking/setup_split.R")
+# WARNING: script never tested in a full benchmarking setup! Only on test data.
 
 # NOTE: conda env setup
 # conda create -n r-pytorch python=3.10
@@ -19,7 +20,7 @@ write.csv(raw_cnts, file = input_csv)
 cat("\nStarting scDBic.\n")
 t <- Sys.time()
 
-if (scdbic_mode == "cell_assignment") {
+if (isTRUE(is_cell_clustering)) {
   # Returns data.frame(v1 = cell_name, v2 = bicluster_id) saved to OUTPUT_DIR.
 
   # variables that overwrite variables set in scDbic/scDBic.R script
@@ -43,25 +44,13 @@ if (scdbic_mode == "cell_assignment") {
   # Cell clusters come directly from the scDBic output.
   cell_clust <- setNames(result$v2, result$v1) #TODO: check
 
-  #FIXME: Don't do this. Algorithm should output it by itself.
-  # Gene assignment (post-hoc): assign each gene to the bicluster in which
-  # it has the highest mean logcounts expression.
-  bic_ids <- sort(unique(cell_clust))
-  gene_means <- sapply(bic_ids, function(b) {
-    rowMeans(cnts[, names(cell_clust)[cell_clust == b], drop = FALSE])
-  })
-  gene_clust <- setNames(
-    bic_ids[apply(gene_means, 1, which.max)],
-    rownames(cnts)
-  )
-
-  #FIXME: How to get gene clusters???
-  res <- bic_to_biclust(cell_clust, gene_clust)
-  res <- name_biclust(res, cnts)
+  # WARNING: Algorithm does not output biclusters!
+  # Cell clusters only!
 } else {
   # Saves each terminal bicluster as a CSV (rows = genes, cols = cells) to
   # file.path(output_base, "biclusters").
-  # Note: rm1() only subsets columns (cells), never rows, so every bicluster
+
+  # FIXME: rm1() in the script only subsets columns (cells), never rows, so every bicluster
   # will contain the full gene set of the input matrix.
 
   input_file <- input_csv
@@ -96,8 +85,8 @@ if (scdbic_mode == "cell_assignment") {
     dimnames = list(paste0("BC", seq_len(n_bic)), all_cells)
   )
 
-  # FIXME: it adds all genes in the file to the cluster. WHY?
-  # NOTE: values in the files are just the original gene expression?
+  # FIXME: Each bicluster contains all genes!
+  # NOTE: values in the files are just the original gene expression.
   for (i in seq_along(bic_files)) {
     bic_mat <- read.csv(bic_files[i], row.names = 1, check.names = FALSE)
     bic_genes <- intersect(rownames(bic_mat), all_genes)
@@ -119,14 +108,8 @@ if (scdbic_mode == "cell_assignment") {
 ###############
 
 if (isTRUE(is_cell_clustering)) {
-  cell_clust_vec <- if (scdbic_mode == "cell_assignment") {
-    cell_clust
-  } else {
-    apply(res@NumberxCol, 2, function(col) which(col)[1])
-  }
-
   eval_res <- eval_cell_clustering(
-    clustering = cell_clust_vec,
+    clustering = cell_clust,
     reference = colData(data)[, truth]
   )
 

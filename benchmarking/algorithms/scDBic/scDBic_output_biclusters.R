@@ -308,4 +308,3 @@ if (file.exists(input_file)) {
 } else {
   cat("Error: Please place your data in", input_file, "\n")
 }
-
