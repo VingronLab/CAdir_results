@@ -1,0 +1,250 @@
+---
+title: APL & violin plots
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+```{r}
+renv::load()
+source("./results/utils.R")
+suppressPackageStartupMessages({
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
+  library(APL)
+
+  library(SingleCellExperiment)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(tidyr)
+  library(dplyr)
+
+  library(ggplot2)
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+set.seed(2358)
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review2/apl_violins/")
+resdir <- file.path(dir, "out/review2/apl_violins/")
+dir.create(imgdir, recursive = TRUE)
+dir.create(resdir, recursive = TRUE)
+```
+
+## Load data
+
+```{r}
+data_dir <- "./data/real/discussed/"
+
+marker_genes <- readr::read_csv(file.path(
+  data_dir,
+  "tabula_muris_marker_genes.csv"
+))
+sce <- readRDS(file.path(
+  data_dir,
+  "preprocessed/tabula_muris_preprocessed_filtered.rds"
+))
+
+genevars <- modelGeneVar(sce, assay.type = "logcounts")
+chosen <- getTopHVGs(genevars, n = 6000, var.threshold = NULL)
+
+# add marker_genes
+expr_markers <- marker_genes[marker_genes$gene %in% rownames(sce), ]
+chosen <- c(chosen, expr_markers$gene)
+chosen <- unique(chosen)
+sce_sub <- sce[chosen, ]
+
+ca <- cacomp(
+  obj = logcounts(sce_sub),
+  princ_coords = 3,
+  dims = 30,
+  top = nrow(sce_sub),
+  residuals = "pearson",
+  python = TRUE
+)
+
+cell_types <- sce$cell_ontology_class
+cat("Number of cell types:", length(unique(cell_types)), "\n")
+```
+
+# CAdir
+
+```{r}
+set.seed(2358)
+cak <- dirclust_splitmerge(
+  caobj = ca,
+  k = 8,
+  cutoff = 55,
+  method = "random",
+  apl_quant = 0.99,
+  counts = NULL,
+  min_cells = 20,
+  reps = NULL,
+  make_plots = TRUE,
+  qcutoff = 0.8,
+  convergence_thr = 0.001
+)
+```
+
+Annotate biclustering:
+
+```{r}
+cak <- annotate_biclusters(
+  obj = cak,
+  caobj = ca,
+  universe = rownames(sce_sub),
+  org = "mm",
+  method = "goa",
+  cost = "logpval",
+  filter_literature = FALSE
+)
+
+sce_sub$cadir <- cak@cell_clusters
+
+cak
+```
+
+# APL B cells
+
+```{r}
+cls <- "B_cell"
+group <- which(cak@cell_clusters == cls)
+
+p_bt_std <- cluster_apl(
+  ca,
+  cak,
+  cluster = cls,
+  direction = cak@directions[cls, ],
+  group = which(cak@cell_clusters == cls),
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = TRUE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 5
+) +
+  ggtitle("B cell") +
+  theme_bw(base_size = 16)
+
+# NOTE: Uncomment to plot
+# p_bt_std
+
+ggsave(
+  plot = p_bt_std,
+  file = file.path(imgdir, "B_cell_cluster_std_coords.pdf"),
+  device = cairo_pdf,
+  width = 2000,
+  height = 1600,
+  units = "px"
+)
+ggsave(
+  plot = p_bt_std,
+  file = file.path(imgdir, "B_cell_cluster_std_coords.png"),
+  width = 2000,
+  height = 1600,
+  units = "px"
+)
+```
+
+# APL + violin panel
+
+Select genes spread along the association-strength (x) axis of the B cell APL,
+then draw a violin plot per gene and connect each violin back to its point.
+
+```{r}
+## Extract APL plot dat
+apl_built <- ggplot_build(p_bt_std)
+plot_data <- apl_built$plot$data # original df: columns sample, type, x, y, cluster, …
+
+# Keep only genes assigned to the B_cell cluster
+gene_data <- plot_data[
+  plot_data$type == "gene" & plot_data$cluster == "gene_cluster",
+]
+gene_data <- gene_data[order(gene_data$x), ]
+
+## Pick n genes spaced evenly along the x-axis
+# n_pick <- 5
+# idx <- round(seq(1, nrow(gene_data), length.out = n_pick))
+# selected_genes <- gene_data$sample[idx]
+
+selected_genes <- c("Cd19", "Cd79a", "Cd79b", "Snx2", "Rgs2")
+cat("Selected genes:", paste(selected_genes, collapse = ", "), "\n")
+```
+
+```{r}
+## Build one violin plot per gene
+expr_mat <- as.matrix(logcounts(sce_sub))
+
+violin_list <- lapply(selected_genes, function(g) {
+  df <- data.frame(
+    expr = expr_mat[g, ],
+    group = as.character(cak@cell_clusters)
+  )
+  ggplot(df, aes(x = group, y = expr, fill = group)) +
+    geom_violin(scale = "width", trim = TRUE) +
+    scale_fill_mpimg(name = "mpimg") +
+    labs(y = "log-counts", title = g) +
+    theme_bw(base_size = 12) +
+    theme(
+      legend.position = "none",
+      axis.title.x = element_blank(),
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+      plot.title = element_text(size = 10, hjust = 0.5, face = "italic")
+    )
+})
+
+violin_row <- wrap_plots(violin_list, nrow = 1)
+```
+
+```{r}
+## Stack APL (top) + violins (bottom) with patchwork
+apl_frac <- 2 / 3 # fraction of total figure height given to the APL
+
+# Highlight the selected genes in red in the APL
+selected_df <- plot_data[plot_data$sample %in% selected_genes, ]
+p_apl_marked <- p_bt_std +
+  geom_point(
+    data = selected_df,
+    aes(x = x, y = y),
+    color = "red",
+    size = 3,
+    shape = 16,
+    inherit.aes = FALSE
+  )
+
+combined <- p_apl_marked /
+  violin_row +
+  plot_layout(heights = c(apl_frac, 1 - apl_frac))
+```
+
+```{r}
+## Render and save
+ggsave(
+  plot = combined,
+  file = file.path(imgdir, "B_cell_apl_violins.png"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+```
+
+# sessionInfo
+```{r}
+sessionInfo()
+```
+
+
