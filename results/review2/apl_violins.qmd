@@ -122,23 +122,51 @@ cak
 
 ```{r}
 cls <- "B_cell"
+selected_bc_genes <- c("Bmf", "Cd74", "Ly6d", "Cd79a", "Cd19")
 group <- which(cak@cell_clusters == cls)
 
+model <- apl_model(
+  coords = methods::slot(ca, name = "std_coords_cols"),
+  direction = cak@directions[cls, ] / ca@D,
+  group = group
+)
+gcoords <- model(ca@prin_coords_rows)
+gcoords <- gcoords[rownames(gcoords) %in% selected_bc_genes, ]
+gcoords <- as_tibble(gcoords, rownames = "gene")
+gcoords$info <- "gene"
+
 p_bt_std <- cluster_apl(
-  ca,
-  cak,
+  caobj = ca,
+  cadir = cak,
   cluster = cls,
   direction = cak@directions[cls, ],
-  group = which(cak@cell_clusters == cls),
+  group = group,
   highlight_cluster = TRUE,
   show_genes = TRUE,
-  label_genes = TRUE,
+  label_genes = FALSE,
   show_lines = FALSE,
   size_factor = 0.5,
   ntop = 5
 ) +
-  ggtitle("B cell") +
+  geom_point(
+    data = gcoords,
+    aes(x = x, y = y),
+    color = "#c4421a",
+    size = 2,
+    shape = 8,
+    inherit.aes = FALSE
+  ) +
+  ggrepel::geom_text_repel(
+    data = gcoords,
+    aes(x = x, y = y, label = gene, info = gene),
+    max.overlaps = Inf,
+    colour = "#c4421a",
+    bg.color = "black",
+    bg.r = .05 # NOTE: remove if bg wrong size.
+  ) +
+  ggtitle("B cells") +
   theme_bw(base_size = 16)
+
 
 # NOTE: Uncomment to plot
 # p_bt_std
@@ -158,38 +186,128 @@ ggsave(
   height = 1600,
   units = "px"
 )
+
+# p_bt_std_int <- cluster_apl(
+#   caobj = ca,
+#   cadir = cak,
+#   cluster = cls,
+#   direction = cak@directions[cls, ],
+#   group = which(cak@cell_clusters == cls),
+#   highlight_cluster = TRUE,
+#   show_genes = TRUE,
+#   show_cells = TRUE,
+#   label_genes = TRUE,
+#   show_lines = FALSE,
+#   size_factor = 0.5,
+#   ntop = 5,
+#   interactive = TRUE
+# )
+#
+# htmlwidgets::saveWidget(
+#   p_bt_std_int,
+#   file = file.path(imgdir, "interactive_bcells.html")
+# )
 ```
 
+# APL endothelial cells
+```{r}
+cls <- "Endothelial_cell"
+selected_e_genes <- c("Dlg2", "Kitl", "Itga1", "Pecam1", "Cdh5")
+group <- which(cak@cell_clusters == cls)
+
+model <- apl_model(
+  coords = methods::slot(ca, name = "std_coords_cols"),
+  direction = cak@directions[cls, ] / ca@D,
+  group = group
+)
+gcoords <- model(ca@prin_coords_rows)
+gcoords <- gcoords[rownames(gcoords) %in% selected_e_genes, ]
+gcoords <- as_tibble(gcoords, rownames = "gene")
+gcoords$info <- "gene"
+
+p_e_std <- cluster_apl(
+  caobj = ca,
+  cadir = cak,
+  cluster = cls,
+  direction = cak@directions[cls, ],
+  group = group,
+  highlight_cluster = TRUE,
+  show_genes = TRUE,
+  label_genes = FALSE,
+  show_lines = FALSE,
+  size_factor = 0.5,
+  ntop = 5
+) +
+  geom_point(
+    data = gcoords,
+    aes(x = x, y = y),
+    color = "#c4421a",
+    size = 2,
+    shape = 8,
+    inherit.aes = FALSE
+  ) +
+  ggrepel::geom_text_repel(
+    data = gcoords,
+    aes(x = x, y = y, label = gene, info = gene),
+    max.overlaps = Inf,
+    colour = "#c4421a",
+    bg.color = "black",
+    bg.r = .05 # NOTE: remove if bg wrong size.
+  ) +
+  ggtitle("Endothelial cells") +
+  theme_bw(base_size = 16)
+
+# NOTE: Uncomment to plot
+# p_e_std
+
+ggsave(
+  plot = p_e_std,
+  file = file.path(imgdir, "endothelial_cluster_std_coords.pdf"),
+  device = cairo_pdf,
+  width = 2000,
+  height = 1600,
+  units = "px"
+)
+ggsave(
+  plot = p_e_std,
+  file = file.path(imgdir, "endothelial_cluster_std_coords.png"),
+  width = 2000,
+  height = 1600,
+  units = "px"
+)
+
+# p_e_std_int <- cluster_apl(
+#   caobj = ca,
+#   cadir = cak,
+#   cluster = cls,
+#   direction = cak@directions[cls, ],
+#   group = which(cak@cell_clusters == cls),
+#   highlight_cluster = TRUE,
+#   show_genes = TRUE,
+#   show_cells = TRUE,
+#   label_genes = TRUE,
+#   show_lines = FALSE,
+#   size_factor = 0.5,
+#   ntop = 5,
+#   interactive = TRUE
+# )
+#
+# htmlwidgets::saveWidget(
+#   p_e_std_int,
+#   file = file.path(imgdir, "interactive_endo.html")
+# )
+```
 # APL + violin panel
 
 Select genes spread along the association-strength (x) axis of the B cell APL,
 then draw a violin plot per gene and connect each violin back to its point.
 
-```{r}
-## Extract APL plot dat
-apl_built <- ggplot_build(p_bt_std)
-plot_data <- apl_built$plot$data # original df: columns sample, type, x, y, cluster, …
-
-# Keep only genes assigned to the B_cell cluster
-gene_data <- plot_data[
-  plot_data$type == "gene" & plot_data$cluster == "gene_cluster",
-]
-gene_data <- gene_data[order(gene_data$x), ]
-
-## Pick n genes spaced evenly along the x-axis
-# n_pick <- 5
-# idx <- round(seq(1, nrow(gene_data), length.out = n_pick))
-# selected_genes <- gene_data$sample[idx]
-
-selected_genes <- c("Cd19", "Cd79a", "Cd79b", "Snx2", "Rgs2")
-cat("Selected genes:", paste(selected_genes, collapse = ", "), "\n")
-```
 
 ```{r}
 ## Build one violin plot per gene
 expr_mat <- as.matrix(logcounts(sce_sub))
 
-violin_list <- lapply(selected_genes, function(g) {
+violin_b_list <- lapply(selected_bc_genes, function(g) {
   df <- data.frame(
     expr = expr_mat[g, ],
     group = as.character(cak@cell_clusters)
@@ -207,35 +325,56 @@ violin_list <- lapply(selected_genes, function(g) {
     )
 })
 
-violin_row <- wrap_plots(violin_list, nrow = 1)
+violin_b_row <- wrap_plots(violin_b_list, nrow = 1)
 ```
 
 ```{r}
-## Stack APL (top) + violins (bottom) with patchwork
-apl_frac <- 2 / 3 # fraction of total figure height given to the APL
 
-# Highlight the selected genes in red in the APL
-selected_df <- plot_data[plot_data$sample %in% selected_genes, ]
-p_apl_marked <- p_bt_std +
-  geom_point(
-    data = selected_df,
-    aes(x = x, y = y),
-    color = "red",
-    size = 3,
-    shape = 16,
-    inherit.aes = FALSE
+violin_e_list <- lapply(selected_e_genes, function(g) {
+  df <- data.frame(
+    expr = expr_mat[g, ],
+    group = as.character(cak@cell_clusters)
   )
+  ggplot(df, aes(x = group, y = expr, fill = group)) +
+    geom_violin(scale = "width", trim = TRUE) +
+    scale_fill_mpimg(name = "mpimg") +
+    labs(y = "log-counts", title = g) +
+    theme_bw(base_size = 12) +
+    theme(
+      legend.position = "none",
+      axis.title.x = element_blank(),
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+      plot.title = element_text(size = 10, hjust = 0.5, face = "italic")
+    )
+})
+violin_e_row <- wrap_plots(violin_e_list, nrow = 1)
+```
 
-combined <- p_apl_marked /
-  violin_row +
+
+```{r}
+apl_frac <- 2 / 3 # fraction of total height for APL
+b_combined <- p_bt_std /
+  violin_b_row +
+  plot_layout(heights = c(apl_frac, 1 - apl_frac))
+
+e_combined <- p_e_std /
+  violin_e_row +
   plot_layout(heights = c(apl_frac, 1 - apl_frac))
 ```
 
 ```{r}
 ## Render and save
 ggsave(
-  plot = combined,
+  plot = b_combined,
   file = file.path(imgdir, "B_cell_apl_violins.png"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = e_combined,
+  file = file.path(imgdir, "endothelial_apl_violins.png"),
   width = 5000,
   height = 3000,
   units = "px"
