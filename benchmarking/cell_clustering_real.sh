@@ -2,7 +2,7 @@
 
 # add date to output folder
 # date=$(date '+%Y%m%d')
-date="test"
+date="20260320_revision2"
 
 THREADS=6
 MEMORY=50G
@@ -73,7 +73,7 @@ for dataset in "${datasets[@]}"; do
 	cc=1  #set is_cell_clustering to TRUE
 	sim=0 # set simulation to FALSE
 
-	test_run=true
+	test_run=false
 
 	if [[ $sim -eq 0 ]]; then
 		mode="real"

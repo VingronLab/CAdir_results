@@ -3,7 +3,7 @@
 # add date to output folder
 # date=$(date '+%Y%m%d')
 # date="20251204"
-date="test"
+date="20260320_revision2"
 
 THREADS=6
 MEMORY=4G
@@ -35,7 +35,7 @@ for dataset in "${datasets[@]}"; do
   cc=0  # set is_cell_clustering to FALSE
   sim=1 # set simulation to TRUE
 
-  test_run=true
+  test_run=false
 
   if [[ $sim -eq 0 ]]; then
     mode="real"
@@ -80,7 +80,7 @@ for dataset in "${datasets[@]}"; do
       ##########
       # Seurat #
       ##########
-      # source ./benchmarking/submit_scripts/Seurat.sh
+      source ./benchmarking/submit_scripts/Seurat.sh
 
       ############
       # Monocle3 #
@@ -110,7 +110,7 @@ for dataset in "${datasets[@]}"; do
       ##########
       # QUBIC2 #
       ##########
-      source ./benchmarking/submit_scripts/QUBIC2.sh
+      # source ./benchmarking/submit_scripts/QUBIC2.sh
 
       if [ "$test_run" = true ]; then
         break 3
