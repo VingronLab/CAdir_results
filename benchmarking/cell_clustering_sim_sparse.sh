@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # add date to output folder
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="20260320_revision2"
 
 THREADS=6
 MEMORY=30G
@@ -53,52 +54,57 @@ for dataset in "${datasets[@]}"; do
 			###########
 			# CAbiNet #
 			###########
-			source ./benchmarking/submit_scripts/CAbiNet.sh
+			# source ./benchmarking/submit_scripts/CAbiNet.sh
 
 			##########
 			# Seurat #
 			##########
-			source ./benchmarking/submit_scripts/Seurat.sh
+			# source ./benchmarking/submit_scripts/Seurat.sh
 
 			############
 			# Monocle3 #
 			############
-			source ./benchmarking/submit_scripts/Monocle3.sh
+			# source ./benchmarking/submit_scripts/Monocle3.sh
 
 			###########
 			# CAdir   #
 			###########
-			source ./benchmarking/submit_scripts/CAdir.sh
+			# source ./benchmarking/submit_scripts/CAdir.sh
 
 			############
 			# kmeans   #
 			############
-			source ./benchmarking/submit_scripts/kmeans.sh
+			# source ./benchmarking/submit_scripts/kmeans.sh
 
 			############
 			# RaceID   #
 			############
-			source ./benchmarking/submit_scripts/RaceID.sh
+			# source ./benchmarking/submit_scripts/RaceID.sh
 
 			########
 			# SC3  #
 			########
-			source ./benchmarking/submit_scripts/SC3.sh
+			# source ./benchmarking/submit_scripts/SC3.sh
 
 			##########
 			# SIMLR  #
 			##########
-			source ./benchmarking/submit_scripts/SIMLR.sh
+			# source ./benchmarking/submit_scripts/SIMLR.sh
 
       ##################
 			# scDeepCluster  #
       ##################
-			source ./benchmarking/submit_scripts/scDeepCluster.sh
+			# source ./benchmarking/submit_scripts/scDeepCluster.sh
 
       ###############
       # scG-cluster #
       ###############
-      source ./benchmarking/submit_scripts/scG-cluster.sh
+      # source ./benchmarking/submit_scripts/scG-cluster.sh
+      
+      ##########
+      # QUBIC2 #
+      ##########
+      source ./benchmarking/submit_scripts/QUBIC2.sh
 
 			if [ "$test_run" = true ]; then
 				break 3

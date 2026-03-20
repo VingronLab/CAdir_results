@@ -41,8 +41,7 @@ seu <- RunPCA(
 seu <- FindNeighbors(
   object = seu,
   dims = seq_len(dims),
-  k.param = NNs,
-  prune.SNN = prune
+  k.param = NNs
 )
 
 seu <- FindClusters(

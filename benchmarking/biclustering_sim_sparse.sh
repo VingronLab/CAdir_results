@@ -2,7 +2,7 @@
 
 # add date to output folder
 # date=$(date '+%Y%m%d')
-date="20251204"
+date="20260320_revision2"
 
 THREADS=6
 MEMORY=4G
@@ -79,7 +79,7 @@ for dataset in "${datasets[@]}"; do
       ##########
       # Seurat #
       ##########
-      # source ./benchmarking/submit_scripts/Seurat.sh
+      source ./benchmarking/submit_scripts/Seurat.sh
 
       ############
       # Monocle3 #
@@ -104,7 +104,12 @@ for dataset in "${datasets[@]}"; do
       #########
       # NMF   #
       #########
-      source ./benchmarking/submit_scripts/nmf.sh
+      # source ./benchmarking/submit_scripts/nmf.sh
+      
+      ##########
+      # QUBIC2 #
+      ##########
+      # source ./benchmarking/submit_scripts/QUBIC2.sh
 
       if [ "$test_run" = true ]; then
         break 3

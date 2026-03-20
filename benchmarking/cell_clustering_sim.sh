@@ -2,7 +2,7 @@
 
 # add date to output folder
 # date=$(date '+%Y%m%d')
-date="test"
+date="20260320_revision2"
 
 THREADS=6
 MEMORY=30G
@@ -34,7 +34,7 @@ for dataset in "${datasets[@]}"; do
 	cc=1  # set is_cell_clustering to TRUE
 	sim=1 # set simulation to TRUE
 
-	test_run=true
+	test_run=false
 
 	if [[ $sim -eq 0 ]]; then
 		mode="real"
@@ -59,7 +59,7 @@ for dataset in "${datasets[@]}"; do
 			##########
 			# Seurat #
 			##########
-			# source ./benchmarking/submit_scripts/Seurat.sh
+			source ./benchmarking/submit_scripts/Seurat.sh
 
 			############
 			# Monocle3 #
@@ -104,7 +104,7 @@ for dataset in "${datasets[@]}"; do
       ##############
       # DivBiclust #
       ##############
-      source ./benchmarking/submit_scripts/DivBiclust.sh
+      # source ./benchmarking/submit_scripts/DivBiclust.sh
       
 			if [ "$test_run" = true ]; then
 				break 3
