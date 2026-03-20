@@ -43,14 +43,6 @@ alg_option_list <- list(
     metavar = "numeric"
   ),
   make_option(
-    c("--prune"),
-    type = "numeric",
-    action = "store",
-    default = NA,
-    help = "prune cutoff for sample SNN graph",
-    metavar = "numeric"
-  ),
-  make_option(
     c("--resolution"),
     type = "numeric",
     action = "store",
@@ -79,7 +71,6 @@ if (is.null(opt$file)) {
 # SVD
 dims <- opt$dims
 NNs <- opt$NNs
-prune <- opt$prune
 resol <- as.numeric(opt$resolution)
 
 # Seurat
