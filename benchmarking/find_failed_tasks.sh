@@ -5,7 +5,7 @@
 ############
 
 # date=$(date '+%Y%m%d')
-date="20251121"
+date="20260320_revision2"
 OUTDIR="./results/benchmarking/results/simulated/${date}"
 
 dataset_list=("zeisel" "pbmc3k")

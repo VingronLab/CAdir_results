@@ -9,17 +9,17 @@ MEMORY=50G
 MINUTES=240
 
 # datasets=("Darmanis")
-# datasets=("Darmanis"
-# 	"FreytagGold"
-# 	"PBMC_10X"
-# 	"Tirosh_nonmaglignant"
-# 	"BaronPancreas"
-# 	"ZeiselBrain"
-# 	"brain_organoids"
-# 	"dmel_E14-16h"
-# 	"tabula_sapiens_tissue")
+datasets=("Darmanis"
+	"FreytagGold"
+	"PBMC_10X"
+	"Tirosh_nonmaglignant"
+	"BaronPancreas"
+	"ZeiselBrain"
+	"brain_organoids"
+	# "dmel_E14-16h"
+	"tabula_sapiens_tissue")
 
-datasets=("dmel_E14-16h")
+# datasets=("dmel_E14-16h")
 
 small_ds=("Darmanis" "FreytagGold")
 medium_ds=("PBMC_10X" "Tirosh_nonmaglignant" "BaronPancreas" "ZeiselBrain")

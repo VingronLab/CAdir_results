@@ -4,20 +4,21 @@
 # nruns: 2 #
 ############
 
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="20260320_revision2"
 OUTDIR="./results/benchmarking/results/real/${date}/"
 
-# dataset_list=("Darmanis"
-# 	"FreytagGold"
-# 	"PBMC_10X"
-# 	"Tirosh_nonmaglignant"
-# 	"BaronPancreas"
-# 	"ZeiselBrain"
-# 	"brain_organoids"
-# 	"dmel_E14-16h"
-# 	"tabula_sapiens_tissue")
+dataset_list=("Darmanis"
+	"FreytagGold"
+	"PBMC_10X"
+	"Tirosh_nonmaglignant"
+	"BaronPancreas"
+	"ZeiselBrain"
+	"brain_organoids"
+	"dmel_E14-16h"
+	"tabula_sapiens_tissue")
 
-dataset_list=("dmel_E14-16h")
+# dataset_list=("dmel_E14-16h")
 
 is_cpu=true
 for dataset in ${dataset_list[@]}; do

@@ -1,11 +1,11 @@
 #!/bin/bash
 
 ############
-# nruns: 0 #
+# nruns: 2 #
 ############
 
 # date=$(date '+%Y%m%d')
-date="20251204"
+date="20260320_revision2"
 
 OUTDIR="./results/benchmarking/results/biclustering/${date}"
 

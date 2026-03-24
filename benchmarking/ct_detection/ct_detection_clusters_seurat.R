@@ -64,15 +64,15 @@ opt <- parse_args(opt_parser)
 if (is.null(opt$outdir)) {
   print_help(opt_parser)
   stop("Argument --outdir is missing.", call. = FALSE)
-} else if (is.null(opt$k)) {
+} else if (is.null(opt$NNs)) {
   print_help(opt_parser)
-  stop("Argument --k is missing.", call. = FALSE)
+  stop("Argument --NNs is missing.", call. = FALSE)
 } else if (is.null(opt$n)) {
   print_help(opt_parser)
   stop("Argument --n is missing.", call. = FALSE)
-} else if (is.null(opt$q)) {
+} else if (is.null(opt$resolution)) {
   print_help(opt_parser)
-  stop("Argument --q is missing.", call. = FALSE)
+  stop("Argument --resolution is missing.", call. = FALSE)
 }
 
 outdir <- opt$outdir
@@ -82,7 +82,6 @@ cellpcl <- opt$cellpcl
 
 # Seurat
 NNs <- opt$NNs
-prune <- opt$prune
 resol <- as.numeric(opt$resolution)
 
 # Filtering according to:
@@ -133,18 +132,18 @@ for (i in reps) {
 
   seu <- CreateSeuratObject(
     counts = as(counts(sce_sub), "dgCMatrix"),
-    meta.data = as.data.frame(colData(data_old))
+    meta.data = as.data.frame(colData(sce_sub))
   )
 
   seu <- SetAssayData(
     object = seu,
     slot = "data",
-    new.data = as(logcounts(data_old), "dgCMatrix")
+    new.data = as(logcounts(sce_sub), "dgCMatrix")
   )
 
   seu <- FindVariableFeatures(
     object = seu,
-    nfeatures = ntop
+    nfeatures = 4000
   )
 
   seu <- ScaleData(object = seu, features = VariableFeatures(seu))
@@ -157,7 +156,7 @@ for (i in reps) {
 
   seu <- FindNeighbors(
     object = seu,
-    dims = seq_len(dims),
+    dims = seq_len(sub_dims),
     k.param = NNs
   )
 
@@ -169,7 +168,7 @@ for (i in reps) {
   sce_sub$seurat <- seu$seurat_clusters
   ari <- aricode::clustComp(sce_sub$seurat, sce_sub$cell_ontology_class)
 
-  cts_found <- length(unique(cak@cell_clusters))
+  cts_found <- length(unique(seu$seurat_clusters))
 
   tmp <- data.frame(
     nr_cts = n,
@@ -178,7 +177,6 @@ for (i in reps) {
     nmi = ari$NMI,
     dims = sub_dims,
     NNs = NNs,
-    prune = prune,
     resolution = resol,
     ncells = ncol(seu),
     ngenes = nrow(seu),
@@ -191,7 +189,7 @@ for (i in reps) {
 
 cat("\nDone.")
 
-id <- paste0("_n-", n, "_nns-", NNs, "_res-", resol, "_prune-", prune)
+id <- paste0("_n-", n, "_nns-", NNs, "_res-", resol)
 write_csv(
   x = res,
   file = file.path(outdir, paste0("seurat_ct_detection", id, ".csv"))
