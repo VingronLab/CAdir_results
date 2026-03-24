@@ -2,7 +2,8 @@
 
 # add date to output folder
 # date=$(date '+%Y%m%d')
-date="20260320_revision2"
+# date="20260320_revision2"
+date="20260325_revision2"
 
 THREADS=6
 MEMORY=50G
@@ -16,7 +17,7 @@ datasets=("Darmanis"
 	"BaronPancreas"
 	"ZeiselBrain"
 	"brain_organoids"
-	# "dmel_E14-16h"
+	"dmel_E14-16h"
 	"tabula_sapiens_tissue")
 
 # datasets=("dmel_E14-16h")
@@ -98,7 +99,7 @@ for dataset in "${datasets[@]}"; do
 			##########
 			# Seurat #
 			##########
-			# source ./benchmarking/submit_scripts/Seurat.sh
+			source ./benchmarking/submit_scripts/Seurat.sh
 
 			############
 			# Monocle3 #

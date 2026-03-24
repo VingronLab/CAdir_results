@@ -105,7 +105,7 @@ for k in "${ks[@]}"; do
       fi
 
       mxqsub \
-        --stdout="${logdir}/ct_detection_k-${k}_n-${n}_q-${q}.stdout.log" \
+        --stdout="${logdir}/ct_detection_k-${k}_n-${n}_r-${r}.stdout.log" \
         --group-name="ct_detection_subs_${date}" \
         --threads=$THREADS \
         --memory=$MEMORY \

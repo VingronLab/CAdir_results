@@ -5,7 +5,7 @@ MEMORY=3G
 MINUTES=500
 
 # date=$(date '+%Y%m%d')
-date="20251204"
+date="20260320_revision2"
 
 outdir="./results/benchmarking/results/biclustering_sparse/${date}/eval"
 indir="./results/benchmarking/results/biclustering_sparse/${date}/out/"

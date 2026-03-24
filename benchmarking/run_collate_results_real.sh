@@ -4,7 +4,9 @@ THREADS=6
 MEMORY=3G
 MINUTES=500
 
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="20260320_revision2"
+
 outdir="./results/benchmarking/results/real/${date}/eval"
 indir="./results/benchmarking/results/real/${date}/out/"
 

@@ -1,0 +1,236 @@
+---
+title: Benchmark iterations
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
+  library(APL)
+
+  library(SingleCellExperiment)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(tidyr)
+  library(dplyr)
+
+  library(ggplot2)
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+set.seed(2358)
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review2/dim_bench/")
+resdir <- file.path(dir, "out/review2/dim_bench/")
+dir.create(imgdir, recursive = TRUE)
+dir.create(resdir, recursive = TRUE)
+```
+
+```{r}
+data_dir <- file.path(
+  "./data/real/preprocessed/benchmarking/"
+)
+data_files <- list.files(path = data_dir, pattern = "*.rds", full.names = TRUE)
+data_files <- data_files[-grep("tabula_muris_sub", data_files)]
+```
+
+# Get max benchmarking results
+## real
+```{r}
+date <- "20250528_cpu"
+evldir <- file.path("./results/benchmarking/results/real/", date, "eval")
+```
+
+```{r}
+### Load the results of real data sets
+files <- list.files(evldir, "*.rds", full.names = TRUE)
+
+df_paras <- data.frame()
+for (file in files) {
+  data <- readRDS(file)
+  df_paras <- bind_rows(df_paras, data)
+}
+
+df_paras$dataset <- gsub("_filtered", "", df_paras$dataset)
+```
+
+```{r}
+df_real <- df_paras %>%
+  filter(algorithm == "CAdir_auto") %>%
+  group_by(algorithm, dataset) %>%
+  mutate(max_NMI = max(NMI, na.rm = TRUE)) %>%
+  mutate(max_ARI = max(ARI, na.rm = TRUE)) %>%
+  filter(ARI == max_ARI) %>%
+  distinct(dataset, algorithm, max_ARI, .keep_all = TRUE) %>%
+  ungroup()
+
+df_real$max_NMI[is.infinite(df_real$max_NMI)] <- NA
+df_real$max_ARI[is.infinite(df_real$max_ARI)] <- NA
+```
+
+
+# Benchmark iterations real
+```{r}
+dim_seq <- seq.int(5, 150, by = 5)
+# iters <- seq.int(0, 10, by = 5)
+
+res_list_real <- vector(mode = "list", length = length(data_files))
+options(rlib_message_verbosity = "quiet")
+for (i in seq_len(length(data_files))) {
+  iter_vec <- vector(mode = "numeric", length = length(dim_seq))
+  ari_vec <- vector(mode = "numeric", length = length(dim_seq))
+  nclust_vec <- vector(mode = "numeric", length = length(dim_seq))
+
+  f <- data_files[i]
+  fnm <- gsub("_filtered.rds", "", basename(f))
+  fnm <- gsub(".rds", "", fnm)
+  cat("\n", fnm)
+  sce <- readRDS(f)
+
+  dft <- df_real %>% filter(dataset == fnm)
+
+  if (dft$angle == 0) {
+    cut_ang <- NULL
+  } else {
+    cut_ang <- dft$angle
+  }
+
+  set.seed(1234)
+  sce_var <- scran::modelGeneVar(sce)
+  sce_top <- scran::getTopHVGs(sce_var, n = dft$ntop, var.threshold = NULL)
+  sce <- sce[sce_top, ]
+  cnts <- as.matrix(logcounts(sce))
+
+  for (j in seq_along(dim_seq)) {
+    n <- dim_seq[j]
+    cat("\n\tnr. dims:", n)
+
+    ca <- cacomp(
+      obj = cnts,
+      princ_coords = 3,
+      dims = n, #20
+      top = nrow(cnts),
+      residuals = "pearson",
+      clip = TRUE
+    )
+    cadir <- dirclust_splitmerge(
+      caobj = ca,
+      k = dft$kdir,
+      cutoff = cut_ang,
+      apl_quant = dft$apl_quant,
+      method = "random",
+      min_cells = 20,
+      reps = 15,
+      convergence_thr = 0.001,
+      keep_log = FALSE,
+      make_plots = FALSE
+    )
+
+    ari <- aricode::clustComp(cadir@cell_clusters, sce$truth)$ARI
+    ari_vec[j] <- ari
+    iter_vec[j] <- n
+    nclust_vec[j] <- length(unique(cadir@cell_clusters))
+    rm(cadir, ca)
+  }
+
+  res_list_real[[i]] <- data.frame(
+    dataset = fnm,
+    ndims = iter_vec,
+    nclust = nclust_vec,
+    ARI = ari_vec
+  )
+}
+saveRDS(res_list_real, file = file.path(resdir, "real_res_ndim_list.rds"))
+```
+
+# Plotting
+
+```{r}
+res_list_real <- readRDS(file.path(resdir, "real_res_ndim_list.rds"))
+```
+
+```{r}
+dfr <- do.call(rbind, res_list_real)
+dfr$dataset[dfr$dataset == "FreytagGold"] <- "Freytag Gold"
+dfr$dataset[dfr$dataset == "PBMC_10X"] <- "PBMC10x"
+dfr$dataset[dfr$dataset == "Tirosh_nonmaglignant"] <- "Tirosh"
+dfr$dataset[dfr$dataset == "ZeiselBrain"] <- "Zeisel"
+dfr$dataset[dfr$dataset == "BaronPancreas"] <- "Baron Pancreas"
+dfr$dataset[dfr$dataset == "dmel_E14-16h"] <- "Dmel Spatial"
+dfr$dataset[dfr$dataset == "tabula_sapiens_tissue"] <- "Tabula Sapiens"
+dfr$dataset[dfr$dataset == "brain_organoids"] <- "Brain Organoids"
+```
+
+```{r}
+# TODO: make panels for results
+
+pr <- ggplot(
+  dfr,
+  aes(x = ndims, y = ARI, color = dataset, group = dataset)
+) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 1) +
+  CAdir::scale_color_mpimg(name = "mpi_extend") +
+  labs(
+    title = "Nr. of dim. vs. ARI - real data",
+    x = "dimensions",
+    y = "ARI",
+    color = "Dataset"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text = element_text(size = 10, color = "black"),
+    axis.title = element_text(size = 11),
+    plot.title = element_text(size = 12)
+  )
+```
+
+```{r}
+
+ggsave(
+  filename = file.path(imgdir, "n_dims_bench.pdf"),
+  plot = pr,
+  width = 3000,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  filename = file.path(imgdir, "n_dims_bench.png"),
+  plot = pr,
+  width = 3000,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  filename = file.path(imgdir, "n_dims_bench.tiff"),
+  plot = pr,
+  width = 3000,
+  height = 2000,
+  units = "px"
+)
+```
+
