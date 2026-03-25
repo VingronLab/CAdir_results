@@ -7,9 +7,10 @@
 #########################################################################################################
 
 
-cd ./benchmarking/ || exit
+# cd ./benchmarking/ || exit
 
-date=$(date '+%Y%m%d')
+# date=$(date '+%Y%m%d')
+date="20260325_revision2"
 
 scripts_path="./benchmarking/algorithms"
 
@@ -39,7 +40,7 @@ for dataset in ${datasets[@]}; do
 	files="${indir}/${dataset}/*.rds"
 
 	ntop=(2000)
-	truth='Group'
+	truth="Group"
 
 	cc=1  #set is_cell_clustering to TRUE
 	sim=1 # set simulation to TRUE
@@ -141,13 +142,17 @@ for dataset in ${datasets[@]}; do
       ##################
 			# scDeepCluster  #
       ##################
-			source ./benchmarking/scalability/submit_scripts/scDeepCluster.sh
+			# source ./benchmarking/scalability/submit_scripts/scDeepCluster.sh
 
       ###############
       # scG-cluster #
       ###############
       # source ./benchmarking/scalability/submit_scripts/scG-cluster.sh
 
+      ##############
+      # Divbiclust #
+      ##############
+      source ./benchmarking/scalability/submit_scripts/DivBiclust.sh
 			if [ "$test_run" = true ]; then
 				break 3
 			fi

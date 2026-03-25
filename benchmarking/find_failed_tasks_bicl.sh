@@ -1,11 +1,11 @@
 #!/bin/bash
 
 ############
-# nruns: 0 #
+# nruns: 2 #
 ############
 
 # date=$(date '+%Y%m%d')
-date="20260320_revision2"
+date="20260325_revision2"
 
 OUTDIR="./results/benchmarking/results/biclustering/${date}"
 
@@ -30,7 +30,7 @@ for dataset in ${dataset_list[@]}; do
 	# MemoryError
 	# ERROR_TIMEOUT
 
-	TMPDIR=0G
+	# MXQ_TMPDIR=0G
 
 	MAXMEM=500G
 	MAXTIME=1440
@@ -61,8 +61,8 @@ for dataset in ${dataset_list[@]}; do
 			fi
 
 			if [[ "$line" =~ ^#\ (tmpdir)=(.*)$ ]]; then
-				TMPDIR="${BASH_REMATCH[2]}"
-				echo "TMPDIR: $TMPDIR"
+				MXQ_TMPDIR="${BASH_REMATCH[2]}"
+				echo "MXQ_TMPDIR: $MXQ_TMPDIR"
 			fi
 
 			if [[ "$line" =~ ^#\ (t)=(.*)$ ]]; then
@@ -86,7 +86,7 @@ for dataset in ${dataset_list[@]}; do
 # BEGIN_MXQ
 # threads=$THREADS
 # memory=$MEMORY
-# tmpdir=$TMPDIR
+# tmpdir=$MXQ_TMPDIR
 # t=$MINUTES
 # END_MXQ
 EOM
@@ -103,7 +103,7 @@ EOM
 			--group-name="MEMORY_error_failed_runs_${dataset}" \
 			--threads=$THREADS \
 			--memory=$MEMORY \
-			--tmpdir=$TMPDIR \
+			--tmpdir=$MXQ_TMPDIR \
 			-t $MINUTES \
 			bash $sh_file
 
@@ -133,8 +133,8 @@ EOM
 			fi
 
 			if [[ "$line" =~ ^#\ (tmpdir)=(.*)$ ]]; then
-				TMPDIR="${BASH_REMATCH[2]}"
-				echo "TMPDIR: $TMPDIR"
+				MXQ_TMPDIR="${BASH_REMATCH[2]}"
+				echo "MXQ_TMPDIR: $MXQ_TMPDIR"
 			fi
 
 			if [[ "$line" =~ ^#\ (t)=(.*)$ ]]; then
@@ -153,7 +153,7 @@ EOM
 # BEGIN_MXQ
 # threads=$THREADS
 # memory=$MEMORY
-# tmpdir=$TMPDIR
+# tmpdir=$MXQ_TMPDIR
 # t=$MINUTES
 # END_MXQ
 EOM
@@ -170,7 +170,7 @@ EOM
 			--group-name="TIME_error_failed_runs_${dataset}" \
 			--threads=$THREADS \
 			--memory=$MEMORY \
-			--tmpdir=$TMPDIR \
+			--tmpdir=$MXQ_TMPDIR \
 			-t $MINUTES \
 			bash $sh_file
 
@@ -199,8 +199,8 @@ EOM
 			fi
 
 			if [[ "$line" =~ ^#\ (tmpdir)=(.*)$ ]]; then
-				TMPDIR="${BASH_REMATCH[2]}"
-				echo "TMPDIR: $TMPDIR"
+				MXQ_TMPDIR="${BASH_REMATCH[2]}"
+				echo "MXQ_TMPDIR: $MXQ_TMPDIR"
 			fi
 
 			if [[ "$line" =~ ^#\ (t)=(.*)$ ]]; then
@@ -211,7 +211,7 @@ EOM
 		done < <(awk '/# BEGIN_MXQ/,/# END_MXQ/' "$sh_file")
 
 		MEMORY=$MAXMEM
-		TMPDIR=200G
+		MXQ_TMPDIR=200G
 
 		META_MXQ=$(
 			cat <<EOM
@@ -220,7 +220,7 @@ EOM
 # BEGIN_MXQ
 # threads=$THREADS
 # memory=$MEMORY
-# tmpdir=$TMPDIR
+# tmpdir=$MXQ_TMPDIR
 # t=$MINUTES
 # END_MXQ
 EOM
@@ -237,7 +237,7 @@ EOM
 			--group-name="BADALLOC_failed_runs_${dataset}" \
 			--threads=$THREADS \
 			--memory=$MEMORY \
-			--tmpdir=$TMPDIR \
+			--tmpdir=$MXQ_TMPDIR \
 			-t $MINUTES \
 			bash $sh_file
 
@@ -266,8 +266,8 @@ EOM
 			fi
 
 			if [[ "$line" =~ ^#\ (tmpdir)=(.*)$ ]]; then
-				TMPDIR="${BASH_REMATCH[2]}"
-				echo "TMPDIR: $TMPDIR"
+				MXQ_TMPDIR="${BASH_REMATCH[2]}"
+				echo "MXQ_TMPDIR: $MXQ_TMPDIR"
 			fi
 
 			if [[ "$line" =~ ^#\ (t)=(.*)$ ]]; then
@@ -293,12 +293,12 @@ EOM
 			MINUTES=$MAXTIME
 		fi
 
-		if [ "${TMPDIR%G}" -eq "0" ]; then
-			TMPDIR=50G
-		elif [ "${TMPDIR%G}" -lt "$halfdir" ]; then
-			TMPDIR=$((${TMPDIR%G} * 2))"G"
+		if [ "${MXQ_TMPDIR%G}" -eq "0" ]; then
+			MXQ_TMPDIR=50G
+		elif [ "${MXQ_TMPDIR%G}" -lt "$halfdir" ]; then
+			MXQ_TMPDIR=$((${MXQ_TMPDIR%G} * 2))"G"
 		else
-			TMPDIR=$MAXDIR
+			MXQ_TMPDIR=$MAXDIR
 		fi
 
 		META_MXQ=$(
@@ -308,7 +308,7 @@ EOM
 # BEGIN_MXQ
 # threads=$THREADS
 # memory=$MEMORY
-# tmpdir=$TMPDIR
+# tmpdir=$MXQ_TMPDIR
 # t=$MINUTES
 # END_MXQ
 EOM
@@ -325,7 +325,7 @@ EOM
 			--group-name="ERROR_failed_runs_${dataset}" \
 			--threads=$THREADS \
 			--memory=$MEMORY \
-			--tmpdir=$TMPDIR \
+			--tmpdir=$MXQ_TMPDIR \
 			-t $MINUTES \
 			bash $sh_file
 
@@ -373,8 +373,8 @@ EOM
 			fi
 
 			if [[ "$line" =~ ^#\ (tmpdir)=(.*)$ ]]; then
-				TMPDIR="${BASH_REMATCH[2]}"
-				echo "TMPDIR: $TMPDIR"
+				MXQ_TMPDIR="${BASH_REMATCH[2]}"
+				echo "MXQ_TMPDIR: $MXQ_TMPDIR"
 			fi
 
 			if [[ "$line" =~ ^#\ (t)=(.*)$ ]]; then
@@ -400,12 +400,12 @@ EOM
 			MINUTES=$MAXTIME
 		fi
 
-		if [ "${TMPDIR%G}" -eq "0" ]; then
-			TMPDIR=50G
-		elif [ "${TMPDIR%G}" -lt "$halfdir" ]; then
-			TMPDIR=$((${TMPDIR%G} * 2))"G"
+		if [ "${MXQ_TMPDIR%G}" -eq "0" ]; then
+			MXQ_TMPDIR=50G
+		elif [ "${MXQ_TMPDIR%G}" -lt "$halfdir" ]; then
+			MXQ_TMPDIR=$((${MXQ_TMPDIR%G} * 2))"G"
 		else
-			TMPDIR=$MAXDIR
+			MXQ_TMPDIR=$MAXDIR
 		fi
 
 		META_MXQ=$(
@@ -415,7 +415,7 @@ EOM
 # BEGIN_MXQ
 # threads=$THREADS
 # memory=$MEMORY
-# tmpdir=$TMPDIR
+# tmpdir=$MXQ_TMPDIR
 # t=$MINUTES
 # END_MXQ
 EOM
@@ -432,7 +432,7 @@ EOM
 			--group-name="MISSING_runs_${dataset}" \
 			--threads=$THREADS \
 			--memory=$MEMORY \
-			--tmpdir=$TMPDIR \
+			--tmpdir=$MXQ_TMPDIR \
 			-t $MINUTES \
 			bash $sh_file
 
