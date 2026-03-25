@@ -5,7 +5,7 @@ MEMORY=3G
 MINUTES=500
 
 # date=$(date '+%Y%m%d')
-date="20260320_revision2"
+date="20260325_revision2"
 
 outdir="./results/benchmarking/results/simulated/${date}/eval"
 indir="./results/benchmarking/results/simulated/${date}/out/"
