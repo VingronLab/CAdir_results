@@ -22,8 +22,8 @@ jupyter:
 renv::load()
 
 suppressPackageStartupMessages({
-  # devtools::load_all("~/gits/ClemensKohl/CAdir/")
-  library(CAdir)
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
   library(scater)
   library(dplyr)
   library(tidyr)
@@ -44,7 +44,8 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 # Cell clustering benchmarking
 
 ```{r}
-date <- "20250528"
+# date <- "20250528"
+date = "20260325_revision2"
 base_dir <- file.path("./results/benchmarking/results/simulated", date)
 indir <- file.path(base_dir, "eval")
 ```
@@ -126,6 +127,11 @@ Combining the benchmarking resuls:
 ```{r}
 df_all <- rbind(dfz, dfp)
 
+old_col <- any(grepl("^ARI_cells$", colnames(df_all)))
+if (isTRUE(old_col)) {
+  sel <- is.na(df_all$ARI) & !is.na(df_all$ARI_cells)
+  df_all$ARI[sel] <- df_all$ARI_cells[sel]
+}
 df_all$algorithm <- gsub("CAbiNet_igraph", "CAbiNet", df_all$algorithm)
 
 df_all$algorithm <- factor(
@@ -141,6 +147,7 @@ df_all$algorithm <- factor(
     "Monocle3",
     "SC3",
     "SIMLR",
+    "DivBiclust",
     "scDeepCluster",
     "scG-cluster"
   )
@@ -435,7 +442,8 @@ ggsave(
 ## Experimental Data
 
 ```{r}
-date <- "20250528_cpu"
+# date <- "20250528_cpu"
+date = "20260325_revision2"
 evldir <- file.path("./results/benchmarking/results/real/", date, "eval")
 
 options(repr.plot.width = 15, repr.plot.height = 10)
@@ -462,6 +470,12 @@ commoncols <- intersect(colnames(df), colnames(simdf))
 
 ### Merge two data frames
 df <- rbind(df[, commoncols], simdf[, commoncols])
+
+old_col <- any(grepl("^ARI_cells$", colnames(df)))
+if (isTRUE(old_col)) {
+  sel <- is.na(df$ARI) & !is.na(df$ARI_cells)
+  df$ARI[sel] <- df$ARI_cells[sel]
+}
 ```
 
 ```{r}
@@ -531,6 +545,7 @@ subdf$algorithm <- factor(
     "Monocle3",
     "SC3",
     "SIMLR",
+    "DivBiclust",
     "scDeepCluster",
     "scG-cluster"
   )
@@ -894,6 +909,7 @@ stats$algorithm <- factor(
     "Monocle3",
     "SC3",
     "SIMLR",
+    "DivBiclust",
     "scDeepCluster",
     "scG-cluster"
   )
@@ -1020,8 +1036,8 @@ ggsave(
 # Runtime & Scalability
 
 ```{r}
-# date <- "20240823"
-date <- "20250626"
+# date <- "20250626"
+date = "20260325_revision2"
 mpgGreen <- "#006c66"
 mpgDarkGreen <- "#005555"
 mpgDarkGrey <- "#777777"
@@ -1065,6 +1081,7 @@ scal_df$algorithm <- factor(
     "Monocle3",
     "SC3",
     "SIMLR",
+    "DivBiclust",
     "scDeepCluster",
     "scG-cluster"
   )
@@ -1318,7 +1335,8 @@ ggsave(
 # Detection of cluster number
 
 ```{r}
-date <- "20240812"
+# date <- "20240812"
+date = "20260325_revision2"
 indir <- "./results/benchmarking/results/ct_detection/"
 
 if (file.exists(file.path(indir, date, "eval", "results.csv"))) {
@@ -1345,6 +1363,13 @@ if (file.exists(file.path(indir, date, "eval", "results.csv"))) {
 
   dir.create(file.path(indir, date, "eval"), recursive = TRUE)
   write_csv(res, file = file.path(indir, date, "eval", "results.csv"))
+}
+
+
+old_col <- any(grepl("^ARI_cells$", colnames(res)))
+if (isTRUE(old_col)) {
+  sel <- is.na(res$ARI) & !is.na(res$ARI_cells)
+  res$ARI[sel] <- res$ARI_cells[sel]
 }
 ```
 
