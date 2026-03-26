@@ -22,10 +22,31 @@ ari <- as.numeric(ari)
 ncluster <- stringr::word(res, 2, 2, "_")
 ncluster <- as.numeric(ncluster)
 
+
+output_file <- paste0(ds_type, "_output.txt")
+cell_assignments <- parse_divbiclust_output(output_file, ncell = ncell)
+
+
 if (isTRUE(is_cell_clustering)) {
+  if (all(is.na(cell_assignments))) {
+    message("DivBiclust found no biclusters — skipping evaluation.")
+    ncluster <- 0L
+    eval_res <- list(
+      "ARI_cells_mclust" = NA,
+      "RI" = NA, "ARI" = NA, "MI" = NA, "AMI" = NA, "VI" = NA,
+      "NVI" = NA, "ID" = NA, "NID" = NA, "NMI" = NA,
+      "Chi2" = NA, "MARI" = NA, "MARIraw" = NA
+    )
+  } else {
+    eval_res <- eval_cell_clustering(
+      clustering = cell_assignments,
+      reference = colData(data)[, truth]
+    )
+  }
+
   eval_res <- c(
     list("algorithm" = algorithm),
-    "ARI_cells" = ari,
+    as.list(eval_res),
     list(
       "ngenes" = ntop,
       "ncells" = ncell,
@@ -35,7 +56,7 @@ if (isTRUE(is_cell_clustering)) {
     )
   )
 } else {
-  stop("biclustering not implemented for SC3!")
+  stop("Biclustering evaluation not implemented for DivBiclust.")
 }
 
 eval_res <- bind_cols(eval_res, as_tibble(opt))
