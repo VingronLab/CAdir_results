@@ -32,6 +32,7 @@ suppressPackageStartupMessages({
   library(dplyr)
 
   library(ggplot2)
+  library(ggbeeswarm)
   library(patchwork)
 })
 
@@ -212,7 +213,7 @@ ggsave(
 # APL endothelial cells
 ```{r}
 cls <- "Endothelial_cell"
-selected_e_genes <- c("Dlg2", "Kitl", "Itga1", "Pecam1", "Cdh5")
+selected_e_genes <- c("Dlg2", "Eng", "Kitl", "Pecam1", "Cdh5") #"Itga1",
 group <- which(cak@cell_clusters == cls)
 
 model <- apl_model(
@@ -313,8 +314,15 @@ violin_b_list <- lapply(selected_bc_genes, function(g) {
     group = as.character(cak@cell_clusters)
   )
   ggplot(df, aes(x = group, y = expr, fill = group)) +
-    geom_violin(scale = "width", trim = TRUE) +
+    geom_violin(scale = "width", trim = TRUE, alpha = 0.25) +
+    geom_quasirandom(
+      aes(color = group),
+      size = 0.8,
+      alpha = 0.65,
+      bandwidth = 0.3
+    ) +
     scale_fill_mpimg(name = "mpimg") +
+    scale_color_mpimg(name = "mpimg") +
     labs(y = "log-counts", title = g) +
     theme_bw(base_size = 12) +
     theme(
@@ -326,6 +334,26 @@ violin_b_list <- lapply(selected_bc_genes, function(g) {
 })
 
 violin_b_row <- wrap_plots(violin_b_list, nrow = 1)
+
+beeswarm_b_list <- lapply(selected_bc_genes, function(g) {
+  df <- data.frame(
+    expr = expr_mat[g, ],
+    group = as.character(cak@cell_clusters)
+  )
+  ggplot(df, aes(x = group, y = expr, color = group)) +
+    geom_quasirandom(size = 0.7, alpha = 0.55, bandwidth = 0.3) +
+    scale_color_mpimg(name = "mpimg") +
+    labs(y = "log-counts", title = g) +
+    theme_bw(base_size = 12) +
+    theme(
+      legend.position = "none",
+      axis.title.x = element_blank(),
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+      plot.title = element_text(size = 10, hjust = 0.5, face = "italic")
+    )
+})
+
+beeswarm_b_row <- wrap_plots(beeswarm_b_list, nrow = 1)
 ```
 
 ```{r}
@@ -336,8 +364,15 @@ violin_e_list <- lapply(selected_e_genes, function(g) {
     group = as.character(cak@cell_clusters)
   )
   ggplot(df, aes(x = group, y = expr, fill = group)) +
-    geom_violin(scale = "width", trim = TRUE) +
+    geom_violin(scale = "width", trim = TRUE, alpha = 0.25) +
+    geom_quasirandom(
+      aes(color = group),
+      size = 0.8,
+      alpha = 0.65,
+      bandwidth = 0.3
+    ) +
     scale_fill_mpimg(name = "mpimg") +
+    scale_color_mpimg(name = "mpimg") +
     labs(y = "log-counts", title = g) +
     theme_bw(base_size = 12) +
     theme(
@@ -348,6 +383,25 @@ violin_e_list <- lapply(selected_e_genes, function(g) {
     )
 })
 violin_e_row <- wrap_plots(violin_e_list, nrow = 1)
+
+beeswarm_e_list <- lapply(selected_e_genes, function(g) {
+  df <- data.frame(
+    expr = expr_mat[g, ],
+    group = as.character(cak@cell_clusters)
+  )
+  ggplot(df, aes(x = group, y = expr, color = group)) +
+    geom_quasirandom(size = 0.7, alpha = 0.55, bandwidth = 0.3) +
+    scale_color_mpimg(name = "mpimg") +
+    labs(y = "log-counts", title = g) +
+    theme_bw(base_size = 12) +
+    theme(
+      legend.position = "none",
+      axis.title.x = element_blank(),
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+      plot.title = element_text(size = 10, hjust = 0.5, face = "italic")
+    )
+})
+beeswarm_e_row <- wrap_plots(beeswarm_e_list, nrow = 1)
 ```
 
 
@@ -359,6 +413,14 @@ b_combined <- p_bt_std /
 
 e_combined <- p_e_std /
   violin_e_row +
+  plot_layout(heights = c(apl_frac, 1 - apl_frac))
+
+b_beeswarm_combined <- p_bt_std /
+  beeswarm_b_row +
+  plot_layout(heights = c(apl_frac, 1 - apl_frac))
+
+e_beeswarm_combined <- p_e_std /
+  beeswarm_e_row +
   plot_layout(heights = c(apl_frac, 1 - apl_frac))
 ```
 
@@ -375,6 +437,22 @@ ggsave(
 ggsave(
   plot = e_combined,
   file = file.path(imgdir, "endothelial_apl_violins.png"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = b_beeswarm_combined,
+  file = file.path(imgdir, "B_cell_apl_beeswarm.png"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = e_beeswarm_combined,
+  file = file.path(imgdir, "endothelial_apl_beeswarm.png"),
   width = 5000,
   height = 3000,
   units = "px"
