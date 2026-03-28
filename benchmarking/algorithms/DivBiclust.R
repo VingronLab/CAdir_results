@@ -22,10 +22,8 @@ ari <- as.numeric(ari)
 ncluster <- stringr::word(res, 2, 2, "_")
 ncluster <- as.numeric(ncluster)
 
-
 output_file <- paste0(ds_type, "_output.txt")
 cell_assignments <- parse_divbiclust_output(output_file, ncell = ncell)
-
 
 if (isTRUE(is_cell_clustering)) {
   if (all(is.na(cell_assignments))) {
@@ -33,11 +31,23 @@ if (isTRUE(is_cell_clustering)) {
     ncluster <- 0L
     eval_res <- list(
       "ARI_cells_mclust" = NA,
-      "RI" = NA, "ARI" = NA, "MI" = NA, "AMI" = NA, "VI" = NA,
-      "NVI" = NA, "ID" = NA, "NID" = NA, "NMI" = NA,
-      "Chi2" = NA, "MARI" = NA, "MARIraw" = NA
+      "RI" = NA,
+      "ARI" = NA,
+      "MI" = NA,
+      "AMI" = NA,
+      "VI" = NA,
+      "NVI" = NA,
+      "ID" = NA,
+      "NID" = NA,
+      "NMI" = NA,
+      "Chi2" = NA,
+      "MARI" = NA,
+      "MARIraw" = NA
     )
   } else {
+    if (anyNA(cell_assignments)) {
+      cat("\nWARNING: CELL ASSIGNMENTS CONTAIN NAs.\n")
+    }
     eval_res <- eval_cell_clustering(
       clustering = cell_assignments,
       reference = colData(data)[, truth]

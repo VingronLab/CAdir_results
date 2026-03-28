@@ -136,6 +136,7 @@ if (isTRUE(sim)) {
 }
 
 if (algorithm == "DivBiclust") {
+  data <- readRDS(filepath)
   filename <- gsub(".rds", "", basename(filepath))
   divbicl_dir <- file.path(
     dirname(filepath),

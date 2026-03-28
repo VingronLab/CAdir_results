@@ -2,8 +2,8 @@
 
 # add date to output folder
 # date=$(date '+%Y%m%d')
-# date="20260320_revision2"
-date="20260325_revision2"
+# date="20260325_revision2"
+date="20260328_revision2"
 
 THREADS=6
 MEMORY=30G
@@ -102,10 +102,12 @@ for dataset in "${datasets[@]}"; do
       ###############
       # source ./benchmarking/submit_scripts/scG-cluster.sh
       
-      ##########
-      # QUBIC2 #
-      ##########
-      source ./benchmarking/submit_scripts/QUBIC2.sh
+      ##############
+      # DivBiclust #
+      ##############
+      source ./benchmarking/submit_scripts/DivBiclust.sh
+
+      
 
 			if [ "$test_run" = true ]; then
 				break 3
