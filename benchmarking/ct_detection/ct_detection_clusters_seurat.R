@@ -171,6 +171,7 @@ for (i in reps) {
   cts_found <- length(unique(seu$seurat_clusters))
 
   tmp <- data.frame(
+    algorithm = "Seurat",
     nr_cts = n,
     cts_found = cts_found,
     ari = ari$ARI,

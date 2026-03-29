@@ -6,7 +6,7 @@ MINUTES=1200
 
 # date=$(date '+%Y%m%d')
 # date="TEST"
-date="20260320_revision2"
+date="20260329_revision2"
 
 outdir="./results/benchmarking/results/ct_detection/${date}"
 # outdir="./results/benchmarking/results/ct_detection_batch_corr/${date}"
@@ -78,7 +78,8 @@ nr_cts=(4 6 8 10 12 14 16 18 20 22 24 26 28 30)
 # Seurat #
 ##########
 
-ks=(5 10 15 20 25 30)
+# ks=(5 10 15 20 25 30)
+ks=(25 30 35 40 45 50)
 resolution=(0.5 1.0 1.5)
 SCRIPT="./benchmarking/ct_detection/ct_detection_clusters_seurat.R"
 

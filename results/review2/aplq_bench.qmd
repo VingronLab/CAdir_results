@@ -165,7 +165,7 @@ saveRDS(res_list_real, file = file.path(resdir, "real_res_aplq_list.rds"))
 # Plotting
 
 ```{r}
-res_list_real <- readRDS(file.path(resdir, "real_res_aplqlist.rds"))
+res_list_real <- readRDS(file.path(resdir, "real_res_aplq_list.rds"))
 ```
 
 ```{r}

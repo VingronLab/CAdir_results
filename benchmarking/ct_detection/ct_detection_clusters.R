@@ -192,6 +192,7 @@ for (i in reps) {
   cts_found <- length(unique(cak@cell_clusters))
 
   tmp <- data.frame(
+    algorithm = "CAdir",
     nr_cts = n,
     cts_found = cts_found,
     ari = ari$ARI,
@@ -214,5 +215,5 @@ cat("\nDone.")
 id <- paste0("_k-", k, "_n-", n, "_q-", q)
 write_csv(
   x = res,
-  file = file.path(outdir, paste0("ct_detection.csv", id, ".csv"))
+  file = file.path(outdir, paste0("ct_detection", id, ".csv"))
 )

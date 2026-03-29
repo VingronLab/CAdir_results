@@ -1048,6 +1048,7 @@ mpgDarkBlue <- "#29485d" # MPG Dunkelblau
 mpgLightBlue <- "#00b1ea" # MPG Hellblau
 mpgPink <- "#d95276" # Rich Pink
 mpgBrown <- "#a25b43" # Warm Brown
+mpgCyan <- "#00CED1"
 
 eval_files <- list.files(
   file.path("./results/benchmarking/results/scalability", date, "out"),
@@ -1160,6 +1161,7 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
       "SIMLR" = alph,
       "Seurat" = alph,
       "kmeans" = alph,
+      "DivBiclust" = alph,
       "scDeepCluster" = alph,
       "scG-cluster" = alph
     )
@@ -1175,8 +1177,9 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
       "SIMLR" = mpgGrau,
       "Seurat" = mpgGreenLight,
       "kmeans" = mpgGreen,
-      "scDeepCluster" = mpgPink,
-      "scG-cluster" = mpgBrown
+      "DivBiclust" = mpgPink,
+      "scDeepCluster" = mpgBrown,
+      "scG-cluster" = mpgCyan
     )
   ) +
   scale_linetype_manual(
@@ -1190,6 +1193,7 @@ rt <- ggplot(scal_df, aes(x = dataset, y = (total_runtime / 60))) +
       "SIMLR" = "solid",
       "Seurat" = "solid",
       "kmeans" = "solid",
+      "DivBiclust" = "solid",
       "scDeepCluster" = "solid",
       "scG-cluster" = "solid"
     )
@@ -1282,7 +1286,8 @@ rt_no_DL <- scal_df %>%
       "SC3" = alph,
       "SIMLR" = alph,
       "Seurat" = alph,
-      "kmeans" = alph
+      "kmeans" = alph,
+      "DivBiclust" = alph
     )
   ) +
   scale_colour_manual(
@@ -1295,7 +1300,8 @@ rt_no_DL <- scal_df %>%
       "SC3" = mpgDarkGreen,
       "SIMLR" = mpgGrau,
       "Seurat" = mpgGreenLight,
-      "kmeans" = mpgGreen
+      "kmeans" = mpgGreen,
+      "DivBiclust" = mpgPink
     )
   ) +
   scale_linetype_manual(
@@ -1308,7 +1314,8 @@ rt_no_DL <- scal_df %>%
       "SC3" = "dashed",
       "SIMLR" = "solid",
       "Seurat" = "solid",
-      "kmeans" = "solid"
+      "kmeans" = "solid",
+      "DivBiclust" = "solid"
     )
   ) +
   theme_bw(base_size = 18) +
@@ -1336,52 +1343,90 @@ ggsave(
 
 ```{r}
 # date <- "20240812"
-date = "20260325_revision2"
+# date = "20260325_revision2"
+date = "20260329_revision2"
 indir <- "./results/benchmarking/results/ct_detection/"
-
-if (file.exists(file.path(indir, date, "eval", "results.csv"))) {
+# FIXME: filter out seurat vs CAdir
+if (
+  file.exists(file.path(indir, date, "eval", "cadir_results.csv")) &&
+    file.exists(file.path(indir, date, "eval", "seurat_results.csv"))
+) {
   # If only a single file:
-  res <- read_csv(
-    file.path(indir, date, "eval", "results.csv"),
+  cadir_res <- read_csv(
+    file.path(indir, date, "eval", "cadir_results.csv"),
+    show_col_types = FALSE,
+    progress = FALSE
+  )
+
+  seurat_res <- read_csv(
+    file.path(indir, date, "eval", "seurat_results.csv"),
     show_col_types = FALSE,
     progress = FALSE
   )
 } else {
   # For multiple split files.
-  files <- list.files(
+  cadir_files <- list.files(
     path = file.path(indir, date, "out"),
-    pattern = "*.csv",
+    pattern = "^ct_detection*.csv",
     full.names = TRUE
   )
 
-  res <- tibble()
-  for (f in files) {
+  seurat_files <- list.files(
+    path = file.path(indir, date, "out"),
+    pattern = "^seurat_ct_detection",
+    full.names = TRUE
+  )
+
+  cadir_res <- tibble()
+  for (f in cadir_files) {
     tmp <- read_csv(file = f, show_col_types = FALSE, progress = FALSE)
     tmp$file <- basename(f)
-    res <- bind_rows(res, tmp)
+    cadir_res <- bind_rows(cadir_res, tmp)
   }
 
   dir.create(file.path(indir, date, "eval"), recursive = TRUE)
-  write_csv(res, file = file.path(indir, date, "eval", "results.csv"))
+  write_csv(
+    cadir_res,
+    file = file.path(indir, date, "eval", "cadir_results.csv")
+  )
+
+  seurat_res <- tibble()
+  for (f in seurat_files) {
+    tmp <- read_csv(file = f, show_col_types = FALSE, progress = FALSE)
+    tmp$file <- basename(f)
+    seurat_res <- bind_rows(seurat_res, tmp)
+  }
+
+  dir.create(file.path(indir, date, "eval"), recursive = TRUE)
+  write_csv(
+    seurat_res,
+    file = file.path(indir, date, "eval", "seurat_results.csv")
+  )
 }
 
 
-old_col <- any(grepl("^ARI_cells$", colnames(res)))
+old_col <- any(grepl("^ARI_cells$", colnames(cadir_res)))
 if (isTRUE(old_col)) {
-  sel <- is.na(res$ARI) & !is.na(res$ARI_cells)
-  res$ARI[sel] <- res$ARI_cells[sel]
+  sel <- is.na(cadir_res$ARI) & !is.na(cadir_res$ARI_cells)
+  cadir_res$ARI[sel] <- cadir_res$ARI_cells[sel]
+}
+
+old_col <- any(grepl("^ARI_cells$", colnames(seurat_res)))
+if (isTRUE(old_col)) {
+  sel <- is.na(seurat_res$ARI) & !is.na(seurat_res$ARI_cells)
+  seurat_res$ARI[sel] <- seurat_res$ARI_cells[sel]
 }
 ```
 
 ```{r}
-res <- res %>%
+cadir_res <- cadir_res %>%
   mutate(diff_abs = cts_found - nr_cts) %>%
   mutate(diff_perc = cts_found / nr_cts) %>%
   mutate(log2fc = log2(cts_found / nr_cts)) %>%
   mutate(apl_q = as.factor(apl_q)) %>%
   mutate(k = as.factor(k))
 
-res <- res %>%
+cadir_res <- cadir_res %>%
   group_by(nr_cts, k, apl_q) %>%
   mutate(diff_mean = mean(diff_abs)) %>%
   mutate(diff_sd = sd(diff_abs)) %>%
@@ -1390,8 +1435,26 @@ res <- res %>%
   ungroup()
 ```
 
+
 ```{r}
-devp_single <- res %>%
+seurat_res <- seurat_res %>%
+  mutate(diff_abs = cts_found - nr_cts) %>%
+  mutate(diff_perc = cts_found / nr_cts) %>%
+  mutate(log2fc = log2(cts_found / nr_cts)) %>%
+  mutate(NNs = as.factor(NNs)) %>%
+  mutate(resolution = as.factor(resolution))
+
+seurat_res <- seurat_res %>%
+  group_by(nr_cts, NNs, resolution) %>%
+  mutate(diff_mean = mean(diff_abs)) %>%
+  mutate(diff_sd = sd(diff_abs)) %>%
+  mutate(log2fc_mean = mean(log2fc)) %>%
+  mutate(log2fc_sd = sd(log2fc)) %>%
+  ungroup()
+```
+
+```{r}
+devp_single <- cadir_res %>%
   filter(apl_q == 0.9999) %>%
   ggplot(aes(x = nr_cts, y = diff_mean, color = apl_q)) +
   facet_wrap(~k, labeller = label_both) +
@@ -1423,7 +1486,7 @@ ggsave(
 ```
 
 ```{r}
-devp <- res %>%
+devp <- cadir_res %>%
   ggplot(aes(x = nr_cts, y = diff_mean, color = apl_q)) +
   facet_wrap(~k, labeller = label_both) +
   geom_point() +
@@ -1457,7 +1520,41 @@ ggsave(
 ```
 
 ```{r}
-log2fc <- res %>%
+devp_seurat <- seurat_res %>%
+  ggplot(aes(x = nr_cts, y = diff_mean, color = resolution)) +
+  facet_wrap(~NNs, labeller = label_both) +
+  geom_point() +
+  geom_errorbar(aes(ymin = diff_mean - diff_sd, ymax = diff_mean + diff_sd)) +
+  geom_line() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "# clusters", y = "deviation", title = "Detected clusters") +
+  scale_color_mpimg() +
+  theme_bw(base_size = 22) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 28)
+  )
+
+# devp
+
+ggsave(
+  filename = file.path(imgdir, "seurat_deviation_detection.pdf"),
+  plot = devp_seurat,
+  width = 3000,
+  height = 2400,
+  units = "px"
+)
+ggsave(
+  filename = file.path(imgdir, "seurat_deviation_detection.png"),
+  plot = devp_seurat,
+  width = 3000,
+  height = 2400,
+  units = "px"
+)
+```
+
+```{r}
+log2fc <- cadir_res %>%
   # filter(apl_q == 0.9999) %>%
   ggplot(aes(x = nr_cts, y = log2fc_mean, color = apl_q)) +
   facet_wrap(~k) +
@@ -1770,6 +1867,43 @@ ggsave(
 )
 
 # suppl_panel
+```
+
+```{r}
+dct_panel <- devp +
+  devp_seurat +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    text = element_text(size = 18),
+    plot.title = element_text(size = 18, face = "plain"),
+    plot.tag = element_text(size = 20, face = "bold"),
+    legend.text = element_text(size = 14)
+  )
+
+ggsave(
+  plot = dct_panel,
+  filename = file.path(imgdir, "ct_detection_panel.png"),
+  width = 6000,
+  height = 2069,
+  units = "px"
+)
+
+
+ggsave(
+  plot = dct_panel,
+  filename = file.path(imgdir, "ct_detection_panel.tiff"),
+  width = 6000,
+  height = 2069,
+  units = "px"
+)
+
+ggsave(
+  plot = dct_panel,
+  filename = file.path(imgdir, "ct_detection_panel.pdf"),
+  width = 6400,
+  height = 2200,
+  units = "px"
+)
 ```
 
 
