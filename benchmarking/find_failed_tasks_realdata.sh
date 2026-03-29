@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ############
-# nruns: 0 #
+# nruns: 2 #
 ############
 
 # date=$(date '+%Y%m%d')
 # date="20260325_revision2"
-date="20260328_revision2"
+date="20260325_revision2"
 OUTDIR="./results/benchmarking/results/real/${date}/"
 
 dataset_list=("Darmanis"

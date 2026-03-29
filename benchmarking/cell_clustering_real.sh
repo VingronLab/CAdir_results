@@ -3,7 +3,7 @@
 # add date to output folder
 # date=$(date '+%Y%m%d')
 # date="20260325_revision2"
-date="20260328_revision2"
+date="20260325_revision2"
 
 THREADS=6
 MEMORY=50G

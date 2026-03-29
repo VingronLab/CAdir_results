@@ -1,13 +1,13 @@
 #!/bin/bash
 
 ############
-# nruns: 0 #
+# nruns: 2 #
 ############
 
 # date=$(date '+%Y%m%d')
 # date="20251121"
 # date="20260325_revision2"
-date="20260328_revision2"
+date="20260325_revision2"
 OUTDIR="./results/benchmarking/results/simulated_sparse/${date}"
 
 dataset_list=("zeisel" "pbmc3k")
