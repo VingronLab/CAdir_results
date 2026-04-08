@@ -44,7 +44,8 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 
 ```{r}
 # date <- "20250403"
-date <- "20251204"
+# date <- "20251204"
+date <- "20260325_revision2"
 base_dir <- file.path("./results/benchmarking/results/biclustering", date)
 indir <- file.path(base_dir, "eval")
 ```

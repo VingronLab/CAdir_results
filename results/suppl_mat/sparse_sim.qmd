@@ -44,8 +44,8 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 # Cell clustering benchmarking
 
 ```{r}
-date <- "20251121"
-# date <- "20251204"
+# date <- "20251121"
+date <- "20260325_revision2"
 base_dir <- file.path("./results/benchmarking/results/simulated_sparse", date)
 indir <- file.path(base_dir, "eval")
 ```
@@ -435,7 +435,8 @@ ggsave(
 # Biclustering
 
 ```{r}
-date <- "20251204"
+# date <- "20251204"
+date <- "20260325_revision2"
 # date <- "20251121"
 base_dir <- file.path(
   "./results/benchmarking/results/biclustering_sparse",

@@ -6,7 +6,7 @@ MINUTES=1200
 
 # date=$(date '+%Y%m%d')
 # date="TEST"
-date="20260329_revision2"
+date="20260325_revision2"
 
 outdir="./results/benchmarking/results/ct_detection/${date}"
 # outdir="./results/benchmarking/results/ct_detection_batch_corr/${date}"

@@ -1344,7 +1344,7 @@ ggsave(
 ```{r}
 # date <- "20240812"
 # date = "20260325_revision2"
-date = "20260329_revision2"
+date = "20260325_revision2"
 indir <- "./results/benchmarking/results/ct_detection/"
 # FIXME: filter out seurat vs CAdir
 if (
