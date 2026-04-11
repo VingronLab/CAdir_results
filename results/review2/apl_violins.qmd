@@ -34,6 +34,7 @@ suppressPackageStartupMessages({
   library(ggplot2)
   library(ggbeeswarm)
   library(patchwork)
+  library(svglite)
 })
 
 options(repr.plot.width = 20, repr.plot.height = 15)
@@ -314,7 +315,7 @@ violin_b_list <- lapply(selected_bc_genes, function(g) {
     group = as.character(cak@cell_clusters)
   )
   ggplot(df, aes(x = group, y = expr, fill = group)) +
-    geom_violin(scale = "width", trim = TRUE, alpha = 0.25) +
+    geom_violin(scale = "width", trim = TRUE, alpha = 0.1) +
     geom_quasirandom(
       aes(color = group),
       size = 0.8,
@@ -364,7 +365,7 @@ violin_e_list <- lapply(selected_e_genes, function(g) {
     group = as.character(cak@cell_clusters)
   )
   ggplot(df, aes(x = group, y = expr, fill = group)) +
-    geom_violin(scale = "width", trim = TRUE, alpha = 0.25) +
+    geom_violin(scale = "width", trim = TRUE, alpha = 0.1) +
     geom_quasirandom(
       aes(color = group),
       size = 0.8,
@@ -459,9 +460,78 @@ ggsave(
 )
 ```
 
+```{r}
+## Render and save
+ggsave(
+  plot = b_combined,
+  file = file.path(imgdir, "B_cell_apl_violins.pdf"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = e_combined,
+  file = file.path(imgdir, "endothelial_apl_violins.pdf"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = b_beeswarm_combined,
+  file = file.path(imgdir, "B_cell_apl_beeswarm.pdf"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = e_beeswarm_combined,
+  file = file.path(imgdir, "endothelial_apl_beeswarm.pdf"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+```
+
+```{r}
+## Render and save
+ggsave(
+  plot = b_combined,
+  file = file.path(imgdir, "B_cell_apl_violins.svg"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = e_combined,
+  file = file.path(imgdir, "endothelial_apl_violins.svg"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = b_beeswarm_combined,
+  file = file.path(imgdir, "B_cell_apl_beeswarm.svg"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+
+ggsave(
+  plot = e_beeswarm_combined,
+  file = file.path(imgdir, "endothelial_apl_beeswarm.svg"),
+  width = 5000,
+  height = 3000,
+  units = "px"
+)
+```
+
 # sessionInfo
 ```{r}
 sessionInfo()
 ```
-
 

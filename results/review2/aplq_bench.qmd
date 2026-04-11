@@ -181,7 +181,17 @@ dfr$dataset[dfr$dataset == "brain_organoids"] <- "Brain Organoids"
 ```
 
 ```{r}
-# TODO: make panels for results
+
+deltadf <- dfr %>%
+  group_by(dataset) %>%
+  mutate(std = sd(ARI)) %>%
+  mutate(delta = max(ARI, na.rm = TRUE) - min(ARI, na.rm = TRUE)) %>%
+  select(dataset, std, delta) %>%
+  distinct()
+```
+
+
+```{r}
 
 pr <- ggplot(
   dfr,

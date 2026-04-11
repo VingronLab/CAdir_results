@@ -1,0 +1,171 @@
+---
+title: Benchmark panels
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
+  library(APL)
+
+  library(SingleCellExperiment)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(tidyr)
+  library(dplyr)
+
+  library(ggplot2)
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+set.seed(2358)
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review2/bench_panel/")
+resdir <- file.path(dir, "out/review2/bench_panels/")
+dir.create(imgdir, recursive = TRUE)
+dir.create(resdir, recursive = TRUE)
+```
+
+```{r}
+
+df1 <- readRDS(file.path(
+  "./results/out/review2/dim_bench/",
+  "real_res_ndim_list.rds"
+))
+df1 <- do.call(rbind, df1)
+df2 <- readRDS(file.path(
+  "./results/out/review2/aplq_bench/",
+  "real_res_aplq_list.rds"
+))
+df2 <- do.call(rbind, df2)
+```
+
+```{r}
+
+df1$dataset[df1$dataset == "FreytagGold"] <- "Freytag Gold"
+df1$dataset[df1$dataset == "PBMC_10X"] <- "PBMC10x"
+df1$dataset[df1$dataset == "Tirosh_nonmaglignant"] <- "Tirosh"
+df1$dataset[df1$dataset == "ZeiselBrain"] <- "Zeisel"
+df1$dataset[df1$dataset == "BaronPancreas"] <- "Baron Pancreas"
+df1$dataset[df1$dataset == "dmel_E14-16h"] <- "Dmel Spatial"
+df1$dataset[df1$dataset == "tabula_sapiens_tissue"] <- "Tabula Sapiens"
+df1$dataset[df1$dataset == "brain_organoids"] <- "Brain Organoids"
+
+df2$dataset[df2$dataset == "FreytagGold"] <- "Freytag Gold"
+df2$dataset[df2$dataset == "PBMC_10X"] <- "PBMC10x"
+df2$dataset[df2$dataset == "Tirosh_nonmaglignant"] <- "Tirosh"
+df2$dataset[df2$dataset == "ZeiselBrain"] <- "Zeisel"
+df2$dataset[df2$dataset == "BaronPancreas"] <- "Baron Pancreas"
+df2$dataset[df2$dataset == "dmel_E14-16h"] <- "Dmel Spatial"
+df2$dataset[df2$dataset == "tabula_sapiens_tissue"] <- "Tabula Sapiens"
+df2$dataset[df2$dataset == "brain_organoids"] <- "Brain Organoids"
+```
+
+```{r}
+pr1 <- ggplot(
+  df1,
+  aes(x = ndims, y = ARI, color = dataset, group = dataset)
+) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 1) +
+  CAdir::scale_color_mpimg(name = "mpi_extend") +
+  labs(
+    title = "Nr. of dim. vs. ARI - real data",
+    x = "dimensions",
+    y = "ARI",
+    color = "Dataset"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text = element_text(size = 10, color = "black"),
+    axis.title = element_text(size = 11),
+    plot.title = element_text(size = 12)
+  )
+```
+
+
+
+```{r}
+pr2 <- ggplot(
+  df2,
+  aes(x = aplq, y = ARI, color = dataset, group = dataset)
+) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 1) +
+  CAdir::scale_color_mpimg(name = "mpi_extend") +
+  labs(
+    title = "APL quantile vs. ARI - real data",
+    x = "APL cutoff quantile",
+    y = "ARI",
+    color = "Dataset"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text = element_text(size = 10, color = "black"),
+    axis.title = element_text(size = 11),
+    plot.title = element_text(size = 12)
+  )
+```
+
+
+```{r}
+panel <- pr1 +
+  pr2 +
+  # guides(fill = guide_legend(nrow = 3, byrow = TRUE)) +
+  plot_layout(guides = "collect") +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    legend.position = "bottom",
+    legend.box = "vertical",
+    legend.margin = margin()
+  )
+
+ggsave(
+  filename = file.path(imgdir, "bench_comb_panel.png"),
+  plot = panel,
+  width = 4000,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  filename = file.path(imgdir, "bench_comb_panel.pdf"),
+  plot = panel,
+  width = 4000,
+  height = 2000,
+  units = "px"
+)
+
+ggsave(
+  filename = file.path(imgdir, "bench_comb_panel.tiff"),
+  plot = panel,
+  width = 4000,
+  height = 2000,
+  units = "px"
+)
+```
+
+
