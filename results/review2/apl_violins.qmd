@@ -116,7 +116,7 @@ cak <- annotate_biclusters(
 )
 
 sce_sub$cadir <- cak@cell_clusters
-
+cak <- rank_genes(cak, caobj = ca)
 cak
 ```
 
@@ -214,7 +214,7 @@ ggsave(
 # APL endothelial cells
 ```{r}
 cls <- "Endothelial_cell"
-selected_e_genes <- c("Dlg2", "Eng", "Kitl", "Pecam1", "Cdh5") #"Itga1",
+selected_e_genes <- c("Dlg2", "Itpkb", "Kitl", "Pecam1", "Cdh5") #"Itga1",
 group <- which(cak@cell_clusters == cls)
 
 model <- apl_model(
@@ -308,12 +308,15 @@ then draw a violin plot per gene and connect each violin back to its point.
 ```{r}
 ## Build one violin plot per gene
 expr_mat <- as.matrix(logcounts(sce_sub))
+gene_norm <- row_norm(ca@prin_coords_rows)
 
 violin_b_list <- lapply(selected_bc_genes, function(g) {
   df <- data.frame(
     expr = expr_mat[g, ],
     group = as.character(cak@cell_clusters)
   )
+  stheta <- cak@gene_ranks$B_cell$Score[cak@gene_ranks$B_cell$Rowname == g]
+  gnorm <- gene_norm[g]
   ggplot(df, aes(x = group, y = expr, fill = group)) +
     geom_violin(scale = "width", trim = TRUE, alpha = 0.1) +
     geom_quasirandom(
@@ -324,7 +327,17 @@ violin_b_list <- lapply(selected_bc_genes, function(g) {
     ) +
     scale_fill_mpimg(name = "mpimg") +
     scale_color_mpimg(name = "mpimg") +
-    labs(y = "log-counts", title = g) +
+    labs(
+      y = "log-counts",
+      title = paste0(
+        g,
+        ", ",
+        "S\u03b8: ",
+        round(stheta, 2),
+        ", norm: ",
+        round(gnorm, 2)
+      )
+    ) +
     theme_bw(base_size = 12) +
     theme(
       legend.position = "none",
@@ -364,6 +377,10 @@ violin_e_list <- lapply(selected_e_genes, function(g) {
     expr = expr_mat[g, ],
     group = as.character(cak@cell_clusters)
   )
+  stheta <- cak@gene_ranks$Endothelial_cell$Score[
+    cak@gene_ranks$Endothelial_cell$Rowname == g
+  ]
+  gnorm <- gene_norm[g]
   ggplot(df, aes(x = group, y = expr, fill = group)) +
     geom_violin(scale = "width", trim = TRUE, alpha = 0.1) +
     geom_quasirandom(
@@ -374,7 +391,17 @@ violin_e_list <- lapply(selected_e_genes, function(g) {
     ) +
     scale_fill_mpimg(name = "mpimg") +
     scale_color_mpimg(name = "mpimg") +
-    labs(y = "log-counts", title = g) +
+    labs(
+      y = "log-counts",
+      title = paste0(
+        g,
+        ", ",
+        "S\u03b8: ",
+        round(stheta, 2),
+        ", norm: ",
+        round(gnorm, 2)
+      )
+    ) +
     theme_bw(base_size = 12) +
     theme(
       legend.position = "none",

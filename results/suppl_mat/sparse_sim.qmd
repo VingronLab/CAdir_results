@@ -142,6 +142,7 @@ df_all$algorithm <- factor(
     "Monocle3",
     "SC3",
     "SIMLR",
+    "DivBiclust",
     "scDeepCluster",
     "scG-cluster"
   )
@@ -539,6 +540,7 @@ df_all$algorithm <- factor(
     "CCA",
     "Plaid",
     "QUBIC",
+    "QUBIC2",
     "s4vd",
     "NMF"
   )
