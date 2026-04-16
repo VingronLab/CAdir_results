@@ -169,8 +169,8 @@ df <- df_all %>%
   distinct() %>%
   ungroup()
 
-df$max_ARI[is.infinite(df$max_ARI)] <- 0
-df$max_NMI[is.infinite(df$max_NMI)] <- 0
+# df$max_ARI[is.infinite(df$max_ARI)] <- 0
+# df$max_NMI[is.infinite(df$max_NMI)] <- 0
 ```
 
 ```{r}
@@ -578,9 +578,9 @@ df_max <- df_all %>%
   distinct() %>%
   ungroup()
 
-df_max$max_CE[is.infinite(df_max$max_CE)] <- 0
-df_max$max_ARI_cells[is.infinite(df_max$max_ARI_cells)] <- 0
-df_max$max_ARI_cells[is.infinite(df_max$max_ARI_genes)] <- 0
+# df_max$max_CE[is.infinite(df_max$max_CE)] <- 0
+# df_max$max_ARI_cells[is.infinite(df_max$max_ARI_cells)] <- 0
+# df_max$max_ARI_cells[is.infinite(df_max$max_ARI_genes)] <- 0
 ```
 
 ### Biclustering - Max Results

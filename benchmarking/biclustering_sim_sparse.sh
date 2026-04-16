@@ -31,7 +31,7 @@ for dataset in "${datasets[@]}"; do
 
   ntop=(2000 4000 6000)
   nclust=6
-  truth='Group'
+  truth="Group"
   cc=0  # set is_cell_clustering to FALSE
   sim=1 # set simulation to TRUE
 
@@ -80,7 +80,7 @@ for dataset in "${datasets[@]}"; do
       ##########
       # Seurat #
       ##########
-      source ./benchmarking/submit_scripts/Seurat.sh
+      # source ./benchmarking/submit_scripts/Seurat.sh
 
       ############
       # Monocle3 #
@@ -105,12 +105,12 @@ for dataset in "${datasets[@]}"; do
       #########
       # NMF   #
       #########
-      # source ./benchmarking/submit_scripts/nmf.sh
+      source ./benchmarking/submit_scripts/nmf.sh
       
       ##########
       # QUBIC2 #
       ##########
-      source ./benchmarking/submit_scripts/QUBIC2.sh
+      # source ./benchmarking/submit_scripts/QUBIC2.sh
 
       if [ "$test_run" = true ]; then
         break 3
