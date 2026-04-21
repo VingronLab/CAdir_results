@@ -1343,10 +1343,9 @@ ggsave(
 
 ```{r}
 # date <- "20240812"
-# date = "20260325_revision2"
+# date = "260418_TEST"
 date = "20260325_revision2"
 indir <- "./results/benchmarking/results/ct_detection/"
-# FIXME: filter out seurat vs CAdir
 if (
   file.exists(file.path(indir, date, "eval", "cadir_results.csv")) &&
     file.exists(file.path(indir, date, "eval", "seurat_results.csv"))
@@ -1367,7 +1366,7 @@ if (
   # For multiple split files.
   cadir_files <- list.files(
     path = file.path(indir, date, "out"),
-    pattern = "^ct_detection*.csv",
+    pattern = "^ct_detection",
     full.names = TRUE
   )
 
@@ -1432,6 +1431,8 @@ cadir_res <- cadir_res %>%
   mutate(diff_sd = sd(diff_abs)) %>%
   mutate(log2fc_mean = mean(log2fc)) %>%
   mutate(log2fc_sd = sd(log2fc)) %>%
+  mutate(mean_ari = mean(ari)) %>%
+  mutate(sd_ari = sd(ari)) %>%
   ungroup()
 ```
 
@@ -1450,6 +1451,8 @@ seurat_res <- seurat_res %>%
   mutate(diff_sd = sd(diff_abs)) %>%
   mutate(log2fc_mean = mean(log2fc)) %>%
   mutate(log2fc_sd = sd(log2fc)) %>%
+  mutate(mean_ari = mean(ari)) %>%
+  mutate(sd_ari = sd(ari)) %>%
   ungroup()
 ```
 
@@ -1496,6 +1499,7 @@ devp <- cadir_res %>%
   labs(x = "# clusters", y = "deviation", title = "Detected clusters") +
   scale_color_mpimg() +
   theme_bw(base_size = 22) +
+  # ylim(c(-10, 10)) +
   theme(
     legend.position = "bottom",
     plot.title = element_text(size = 28)
@@ -1586,6 +1590,59 @@ ggsave(
   units = "px"
 )
 ```
+
+```{r}
+cls_ari_cadir <- cadir_res %>%
+  ggplot(aes(x = nr_cts, y = mean_ari, color = apl_q)) +
+  facet_wrap(~k, labeller = label_both) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean_ari - sd_ari, ymax = mean_ari + sd_ari)) +
+  geom_line() +
+  labs(x = "# clusters", y = "ARI", title = "ARI against sampled clusters") +
+  scale_color_mpimg() +
+  theme_bw(base_size = 22) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 28)
+  )
+
+cls_ari_seurat <- seurat_res %>%
+  ggplot(aes(x = nr_cts, y = mean_ari, color = resolution)) +
+  facet_wrap(~NNs, labeller = label_both) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean_ari - sd_ari, ymax = mean_ari + sd_ari)) +
+  geom_line() +
+  labs(x = "# clusters", y = "ARI", title = "ARI against sampled clusters") +
+  scale_color_mpimg() +
+  theme_bw(base_size = 22) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 28)
+  )
+```
+
+```{r}
+ari_panel_cls <- cls_ari_cadir +
+  cls_ari_seurat +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    text = element_text(size = 18),
+    plot.title = element_text(size = 18, face = "plain"),
+    plot.tag = element_text(size = 20, face = "bold"),
+    legend.text = element_text(size = 14)
+  )
+
+ggsave(
+  plot = ari_panel_cls,
+  filename = file.path(imgdir, "ari_cls_detection_panel.png"),
+  width = 4000,
+  height = 2000,
+  units = "px"
+)
+```
+
+
+
 
 ## Comparison 30 clusters
 

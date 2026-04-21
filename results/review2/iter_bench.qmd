@@ -233,9 +233,14 @@ for (i in seq_len(length(data_files))) {
     clip = TRUE
   )
 
+  # Ensure that all iterations are initilized the same
+  center_ids <- kmeanspp_init(points = ca@prin_coords_cols, k = dft$kdir)
+  lines <- ca@prin_coords_cols[center_ids, ]
+
   for (j in seq_along(iters)) {
     n <- iters[j]
     cat("\n\titer:", n)
+    set.seed(2358)
     cadir <- dirclust_splitmerge(
       caobj = ca,
       k = dft$kdir,
@@ -243,7 +248,8 @@ for (i in seq_len(length(data_files))) {
       apl_quant = dft$apl_quant,
       reps = n,
       convergence_thr = FALSE,
-      keep_log = FALSE
+      keep_log = FALSE,
+      lines = lines
     )
 
     ari <- aricode::clustComp(cadir@cell_clusters, sce$truth)$ARI
@@ -313,9 +319,14 @@ for (i in seq_len(length(sim_files))) {
     clip = TRUE
   )
 
+  # Ensure that all iterations are initilized the same
+  center_ids <- kmeanspp_init(points = ca@prin_coords_cols, k = dft$kdir)
+  lines <- ca@prin_coords_cols[center_ids, ]
+
   for (j in seq_along(iters)) {
     n <- iters[j]
     cat("\n\titer:", n)
+    set.seed(2358)
     cadir <- dirclust_splitmerge(
       caobj = ca,
       k = dft$kdir,
@@ -323,7 +334,8 @@ for (i in seq_len(length(sim_files))) {
       apl_quant = dft$apl_quant,
       reps = n,
       convergence_thr = FALSE,
-      keep_log = FALSE
+      keep_log = FALSE,
+      lines = lines
     )
 
     ari <- aricode::clustComp(cadir@cell_clusters, sce$Group)$ARI
@@ -452,4 +464,8 @@ ggsave(
 ```
 
 
+# session info
+```{r}
+sessionInfo()
+```
 

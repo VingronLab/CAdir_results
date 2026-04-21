@@ -204,6 +204,10 @@ for (i in seq_len(length(data_files))) {
     keep_log = FALSE
   )
 
+  # Ensure that all iterations are initilized the same
+  center_ids <- kmeanspp_init(points = ca@prin_coords_cols, k = dft$kdir)
+  lines <- ca@prin_coords_cols[center_ids, ]
+
   for (j in seq_along(iters)) {
     n <- iters[j]
     cat("\n\titer", n)
@@ -226,7 +230,8 @@ for (i in seq_len(length(data_files))) {
       cutoff = rnd_ang,
       apl_quant = dft$apl_quant,
       reps = 15,
-      keep_log = FALSE
+      keep_log = FALSE,
+      lines = lines
     )
 
     sce$cadir_rnd <- cadir_rnd@cell_clusters

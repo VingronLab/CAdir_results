@@ -178,7 +178,7 @@ for (i in reps) {
     qcutoff = 0.2
   )
 
-  cak <- annotate_biclustering(
+  cak <- annotate_biclusters(
     obj = cak,
     universe = rownames(sce_sub),
     org = "mm"

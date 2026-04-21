@@ -123,18 +123,26 @@ for (i in seq_len(length(data_files))) {
   sce <- sce[sce_top, ]
   cnts <- as.matrix(logcounts(sce))
 
+  ca_full <- cacomp(
+    obj = cnts,
+    princ_coords = 3,
+    dims = max(dim_seq) + 10, #20
+    top = nrow(cnts),
+    residuals = "pearson",
+    clip = TRUE
+  )
+
+  # Ensure that all iterations are initilized the same
+  center_ids <- kmeanspp_init(points = ca_full@prin_coords_cols, k = dft$kdir)
+  lines <- ca_full@prin_coords_cols[center_ids, ]
+
   for (j in seq_along(dim_seq)) {
     n <- dim_seq[j]
     cat("\n\tnr. dims:", n)
 
-    ca <- cacomp(
-      obj = cnts,
-      princ_coords = 3,
-      dims = n, #20
-      top = nrow(cnts),
-      residuals = "pearson",
-      clip = TRUE
-    )
+    ca <- APL::subset_dims(ca_full, dims = n)
+    lines_sub <- lines[, seq_len(n)]
+
     cadir <- dirclust_splitmerge(
       caobj = ca,
       k = dft$kdir,
@@ -145,7 +153,8 @@ for (i in seq_len(length(data_files))) {
       reps = 15,
       convergence_thr = 0.001,
       keep_log = FALSE,
-      make_plots = FALSE
+      make_plots = FALSE,
+      lines = lines_sub
     )
 
     ari <- aricode::clustComp(cadir@cell_clusters, sce$truth)$ARI

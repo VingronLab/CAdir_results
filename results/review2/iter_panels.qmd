@@ -1,0 +1,237 @@
+---
+title: Benchmark iter panel
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+source("./results/utils.R")
+
+suppressPackageStartupMessages({
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
+  library(APL)
+
+  library(SingleCellExperiment)
+  library(scater)
+  library(scuttle)
+  library(scran)
+
+  library(tidyr)
+  library(dplyr)
+
+  library(ggplot2)
+  library(patchwork)
+})
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+set.seed(2358)
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review2/iter_panels/")
+dir.create(imgdir, recursive = TRUE)
+```
+
+
+# SPLIT MERGE
+```{r}
+
+resdir <- file.path(dir, "out/review2/iter_bench/")
+res_list_sim <- readRDS(file.path(resdir, "sim_res_list.rds"))
+res_list_real <- readRDS(file.path(resdir, "real_res_list.rds"))
+```
+
+```{r}
+dfr <- do.call(rbind, res_list_real)
+dfr$dataset[dfr$dataset == "FreytagGold"] <- "Freytag Gold"
+dfr$dataset[dfr$dataset == "PBMC_10X"] <- "PBMC10x"
+dfr$dataset[dfr$dataset == "Tirosh_nonmaglignant"] <- "Tirosh"
+dfr$dataset[dfr$dataset == "ZeiselBrain"] <- "Zeisel"
+dfr$dataset[dfr$dataset == "BaronPancreas"] <- "Baron Pancreas"
+dfr$dataset[dfr$dataset == "dmel_E14-16h"] <- "Dmel Spatial"
+dfr$dataset[dfr$dataset == "tabula_sapiens_tissue"] <- "Tabula Sapiens"
+dfr$dataset[dfr$dataset == "brain_organoids"] <- "Brain Organoids"
+```
+
+```{r}
+dfs <- do.call(rbind, res_list_sim)
+dfs$base <- sapply(dfs$dataset, function(x) stringr::str_split(x, "_")[[1]][1])
+dfs$params <- gsub("zeisel_|pbmc3k_", "", dfs$dataset)
+```
+
+```{r}
+# TODO: make panels for results
+
+pr <- ggplot(
+  dfr,
+  aes(x = n_iters, y = ARI, color = dataset, group = dataset)
+) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 1) +
+  CAdir::scale_color_mpimg(name = "mpi_extend") +
+  labs(
+    title = "Split-merge iterations vs. ARI - real data",
+    x = "nr. iterations",
+    y = "ARI",
+    color = "Dataset"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text = element_text(size = 10, color = "black"),
+    axis.title = element_text(size = 11),
+    plot.title = element_text(size = 12),
+    legend.position = "bottom"
+  )
+
+ps <- ggplot(
+  dfs,
+  aes(x = n_iters, y = ARI, color = params, linetype = base, group = dataset)
+) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 1) +
+  CAdir::scale_color_mpimg(name = "mpi_extend") +
+  labs(
+    title = "Split-merge iterations vs. ARI - sim. data",
+    x = "nr. iterations",
+    y = "ARI",
+    color = "Dataset"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text = element_text(size = 10, color = "black"),
+    axis.title = element_text(size = 11),
+    plot.title = element_text(size = 12),
+    legend.position = "bottom"
+  )
+```
+
+# DIRCLUST
+```{r}
+resdir <- file.path(dir, "out/review2/iter_bench_dircl/")
+sim_res_list_dircl <- readRDS(file.path(resdir, "sim_res_list_dircl.rds"))
+res_list_real_dircl <- readRDS(file.path(resdir, "real_res_list_dircl.rds"))
+```
+
+```{r}
+dfr <- do.call(rbind, res_list_real_dircl)
+dfr$dataset[dfr$dataset == "FreytagGold"] <- "Freytag Gold"
+dfr$dataset[dfr$dataset == "PBMC_10X"] <- "PBMC10x"
+dfr$dataset[dfr$dataset == "Tirosh_nonmaglignant"] <- "Tirosh"
+dfr$dataset[dfr$dataset == "ZeiselBrain"] <- "Zeisel"
+dfr$dataset[dfr$dataset == "BaronPancreas"] <- "Baron Pancreas"
+dfr$dataset[dfr$dataset == "dmel_E14-16h"] <- "Dmel Spatial"
+dfr$dataset[dfr$dataset == "tabula_sapiens_tissue"] <- "Tabula Sapiens"
+dfr$dataset[dfr$dataset == "brain_organoids"] <- "Brain Organoids"
+```
+
+```{r}
+dfs <- do.call(rbind, sim_res_list_dircl)
+dfs$base <- sapply(dfs$dataset, function(x) stringr::str_split(x, "_")[[1]][1])
+dfs$params <- gsub("zeisel_|pbmc3k_", "", dfs$dataset)
+```
+
+```{r}
+
+pr_dircl <- ggplot(
+  dfr,
+  aes(x = n_iters, y = ARI, color = dataset, group = dataset)
+) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 1) +
+  CAdir::scale_color_mpimg(name = "mpi_extend") +
+  labs(
+    title = "Dirclust iterations vs. ARI - real data",
+    x = "nr. iterations",
+    y = "ARI",
+    color = "Dataset"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text = element_text(size = 10, color = "black"),
+    axis.title = element_text(size = 11),
+    plot.title = element_text(size = 12),
+    legend.position = "bottom"
+  )
+
+ps_dircl <- ggplot(
+  dfs,
+  aes(x = n_iters, y = ARI, color = params, linetype = base, group = dataset)
+) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 1) +
+  CAdir::scale_color_mpimg(name = "mpi_extend") +
+  labs(
+    title = "Dirclust iterations vs. ARI - sim. data",
+    x = "nr. iterations",
+    y = "ARI",
+    color = "Dataset"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text = element_text(size = 10, color = "black"),
+    axis.title = element_text(size = 11),
+    plot.title = element_text(size = 12),
+    legend.position = "bottom"
+  )
+```
+
+# PANELS
+
+```{r}
+panel <- pr +
+  ps +
+  pr_dircl +
+  ps_dircl +
+  plot_layout(ncol = 2) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(size = 18, face = "bold"),
+    legend.position = "bottom",
+    legend.box = "vertical",
+    legend.margin = margin()
+  )
+
+ggsave(
+  filename = file.path(imgdir, "iter_comb_panel.pdf"),
+  plot = panel,
+  width = 4000,
+  height = 4000,
+  units = "px"
+)
+
+ggsave(
+  filename = file.path(imgdir, "iter_comb_panel.png"),
+  plot = panel,
+  width = 4000,
+  height = 4000,
+  units = "px"
+)
+
+ggsave(
+  filename = file.path(imgdir, "iter_comb_panel.tiff"),
+  plot = panel,
+  width = 4000,
+  height = 4000,
+  units = "px"
+)
+```
+
+# session info
+```{r}
+sessionInfo()
+```
+

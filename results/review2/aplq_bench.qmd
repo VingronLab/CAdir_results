@@ -126,6 +126,10 @@ for (i in seq_len(length(data_files))) {
     clip = TRUE
   )
 
+  # Ensure that all iterations are initilized the same
+  center_ids <- kmeanspp_init(points = ca@prin_coords_cols, k = dft$kdir)
+  lines <- ca@prin_coords_cols[center_ids, ]
+
   for (j in seq_along(aplq_seq)) {
     a <- aplq_seq[j]
     cat("\n\tnr. aplq:", a)
@@ -141,7 +145,8 @@ for (i in seq_len(length(data_files))) {
       convergence_thr = 0.001,
       max_iter = 20,
       keep_log = FALSE,
-      make_plots = FALSE
+      make_plots = FALSE,
+      lines = lines
     )
 
     ari <- aricode::clustComp(cadir@cell_clusters, sce$truth)$ARI
@@ -186,8 +191,13 @@ deltadf <- dfr %>%
   group_by(dataset) %>%
   mutate(std = sd(ARI)) %>%
   mutate(delta = max(ARI, na.rm = TRUE) - min(ARI, na.rm = TRUE)) %>%
-  select(dataset, std, delta) %>%
+  mutate(min = min(ARI)) %>%
+  mutate(max = max(ARI)) %>%
+  select(dataset, ARI, std, delta, min, max, aplq) %>%
+  filter(ARI == max | ARI == min) %>%
   distinct()
+
+print(deltadf, n = 102)
 ```
 
 
@@ -240,3 +250,10 @@ ggsave(
   units = "px"
 )
 ```
+
+# session Info
+```{r}
+sessionInfo()
+```
+
+
