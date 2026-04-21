@@ -173,7 +173,7 @@ for (i in reps) {
     counts = NULL,
     min_cells = 50,
     reps = 5,
-    make_plots = TRUE,
+    make_plots = FALSE,
     apl_cutoff_reps = 100,
     qcutoff = 0.2
   )

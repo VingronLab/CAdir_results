@@ -7,10 +7,10 @@ MINUTES=1200
 # date=$(date '+%Y%m%d')
 # date="260418_TEST"
 # date="20260325_revision2"
-date="20260421_revision2"
+date="20260325_revision2"
 
-outdir="./results/benchmarking/results/ct_detection/${date}"
-# outdir="./results/benchmarking/results/ct_detection_batch_corr/${date}"
+# outdir="./results/benchmarking/results/ct_detection/${date}"
+outdir="./results/benchmarking/results/ct_detection_batch_corr/${date}"
 logdir="${outdir}/log/"
 resdir="${outdir}/out/"
 
@@ -27,9 +27,8 @@ nr_cts=(4 6 8 10 12 14 16 18 20 22 24 26 28 30)
 # CAdir #
 #########
 ks=(5 10 15 20 25 30)
-# apl_qs=(0.9900 0.9990 0.9999)
-apl_qs=(0.9500 0.9750 0.9900)
-SCRIPT="./benchmarking/ct_detection/ct_detection_clusters.R"
+apl_qs=(0.9900 0.9990 0.9999)
+SCRIPT="./benchmarking/ct_detection/ct_detection_batch_correction.R"
 
 for k in "${ks[@]}"; do
   for n in "${nr_cts[@]}"; do

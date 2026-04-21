@@ -110,10 +110,6 @@ use_pd <- opt$pd
 subset_cts <- opt$subset_cts
 cellpcl <- opt$cellpcl
 
-# n_cores <- detectCores()
-# cluster <- makeCluster(n_cores - 1)
-# registerDoParallel(cluster)
-
 # Filtering according to:
 # Yu, L., Cao, Y., Yang, J. Y. H. & Yang, P.
 # Benchmarking clustering algorithms on estimating the number of
@@ -135,7 +131,7 @@ sce <- sce[, sce$cell_ontology_class %in% ct_names]
 cell_types <- unique(sce$cell_ontology_class)
 
 res <- data.frame()
-reps <- 1:5
+reps <- 1:10
 
 cat("\nStarting clustering for", n, "clusters.")
 set.seed(2358)
@@ -204,7 +200,7 @@ for (i in reps) {
   if (isTRUE(use_pd)) {
     sub_dims <- pick_dims(
       obj = ca,
-      mat = cnts,
+      mat = cnts_corr,
       method = "elbow_rule",
       return_plot = FALSE,
       reps = 5
@@ -230,7 +226,7 @@ for (i in reps) {
     qcutoff = 0.2
   )
 
-  cak <- annotate_biclustering(
+  cak <- annotate_biclusters(
     obj = cak,
     universe = rownames(sce_sub),
     org = "mm"
@@ -244,6 +240,7 @@ for (i in reps) {
   cts_found <- length(unique(cak@cell_clusters))
 
   tmp <- data.frame(
+    algorithm = "CAdir",
     nr_cts = n,
     cts_found = cts_found,
     ari = ari$ARI,
@@ -257,14 +254,14 @@ for (i in reps) {
     rep = i
   )
 
-  # results[i] <- tmp
   res <- rbind(res, tmp)
 }
 
-# stopCluster(cl = cluster)
-# res <- do.call("rbind", results)
 
 cat("\nDone.")
 
 id <- paste0("_k-", k, "_n-", n, "_q-", q)
-write_csv(x = res, file = file.path(outdir, paste0("ct_detection", id, ".csv")))
+write_csv(
+  x = res,
+  file = file.path(outdir, paste0("ct_detection", id, ".csv"))
+)
