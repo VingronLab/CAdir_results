@@ -93,95 +93,98 @@ df_real$max_ARI[is.infinite(df_real$max_ARI)] <- NA
 
 # Benchmark iterations real
 ```{r}
-dim_seq <- seq.int(5, 150, by = 5)
-# iters <- seq.int(0, 10, by = 5)
+rerun_bench <- FALSE
+res_exists <- file.exists(file.path(resdir, "real_res_ndim_list.rds"))
 
-res_list_real <- vector(mode = "list", length = length(data_files))
-options(rlib_message_verbosity = "quiet")
-for (i in seq_len(length(data_files))) {
-  iter_vec <- vector(mode = "numeric", length = length(dim_seq))
-  ari_vec <- vector(mode = "numeric", length = length(dim_seq))
-  nclust_vec <- vector(mode = "numeric", length = length(dim_seq))
+if (rerun_bench | (!res_exists)) {
+  dim_seq <- seq.int(5, 150, by = 5)
+  # iters <- seq.int(0, 10, by = 5)
 
-  f <- data_files[i]
-  fnm <- gsub("_filtered.rds", "", basename(f))
-  fnm <- gsub(".rds", "", fnm)
-  cat("\n", fnm)
-  sce <- readRDS(f)
+  res_list_real <- vector(mode = "list", length = length(data_files))
+  options(rlib_message_verbosity = "quiet")
+  for (i in seq_len(length(data_files))) {
+    iter_vec <- vector(mode = "numeric", length = length(dim_seq))
+    ari_vec <- vector(mode = "numeric", length = length(dim_seq))
+    nclust_vec <- vector(mode = "numeric", length = length(dim_seq))
 
-  dft <- df_real %>% filter(dataset == fnm)
+    f <- data_files[i]
+    fnm <- gsub("_filtered.rds", "", basename(f))
+    fnm <- gsub(".rds", "", fnm)
+    cat("\n", fnm)
+    sce <- readRDS(f)
 
-  if (dft$angle == 0) {
-    cut_ang <- NULL
-  } else {
-    cut_ang <- dft$angle
-  }
+    dft <- df_real %>% filter(dataset == fnm)
 
-  set.seed(1234)
-  sce_var <- scran::modelGeneVar(sce)
-  sce_top <- scran::getTopHVGs(sce_var, n = dft$ntop, var.threshold = NULL)
-  sce <- sce[sce_top, ]
-  cnts <- as.matrix(logcounts(sce))
+    if (dft$angle == 0) {
+      cut_ang <- NULL
+    } else {
+      cut_ang <- dft$angle
+    }
 
-  ca_full <- cacomp(
-    obj = cnts,
-    princ_coords = 3,
-    dims = max(dim_seq) + 10, #20
-    top = nrow(cnts),
-    residuals = "pearson",
-    clip = TRUE
-  )
+    set.seed(1234)
+    sce_var <- scran::modelGeneVar(sce)
+    sce_top <- scran::getTopHVGs(sce_var, n = dft$ntop, var.threshold = NULL)
+    sce <- sce[sce_top, ]
+    cnts <- as.matrix(logcounts(sce))
 
-  # Ensure that all iterations are initilized the same
-  center_ids <- CAdir:::kmeanspp_init(
-    points = ca_full@prin_coords_cols,
-    k = dft$kdir
-  )
-  lines <- ca_full@prin_coords_cols[center_ids, ]
-
-  for (j in seq_along(dim_seq)) {
-    n <- dim_seq[j]
-    cat("\n\tnr. dims:", n)
-
-    ca <- APL::subset_dims(ca_full, dims = n)
-    lines_sub <- lines[, seq_len(n)]
-
-    cadir <- dirclust_splitmerge(
-      caobj = ca,
-      k = dft$kdir,
-      cutoff = cut_ang,
-      apl_quant = dft$apl_quant,
-      method = "random",
-      min_cells = 20,
-      reps = 15,
-      convergence_thr = 0.001,
-      keep_log = FALSE,
-      make_plots = FALSE,
-      lines = lines_sub
+    ca_full <- cacomp(
+      obj = cnts,
+      princ_coords = 3,
+      dims = max(dim_seq) + 10, #20
+      top = nrow(cnts),
+      residuals = "pearson",
+      clip = TRUE
     )
 
-    ari <- aricode::clustComp(cadir@cell_clusters, sce$truth)$ARI
-    ari_vec[j] <- ari
-    iter_vec[j] <- n
-    nclust_vec[j] <- length(unique(cadir@cell_clusters))
-    rm(cadir, ca)
-  }
+    # Ensure that all iterations are initilized the same
+    center_ids <- CAdir:::kmeanspp_init(
+      points = ca_full@prin_coords_cols,
+      k = dft$kdir
+    )
+    lines <- ca_full@prin_coords_cols[center_ids, ]
 
-  res_list_real[[i]] <- data.frame(
-    dataset = fnm,
-    ndims = iter_vec,
-    nclust = nclust_vec,
-    ARI = ari_vec
-  )
+    for (j in seq_along(dim_seq)) {
+      n <- dim_seq[j]
+      cat("\n\tnr. dims:", n)
+
+      ca <- APL::subset_dims(ca_full, dims = n)
+      lines_sub <- lines[, seq_len(n)]
+
+      cadir <- dirclust_splitmerge(
+        caobj = ca,
+        k = dft$kdir,
+        cutoff = cut_ang,
+        apl_quant = dft$apl_quant,
+        method = "random",
+        min_cells = 20,
+        reps = 15,
+        convergence_thr = 0.001,
+        keep_log = FALSE,
+        make_plots = FALSE,
+        lines = lines_sub
+      )
+
+      ari <- aricode::clustComp(cadir@cell_clusters, sce$truth)$ARI
+      ari_vec[j] <- ari
+      iter_vec[j] <- n
+      nclust_vec[j] <- length(unique(cadir@cell_clusters))
+      rm(cadir, ca)
+    }
+
+    res_list_real[[i]] <- data.frame(
+      dataset = fnm,
+      ndims = iter_vec,
+      nclust = nclust_vec,
+      ARI = ari_vec
+    )
+  }
+  saveRDS(res_list_real, file = file.path(resdir, "real_res_ndim_list.rds"))
+} else {
+  res_list_real <- readRDS(file.path(resdir, "real_res_ndim_list.rds"))
 }
-saveRDS(res_list_real, file = file.path(resdir, "real_res_ndim_list.rds"))
 ```
 
 # Plotting
-
-```{r}
-res_list_real <- readRDS(file.path(resdir, "real_res_ndim_list.rds"))
-```
 
 ```{r}
 dfr <- do.call(rbind, res_list_real)
