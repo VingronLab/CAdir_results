@@ -23,8 +23,8 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  devtools::load_all("~/gits/ClemensKohl/CAdir/")
-  # library(CAdir)
+  # devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  library(CAdir)
   library(APL)
 
   library(SingleCellExperiment)
@@ -42,8 +42,8 @@ suppressPackageStartupMessages({
 options(repr.plot.width = 20, repr.plot.height = 15)
 set.seed(2358)
 dir <- "./results/"
-imgdir <- file.path(dir, "img/review2/bench_panel/")
-resdir <- file.path(dir, "out/review2/bench_panels/")
+imgdir <- file.path(dir, "img/suppl_mat/bench_panel/")
+resdir <- file.path(dir, "out/suppl_mat/bench_panels/")
 dir.create(imgdir, recursive = TRUE)
 dir.create(resdir, recursive = TRUE)
 ```
@@ -51,12 +51,12 @@ dir.create(resdir, recursive = TRUE)
 ```{r}
 
 df1 <- readRDS(file.path(
-  "./results/out/review2/dim_bench/",
+  "./results/out/suppl_mat/dim_bench/",
   "real_res_ndim_list.rds"
 ))
 df1 <- do.call(rbind, df1)
 df2 <- readRDS(file.path(
-  "./results/out/review2/aplq_bench/",
+  "./results/out/suppl_mat/aplq_bench/",
   "real_res_aplq_list.rds"
 ))
 df2 <- do.call(rbind, df2)

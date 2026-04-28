@@ -22,8 +22,8 @@ jupyter:
 renv::load()
 
 suppressPackageStartupMessages({
-  devtools::load_all("~/gits/ClemensKohl/CAdir/")
-  # library(CAdir)
+  # devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  library(CAdir)
   library(scater)
   library(dplyr)
   library(tidyr)
@@ -34,8 +34,8 @@ suppressPackageStartupMessages({
 })
 
 dir <- "./results/"
-imgdir <- file.path(dir, "img/review2/ct_scvi/")
-resdir <- file.path(dir, "out/review2/ct_scvi/")
+imgdir <- file.path(dir, "img/suppl_mat/ct_scvi/")
+resdir <- file.path(dir, "out/suppl_mat/ct_scvi/")
 
 dir.create(imgdir, recursive = TRUE)
 

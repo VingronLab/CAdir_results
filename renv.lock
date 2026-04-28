@@ -349,13 +349,9 @@
     "CAdir": {
       "Package": "CAdir",
       "Version": "0.0.99",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "ClemensKohl",
-      "RemoteRepo": "CAdir",
-      "RemoteRef": "main",
-      "RemoteSha": "4625f085f49cc7de47daa2e2f460bb9ec55ca5c5",
+      "Source": "Local",
+      "RemoteType": "local",
+      "RemoteUrl": "~/gits/ClemensKohl/CAdir",
       "Remotes": "davidsjoberg/ggsankey",
       "Requirements": [
         "APL",
@@ -378,7 +374,7 @@
         "rlang",
         "scales"
       ],
-      "Hash": "f30fe3ec6b1b880dd261e4dc11dc6550"
+      "Hash": "59754f9159d34c08b47e1779ee9f9da0"
     },
     "Cairo": {
       "Package": "Cairo",

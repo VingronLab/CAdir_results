@@ -23,8 +23,8 @@ renv::load()
 source("./results/utils.R")
 
 suppressPackageStartupMessages({
-  devtools::load_all("~/gits/ClemensKohl/CAdir/")
-  # library(CAdir)
+  # devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  library(CAdir)
   library(APL)
 
   library(SingleCellExperiment)
@@ -42,8 +42,8 @@ suppressPackageStartupMessages({
 options(repr.plot.width = 20, repr.plot.height = 15)
 set.seed(2358)
 dir <- "./results/"
-imgdir <- file.path(dir, "img/review2/iter_bench/")
-resdir <- file.path(dir, "out/review2/iter_bench/")
+imgdir <- file.path(dir, "img/suppl_mat/iter_bench/")
+resdir <- file.path(dir, "out/suppl_mat/iter_bench/")
 dir.create(imgdir, recursive = TRUE)
 dir.create(resdir, recursive = TRUE)
 ```
