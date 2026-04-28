@@ -308,7 +308,7 @@ then draw a violin plot per gene and connect each violin back to its point.
 ```{r}
 ## Build one violin plot per gene
 expr_mat <- as.matrix(logcounts(sce_sub))
-gene_norm <- row_norm(ca@prin_coords_rows)
+gene_norm <- CAdir:::row_norm(ca@prin_coords_rows)
 
 violin_b_list <- lapply(selected_bc_genes, function(g) {
   df <- data.frame(

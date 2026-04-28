@@ -151,117 +151,122 @@ df_real$max_ARI[is.infinite(df_real$max_ARI)] <- NA
 
 # Benchmark number of random directions
 ```{r}
-iters <- seq.int(0, 1000, by = 10)
-# iters <- seq.int(0, 30, by = 10)
-iters[1] <- 1
+rerun_bench <- FALSE
+res_exists <- file.exists(file.path(resdir, "files_list.rds"))
 
-files_list <- vector(mode = "list", length = length(data_files))
+if (rerun_bench | (!res_exists)) {
+  iters <- seq.int(0, 1000, by = 10)
+  iters[1] <- 1
 
-options(rlib_message_verbosity = "quiet")
-for (i in seq_len(length(data_files))) {
-  rnd_vec <- vector(mode = "numeric", length = length(iters))
-  rnd_ari_vec <- vector(mode = "numeric", length = length(iters))
-  n_it <- vector(mode = "character", length = length(iters))
-  f <- data_files[i]
-  fnm <- gsub("_filtered.rds", "", basename(f))
-  fnm <- gsub(".rds", "", fnm)
-  cat("\n", fnm)
+  files_list <- vector(mode = "list", length = length(data_files))
 
-  sce <- readRDS(f)
+  options(rlib_message_verbosity = "quiet")
+  for (i in seq_len(length(data_files))) {
+    rnd_vec <- vector(mode = "numeric", length = length(iters))
+    rnd_ari_vec <- vector(mode = "numeric", length = length(iters))
+    n_it <- vector(mode = "character", length = length(iters))
+    f <- data_files[i]
+    fnm <- gsub("_filtered.rds", "", basename(f))
+    fnm <- gsub(".rds", "", fnm)
+    cat("\n", fnm)
 
-  if (fnm == "tabula_muris_sub") {
-    sce$truth <- sce$cell_ontology_class
-  }
+    sce <- readRDS(f)
 
-  dft <- df_real %>% filter(dataset == fnm)
-  if (dft$angle == 0) {
-    cut_ang <- NULL
-  } else {
-    cut_ang <- dft$angle
-  }
-  set.seed(1234)
-  sce_var <- scran::modelGeneVar(sce)
-  sce_top <- scran::getTopHVGs(sce_var, n = dft$ntop, var.threshold = NULL)
-  sce <- sce[sce_top, ]
-  cnts <- as.matrix(logcounts(sce))
+    if (fnm == "tabula_muris_sub") {
+      sce$truth <- sce$cell_ontology_class
+    }
 
-  ca <- cacomp(
-    obj = cnts,
-    princ_coords = 3,
-    dims = dft$dims, #20
-    top = nrow(cnts),
-    residuals = "pearson",
-    clip = TRUE
-  )
+    dft <- df_real %>% filter(dataset == fnm)
+    if (dft$angle == 0) {
+      cut_ang <- NULL
+    } else {
+      cut_ang <- dft$angle
+    }
+    set.seed(1234)
+    sce_var <- scran::modelGeneVar(sce)
+    sce_top <- scran::getTopHVGs(sce_var, n = dft$ntop, var.threshold = NULL)
+    sce <- sce[sce_top, ]
+    cnts <- as.matrix(logcounts(sce))
 
-  cadir <- dirclust_splitmerge(
-    caobj = ca,
-    k = dft$kdir,
-    cutoff = cut_ang,
-    method = "random",
-    apl_quant = dft$apl_quant,
-    reps = 15,
-    keep_log = FALSE
-  )
-
-  # Ensure that all iterations are initilized the same
-  center_ids <- kmeanspp_init(points = ca@prin_coords_cols, k = dft$kdir)
-  lines <- ca@prin_coords_cols[center_ids, ]
-
-  for (j in seq_along(iters)) {
-    n <- iters[j]
-    cat("\n\titer", n)
-
-    rnd_cutoff <- get_apl_cutoff_mod(
-      caobj = ca,
-      method = "random",
-      group = which(cadir@cell_clusters == "cluster_1"),
-      counts = NULL,
-      quant = 0.99,
-      apl_cutoff_reps = n,
-      axis = "cols"
+    ca <- cacomp(
+      obj = cnts,
+      princ_coords = 3,
+      dims = dft$dims, #20
+      top = nrow(cnts),
+      residuals = "pearson",
+      clip = TRUE
     )
 
-    rnd_ang <- CAdir:::rad2deg(rnd_cutoff)
-
-    cadir_rnd <- dirclust_splitmerge(
+    cadir <- dirclust_splitmerge(
       caobj = ca,
       k = dft$kdir,
-      cutoff = rnd_ang,
+      cutoff = cut_ang,
+      method = "random",
       apl_quant = dft$apl_quant,
       reps = 15,
-      keep_log = FALSE,
-      lines = lines
+      keep_log = FALSE
     )
 
-    sce$cadir_rnd <- cadir_rnd@cell_clusters
-    rm(cadir_rnd)
-    ari_rnd <- aricode::clustComp(sce$cadir_rnd, sce$truth)$ARI
+    # Ensure that all iterations are initilized the same
+    center_ids <- CAdir:::kmeanspp_init(
+      points = ca@prin_coords_cols,
+      k = dft$kdir
+    )
+    lines <- ca@prin_coords_cols[center_ids, ]
 
-    rnd_vec[j] <- rnd_ang
-    names(rnd_vec)[j] <- fnm
+    for (j in seq_along(iters)) {
+      n <- iters[j]
+      cat("\n\titer", n)
 
-    rnd_ari_vec[j] <- ari_rnd
-    names(rnd_ari_vec)[j] <- fnm
+      rnd_cutoff <- get_apl_cutoff_mod(
+        caobj = ca,
+        method = "random",
+        group = which(cadir@cell_clusters == "cluster_1"),
+        counts = NULL,
+        quant = 0.99,
+        apl_cutoff_reps = n,
+        axis = "cols"
+      )
 
-    n_it[j] <- n
+      rnd_ang <- CAdir:::rad2deg(rnd_cutoff)
+
+      cadir_rnd <- dirclust_splitmerge(
+        caobj = ca,
+        k = dft$kdir,
+        cutoff = rnd_ang,
+        apl_quant = dft$apl_quant,
+        reps = 15,
+        keep_log = FALSE,
+        lines = lines
+      )
+
+      sce$cadir_rnd <- cadir_rnd@cell_clusters
+      rm(cadir_rnd)
+      ari_rnd <- aricode::clustComp(sce$cadir_rnd, sce$truth)$ARI
+
+      rnd_vec[j] <- rnd_ang
+      names(rnd_vec)[j] <- fnm
+
+      rnd_ari_vec[j] <- ari_rnd
+      names(rnd_ari_vec)[j] <- fnm
+
+      n_it[j] <- n
+    }
+
+    files_list[[i]] <- data.frame(
+      n_iters = n_it,
+      dataset = fnm,
+      cutoff_angle = rnd_vec,
+      ARI = rnd_ari_vec
+    )
   }
-
-  files_list[[i]] <- data.frame(
-    n_iters = n_it,
-    dataset = fnm,
-    cutoff_angle = rnd_vec,
-    ARI = rnd_ari_vec
-  )
+  saveRDS(files_list, file = file.path(resdir, "files_list.rds"))
+} else {
+  files_list <- readRDS(file.path(resdir, "files_list.rds"))
 }
-saveRDS(files_list, file = file.path(resdir, "files_list.rds"))
 ```
 
 # Plot panel
-
-```{r}
-files_list <- readRDS(file.path(resdir, "files_list.rds"))
-```
 
 
 ```{r}

@@ -92,86 +92,93 @@ df_real$max_ARI[is.infinite(df_real$max_ARI)] <- NA
 
 # Benchmark iterations real
 ```{r}
-aplq_seq <- seq(0.7, 0.99, by = 0.01)
-aplq_seq <- c(aplq_seq, 0.999, 0.9999)
-# iters <- seq.int(0, 10, by = 5)
 
-res_list_real <- vector(mode = "list", length = length(data_files))
-options(rlib_message_verbosity = "quiet")
-for (i in seq_len(length(data_files))) {
-  iter_vec <- vector(mode = "numeric", length = length(aplq_seq))
-  ari_vec <- vector(mode = "numeric", length = length(aplq_seq))
-  nclust_vec <- vector(mode = "numeric", length = length(aplq_seq))
+rerun_bench <- FALSE
+res_exists <- file.exists(file.path(resdir, "real_res_aplq_list.rds"))
 
-  f <- data_files[i]
-  fnm <- gsub("_filtered.rds", "", basename(f))
-  fnm <- gsub(".rds", "", fnm)
-  cat("\n", fnm)
-  sce <- readRDS(f)
+if (rerun_bench | (!res_exists)) {
+  aplq_seq <- seq(0.7, 0.99, by = 0.01)
+  aplq_seq <- c(aplq_seq, 0.999, 0.9999)
+  # iters <- seq.int(0, 10, by = 5)
 
-  dft <- df_real %>% filter(dataset == fnm)
+  res_list_real <- vector(mode = "list", length = length(data_files))
+  options(rlib_message_verbosity = "quiet")
+  for (i in seq_len(length(data_files))) {
+    iter_vec <- vector(mode = "numeric", length = length(aplq_seq))
+    ari_vec <- vector(mode = "numeric", length = length(aplq_seq))
+    nclust_vec <- vector(mode = "numeric", length = length(aplq_seq))
 
-  set.seed(1234)
-  sce_var <- scran::modelGeneVar(sce)
-  sce_top <- scran::getTopHVGs(sce_var, n = dft$ntop, var.threshold = NULL)
-  sce <- sce[sce_top, ]
-  cnts <- as.matrix(logcounts(sce))
+    f <- data_files[i]
+    fnm <- gsub("_filtered.rds", "", basename(f))
+    fnm <- gsub(".rds", "", fnm)
+    cat("\n", fnm)
+    sce <- readRDS(f)
 
-  ca <- cacomp(
-    obj = cnts,
-    princ_coords = 3,
-    dims = dft$dims, #20
-    top = nrow(cnts),
-    residuals = "pearson",
-    clip = TRUE
-  )
+    dft <- df_real %>% filter(dataset == fnm)
 
-  # Ensure that all iterations are initilized the same
-  center_ids <- kmeanspp_init(points = ca@prin_coords_cols, k = dft$kdir)
-  lines <- ca@prin_coords_cols[center_ids, ]
+    set.seed(1234)
+    sce_var <- scran::modelGeneVar(sce)
+    sce_top <- scran::getTopHVGs(sce_var, n = dft$ntop, var.threshold = NULL)
+    sce <- sce[sce_top, ]
+    cnts <- as.matrix(logcounts(sce))
 
-  for (j in seq_along(aplq_seq)) {
-    a <- aplq_seq[j]
-    cat("\n\tnr. aplq:", a)
-
-    cadir <- dirclust_splitmerge(
-      caobj = ca,
-      k = dft$kdir,
-      cutoff = NULL,
-      apl_quant = a,
-      method = "random",
-      min_cells = 20,
-      reps = 15,
-      convergence_thr = 0.001,
-      max_iter = 20,
-      keep_log = FALSE,
-      make_plots = FALSE,
-      lines = lines
+    ca <- cacomp(
+      obj = cnts,
+      princ_coords = 3,
+      dims = dft$dims, #20
+      top = nrow(cnts),
+      residuals = "pearson",
+      clip = TRUE
     )
 
-    ari <- aricode::clustComp(cadir@cell_clusters, sce$truth)$ARI
-    ari_vec[j] <- ari
-    iter_vec[j] <- a
-    nclust_vec[j] <- length(unique(cadir@cell_clusters))
-    rm(cadir)
-  }
+    # Ensure that all iterations are initilized the same
+    center_ids <- CAdir:::kmeanspp_init(
+      points = ca@prin_coords_cols,
+      k = dft$kdir
+    )
+    lines <- ca@prin_coords_cols[center_ids, ]
 
-  res_list_real[[i]] <- data.frame(
-    dataset = fnm,
-    aplq = iter_vec,
-    nclust = nclust_vec,
-    true_nclust = rep(length(unique(sce$truth)), length(nclust_vec)),
-    ARI = ari_vec
-  )
+    for (j in seq_along(aplq_seq)) {
+      a <- aplq_seq[j]
+      cat("\n\tnr. aplq:", a)
+
+      cadir <- dirclust_splitmerge(
+        caobj = ca,
+        k = dft$kdir,
+        cutoff = NULL,
+        apl_quant = a,
+        method = "random",
+        min_cells = 20,
+        reps = 15,
+        convergence_thr = 0.001,
+        max_iter = 20,
+        keep_log = FALSE,
+        make_plots = FALSE,
+        lines = lines
+      )
+
+      ari <- aricode::clustComp(cadir@cell_clusters, sce$truth)$ARI
+      ari_vec[j] <- ari
+      iter_vec[j] <- a
+      nclust_vec[j] <- length(unique(cadir@cell_clusters))
+      rm(cadir)
+    }
+
+    res_list_real[[i]] <- data.frame(
+      dataset = fnm,
+      aplq = iter_vec,
+      nclust = nclust_vec,
+      true_nclust = rep(length(unique(sce$truth)), length(nclust_vec)),
+      ARI = ari_vec
+    )
+  }
+  saveRDS(res_list_real, file = file.path(resdir, "real_res_aplq_list.rds"))
+} else {
+  res_list_real <- readRDS(file.path(resdir, "real_res_aplq_list.rds"))
 }
-saveRDS(res_list_real, file = file.path(resdir, "real_res_aplq_list.rds"))
 ```
 
 # Plotting
-
-```{r}
-res_list_real <- readRDS(file.path(resdir, "real_res_aplq_list.rds"))
-```
 
 ```{r}
 dfr <- do.call(rbind, res_list_real)

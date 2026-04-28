@@ -133,7 +133,10 @@ for (i in seq_len(length(data_files))) {
   )
 
   # Ensure that all iterations are initilized the same
-  center_ids <- kmeanspp_init(points = ca_full@prin_coords_cols, k = dft$kdir)
+  center_ids <- CAdir:::kmeanspp_init(
+    points = ca_full@prin_coords_cols,
+    k = dft$kdir
+  )
   lines <- ca_full@prin_coords_cols[center_ids, ]
 
   for (j in seq_along(dim_seq)) {
