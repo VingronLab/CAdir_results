@@ -355,11 +355,14 @@
       "RemoteUsername": "ClemensKohl",
       "RemoteRepo": "CAdir",
       "RemoteRef": "main",
-      "RemoteSha": "6220a3b31035d0248f6165504e2c77b2e59374df",
+      "RemoteSha": "4625f085f49cc7de47daa2e2f460bb9ec55ca5c5",
       "Remotes": "davidsjoberg/ggsankey",
       "Requirements": [
         "APL",
-        "CAbiNet",
+        "R",
+        "RcppHungarian",
+        "dplyr",
+        "fgsea",
         "ggplot2",
         "ggpubr",
         "ggraph",
@@ -375,7 +378,7 @@
         "rlang",
         "scales"
       ],
-      "Hash": "76581e4eb76486a8ae8a1631ffd8aa87"
+      "Hash": "f30fe3ec6b1b880dd261e4dc11dc6550"
     },
     "Cairo": {
       "Package": "Cairo",
@@ -1230,17 +1233,23 @@
     },
     "RcppML": {
       "Package": "RcppML",
-      "Version": "0.3.7",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Version": "0.5.6",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "zdebruine",
+      "RemoteRepo": "RcppML",
+      "RemoteRef": "main",
+      "RemoteSha": "5449a5b479908f40f56cf911f11e0a7e156d207f",
       "Requirements": [
         "Matrix",
         "Rcpp",
-        "RcppEigen",
+        "knitr",
         "methods",
-        "stats"
+        "stats",
+        "utils"
       ],
-      "Hash": "225157373f361daf85198a8d1ddaa733"
+      "Hash": "a6c6c9367001da3f2f1d550fc6dc480c"
     },
     "RcppProgress": {
       "Package": "RcppProgress",
@@ -3411,7 +3420,7 @@
     },
     "ggbeeswarm": {
       "Package": "ggbeeswarm",
-      "Version": "0.7.2",
+      "Version": "0.7.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -3422,7 +3431,7 @@
         "lifecycle",
         "vipor"
       ],
-      "Hash": "899f28fe0388b7f687d7453429c2474d"
+      "Hash": "d10c05637cf3619f3f7001fc99c1b1a6"
     },
     "ggforce": {
       "Package": "ggforce",
@@ -5746,7 +5755,7 @@
     },
     "reticulate": {
       "Package": "reticulate",
-      "Version": "1.37.0",
+      "Version": "1.46.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -5764,7 +5773,7 @@
         "utils",
         "withr"
       ],
-      "Hash": "9465d3bc6ec44eeaa52527ac2cba4020"
+      "Hash": "4a05d547e002c567ad087b0ea1d52774"
     },
     "rhdf5": {
       "Package": "rhdf5",
@@ -6942,6 +6951,23 @@
       ],
       "Hash": "feabd0ba05b66ab807da4e66bbe69ea0"
     },
+    "svglite": {
+      "Package": "svglite",
+      "Version": "2.2.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "base64enc",
+        "cli",
+        "cpp11",
+        "lifecycle",
+        "rlang",
+        "systemfonts",
+        "textshaping"
+      ],
+      "Hash": "40b8a31d6734e45bbb44f241afeb4903"
+    },
     "sys": {
       "Package": "sys",
       "Version": "3.4.2",
@@ -6951,15 +6977,20 @@
     },
     "systemfonts": {
       "Package": "systemfonts",
-      "Version": "1.1.0",
+      "Version": "1.3.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
+        "base64enc",
         "cpp11",
-        "lifecycle"
+        "grid",
+        "jsonlite",
+        "lifecycle",
+        "tools",
+        "utils"
       ],
-      "Hash": "213b6b8ed5afbf934843e6c3b090d418"
+      "Hash": "1f930828d6590af5da47b3ab4fe161e6"
     },
     "tensor": {
       "Package": "tensor",

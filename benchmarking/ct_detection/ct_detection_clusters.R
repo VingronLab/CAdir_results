@@ -158,7 +158,7 @@ for (i in reps) {
       reps = 5
     )
   } else {
-    sub_dims <- n + 20
+    sub_dims <- n + 20 # was 20
     cat("\nUsing", sub_dims, "dimensions.\n")
   }
 

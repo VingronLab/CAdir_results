@@ -1,7 +1,7 @@
 library(reticulate)
 use_condaenv(
   condaenv = "scvi-env-clone",
-  conda = "$HOME/miniconda3/bin/conda"
+  conda = "/home/kohl/miniconda3/bin/conda"
 )
 sc <- import("scanpy", convert = FALSE)
 loompy <- import("loompy")
@@ -171,6 +171,7 @@ for (i in reps) {
     main_layer = "counts",
     drop_single_values = FALSE
   )
+  cat("converted")
 
   # run setup_anndata
   scvi$model$SCVI$setup_anndata(adata, batch_key = "tissue")
@@ -180,6 +181,7 @@ for (i in reps) {
 
   # train the model
   model$train()
+  cat("trained scvi")
 
   # latent <- model$get_latent_representation()
   cnts_corr <- model$get_normalized_expression()

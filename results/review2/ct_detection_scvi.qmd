@@ -1,0 +1,357 @@
+---
+title: Ct detection w/ scvi
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd:quarto'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: R 4.4.1
+    language: R
+    name: ir441
+---
+
+# Setup
+
+```{r}
+# Working directory should be the root directory of repository.
+# setwd("./")
+renv::load()
+
+suppressPackageStartupMessages({
+  devtools::load_all("~/gits/ClemensKohl/CAdir/")
+  # library(CAdir)
+  library(scater)
+  library(dplyr)
+  library(tidyr)
+  library(readr)
+  library(ggplot2)
+  library(patchwork)
+  library(ggthemes)
+})
+
+dir <- "./results/"
+imgdir <- file.path(dir, "img/review2/ct_scvi/")
+resdir <- file.path(dir, "out/review2/ct_scvi/")
+
+dir.create(imgdir, recursive = TRUE)
+
+options(repr.plot.width = 20, repr.plot.height = 15)
+```
+
+# Detection of cluster number
+
+```{r}
+# date <- "20240812"
+# date = "260418_TEST"
+date = "20260325_revision2"
+indir <- "./results/benchmarking/results/ct_detection_batch_corr/"
+if (
+  file.exists(file.path(indir, date, "eval", "cadir_results.csv"))
+  # && file.exists(file.path(indir, date, "eval", "seurat_results.csv"))
+) {
+  # If only a single file:
+  cadir_res <- read_csv(
+    file.path(indir, date, "eval", "cadir_results.csv"),
+    show_col_types = FALSE,
+    progress = FALSE
+  )
+
+  # seurat_res <- read_csv(
+  #   file.path(indir, date, "eval", "seurat_results.csv"),
+  #   show_col_types = FALSE,
+  #   progress = FALSE
+  # )
+} else {
+  # For multiple split files.
+  cadir_files <- list.files(
+    path = file.path(indir, date, "out"),
+    pattern = "^ct_detection",
+    full.names = TRUE
+  )
+
+  # seurat_files <- list.files(
+  #   path = file.path(indir, date, "out"),
+  #   pattern = "^seurat_ct_detection",
+  #   full.names = TRUE
+  # )
+
+  cadir_res <- tibble()
+  for (f in cadir_files) {
+    tmp <- read_csv(file = f, show_col_types = FALSE, progress = FALSE)
+    tmp$file <- basename(f)
+    cadir_res <- bind_rows(cadir_res, tmp)
+  }
+
+  dir.create(file.path(indir, date, "eval"), recursive = TRUE)
+  write_csv(
+    cadir_res,
+    file = file.path(indir, date, "eval", "cadir_results.csv")
+  )
+
+  # seurat_res <- tibble()
+  # for (f in seurat_files) {
+  #   tmp <- read_csv(file = f, show_col_types = FALSE, progress = FALSE)
+  #   tmp$file <- basename(f)
+  #   seurat_res <- bind_rows(seurat_res, tmp)
+  # }
+  #
+  # dir.create(file.path(indir, date, "eval"), recursive = TRUE)
+  # write_csv(
+  #   seurat_res,
+  #   file = file.path(indir, date, "eval", "seurat_results.csv")
+  # )
+}
+
+
+old_col <- any(grepl("^ARI_cells$", colnames(cadir_res)))
+if (isTRUE(old_col)) {
+  sel <- is.na(cadir_res$ARI) & !is.na(cadir_res$ARI_cells)
+  cadir_res$ARI[sel] <- cadir_res$ARI_cells[sel]
+}
+
+# old_col <- any(grepl("^ARI_cells$", colnames(seurat_res)))
+# if (isTRUE(old_col)) {
+#   sel <- is.na(seurat_res$ARI) & !is.na(seurat_res$ARI_cells)
+#   seurat_res$ARI[sel] <- seurat_res$ARI_cells[sel]
+# }
+```
+
+```{r}
+cadir_res <- cadir_res %>%
+  mutate(diff_abs = cts_found - nr_cts) %>%
+  mutate(diff_perc = cts_found / nr_cts) %>%
+  mutate(log2fc = log2(cts_found / nr_cts)) %>%
+  mutate(apl_q = as.factor(apl_q)) %>%
+  mutate(k = as.factor(k))
+
+cadir_res <- cadir_res %>%
+  group_by(nr_cts, k, apl_q) %>%
+  mutate(diff_mean = mean(diff_abs)) %>%
+  mutate(diff_sd = sd(diff_abs)) %>%
+  mutate(log2fc_mean = mean(log2fc)) %>%
+  mutate(log2fc_sd = sd(log2fc)) %>%
+  mutate(mean_ari = mean(ari)) %>%
+  mutate(sd_ari = sd(ari)) %>%
+  ungroup()
+```
+
+
+```{r}
+# seurat_res <- seurat_res %>%
+#   mutate(diff_abs = cts_found - nr_cts) %>%
+#   mutate(diff_perc = cts_found / nr_cts) %>%
+#   mutate(log2fc = log2(cts_found / nr_cts)) %>%
+#   mutate(NNs = as.factor(NNs)) %>%
+#   mutate(resolution = as.factor(resolution))
+#
+# seurat_res <- seurat_res %>%
+#   group_by(nr_cts, NNs, resolution) %>%
+#   mutate(diff_mean = mean(diff_abs)) %>%
+#   mutate(diff_sd = sd(diff_abs)) %>%
+#   mutate(log2fc_mean = mean(log2fc)) %>%
+#   mutate(log2fc_sd = sd(log2fc)) %>%
+#   mutate(mean_ari = mean(ari)) %>%
+#   mutate(sd_ari = sd(ari)) %>%
+#   ungroup()
+```
+
+```{r}
+devp_single <- cadir_res %>%
+  filter(apl_q == 0.9999) %>%
+  ggplot(aes(x = nr_cts, y = diff_mean, color = apl_q)) +
+  facet_wrap(~k, labeller = label_both) +
+  geom_point() +
+  geom_errorbar(aes(ymin = diff_mean - diff_sd, ymax = diff_mean + diff_sd)) +
+  geom_line() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "# clusters", y = "deviation", title = "Detected clusters") +
+  scale_color_mpimg() +
+  theme_bw(base_size = 18) +
+  theme(legend.position = "none")
+
+# devp_single
+
+ggsave(
+  filename = file.path(imgdir, "deviation_aplq-09999_detection.pdf"),
+  plot = devp_single,
+  width = 2200,
+  height = 1800,
+  units = "px"
+)
+ggsave(
+  filename = file.path(imgdir, "deviation_aplq-09999_detection.png"),
+  plot = devp_single,
+  width = 2200,
+  height = 1800,
+  units = "px"
+)
+```
+
+```{r}
+devp <- cadir_res %>%
+  ggplot(aes(x = nr_cts, y = diff_mean, color = apl_q)) +
+  facet_wrap(~k, labeller = label_both) +
+  geom_point() +
+  geom_errorbar(aes(ymin = diff_mean - diff_sd, ymax = diff_mean + diff_sd)) +
+  geom_line() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "# clusters", y = "deviation", title = "Detected clusters") +
+  scale_color_mpimg() +
+  theme_bw(base_size = 22) +
+  # ylim(c(-10, 10)) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 28)
+  )
+
+# devp
+
+ggsave(
+  filename = file.path(imgdir, "deviation_detection.pdf"),
+  plot = devp,
+  width = 3000,
+  height = 2400,
+  units = "px"
+)
+ggsave(
+  filename = file.path(imgdir, "deviation_detection.png"),
+  plot = devp,
+  width = 3000,
+  height = 2400,
+  units = "px"
+)
+```
+
+```{r}
+# devp_seurat <- seurat_res %>%
+#   ggplot(aes(x = nr_cts, y = diff_mean, color = resolution)) +
+#   facet_wrap(~NNs, labeller = label_both) +
+#   geom_point() +
+#   geom_errorbar(aes(ymin = diff_mean - diff_sd, ymax = diff_mean + diff_sd)) +
+#   geom_line() +
+#   geom_hline(yintercept = 0, linetype = "dashed") +
+#   labs(x = "# clusters", y = "deviation", title = "Detected clusters") +
+#   scale_color_mpimg() +
+#   theme_bw(base_size = 22) +
+#   theme(
+#     legend.position = "bottom",
+#     plot.title = element_text(size = 28)
+#   )
+#
+# # devp
+#
+# ggsave(
+#   filename = file.path(imgdir, "seurat_deviation_detection.pdf"),
+#   plot = devp_seurat,
+#   width = 3000,
+#   height = 2400,
+#   units = "px"
+# )
+# ggsave(
+#   filename = file.path(imgdir, "seurat_deviation_detection.png"),
+#   plot = devp_seurat,
+#   width = 3000,
+#   height = 2400,
+#   units = "px"
+# )
+```
+
+```{r}
+log2fc <- cadir_res %>%
+  # filter(apl_q == 0.9999) %>%
+  ggplot(aes(x = nr_cts, y = log2fc_mean, color = apl_q)) +
+  facet_wrap(~k) +
+  geom_point() +
+  geom_line() +
+  geom_errorbar(aes(
+    ymin = log2fc_mean - log2fc_sd,
+    ymax = log2fc_mean + log2fc_sd
+  )) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "# clusters", y = "log2 FC", title = "Detected clusters") +
+  scale_color_mpimg() +
+  theme_bw(base_size = 18)
+
+# log2fc
+
+ggsave(
+  filename = file.path(imgdir, "log2fc_ct_detection.pdf"),
+  plot = log2fc,
+  width = 2800,
+  height = 1800,
+  units = "px"
+)
+ggsave(
+  filename = file.path(imgdir, "log2fc_ct_detection.png"),
+  plot = log2fc,
+  width = 2800,
+  height = 1800,
+  units = "px"
+)
+```
+
+```{r}
+cls_ari_cadir <- cadir_res %>%
+  ggplot(aes(x = nr_cts, y = mean_ari, color = apl_q)) +
+  facet_wrap(~k, labeller = label_both) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean_ari - sd_ari, ymax = mean_ari + sd_ari)) +
+  geom_line() +
+  labs(x = "# clusters", y = "ARI", title = "ARI against sampled clusters") +
+  scale_color_mpimg() +
+  theme_bw(base_size = 22) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 28)
+  )
+
+ggsave(
+  plot = cls_ari_cadir,
+  filename = file.path(imgdir, "ari_cls_detection_panel.png"),
+  width = 2000,
+  height = 2000,
+  units = "px"
+)
+
+# cls_ari_seurat <- seurat_res %>%
+#   ggplot(aes(x = nr_cts, y = mean_ari, color = resolution)) +
+#   facet_wrap(~NNs, labeller = label_both) +
+#   geom_point() +
+#   geom_errorbar(aes(ymin = mean_ari - sd_ari, ymax = mean_ari + sd_ari)) +
+#   geom_line() +
+#   labs(x = "# clusters", y = "ARI", title = "ARI against sampled clusters") +
+#   scale_color_mpimg() +
+#   theme_bw(base_size = 22) +
+#   theme(
+#     legend.position = "bottom",
+#     plot.title = element_text(size = 28)
+#   )
+```
+
+```{r}
+# ari_panel_cls <- cls_ari_cadir +
+#   cls_ari_seurat +
+#   plot_annotation(tag_levels = "a") &
+#   theme(
+#     text = element_text(size = 18),
+#     plot.title = element_text(size = 18, face = "plain"),
+#     plot.tag = element_text(size = 20, face = "bold"),
+#     legend.text = element_text(size = 14)
+#   )
+#
+# ggsave(
+#   plot = ari_panel_cls,
+#   filename = file.path(imgdir, "ari_cls_detection_panel.png"),
+#   width = 4000,
+#   height = 2000,
+#   units = "px"
+# )
+```
+
+
+
+
