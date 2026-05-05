@@ -287,8 +287,6 @@ res_exists <- file.exists(file.path(resdir, "sim_res_list.rds"))
 
 if (rerun_bench | (!res_exists)) {
   iters <- seq.int(1, 50, by = 1)
-  # iters <- seq.int(0, 10, by = 5)
-  # iters[1] <- 1
 
   res_list_sim <- vector(
     mode = "list",
