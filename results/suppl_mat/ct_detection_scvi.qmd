@@ -47,7 +47,7 @@ options(repr.plot.width = 20, repr.plot.height = 15)
 ```{r}
 # date <- "20240812"
 # date = "260418_TEST"
-date = "20260325_revision2"
+date = "20260328_revision2"
 indir <- "./results/benchmarking/results/ct_detection_batch_corr/"
 if (
   file.exists(file.path(indir, date, "eval", "cadir_results.csv"))
