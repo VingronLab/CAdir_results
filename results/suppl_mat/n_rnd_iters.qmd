@@ -293,16 +293,18 @@ p_ari <- ggplot(
   geom_point(size = 1.5) +
   CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
-    title = "Effect of number of random directions on ARI",
+    title = "Effect of nr. of random directions on ARI",
     x = "nr. random directions",
     y = "ARI",
     color = "Dataset"
   ) +
   theme_bw() +
   theme(
-    axis.text = element_text(size = 10, color = "black"),
-    axis.title = element_text(size = 11),
-    plot.title = element_text(size = 12),
+    axis.text = element_text(size = 12, color = "black"),
+    axis.title = element_text(size = 14),
+    plot.title = element_text(size = 16),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
     legend.position = "bottom"
   )
 
@@ -314,16 +316,18 @@ p_ang <- ggplot(
   geom_point(size = 1.5) +
   CAdir::scale_color_mpimg(name = "mpi_extend") +
   labs(
-    title = "Effect of number of random directions on cutoff angle",
+    title = "Effect of nr. of random directions on cutoff angle",
     x = "nr. random directions",
     y = "angle [degrees]",
     color = "Dataset"
   ) +
   theme_bw() +
   theme(
-    axis.text = element_text(size = 10, color = "black"),
-    axis.title = element_text(size = 11),
-    plot.title = element_text(size = 12),
+    axis.text = element_text(size = 12, color = "black"),
+    axis.title = element_text(size = 14),
+    plot.title = element_text(size = 16),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
     legend.position = "bottom"
   )
 ```

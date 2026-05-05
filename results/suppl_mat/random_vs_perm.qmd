@@ -64,109 +64,116 @@ perm_ari_vec <- vector(mode = "numeric", length = length(files))
 
 nms <- vector(mode = "character", length = length(files))
 
-options(rlib_message_verbosity = "quiet")
-for (i in seq_len(length(files))) {
-  f <- files[i]
-  fnm <- gsub("_filtered.rds", "", basename(f))
-  fnm <- gsub(".rds", "", fnm)
+rerun_bench <- FALSE
+res_exists <- file.exists(file.path(resdir, "ang_df.rds"))
 
-  sce <- readRDS(f)
+if (rerun_bench | (!res_exists)) {
+  options(rlib_message_verbosity = "quiet")
+  for (i in seq_len(length(files))) {
+    f <- files[i]
+    fnm <- gsub("_filtered.rds", "", basename(f))
+    fnm <- gsub(".rds", "", fnm)
 
-  if (fnm == "tabula_muris_sub") {
-    sce$truth <- sce$cell_ontology_class
+    sce <- readRDS(f)
+
+    if (fnm == "tabula_muris_sub") {
+      sce$truth <- sce$cell_ontology_class
+    }
+
+    set.seed(1234)
+    sce_var <- scran::modelGeneVar(sce)
+    sce_top <- scran::getTopHVGs(sce_var, n = 2000, var.threshold = NULL) #1000
+    sce <- sce[sce_top, ]
+    cnts <- as.matrix(logcounts(sce))
+
+    ca <- cacomp(
+      obj = cnts,
+      princ_coords = 3,
+      dims = 30, #20
+      top = nrow(cnts),
+      residuals = "pearson",
+      clip = TRUE
+    )
+
+    cadir <- dirclust_splitmerge(
+      caobj = ca,
+      k = 10,
+      cutoff = NULL,
+      method = "random",
+      apl_quant = 0.99
+    )
+
+    rnd_cutoff <- CAdir:::get_apl_cutoff(
+      caobj = ca,
+      method = "random",
+      group = which(cadir@cell_clusters == "cluster_1"),
+      counts = NULL,
+      quant = 0.99,
+      apl_cutoff_reps = 100,
+      axis = "cols"
+    )
+
+    perm_cutoff <- CAdir:::get_apl_cutoff(
+      caobj = ca,
+      method = "random",
+      group = which(cadir@cell_clusters == "cluster_1"),
+      counts = NULL,
+      quant = 0.99,
+      apl_cutoff_reps = 10,
+      axis = "cols"
+    )
+
+    rnd_ang <- CAdir:::rad2deg(rnd_cutoff)
+    perm_ang <- CAdir:::rad2deg(perm_cutoff)
+
+    cadir_rnd <- dirclust_splitmerge(
+      caobj = ca,
+      k = 10,
+      cutoff = rnd_ang,
+      apl_quant = 0.99
+    )
+
+    cadir_perm <- dirclust_splitmerge(
+      caobj = ca,
+      k = 10,
+      cutoff = perm_ang,
+      apl_quant = 0.99
+    )
+
+    sce$cadir_rnd <- cadir_rnd@cell_clusters
+    sce$cadir_perm <- cadir_perm@cell_clusters
+
+    ari_rnd <- aricode::clustComp(sce$cadir_rnd, sce$truth)$ARI
+    ari_perm <- aricode::clustComp(sce$cadir_perm, sce$truth)$ARI
+
+    rnd_vec[i] <- rnd_ang
+    names(rnd_vec)[i] <- fnm
+
+    perm_vec[i] <- perm_ang
+    names(perm_vec)[i] <- fnm
+    nms[i] <- fnm
+
+    rnd_ari_vec[i] <- ari_rnd
+    names(rnd_ari_vec)[i] <- fnm
+
+    perm_ari_vec[i] <- ari_perm
+    names(perm_ari_vec)[i] <- fnm
   }
 
-  set.seed(1234)
-  sce_var <- scran::modelGeneVar(sce)
-  sce_top <- scran::getTopHVGs(sce_var, n = 2000, var.threshold = NULL) #1000
-  sce <- sce[sce_top, ]
-  cnts <- as.matrix(logcounts(sce))
-
-  ca <- cacomp(
-    obj = cnts,
-    princ_coords = 3,
-    dims = 30, #20
-    top = nrow(cnts),
-    residuals = "pearson",
-    clip = TRUE
+  df <- data.frame(
+    "name" = nms,
+    "rnd" = rnd_vec,
+    "perm" = perm_vec,
+    "ARI_rnd" = rnd_ari_vec,
+    "ARI_perm" = perm_ari_vec
   )
 
-  cadir <- dirclust_splitmerge(
-    caobj = ca,
-    k = 10,
-    cutoff = NULL,
-    method = "random",
-    apl_quant = 0.99
-  )
+  options(rlib_message_verbosity = "default")
 
-  rnd_cutoff <- CAdir:::get_apl_cutoff(
-    caobj = ca,
-    method = "random",
-    group = which(cadir@cell_clusters == "cluster_1"),
-    counts = NULL,
-    quant = 0.99,
-    apl_cutoff_reps = 100,
-    axis = "cols"
-  )
-
-  perm_cutoff <- CAdir:::get_apl_cutoff(
-    caobj = ca,
-    method = "random",
-    group = which(cadir@cell_clusters == "cluster_1"),
-    counts = NULL,
-    quant = 0.99,
-    apl_cutoff_reps = 10,
-    axis = "cols"
-  )
-
-  rnd_ang <- CAdir:::rad2deg(rnd_cutoff)
-  perm_ang <- CAdir:::rad2deg(perm_cutoff)
-
-  cadir_rnd <- dirclust_splitmerge(
-    caobj = ca,
-    k = 10,
-    cutoff = rnd_ang,
-    apl_quant = 0.99
-  )
-
-  cadir_perm <- dirclust_splitmerge(
-    caobj = ca,
-    k = 10,
-    cutoff = perm_ang,
-    apl_quant = 0.99
-  )
-
-  sce$cadir_rnd <- cadir_rnd@cell_clusters
-  sce$cadir_perm <- cadir_perm@cell_clusters
-
-  ari_rnd <- aricode::clustComp(sce$cadir_rnd, sce$truth)$ARI
-  ari_perm <- aricode::clustComp(sce$cadir_perm, sce$truth)$ARI
-
-  rnd_vec[i] <- rnd_ang
-  names(rnd_vec)[i] <- fnm
-
-  perm_vec[i] <- perm_ang
-  names(perm_vec)[i] <- fnm
-  nms[i] <- fnm
-
-  rnd_ari_vec[i] <- ari_rnd
-  names(rnd_ari_vec)[i] <- fnm
-
-  perm_ari_vec[i] <- ari_perm
-  names(perm_ari_vec)[i] <- fnm
+  saveRDS(df, file = file.path(resdir, "ang_df.rds"))
+} else {
+  df <- readRDS(file.path(resdir, "ang_df.rds"))
 }
-
-df <- data.frame(
-  "name" = nms,
-  "rnd" = rnd_vec,
-  "perm" = perm_vec,
-  "ARI_rnd" = rnd_ari_vec,
-  "ARI_perm" = perm_ari_vec
-)
-
-options(rlib_message_verbosity = "default")
-
-saveRDS(df, file = file.path(resdir, "ang_df.rds"))
 # df <- readRDS(file = file.path(resdir, "ang_df.rds"))
 ```
 
@@ -221,12 +228,16 @@ ang_comp <- ggplot(dfl, aes(x = name, y = angle, fill = method)) +
   theme_bw() +
   theme(
     axis.text.x = element_text(
-      size = 10,
+      size = 12,
       angle = 45,
       hjust = 1,
       color = "black"
     ),
-    axis.text.y = element_text(size = 10, color = "black")
+    axis.text.y = element_text(size = 12, color = "black"),
+    axis.title = element_text(size = 14),
+    plot.title = element_text(size = 16),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
   )
 
 ari_comp <- ggplot(dfl, aes(x = name, y = ARI, fill = method)) +
@@ -241,12 +252,16 @@ ari_comp <- ggplot(dfl, aes(x = name, y = ARI, fill = method)) +
   theme_bw() +
   theme(
     axis.text.x = element_text(
-      size = 10,
+      size = 12,
       angle = 45,
       hjust = 1,
       color = "black"
     ),
-    axis.text.y = element_text(size = 10, color = "black")
+    axis.text.y = element_text(size = 12, color = "black"),
+    axis.title = element_text(size = 14),
+    plot.title = element_text(size = 16),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
   )
 
 panel <- ang_comp +
