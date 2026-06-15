@@ -1429,7 +1429,7 @@ deg_comp_panel <- (p_shared +
   (p_salpha +
     ggtitle(
       "Overlap between scran and CAdir",
-      subtitle = "genes with Sα-score > 0"
+      subtitle = "genes with Sθ-score > 0"
     )) +
   plot_layout(guides = "collect") +
   plot_annotation(tag_levels = "a") &
