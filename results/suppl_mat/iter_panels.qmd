@@ -204,11 +204,11 @@ ps_dircl <- ggplot(
 # PANELS
 
 ```{r}
-left_panel <- (pr / pr_dircl) +
+left_panel <- ((pr + labs(tag = "a")) / (pr_dircl + labs(tag = "c"))) +
   plot_layout(guides = "collect") &
   theme(legend.position = "bottom", legend.margin = margin())
 
-right_panel <- (ps / ps_dircl) +
+right_panel <- ((ps + labs(tag = "b")) / (ps_dircl + labs(tag = "d"))) +
   plot_layout(guides = "collect") &
   theme(
     legend.position = "bottom",
@@ -217,8 +217,7 @@ right_panel <- (ps / ps_dircl) +
     plot.margin = margin(r = 30)
   )
 
-panel <- (left_panel | right_panel) +
-  plot_annotation(tag_levels = "a") &
+panel <- (left_panel | right_panel) &
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
 ggsave(
