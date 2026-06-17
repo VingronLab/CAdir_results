@@ -140,7 +140,7 @@ panglao_umap <- plotUMAP(tm, color_by = "cadir_panglao") +
 
 p <- cellm_umap +
   panglao_umap +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 14),
@@ -438,7 +438,7 @@ panglao_umap <- plotUMAP(pbmc, color_by = "cadir_panglao") +
 
 p <- cellm_umap +
   panglao_umap +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 14),
@@ -645,7 +645,7 @@ ggsave(
 
 sank_panel <- (tm_sank + ggtitle("Tabula Muris LM data")) +
   (pbmc_sank + ggtitle("PBMC3k data")) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     plot.title = element_text(hjust = 0.5, face = "bold"),

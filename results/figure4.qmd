@@ -1624,7 +1624,7 @@ cls_ari_seurat <- seurat_res %>%
 ```{r}
 ari_panel_cls <- cls_ari_cadir +
   cls_ari_seurat +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 18),
     plot.title = element_text(size = 18, face = "plain"),
@@ -1720,7 +1720,7 @@ ggsave(
 ```{r}
 rt_suppl <- rt +
   devp +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 18),
     plot.title = element_text(size = 18, face = "plain"),
@@ -1761,7 +1761,7 @@ fig1 <- (p_max_ari + p_mean_ari + plot_layout(guides = "collect")) /
   (p_tile +
     (p_tile_mean + guides(fill = "none")) +
     plot_layout(guides = "collect")) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 20),
     plot.title = element_text(size = 22, face = "plain"),
@@ -1804,7 +1804,7 @@ ggsave(
 ```{r}
 
 fig4 <- (p_max_ari + p_tile) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 20),
     plot.title = element_text(size = 22, face = "plain"),
@@ -1854,7 +1854,7 @@ suppl_panel <- (((free(p_mean_ari, type = "label") +
     )
   )) /
   (p_tile_mean + p_succ + plot_layout(width = c(1, 1)))) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 20),
     plot.title = element_text(size = 22, face = "plain"),
@@ -1892,7 +1892,7 @@ ggsave(
 suppl_panel <-
   free(p_mean_nmi, type = "label") +
   p_succ +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 20),
     plot.title = element_text(size = 22, face = "plain"),
@@ -1929,7 +1929,7 @@ ggsave(
 ```{r}
 dct_panel <- devp +
   devp_seurat +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 18),
     plot.title = element_text(size = 18, face = "plain"),

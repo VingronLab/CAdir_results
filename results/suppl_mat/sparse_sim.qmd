@@ -1016,7 +1016,7 @@ fig <- (p_max_ce_bicl + p_max_ari_g_bicl + p_mean_ce_bicl + p_mean_ari_g_bicl) +
       "pbmc3k" = "#a5acaf"
     )
   ) +
-  plot_annotation(tag_levels = "a")
+  plot_annotation(tag_levels = "A")
 
 ggsave(
   plot = fig,
@@ -1049,7 +1049,7 @@ ggsave(
 ## Review Panel
 ```{r}
 fig1 <- (p_max_ari + p_mean_ari + plot_layout(guides = "collect")) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 18),
     plot.title = element_text(size = 18, face = "plain"),
@@ -1092,7 +1092,7 @@ ggsave(
 ```{r}
 bicl_cc <- (p_max_ari + p_mean_ari + plot_layout(guides = "collect")) /
   (p_max_ce_bicl + p_mean_ce_bicl + plot_layout(guides = "collect")) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 18),
     plot.title = element_text(size = 24, face = "plain"),
@@ -1292,7 +1292,7 @@ pbmc_log_prob <- ggplot(df, aes(x = exprs, y = prob)) +
 dropouts <- log_prob +
   zeisel_log_prob +
   pbmc_log_prob +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 18),
     plot.title = element_text(size = 18, face = "plain"),

@@ -127,7 +127,7 @@ cat("ARI:", ari1$ARI, "\n")
 
 um <- (um2 | um3) /
   (um1 + ggtitle(paste0("ARI: ", round(ari1$ARI, 2)))) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(face = "bold", size = 12))
 
 # um
@@ -333,7 +333,7 @@ um6 <- plotUMAP(sce_corr, colour = "cadir") +
 
 um <- (um4 | um5) /
   (um6 + ggtitle(paste0("ARI: ", round(ari2$ARI, 2)))) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(size = 12))
 # um
 
@@ -431,12 +431,12 @@ capl4 <- cluster_apl(
 ```{r}
 um_batch <- (um2 | um3) /
   (um1 + ggtitle(paste0("ARI: ", round(ari1$ARI, 2))) + (capl1 / capl12)) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(face = "bold", size = 12))
 
 um_no_batch <- (um5 | um4) /
   (um6 + ggtitle(paste0("ARI: ", round(ari2$ARI, 2))) + (capl2 / capl22)) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(face = "bold", size = 12))
 
 ggsave(
@@ -478,7 +478,7 @@ all <- (((um2 | um3) /
   (um1 + ggtitle(paste0("ARI: ", round(ari1$ARI, 2))) + capl1)) |
   ((um4 | um5) /
     (um6 + ggtitle(paste0("ARI: ", round(ari2$ARI, 2))) + capl2))) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(face = "bold", size = 12))
 
 ggsave(

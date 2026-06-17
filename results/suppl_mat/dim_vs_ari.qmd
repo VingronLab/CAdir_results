@@ -357,7 +357,7 @@ real_mean_q <- ggplot(
 panel <- real_max +
   real_mean +
   plot_layout(guides = "collect") +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 18),
     plot.title = element_text(size = 18, face = "plain"),
@@ -394,7 +394,7 @@ ggsave(
 panel2 <- max_sim +
   mean_sim +
   plot_layout(guides = "collect") +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 18),
     plot.title = element_text(size = 18, face = "plain"),
@@ -431,7 +431,7 @@ ggsave(
 panel_q <- real_max_q +
   real_mean_q +
   plot_layout(guides = "collect") +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     text = element_text(size = 18),
     plot.title = element_text(size = 18, face = "plain"),

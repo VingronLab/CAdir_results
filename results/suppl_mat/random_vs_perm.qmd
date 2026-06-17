@@ -267,7 +267,7 @@ ari_comp <- ggplot(dfl, aes(x = name, y = ARI, fill = method)) +
 panel <- ang_comp +
   ari_comp +
   plot_layout(guides = "collect") +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
 

@@ -953,7 +953,7 @@ first_half_fig2 <- wrap_plots(
   design = layout,
   guides = "collect"
 ) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(
       size = 18,
@@ -1009,7 +1009,7 @@ second_half_fig2 <- p_bt_prin +
   guide_area() +
   wrap_elements(sm_rot) +
   plot_layout(guides = "collect", design = layout) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(
       size = 18,
@@ -1069,7 +1069,7 @@ fig2 <- (((wrap_plots(pcl_panel, ncol = 3) +
     plot_layout(guides = "collect", width = c(3, 3, 1)))) +
   plot_layout(height = c(2, 1)) |
   wrap_elements(sm_rot)) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
 ggsave(
@@ -1138,7 +1138,7 @@ sfig1 <- pang +
   p_bt_std +
   p_ecs_std +
   plot_layout(design = layout) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
 # sfig1 <- (pang + free(pr, type = "panel", side = "rb")) / (free(sank, side = "l") + (p_bt_std / p_ecs_std))

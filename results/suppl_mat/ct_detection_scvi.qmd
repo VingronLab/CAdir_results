@@ -335,7 +335,7 @@ ggsave(
 ```{r}
 # ari_panel_cls <- cls_ari_cadir +
 #   cls_ari_seurat +
-#   plot_annotation(tag_levels = "a") &
+#   plot_annotation(tag_levels = "A") &
 #   theme(
 #     text = element_text(size = 18),
 #     plot.title = element_text(size = 18, face = "plain"),

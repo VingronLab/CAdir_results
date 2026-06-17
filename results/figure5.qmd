@@ -615,7 +615,7 @@ fig <- (p_max_ce +
       "pbmc3k" = "#a5acaf"
     )
   ) +
-  plot_annotation(tag_levels = "a")
+  plot_annotation(tag_levels = "A")
 
 ggsave(
   plot = fig,
@@ -655,7 +655,7 @@ fig_cells <- (p_max_ari +
       "pbmc3k" = "#a5acaf"
     )
   ) +
-  plot_annotation(tag_levels = "a")
+  plot_annotation(tag_levels = "A")
 
 ggsave(
   plot = fig_cells,
@@ -694,7 +694,7 @@ fig_ce <- (p_max_ce +
       "pbmc3k" = "#a5acaf"
     )
   ) +
-  plot_annotation(tag_levels = "a")
+  plot_annotation(tag_levels = "A")
 
 ggsave(
   plot = fig_ce,

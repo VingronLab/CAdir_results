@@ -383,7 +383,7 @@ ggsave(
 
 bcell_marker_panel <- bp1 +
   bp2 +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 14),
@@ -499,7 +499,7 @@ ggsave(
 
 endo_marker_panel <- endop1 +
   endop2 +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 14),
@@ -612,7 +612,7 @@ ggsave(
 ```{r}
 fibro_marker_panel <- fp1 +
   fp2 +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 14),
@@ -664,7 +664,7 @@ the_panel <- bp1 +
   fp1 +
   fp2 +
   plot_layout(ncol = 2) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 14),
@@ -724,7 +724,7 @@ um <-
     ggtitle("NMF") +
     scale_color_mpimg(name = "mpi_extend") +
     labs(colour = "cluster")) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 14),

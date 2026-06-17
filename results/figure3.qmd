@@ -885,7 +885,7 @@ fig3 <- wrap_elements(wrap_plots(pcl_panel, ncol = 3)) +
     side = "tbr"
   ) +
   plot_layout(design = layout) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
 
@@ -939,7 +939,7 @@ suppl_fig2 <-
   ((wrap_elements(pcc_panel)) +
     sank_anno) +
   plot_layout(width = c(2, 1), ncol = 2) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
 # plot_layout(design = layout, ncol = 2)
 

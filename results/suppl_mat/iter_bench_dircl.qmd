@@ -452,7 +452,7 @@ panel <- pr +
   ps +
   # guides(fill = guide_legend(nrow = 3, byrow = TRUE)) +
   # plot_layout(guides = "collect") +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     legend.position = "bottom",

@@ -336,7 +336,7 @@ p_ang <- ggplot(
 panel <- p_ang +
   p_ari +
   plot_layout(guides = "collect") +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     legend.position = "bottom",

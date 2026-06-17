@@ -395,7 +395,7 @@ um2 <- um2 + ggtitle("Annotation")
 
 patch <- (um1 | um2) /
   (cl_apl_cl6 + cl_apl_cl7 + plot_layout(guides = "collect")) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(size = 12))
 
 ggsave(

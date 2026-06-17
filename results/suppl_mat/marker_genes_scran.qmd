@@ -529,7 +529,7 @@ perc7
 pdf(file = file.path(imgdir, "pies.pdf"), width = 9, height = 6)
 (pie1 + pie2 + pie3 + pie4 + pie6 + pie5 + pie7) +
   plot_layout(ncol = 4) +
-  plot_annotation(tag_levels = "a")
+  plot_annotation(tag_levels = "A")
 dev.off()
 
 png(
@@ -540,7 +540,7 @@ png(
 )
 (pie1 + pie2 + pie3 + pie4 + pie6 + pie5 + pie7) +
   plot_layout(ncol = 4) +
-  plot_annotation(tag_levels = "a")
+  plot_annotation(tag_levels = "A")
 dev.off()
 ```
 
@@ -548,13 +548,13 @@ dev.off()
 ```{r}
 # pdf(file = file.path(imgdir, "pies_and_sankey.pdf"), width = 12, height = 6)
 # ((pie1 + pie2 + pie3 + pie4 + pie5) | sank) +
-#   plot_annotation(tag_levels = "a") &
+#   plot_annotation(tag_levels = "A") &
 #   theme(plot.tag = element_text(size = 16))
 # dev.off()
 
 pc <- (pie1 + pie2 + pie3 + pie4 + pie6 + pie5 + pie7) +
   plot_layout(ncol = 4) +
-  plot_annotation(tag_levels = "a")
+  plot_annotation(tag_levels = "A")
 
 layout <- c(
   area(t = 1, b = 8, l = 1, r = 12),
@@ -571,7 +571,7 @@ png(
 (pc | sank4panel) +
   plot_layout(width = c(2, 1)) +
   # plot_layout(design = layout) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 16)
@@ -1080,7 +1080,7 @@ bmarkers <- (bp1 + ggtitle("CAdir: Top 4 genes - B cells")) +
     # axis = "collect",
     width = c(19, 1, 19)
   ) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 16),
@@ -1124,7 +1124,7 @@ cd4markers <- (cd4p1 + ggtitle("CAdir: Top 4 genes - Naive CD4+ T cells")) +
     # axis = "collect",
     width = c(19, 1, 19)
   ) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 16),
@@ -1167,7 +1167,7 @@ monomarkers <- (monop1 + ggtitle("CAdir: Top 4 genes - Monocytes")) +
     # axis = "collect",
     width = c(19, 1, 19)
   ) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 16),
@@ -1210,7 +1210,7 @@ megamarkers <- (megap1 + ggtitle("CAdir: Top 4 genes - Megakaryocytes")) +
     # axis = "collect",
     width = c(19, 1, 19)
   ) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 16),
@@ -1253,7 +1253,7 @@ dendmarkers <- (dendp1 + ggtitle("CAdir: Top 4 genes - Dendritic cells")) +
     # axis = "collect",
     width = c(19, 1, 19)
   ) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 16),
@@ -1296,7 +1296,7 @@ cd8markers <- (cd8p1 + ggtitle("CAdir: Top 4 genes - CD8+ T cells")) +
     # axis = "collect",
     width = c(19, 1, 19)
   ) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 16),
@@ -1339,7 +1339,7 @@ ctcd4markers <- (ctcd4p1 +
     # axis = "collect",
     width = c(19, 1, 19)
   ) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 16),
@@ -1383,7 +1383,7 @@ ctcd4markers <- (ctcd4p1 +
     # axis = "collect",
     width = c(19, 1, 19)
   ) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 16),
@@ -1432,7 +1432,7 @@ deg_comp_panel <- (p_shared +
       subtitle = "genes with Sθ-score > 0"
     )) +
   plot_layout(guides = "collect") +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 14),
@@ -1506,7 +1506,7 @@ ctcd4markers <- (ctcd4p1 +
   )
 
 marker_panel <- (bmarkers / monomarkers / ctcd4markers) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     title = element_text(size = 14),

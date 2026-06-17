@@ -336,7 +336,7 @@ t_cell_panel <- pc3 +
   pc4 +
   pcd4 +
   plot_layout(guides = "collect", design = layout) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 16, face = "bold"),
     plot.title = element_text(size = 20, hjust = 0.5, face = "bold")
@@ -803,7 +803,7 @@ umap_panel <- (t_um1 + ggtitle("Tirosh - CAdir")) +
   (ts_um1 + ggtitle("Tabula Sapiens - CAdir")) +
   (ts_um2 + ggtitle("Tabula Sapiens - Annotation")) +
   plot_layout(design = layout) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     plot.title = element_text(size = 20),
@@ -868,7 +868,7 @@ umap_panel <-
   (d_um1 + ggtitle("Darmanis - CAdir")) +
   (d_um2 + ggtitle("Darmanis - Annotation")) +
   plot_layout(design = layout) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 18, face = "bold"),
     plot.title = element_text(size = 20),
@@ -908,7 +908,7 @@ ggsave(
 sm_panel <- wrap_plots(t_sm + ggtitle("Tirosh")) +
   wrap_plots(bo_sm + ggtitle("Brain Organoids")) +
   wrap_plots(ts_sm + ggtitle("Tabula Sapiens")) +
-  plot_annotation(tag_levels = "a") &
+  plot_annotation(tag_levels = "A") &
   theme(
     plot.tag = element_text(size = 24, face = "bold"),
     plot.title = element_text(size = 26, hjust = 0.5, face = "bold"),
