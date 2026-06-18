@@ -368,7 +368,7 @@ ggsave(
 
 fig1 <- ((p_bt4 + p_bt3) / (p_bt1 + p_bt2) / (p_bt5 + p_bt6)) +
   plot_annotation(tag_levels = "A") &
-  theme(plot.tag = element_text(size = 18))
+  theme(plot.tag = element_text(size = 16, face = "bold"))
 
 # NOTE: Uncomment to plot
 # fig1

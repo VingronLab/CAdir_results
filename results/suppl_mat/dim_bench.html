@@ -98,7 +98,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="463b111b" class="cell" data-execution_count="1">
+<div id="55fd032d" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Working directory should be the root directory of repository.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("./")</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>()</span>
@@ -135,7 +135,7 @@ Warning message in dir.create(resdir, recursive = TRUE):
 “'./results//out/suppl_mat/dim_bench' already exists”</code></pre>
 </div>
 </div>
-<div id="3981dff0" class="cell" data-execution_count="2">
+<div id="7c668835" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"./data/real/preprocessed/benchmarking/"</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -147,11 +147,11 @@ Warning message in dir.create(resdir, recursive = TRUE):
 <h1>Get max benchmarking results</h1>
 <section id="real" class="level2">
 <h2 class="anchored" data-anchor-id="real">real</h2>
-<div id="ea337284" class="cell" data-execution_count="3">
+<div id="93ddb017" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>date <span class="ot">&lt;-</span> <span class="st">"20250528_cpu"</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>evldir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"./results/benchmarking/results/real/"</span>, date, <span class="st">"eval"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="70e2ec03" class="cell" data-execution_count="4">
+<div id="04163a4e" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Load the results of real data sets</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(evldir, <span class="st">"*.rds"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -163,7 +163,7 @@ Warning message in dir.create(resdir, recursive = TRUE):
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>df_paras<span class="sc">$</span>dataset <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_filtered"</span>, <span class="st">""</span>, df_paras<span class="sc">$</span>dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="ee77cc53" class="cell" data-execution_count="5">
+<div id="2f1bd2db" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df_real <span class="ot">&lt;-</span> df_paras <span class="sc">%&gt;%</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(algorithm <span class="sc">==</span> <span class="st">"CAdir_auto"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(algorithm, dataset) <span class="sc">%&gt;%</span></span>
@@ -180,7 +180,7 @@ Warning message in dir.create(resdir, recursive = TRUE):
 </section>
 <section id="benchmark-iterations-real" class="level1">
 <h1>Benchmark iterations real</h1>
-<div id="bad89917" class="cell" data-execution_count="6">
+<div id="c680f38a" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rerun_bench <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>res_exists <span class="ot">&lt;-</span> <span class="fu">file.exists</span>(<span class="fu">file.path</span>(resdir, <span class="st">"real_res_ndim_list.rds"</span>))</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -274,7 +274,7 @@ Warning message in dir.create(resdir, recursive = TRUE):
 </section>
 <section id="plotting" class="level1">
 <h1>Plotting</h1>
-<div id="b23ad2e4" class="cell" data-execution_count="7">
+<div id="f75b5d44" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dfr <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, res_list_real)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"FreytagGold"</span>] <span class="ot">&lt;-</span> <span class="st">"Freytag Gold"</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"PBMC_10X"</span>] <span class="ot">&lt;-</span> <span class="st">"PBMC10x"</span></span>
@@ -285,7 +285,7 @@ Warning message in dir.create(resdir, recursive = TRUE):
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"tabula_sapiens_tissue"</span>] <span class="ot">&lt;-</span> <span class="st">"Tabula Sapiens"</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"brain_organoids"</span>] <span class="ot">&lt;-</span> <span class="st">"Brain Organoids"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="9ce704d4" class="cell" data-execution_count="8">
+<div id="8deecbee" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>vardf <span class="ot">&lt;-</span> dfr <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ndims <span class="sc">&gt;</span> <span class="dv">30</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(dataset) <span class="sc">%&gt;%</span></span>
@@ -294,7 +294,7 @@ Warning message in dir.create(resdir, recursive = TRUE):
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(dataset, std, delta) <span class="sc">%&gt;%</span></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5f29e958" class="cell" data-execution_count="9">
+<div id="68d82b66" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pr <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  dfr,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> ndims, <span class="at">y =</span> ARI, <span class="at">color =</span> dataset, <span class="at">group =</span> dataset)</span>
@@ -315,7 +315,7 @@ Warning message in dir.create(resdir, recursive = TRUE):
 <span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>)</span>
 <span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="abb61416" class="cell" data-execution_count="10">
+<div id="d13e2c79" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="fu">file.path</span>(imgdir, <span class="st">"n_dims_bench.pdf"</span>),</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> pr,</span>

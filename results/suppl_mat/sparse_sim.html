@@ -101,7 +101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="5a81977b" class="cell" data-execution_count="1">
+<div id="3752d4e8" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Working directory should be the root directory of repository.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("./")</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>()</span>
@@ -132,7 +132,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="cell-clustering-benchmarking" class="level1">
 <h1>Cell clustering benchmarking</h1>
-<div id="39312a04" class="cell" data-execution_count="2">
+<div id="edd2de60" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># date &lt;- "20251121"</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>date <span class="ot">&lt;-</span> <span class="st">"20260325_revision2"</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>base_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"./results/benchmarking/results/simulated_sparse"</span>, date)</span>
@@ -141,7 +141,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="simulated-data" class="level2">
 <h2 class="anchored" data-anchor-id="simulated-data">simulated data</h2>
 <p>Benchmarking results based on Zeisel Brain data:</p>
-<div id="e946c49d" class="cell" data-execution_count="3">
+<div id="5836bf3c" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>zeisel_eval <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    indir,</span>
@@ -209,7 +209,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Benchmarking results based on PBMC3k data:</p>
-<div id="f264578f" class="cell" data-execution_count="4">
+<div id="aef154d1" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pbmc_eval <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    indir,</span>
@@ -272,7 +272,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Combining the benchmarking resuls:</p>
-<div id="e99ecefa" class="cell" data-execution_count="5">
+<div id="19d88cd3" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df_all <span class="ot">&lt;-</span> <span class="fu">rbind</span>(dfz, dfp)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>df_all<span class="sc">$</span>algorithm <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"CAbiNet_igraph"</span>, <span class="st">"CAbiNet"</span>, df_all<span class="sc">$</span>algorithm)</span>
@@ -307,7 +307,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="simulated-data-benchmarking---max-results" class="level3">
 <h3 class="anchored" data-anchor-id="simulated-data-benchmarking---max-results">Simulated data benchmarking - Max Results</h3>
-<div id="64564733" class="cell" data-execution_count="6">
+<div id="1d985693" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df_all <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(simulation, algorithm, dataset) <span class="sc">%&gt;%</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">max_ARI =</span> <span class="fu">max</span>(ARI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
@@ -339,7 +339,7 @@ Caused by warning in `max()`:
 ℹ Run `dplyr::last_dplyr_warnings()` to see the 11 remaining warnings.”</code></pre>
 </div>
 </div>
-<div id="91d3dce5" class="cell" data-execution_count="7">
+<div id="bd762a9a" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>p_max_ari <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -410,7 +410,7 @@ Warning message:
 (`stat_boxplot()`).”</code></pre>
 </div>
 </div>
-<div id="e5d27fbb" class="cell" data-execution_count="8">
+<div id="114e302b" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>p_max_nmi <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -476,7 +476,7 @@ Warning message:
 </section>
 <section id="simulated-data-benchmarking---average-results" class="level3">
 <h3 class="anchored" data-anchor-id="simulated-data-benchmarking---average-results">Simulated data benchmarking - Average Results</h3>
-<div id="06cdf5be" class="cell" data-execution_count="9">
+<div id="e0f4e14c" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df_all <span class="sc">%&gt;%</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(simulation, algorithm, dataset) <span class="sc">%&gt;%</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mean_ARI =</span> <span class="fu">mean</span>(ARI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
@@ -485,7 +485,7 @@ Warning message:
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="3bbac351" class="cell" data-execution_count="10">
+<div id="d3063df6" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p_mean_ari <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -562,7 +562,7 @@ Warning message:
 (`geom_point()`).”</code></pre>
 </div>
 </div>
-<div id="780b8e36" class="cell" data-execution_count="11">
+<div id="f8726fc4" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p_mean_nmi <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -644,7 +644,7 @@ Warning message:
 </section>
 <section id="biclustering" class="level1">
 <h1>Biclustering</h1>
-<div id="068cb199" class="cell" data-execution_count="12">
+<div id="86e9f9f7" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># date &lt;- "20251204"</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>date <span class="ot">&lt;-</span> <span class="st">"20260325_revision2"</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># date &lt;- "20251121"</span></span>
@@ -657,7 +657,7 @@ Warning message:
 <section id="simulated-data-1" class="level2">
 <h2 class="anchored" data-anchor-id="simulated-data-1">simulated data</h2>
 <p>Benchmarking results based on Zeisel Brain data:</p>
-<div id="36b1e021" class="cell" data-execution_count="13">
+<div id="b09d0f21" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>zeisel_eval <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    indir,</span>
@@ -725,7 +725,7 @@ Warning message:
 </div>
 </div>
 <p>Benchmarking results based on PBMC3k data:</p>
-<div id="9695c198" class="cell" data-execution_count="14">
+<div id="b037f1bf" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pbmc_eval <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    indir,</span>
@@ -788,7 +788,7 @@ Warning message:
 </div>
 </div>
 <p>Combining the benchmarking resuls:</p>
-<div id="61afcffc" class="cell" data-execution_count="15">
+<div id="b1b20899" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df_all <span class="ot">&lt;-</span> <span class="fu">rbind</span>(dfz, dfp)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>df_all<span class="sc">$</span>algorithm <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"CAbiNet_igraph"</span>, <span class="st">"CAbiNet"</span>, df_all<span class="sc">$</span>algorithm)</span>
@@ -881,7 +881,7 @@ Caused by warning in `max()`:
 </div>
 <section id="biclustering---max-results" class="level3">
 <h3 class="anchored" data-anchor-id="biclustering---max-results">Biclustering - Max Results</h3>
-<div id="bcfc82cb" class="cell" data-execution_count="16">
+<div id="6d7d79fa" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>p_max_ari_bicl <span class="ot">&lt;-</span> df_max <span class="sc">%&gt;%</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -955,7 +955,7 @@ Warning message:
 (`stat_boxplot()`).”</code></pre>
 </div>
 </div>
-<div id="18de5ac9" class="cell" data-execution_count="17">
+<div id="2fbc40f5" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>p_max_ce_bicl <span class="ot">&lt;-</span> df_max <span class="sc">%&gt;%</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -1032,7 +1032,7 @@ Warning message:
 </section>
 <section id="biclustering---average-results" class="level3">
 <h3 class="anchored" data-anchor-id="biclustering---average-results">Biclustering - Average Results</h3>
-<div id="5c8ebbda" class="cell" data-execution_count="18">
+<div id="f07b421a" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>p_mean_ari_bicl <span class="ot">&lt;-</span> df_mean <span class="sc">%&gt;%</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -1112,7 +1112,7 @@ Warning message:
 (`geom_point()`).”</code></pre>
 </div>
 </div>
-<div id="3c959771" class="cell" data-execution_count="19">
+<div id="42eed936" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>p_mean_ce_bicl <span class="ot">&lt;-</span> df_mean <span class="sc">%&gt;%</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -1199,7 +1199,7 @@ Warning message:
 <h1>Gene evaluation</h1>
 <section id="max-ari" class="level2">
 <h2 class="anchored" data-anchor-id="max-ari">max ARI</h2>
-<div id="e6661324" class="cell" data-execution_count="20">
+<div id="09f68112" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>p_max_ari_g_bicl <span class="ot">&lt;-</span> df_max <span class="sc">%&gt;%</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -1274,7 +1274,7 @@ Warning message:
 (`stat_boxplot()`).”</code></pre>
 </div>
 </div>
-<div id="e14421ce" class="cell" data-execution_count="21">
+<div id="e4d2d495" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>p_mean_ari_g_bicl <span class="ot">&lt;-</span> df_mean <span class="sc">%&gt;%</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> algorithm,</span>
@@ -1373,7 +1373,7 @@ Warning message:
 </section>
 <section id="figure-panels" class="level1">
 <h1>Figure panels</h1>
-<div id="a7ffbb0e" class="cell" data-execution_count="22">
+<div id="2a65be1f" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>fig <span class="ot">&lt;-</span> (p_max_ce_bicl <span class="sc">+</span> p_max_ari_g_bicl <span class="sc">+</span> p_mean_ce_bicl <span class="sc">+</span> p_mean_ari_g_bicl) <span class="sc">+</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">"collect"</span>) <span class="sc">+</span></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">seq_len</span>(<span class="fu">length</span>(df_all<span class="sc">$</span>simulation))) <span class="sc">+</span></span>
@@ -1384,7 +1384,7 @@ Warning message:
 <span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"pbmc3k"</span> <span class="ot">=</span> <span class="st">"#a5acaf"</span></span>
 <span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"a"</span>)</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"A"</span>)</span>
 <span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(</span>
 <span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> fig,</span>
@@ -1477,9 +1477,9 @@ Warning message:
 <h1>Panels</h1>
 <section id="review-panel" class="level2">
 <h2 class="anchored" data-anchor-id="review-panel">Review Panel</h2>
-<div id="6701b5da" class="cell" data-execution_count="23">
+<div id="9a84613c" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>fig1 <span class="ot">&lt;-</span> (p_max_ari <span class="sc">+</span> p_mean_ari <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">"collect"</span>)) <span class="sc">+</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"a"</span>) <span class="sc">&amp;</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"A"</span>) <span class="sc">&amp;</span></span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
 <span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>),</span>
 <span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"plain"</span>),</span>
@@ -1549,10 +1549,10 @@ Warning message:
 </section>
 <section id="panel-biclustering-cell-clustering-combined" class="level1">
 <h1>Panel biclustering &amp; cell clustering combined</h1>
-<div id="467a9c91" class="cell" data-execution_count="24">
+<div id="37306fd1" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>bicl_cc <span class="ot">&lt;-</span> (p_max_ari <span class="sc">+</span> p_mean_ari <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">"collect"</span>)) <span class="sc">/</span></span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  (p_max_ce_bicl <span class="sc">+</span> p_mean_ce_bicl <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">"collect"</span>)) <span class="sc">+</span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"a"</span>) <span class="sc">&amp;</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"A"</span>) <span class="sc">&amp;</span></span>
 <span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
 <span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>),</span>
 <span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">24</span>, <span class="at">face =</span> <span class="st">"plain"</span>),</span>
@@ -1647,7 +1647,7 @@ Warning message:
 </section>
 <section id="log-distribution" class="level1">
 <h1>Log-distribution</h1>
-<div id="dca01df7" class="cell" data-execution_count="25">
+<div id="210911b6" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(splatter)</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SingleCellExperiment)</span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scater)</span>
@@ -1784,7 +1784,7 @@ The following object is masked from 'package:SummarizedExperiment':
 </code></pre>
 </div>
 </div>
-<div id="2a4e6884" class="cell" data-execution_count="26">
+<div id="cbd156c4" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>zce <span class="ot">&lt;-</span> <span class="fu">ZeiselBrainData</span>()</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>clust.sce <span class="ot">&lt;-</span> <span class="fu">quickCluster</span>(zce)</span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>zce <span class="ot">&lt;-</span> <span class="fu">computeSumFactors</span>(zce, <span class="at">cluster =</span> clust.sce, <span class="at">min.mean =</span> <span class="fl">0.1</span>)</span>
@@ -1793,7 +1793,7 @@ The following object is masked from 'package:SummarizedExperiment':
 <span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="fu">counts</span>(zce) <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">counts</span>(zce))</span>
 <span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="fu">logcounts</span>(zce) <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">logcounts</span>(zce))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="6d9a4de8" class="cell" data-execution_count="27">
+<div id="e993095f" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>pce <span class="ot">&lt;-</span> <span class="fu">TENxPBMCData</span>(<span class="at">dataset =</span> <span class="st">"pbmc3k"</span>)</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(pce) <span class="ot">&lt;-</span> <span class="fu">make.names</span>(<span class="fu">rowData</span>(pce)<span class="sc">$</span>Symbol_TENx, <span class="at">unique =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(pce) <span class="ot">&lt;-</span> <span class="fu">colData</span>(pce)<span class="sc">$</span>Barcode</span>
@@ -1868,7 +1868,13 @@ The following object is masked from 'package:SummarizedExperiment':
 <div class="cell-output cell-output-stderr">
 <pre><code>see ?TENxPBMCData and browseVignettes('TENxPBMCData') for documentation
 
+Could not check id: EH1607 for updates.
+  Using previously cached version.
+
 loading from cache
+
+Could not check id: EH1607 for updates.
+  Using previously cached version.
 
 Warning message:
 "Feature names cannot have underscores ('_'), replacing with dashes ('-')"
@@ -1880,13 +1886,13 @@ To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to
 This message will be shown once per session"</code></pre>
 </div>
 </div>
-<div id="afe9b659" class="cell" data-execution_count="28">
+<div id="6a408e40" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>zeisel_params <span class="ot">&lt;-</span> <span class="fu">splatEstimate</span>(zce)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="b72b91ca" class="cell" data-execution_count="29">
+<div id="6c777e8e" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>pbmc_params <span class="ot">&lt;-</span> <span class="fu">splatEstimate</span>(pce)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="32db5189" class="cell" data-execution_count="30">
+<div id="542bdc1e" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>pnts <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">500</span>, <span class="at">by =</span> <span class="fl">0.01</span>)</span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>splat_log <span class="ot">&lt;-</span> <span class="cf">function</span>(x, xz, k) <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>k <span class="sc">*</span> (x <span class="sc">-</span> xz)))</span>
@@ -1905,7 +1911,7 @@ This message will be shown once per session"</code></pre>
 <span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Expression"</span>, <span class="at">y =</span> <span class="st">"Probability"</span>) <span class="sc">+</span></span>
 <span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="7f2108ed" class="cell" data-execution_count="31">
+<div id="5b11c7e1" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>zeisel_log_pnts <span class="ot">&lt;-</span> <span class="fu">splat_log</span>(</span>
 <span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> pnts,</span>
 <span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">xz =</span> zeisel_params<span class="sc">@</span>dropout.mid,</span>
@@ -1920,7 +1926,7 @@ This message will be shown once per session"</code></pre>
 <span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Expression"</span>, <span class="at">y =</span> <span class="st">"Probability"</span>) <span class="sc">+</span></span>
 <span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="e3e4fffd" class="cell" data-execution_count="32">
+<div id="07336d48" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>pbmc_log_pnts <span class="ot">&lt;-</span> <span class="fu">splat_log</span>(</span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> pnts,</span>
 <span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">xz =</span> pbmc_params<span class="sc">@</span>dropout.mid,</span>
@@ -1935,11 +1941,11 @@ This message will be shown once per session"</code></pre>
 <span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Expression"</span>, <span class="at">y =</span> <span class="st">"Probability"</span>) <span class="sc">+</span></span>
 <span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="805a1750" class="cell" data-execution_count="33">
+<div id="4d8315a0" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>dropouts <span class="ot">&lt;-</span> log_prob <span class="sc">+</span></span>
 <span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  zeisel_log_prob <span class="sc">+</span></span>
 <span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  pbmc_log_prob <span class="sc">+</span></span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"a"</span>) <span class="sc">&amp;</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"A"</span>) <span class="sc">&amp;</span></span>
 <span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
 <span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>),</span>
 <span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"plain"</span>),</span>
@@ -2004,7 +2010,7 @@ Warning message:
 </section>
 <section id="sparsity" class="level1">
 <h1>Sparsity</h1>
-<div id="14e2f938" class="cell" data-execution_count="34">
+<div id="f215e9d2" class="cell" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>csv_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"./data/sim/raw_sparse/zeisel"</span>)</span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>zeisel_dirs <span class="ot">&lt;-</span> <span class="fu">list.dirs</span>(csv_dir, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>zeisel_csvs <span class="ot">&lt;-</span> <span class="fu">list.files</span>(</span>
@@ -2168,7 +2174,7 @@ dbl (3): ...1, original, sparse
 </section>
 <section id="environment" class="level1">
 <h1>Environment</h1>
-<div id="7ba9a450" class="cell" data-execution_count="35">
+<div id="8c877e1d" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>R version 4.4.1 (2024-06-14)

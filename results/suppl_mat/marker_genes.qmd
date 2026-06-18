@@ -484,7 +484,7 @@ png(
 )
 ((pie1 + pie2 + pie3 + pie4 + pie5 + pie6) | sank) +
   plot_annotation(tag_levels = "A") &
-  theme(plot.tag = element_text(size = 16))
+  theme(plot.tag = element_text(size = 16, face = "bold"))
 dev.off()
 
 tiff(

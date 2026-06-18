@@ -352,6 +352,14 @@ ggsave(
   height = 1800,
   units = "px"
 )
+
+ggsave(
+  plot = t_cell_panel,
+  filename = file.path(imgdir, "t_cell_panel.pdf"),
+  width = 3000,
+  height = 1800,
+  units = "px"
+)
 ```
 
 ## SM plot

@@ -98,7 +98,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="989b99bb" class="cell" data-execution_count="1">
+<div id="4cdfe522" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Working directory should be the root directory of repository.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("./")</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>()</span>
@@ -125,9 +125,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>dir <span class="ot">&lt;-</span> <span class="st">"./results/"</span></span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>imgdir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir, <span class="st">"img/suppl_mat/init_comp/"</span>)</span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(imgdir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>- The project is out-of-sync -- use `renv::status()` for details.</code></pre>
-</div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning message in dir.create(imgdir, recursive = TRUE):
 “'./results//img/suppl_mat/init_comp' already exists”</code></pre>
@@ -135,26 +132,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="load-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-data">Load data</h2>
-<div id="71f5bb24" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="st">"./data/real/discussed/"</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>marker_genes <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">file.path</span>(</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  data_dir,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"tabula_muris_marker_genes.csv"</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>sce <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  data_dir,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"preprocessed/tabula_muris_preprocessed_filtered.rds"</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>genevars <span class="ot">&lt;-</span> <span class="fu">modelGeneVar</span>(sce, <span class="at">assay.type =</span> <span class="st">"logcounts"</span>)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>chosen <span class="ot">&lt;-</span> <span class="fu">getTopHVGs</span>(genevars, <span class="at">n =</span> <span class="dv">6000</span>, <span class="at">var.threshold =</span> <span class="cn">NULL</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># add marker_genes</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>expr_markers <span class="ot">&lt;-</span> marker_genes[marker_genes<span class="sc">$</span>gene <span class="sc">%in%</span> <span class="fu">rownames</span>(sce), ]</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>chosen <span class="ot">&lt;-</span> <span class="fu">c</span>(chosen, expr_markers<span class="sc">$</span>gene)</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>chosen <span class="ot">&lt;-</span> <span class="fu">unique</span>(chosen)</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>sce_sub <span class="ot">&lt;-</span> sce[chosen, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="5e17201a" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="st">"./data/real/discussed/"</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>marker_genes <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">file.path</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  data_dir,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"tabula_muris_marker_genes.csv"</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>sce <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  data_dir,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"preprocessed/tabula_muris_preprocessed_filtered.rds"</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>genevars <span class="ot">&lt;-</span> <span class="fu">modelGeneVar</span>(sce, <span class="at">assay.type =</span> <span class="st">"logcounts"</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>chosen <span class="ot">&lt;-</span> <span class="fu">getTopHVGs</span>(genevars, <span class="at">n =</span> <span class="dv">6000</span>, <span class="at">var.threshold =</span> <span class="cn">NULL</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># add marker_genes</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>expr_markers <span class="ot">&lt;-</span> marker_genes[marker_genes<span class="sc">$</span>gene <span class="sc">%in%</span> <span class="fu">rownames</span>(sce), ]</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>chosen <span class="ot">&lt;-</span> <span class="fu">c</span>(chosen, expr_markers<span class="sc">$</span>gene)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>chosen <span class="ot">&lt;-</span> <span class="fu">unique</span>(chosen)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>sce_sub <span class="ot">&lt;-</span> sce[chosen, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 19 Columns: 2
 ── Column specification ────────────────────────────────────────────────────────
@@ -165,18 +162,18 @@ chr (2): cell_type, gene
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
-<div id="e09fa18a" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ca <span class="ot">&lt;-</span> <span class="fu">cacomp</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> <span class="fu">logcounts</span>(sce_sub),</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">princ_coords =</span> <span class="dv">3</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">dims =</span> <span class="dv">30</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">top =</span> <span class="fu">nrow</span>(sce_sub),</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">residuals =</span> <span class="st">"pearson"</span>,</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">python =</span> <span class="cn">TRUE</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>cell_types <span class="ot">&lt;-</span> sce<span class="sc">$</span>cell_ontology_class</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of cell types:"</span>, <span class="fu">length</span>(<span class="fu">unique</span>(cell_types)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="12534b09" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ca <span class="ot">&lt;-</span> <span class="fu">cacomp</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> <span class="fu">logcounts</span>(sce_sub),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">princ_coords =</span> <span class="dv">3</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">dims =</span> <span class="dv">30</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">top =</span> <span class="fu">nrow</span>(sce_sub),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">residuals =</span> <span class="st">"pearson"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">python =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>cell_types <span class="ot">&lt;-</span> sce<span class="sc">$</span>cell_ontology_class</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of cell types:"</span>, <span class="fu">length</span>(<span class="fu">unique</span>(cell_types)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Number of cell types: 8 </code></pre>
 </div>
@@ -185,40 +182,40 @@ chr (2): cell_type, gene
 </section>
 <section id="compare-initializations" class="level1">
 <h1>Compare initializations</h1>
-<div id="d35531da" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>rlang<span class="sc">::</span><span class="fu">local_options</span>(<span class="at">CAdir.verbose =</span> <span class="st">"quiet"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>nreps <span class="ot">&lt;-</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="c84cb86d" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rlang<span class="sc">::</span><span class="fu">local_options</span>(<span class="at">CAdir.verbose =</span> <span class="st">"quiet"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>nreps <span class="ot">&lt;-</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="kmeans" class="level2">
 <h2 class="anchored" data-anchor-id="kmeans">kmeans++</h2>
-<div id="d0fc9ccd" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>kpp <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> nreps)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(nreps)) {</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  cabic <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caobj =</span> ca,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">8</span>,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">cutoff =</span> <span class="cn">NULL</span>,</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"random"</span>,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">apl_quant =</span> <span class="fl">0.99</span>,</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> <span class="cn">NULL</span>,</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_cells =</span> <span class="dv">20</span>,</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="cn">NULL</span>,</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">make_plots =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">qcutoff =</span> <span class="fl">0.8</span>,</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">convergence_thr =</span> <span class="fl">0.001</span>,</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">init =</span> <span class="st">"kmeanspp"</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  tdiff <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t, <span class="at">units =</span> <span class="st">"secs"</span>)</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  sce_sub<span class="sc">$</span>cadir <span class="ot">&lt;-</span> cabic<span class="sc">@</span>cell_clusters</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  ari <span class="ot">&lt;-</span> aricode<span class="sc">::</span><span class="fu">clustComp</span>(sce_sub<span class="sc">$</span>cadir, sce_sub<span class="sc">$</span>cell_ontology_class)</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  kpp[i] <span class="ot">&lt;-</span> ari<span class="sc">$</span>ARI</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="0b189217" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>kpp <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> nreps)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(nreps)) {</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  cabic <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caobj =</span> ca,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">8</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">cutoff =</span> <span class="cn">NULL</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"random"</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">apl_quant =</span> <span class="fl">0.99</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> <span class="cn">NULL</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_cells =</span> <span class="dv">20</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="cn">NULL</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">make_plots =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">qcutoff =</span> <span class="fl">0.8</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">convergence_thr =</span> <span class="fl">0.001</span>,</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">init =</span> <span class="st">"kmeanspp"</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  tdiff <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t, <span class="at">units =</span> <span class="st">"secs"</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  sce_sub<span class="sc">$</span>cadir <span class="ot">&lt;-</span> cabic<span class="sc">@</span>cell_clusters</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  ari <span class="ot">&lt;-</span> aricode<span class="sc">::</span><span class="fu">clustComp</span>(sce_sub<span class="sc">$</span>cadir, sce_sub<span class="sc">$</span>cell_ontology_class)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  kpp[i] <span class="ot">&lt;-</span> ari<span class="sc">$</span>ARI</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Inferred cutoff angle: 64.55
+Inferred cutoff angle: 68.78
 
 Iteration 1
     Merging cluster_1 with cluster_4
@@ -226,7 +223,7 @@ Iteration 1
     Merging cluster_3 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 64.75
+Inferred cutoff angle: 68.57
 
 Iteration 1
     Splitting cluster cluster_4
@@ -235,7 +232,7 @@ Iteration 1
     Merging cluster_3 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 64.59
+Inferred cutoff angle: 67.96
 
 Iteration 1
     Splitting cluster cluster_7
@@ -245,1885 +242,1841 @@ Iteration 1
 •   Merging cluster_3 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 65.44
+Inferred cutoff angle: 68.92
 
 Iteration 1
-    Splitting cluster cluster_3
     Merging cluster_2 with cluster_6
 •   Merging cluster_2 with cluster_8
     Merging cluster_5 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 65.13
+Inferred cutoff angle: 67.87
 
 Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_5
+    Merging cluster_2 with cluster_6
 •   Merging cluster_2 with cluster_7
 Iteration 2
 
-Inferred cutoff angle: 64.96
+Inferred cutoff angle: 68.36
 
 Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_1 with cluster_7
+    Splitting cluster cluster_2
+    Merging cluster_1 with cluster_6
+•   Merging cluster_1 with cluster_7
     Merging cluster_3 with cluster_4
 •   Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_7
 Iteration 2
 
-Inferred cutoff angle: 65.62
-
-Iteration 1
-    Merging cluster_1 with cluster_2
-•   Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.29
+Inferred cutoff angle: 68
 
 Iteration 1
     Merging cluster_1 with cluster_7
     Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 65.26
-
-Iteration 1
-    Splitting cluster cluster_8
-    Merging cluster_1 with cluster_5
-•   Merging cluster_1 with cluster_7
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.4
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_1 with cluster_3
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 65.38
-
-Iteration 1
-    Splitting cluster cluster_8
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.65
-
-Iteration 1
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.12
-
-Iteration 1
-    Merging cluster_2 with cluster_4
-    Merging cluster_4 with cluster_5
-    Merging cluster_5 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.36
-
-Iteration 1
-    Merging cluster_2 with cluster_6
-    Merging cluster_5 with cluster_6
-•   Merging cluster_5 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.53
-
-Iteration 1
-    Merging cluster_2 with cluster_6
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.83
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.98
-
-Iteration 1
-    Merging cluster_1 with cluster_4
-•   Merging cluster_1 with cluster_5
-•   Merging cluster_1 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.72
-
-Iteration 1
-    Merging cluster_1 with cluster_3
-    Merging cluster_3 with cluster_5
-    Merging cluster_5 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.4
-
-Iteration 1
-    Merging cluster_2 with cluster_8
-    Merging cluster_3 with cluster_6
     Merging cluster_4 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 65.04
+Inferred cutoff angle: 68.1
 
 Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_1 with cluster_6
-    Merging cluster_2 with cluster_5
+    Splitting cluster cluster_8
+    Merging cluster_1 with cluster_2
+•   Merging cluster_1 with cluster_6
+•   Merging cluster_1 with cluster_7
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.56
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
 •   Merging cluster_2 with cluster_7
 Iteration 2
 
-Inferred cutoff angle: 65.21
+Inferred cutoff angle: 68.95
 
 Iteration 1
-    Merging cluster_1 with cluster_5
-•   Merging cluster_1 with cluster_8
+    Merging cluster_1 with cluster_4
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.07
+
+Iteration 1
+    Merging cluster_1 with cluster_8
+    Merging cluster_3 with cluster_4
+    Merging cluster_4 with cluster_5
+Iteration 2
+    Splitting cluster cluster_2
+Iteration 3
+
+Inferred cutoff angle: 69.02
+
+Iteration 1
+    Merging cluster_1 with cluster_7
     Merging cluster_2 with cluster_6
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 64.9
-
-Iteration 1
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_6
+    Merging cluster_3 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 64.85
+Inferred cutoff angle: 68.29
 
 Iteration 1
-    Merging cluster_2 with cluster_3
-    Merging cluster_4 with cluster_5
+    Merging cluster_1 with cluster_7
+    Merging cluster_3 with cluster_4
     Merging cluster_5 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 63.72
+Inferred cutoff angle: 68.47
 
 Iteration 1
     Splitting cluster cluster_8
-    Splitting cluster cluster_8
-    Merging cluster_1 with cluster_6
-•   Merging cluster_1 with cluster_7
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.02
-
-Iteration 1
-    Splitting cluster cluster_7
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.39
-
-Iteration 1
-    Merging cluster_3 with cluster_5
-    Merging cluster_5 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.82
-
-Iteration 1
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_4
+    Merging cluster_1 with cluster_4
+    Merging cluster_2 with cluster_5
 •   Merging cluster_2 with cluster_6
+    Merging cluster_4 with cluster_6
 Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
 
-Inferred cutoff angle: 64.47
+Inferred cutoff angle: 68.23
 
 Iteration 1
-    Merging cluster_3 with cluster_7
-•   Merging cluster_3 with cluster_8
-    Merging cluster_5 with cluster_6
-Iteration 2
     Splitting cluster cluster_4
-Iteration 3
-    Splitting cluster cluster_5
-Iteration 4
-
-Inferred cutoff angle: 65.09
-
-Iteration 1
-    Merging cluster_1 with cluster_2
-•   Merging cluster_1 with cluster_4
-    Merging cluster_2 with cluster_5
+    Merging cluster_1 with cluster_8
+    Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_7
+    Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 65.26
+Inferred cutoff angle: 68.27
 
 Iteration 1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
+    Splitting cluster cluster_2
+    Merging cluster_1 with cluster_9
+    Merging cluster_3 with cluster_6
+•   Merging cluster_3 with cluster_8
+    Merging cluster_4 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 65.15
+Inferred cutoff angle: 68.22
 
 Iteration 1
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_3
-    Merging cluster_4 with cluster_5
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 64.5
-
-Iteration 1
-    Merging cluster_2 with cluster_5
+    Merging cluster_2 with cluster_4
     Merging cluster_4 with cluster_5
 •   Merging cluster_4 with cluster_6
 Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
 
-Inferred cutoff angle: 65.34
+Inferred cutoff angle: 68.72
 
 Iteration 1
+    Splitting cluster cluster_7
+    Merging cluster_1 with cluster_6
+•   Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.96
+
+Iteration 1
+    Merging cluster_1 with cluster_2
+•   Merging cluster_1 with cluster_5
+•   Merging cluster_1 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.2
+
+Iteration 1
+    Splitting cluster cluster_7
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+    Merging cluster_3 with cluster_7
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 67.99
+
+Iteration 1
+    Merging cluster_1 with cluster_6
+    Merging cluster_3 with cluster_7
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.42
+
+Iteration 1
+    Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.34
+
+Iteration 1
+    Merging cluster_1 with cluster_2
+•   Merging cluster_1 with cluster_4
+•   Merging cluster_1 with cluster_6
+    Merging cluster_2 with cluster_5
+Iteration 2
+    Splitting cluster cluster_3
+Iteration 3
+
+Inferred cutoff angle: 68.45
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+•   Merging cluster_1 with cluster_5
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.02
+
+Iteration 1
+    Merging cluster_1 with cluster_5
     Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.07
+
+Iteration 1
+    Splitting cluster cluster_3
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_6
+•   Merging cluster_4 with cluster_7
+•   Merging cluster_4 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.15
+
+Iteration 1
+    Splitting cluster cluster_6
+    Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.46
+
+Iteration 1
+    Merging cluster_1 with cluster_4
+•   Merging cluster_1 with cluster_8
+    Merging cluster_1 with cluster_6
+Iteration 2
+    Splitting cluster cluster_2
+Iteration 3
+
+Inferred cutoff angle: 68.42
+
+Iteration 1
+    Merging cluster_1 with cluster_5
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 67.7
+
+Iteration 1
+    Merging cluster_3 with cluster_7
+•   Merging cluster_3 with cluster_8
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.48
+
+Iteration 1
+    Merging cluster_1 with cluster_4
+    Merging cluster_4 with cluster_7
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.02
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.72
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.39
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+•   Merging cluster_1 with cluster_4
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.2
+
+Iteration 1
+    Merging cluster_3 with cluster_4
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 67.92
+
+Iteration 1
+    Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.01
+
+Iteration 1
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_6
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.56
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+    Merging cluster_4 with cluster_6
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.5
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.23
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_8
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.31
+
+Iteration 1
+    Merging cluster_1 with cluster_2
+    Merging cluster_5 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.78
+
+Iteration 1
+    Merging cluster_4 with cluster_7
+    Merging cluster_5 with cluster_7
+Iteration 2
+    Splitting cluster cluster_2
+Iteration 3
+
+Inferred cutoff angle: 67.6
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+•   Merging cluster_1 with cluster_6
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.64
+
+Iteration 1
+    Merging cluster_1 with cluster_5
+    Merging cluster_3 with cluster_4
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.73
+
+Iteration 1
+    Merging cluster_1 with cluster_5
+    Merging cluster_2 with cluster_4
+    Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 67.94
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_1 with cluster_2
+•   Merging cluster_1 with cluster_5
+•   Merging cluster_1 with cluster_7
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.52
+
+Iteration 1
+    Splitting cluster cluster_8
+    Merging cluster_1 with cluster_6
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.43
+
+Iteration 1
+    Merging cluster_1 with cluster_7
     Merging cluster_3 with cluster_4
 •   Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.83
+Inferred cutoff angle: 68.23
 
 Iteration 1
-    Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_6
-    Merging cluster_3 with cluster_4
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.47
-
-Iteration 1
+    Splitting cluster cluster_3
     Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_6
-    Merging cluster_5 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.43
-
-Iteration 1
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_7
-    Merging cluster_5 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.3
-
-Iteration 1
-    Splitting cluster cluster_7
-    Merging cluster_1 with cluster_2
-•   Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_5
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 65.2
-
-Iteration 1
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_6
-    Merging cluster_5 with cluster_6
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.42
-
-Iteration 1
-    Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_6
-    Merging cluster_3 with cluster_6
-Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 64.09
-
-Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_1 with cluster_3
-    Merging cluster_2 with cluster_8
-    Merging cluster_3 with cluster_7
-    Merging cluster_4 with cluster_6
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 64.74
-
-Iteration 1
-    Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_8
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-    Splitting cluster cluster_2
-Iteration 4
-
-Inferred cutoff angle: 64.42
-
-Iteration 1
-    Splitting cluster cluster_7
-    Merging cluster_1 with cluster_4
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.77
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_9
-    Merging cluster_2 with cluster_8
-    Merging cluster_4 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.32
-
-Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_8
-    Merging cluster_3 with cluster_5
-    Merging cluster_4 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.68
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_2
-    Merging cluster_3 with cluster_6
-•   Merging cluster_3 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.43
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_8
-    Merging cluster_3 with cluster_4
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.29
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_4
-•   Merging cluster_1 with cluster_6
-•   Merging cluster_1 with cluster_8
-Iteration 2
-
-Inferred cutoff angle: 65.11
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_5
-    Merging cluster_3 with cluster_6
-    Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.39
-
-Iteration 1
-    Merging cluster_1 with cluster_6
-    Merging cluster_2 with cluster_6
-•   Merging cluster_2 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.84
-
-Iteration 1
-    Merging cluster_1 with cluster_7
-    Merging cluster_3 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.98
-
-Iteration 1
-    Merging cluster_2 with cluster_3
 •   Merging cluster_2 with cluster_7
     Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.47
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_1 with cluster_6
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
     Merging cluster_4 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.23
-
-Iteration 1
-    Merging cluster_2 with cluster_6
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.98
-
-Iteration 1
-    Merging cluster_4 with cluster_5
-    Merging cluster_6 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.02
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_1 with cluster_2
-•   Merging cluster_1 with cluster_4
-•   Merging cluster_1 with cluster_8
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.61
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_1 with cluster_5
-•   Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.44
+Inferred cutoff angle: 68.38
 
 Iteration 1
     Splitting cluster cluster_2
-    Merging cluster_1 with cluster_4
-    Merging cluster_3 with cluster_5
+    Merging cluster_3 with cluster_4
 •   Merging cluster_3 with cluster_6
 •   Merging cluster_3 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.51
-
-Iteration 1
-    Merging cluster_1 with cluster_5
-    Merging cluster_4 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.24
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 65.06
-
-Iteration 1
-    Merging cluster_1 with cluster_6
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.87
-
-Iteration 1
-    Merging cluster_1 with cluster_7
-•   Merging cluster_1 with cluster_8
-    Merging cluster_1 with cluster_3
-    Merging cluster_4 with cluster_5
-Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 64.8
-
-Iteration 1
-    Merging cluster_1 with cluster_4
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.36
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_9
-    Merging cluster_6 with cluster_7
-Iteration 2
-    Merging cluster_6 with cluster_7
-Iteration 3
-
-Inferred cutoff angle: 64.29
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_6
-    Merging cluster_3 with cluster_5
-    Merging cluster_4 with cluster_5
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.35
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_6
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.16
-
-Iteration 1
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
 •   Merging cluster_3 with cluster_8
 Iteration 2
 
-Inferred cutoff angle: 64.31
+Inferred cutoff angle: 67.59
 
 Iteration 1
-    Splitting cluster cluster_2
-    Merging cluster_1 with cluster_5
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_7
+    Splitting cluster cluster_3
+    Merging cluster_1 with cluster_6
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_7
     Merging cluster_4 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.32
+Inferred cutoff angle: 68.06
 
 Iteration 1
-    Splitting cluster cluster_2
-    Merging cluster_1 with cluster_6
-•   Merging cluster_1 with cluster_7
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.25
-
-Iteration 1
-    Merging cluster_1 with cluster_5
-•   Merging cluster_1 with cluster_8
+    Splitting cluster cluster_8
+    Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_4
     Merging cluster_4 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 64.71
+Inferred cutoff angle: 68.81
 
 Iteration 1
+    Merging cluster_2 with cluster_4
+    Merging cluster_3 with cluster_7
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.39
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_1 with cluster_3
+•   Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_5
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.07
+
+Iteration 1
+    Splitting cluster cluster_3
+    Merging cluster_1 with cluster_4
+•   Merging cluster_1 with cluster_5
+    Merging cluster_1 with cluster_2
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.81
+
+Iteration 1
+    Merging cluster_3 with cluster_4
+    Merging cluster_4 with cluster_7
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.27
+
+Iteration 1
+    Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_7
+•   Merging cluster_2 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.66
+
+Iteration 1
+    Splitting cluster cluster_7
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.53
+
+Iteration 1
+    Splitting cluster cluster_8
+    Merging cluster_1 with cluster_6
+    Merging cluster_2 with cluster_3
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.15
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_6
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.38
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+    Merging cluster_3 with cluster_7
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.12
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_1 with cluster_7
+•   Merging cluster_1 with cluster_8
+    Merging cluster_4 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 67.93
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_3
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.67
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+•   Merging cluster_1 with cluster_8
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.36
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_8
+    Merging cluster_3 with cluster_5
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.09
+
+Iteration 1
+    Splitting cluster cluster_8
+    Merging cluster_1 with cluster_4
+•   Merging cluster_1 with cluster_5
+•   Merging cluster_1 with cluster_7
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 67.61
+
+Iteration 1
+    Merging cluster_1 with cluster_6
+    Merging cluster_2 with cluster_6
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 67.83
+
+Iteration 1
+    Splitting cluster cluster_8
+    Merging cluster_1 with cluster_4
+•   Merging cluster_1 with cluster_5
     Merging cluster_1 with cluster_5
+    Merging cluster_2 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.07
+
+Iteration 1
+    Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_3
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.96
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+•   Merging cluster_3 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.49
+
+Iteration 1
+    Merging cluster_2 with cluster_8
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 67.99
+
+Iteration 1
+    Merging cluster_1 with cluster_2
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.05
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.05
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.97
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+•   Merging cluster_1 with cluster_5
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 67.67
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_6
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 67.7
+
+Iteration 1
+    Merging cluster_1 with cluster_6
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.48
+
+Iteration 1
+    Splitting cluster cluster_8
+    Merging cluster_1 with cluster_2
+•   Merging cluster_1 with cluster_4
+•   Merging cluster_1 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.13
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.1
+
+Iteration 1
+    Merging cluster_1 with cluster_2
+•   Merging cluster_1 with cluster_3
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.35
+
+Iteration 1
+    Splitting cluster cluster_6
+    Merging cluster_1 with cluster_5
+    Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.14
+
+Iteration 1
+    Merging cluster_3 with cluster_7
     Merging cluster_4 with cluster_5
 •   Merging cluster_4 with cluster_7
 Iteration 2
 
-Inferred cutoff angle: 64.76
-
-Iteration 1
-    Merging cluster_1 with cluster_8
-    Merging cluster_2 with cluster_5
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.58
-
-Iteration 1
-    Merging cluster_1 with cluster_4
-    Merging cluster_3 with cluster_4
-    Merging cluster_4 with cluster_5
-Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 65.07
-
-Iteration 1
-    Merging cluster_1 with cluster_5
-•   Merging cluster_1 with cluster_8
-    Merging cluster_1 with cluster_6
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.6
-
-Iteration 1
-    Merging cluster_1 with cluster_4
-    Merging cluster_2 with cluster_6
-    Merging cluster_4 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.57
-
-Iteration 1
-    Merging cluster_2 with cluster_5
-    Merging cluster_2 with cluster_3
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.49
-
-Iteration 1
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_6
-•   Merging cluster_1 with cluster_7
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.74
-
-Iteration 1
-    Merging cluster_1 with cluster_3
-    Merging cluster_2 with cluster_3
-    Merging cluster_4 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.43
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_1 with cluster_2
-    Merging cluster_4 with cluster_6
-    Merging cluster_5 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.64
-
-Iteration 1
-    Merging cluster_2 with cluster_6
-•   Merging cluster_2 with cluster_7
-    Merging cluster_3 with cluster_4
-Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 64.09
-
-Iteration 1
-    Splitting cluster cluster_7
-    Merging cluster_1 with cluster_6
-    Merging cluster_2 with cluster_7
-    Merging cluster_3 with cluster_7
-    Merging cluster_4 with cluster_5
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 65.09
+Inferred cutoff angle: 68.4
 
 Iteration 1
     Splitting cluster cluster_8
-    Merging cluster_3 with cluster_6
-    Merging cluster_4 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.52
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_1 with cluster_3
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_7
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.9
-
-Iteration 1
-    Merging cluster_2 with cluster_3
+    Merging cluster_1 with cluster_5
+•   Merging cluster_1 with cluster_6
     Merging cluster_3 with cluster_4
 •   Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.98
+Inferred cutoff angle: 68.01
 
 Iteration 1
-    Merging cluster_1 with cluster_6
     Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.77
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_8
-    Merging cluster_3 with cluster_6
-    Merging cluster_4 with cluster_6
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.99
-
-Iteration 1
-    Merging cluster_1 with cluster_3
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.32
-
-Iteration 1
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_4
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.43
-
-Iteration 1
-    Splitting cluster cluster_2
-    Merging cluster_2 with cluster_4
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.47
-
-Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_2 with cluster_6
-    Merging cluster_3 with cluster_6
-•   Merging cluster_3 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.46
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_1 with cluster_4
-•   Merging cluster_1 with cluster_6
-    Merging cluster_2 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.41
-
-Iteration 1
-    Splitting cluster cluster_2
-    Splitting cluster cluster_3
-    Merging cluster_1 with cluster_2
-    Merging cluster_3 with cluster_5
+•   Merging cluster_2 with cluster_5
     Merging cluster_5 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 64.8
+Inferred cutoff angle: 68.76
 
 Iteration 1
-    Merging cluster_1 with cluster_4
+    Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 67.53
+
+Iteration 1
+    Merging cluster_1 with cluster_5
+    Merging cluster_2 with cluster_4
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.88
+
+Iteration 1
+    Merging cluster_1 with cluster_5
+•   Merging cluster_1 with cluster_6
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 67.63
+
+Iteration 1
+    Merging cluster_4 with cluster_8
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.54
+
+Iteration 1
+    Merging cluster_1 with cluster_7
     Merging cluster_2 with cluster_7
     Merging cluster_3 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 64.06
+Inferred cutoff angle: 68.22
 
 Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_8
+    Merging cluster_4 with cluster_6
+•   Merging cluster_4 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 69.05
+
+Iteration 1
+    Splitting cluster cluster_3
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_7
     Merging cluster_4 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 64.83
+Inferred cutoff angle: 67.78
 
 Iteration 1
+    Merging cluster_1 with cluster_2
+    Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.08
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_1 with cluster_2
+•   Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_4
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.9
+
+Iteration 1
+    Splitting cluster cluster_7
+    Merging cluster_1 with cluster_4
+•   Merging cluster_1 with cluster_5
     Merging cluster_2 with cluster_4
 •   Merging cluster_2 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 64.77
+Inferred cutoff angle: 68.31
 
 Iteration 1
-    Merging cluster_3 with cluster_7
+    Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_8
     Merging cluster_4 with cluster_5
-•   Merging cluster_4 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 64.92
+Inferred cutoff angle: 68.79
 
 Iteration 1
-    Merging cluster_1 with cluster_5
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
-Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 64.79
-
-Iteration 1
-    Merging cluster_1 with cluster_5
-    Merging cluster_3 with cluster_6
-•   Merging cluster_3 with cluster_7
-Iteration 2
-    Splitting cluster cluster_5
-Iteration 3
-
-Inferred cutoff angle: 64.64
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_1 with cluster_4
+    Merging cluster_1 with cluster_2
 •   Merging cluster_1 with cluster_7
-    Merging cluster_1 with cluster_5
-    Merging cluster_2 with cluster_5
+    Merging cluster_2 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 66.11
+Inferred cutoff angle: 67.63
 
 Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
     Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+    Merging cluster_4 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 65.09
+Inferred cutoff angle: 67.97
 
 Iteration 1
-    Merging cluster_1 with cluster_3
-    Merging cluster_6 with cluster_7
+    Merging cluster_1 with cluster_6
+    Merging cluster_2 with cluster_3
+    Merging cluster_3 with cluster_4
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.72
+
+Iteration 1
+    Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_5
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.38
+
+Iteration 1
+    Merging cluster_1 with cluster_4
+    Merging cluster_3 with cluster_7
+    Merging cluster_4 with cluster_6
 Iteration 2</code></pre>
 </div>
 </div>
 </section>
 <section id="rand" class="level2">
 <h2 class="anchored" data-anchor-id="rand">rand</h2>
-<div id="4c783571" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>krnd <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> nreps)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(nreps)) {</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  cabic <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">caobj =</span> ca,</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">8</span>,</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">cutoff =</span> <span class="cn">NULL</span>,</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"random"</span>,</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">apl_quant =</span> <span class="fl">0.99</span>,</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> <span class="cn">NULL</span>,</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_cells =</span> <span class="dv">20</span>,</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="cn">NULL</span>,</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">make_plots =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">qcutoff =</span> <span class="fl">0.8</span>,</span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">convergence_thr =</span> <span class="fl">0.001</span>,</span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">init =</span> <span class="st">"rand"</span></span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  tdiff <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t, <span class="at">units =</span> <span class="st">"secs"</span>)</span>
-<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  sce_sub<span class="sc">$</span>cadir <span class="ot">&lt;-</span> cabic<span class="sc">@</span>cell_clusters</span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  ari <span class="ot">&lt;-</span> aricode<span class="sc">::</span><span class="fu">clustComp</span>(sce_sub<span class="sc">$</span>cadir, sce_sub<span class="sc">$</span>cell_ontology_class)</span>
-<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  krnd[i] <span class="ot">&lt;-</span> ari<span class="sc">$</span>ARI</span>
-<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="b9108f72" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>krnd <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> nreps)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(nreps)) {</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  cabic <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">caobj =</span> ca,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">8</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">cutoff =</span> <span class="cn">NULL</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"random"</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">apl_quant =</span> <span class="fl">0.99</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> <span class="cn">NULL</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_cells =</span> <span class="dv">20</span>,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="cn">NULL</span>,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">make_plots =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">qcutoff =</span> <span class="fl">0.8</span>,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">convergence_thr =</span> <span class="fl">0.001</span>,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">init =</span> <span class="st">"rand"</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  tdiff <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t, <span class="at">units =</span> <span class="st">"secs"</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  sce_sub<span class="sc">$</span>cadir <span class="ot">&lt;-</span> cabic<span class="sc">@</span>cell_clusters</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  ari <span class="ot">&lt;-</span> aricode<span class="sc">::</span><span class="fu">clustComp</span>(sce_sub<span class="sc">$</span>cadir, sce_sub<span class="sc">$</span>cell_ontology_class)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  krnd[i] <span class="ot">&lt;-</span> ari<span class="sc">$</span>ARI</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Inferred cutoff angle: 63.7
+Inferred cutoff angle: 68.25
 
 Iteration 1
     Merging cluster_2 with cluster_5
 •   Merging cluster_2 with cluster_7
 Iteration 2
+
+Inferred cutoff angle: 68.49
+
+Iteration 1
     Splitting cluster cluster_6
-Iteration 3
-
-Inferred cutoff angle: 64.78
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_8
-    Merging cluster_2 with cluster_4
-    Merging cluster_4 with cluster_6
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 64.76
-
-Iteration 1
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_8
-    Merging cluster_5 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.73
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_8
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.59
-
-Iteration 1
-    Merging cluster_1 with cluster_2
-    Merging cluster_4 with cluster_6
-    Merging cluster_5 with cluster_6
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.55
-
-Iteration 1
-    Splitting cluster cluster_8
-    Merging cluster_2 with cluster_7
-    Merging cluster_3 with cluster_7
-    Merging cluster_4 with cluster_5
-•   Merging cluster_4 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.59
-
-Iteration 1
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_8
-    Merging cluster_4 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.96
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_8
-    Merging cluster_2 with cluster_5
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.71
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.89
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_8
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.16
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_8
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.9
-
-Iteration 1
-    Merging cluster_1 with cluster_2
-•   Merging cluster_1 with cluster_5
-    Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.57
-
-Iteration 1
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-•   Merging cluster_3 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 65.23
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.55
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_7
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.73
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.24
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_6
-    Merging cluster_2 with cluster_4
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.92
-
-Iteration 1
-    Splitting cluster cluster_8
     Merging cluster_1 with cluster_2
 •   Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.79
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-    Merging cluster_2 with cluster_6
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.56
-
-Iteration 1
-    Merging cluster_1 with cluster_8
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.3
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_9
-    Merging cluster_1 with cluster_10
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_7
-    Merging cluster_2 with cluster_4
-    Merging cluster_4 with cluster_5
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 64.88
-
-Iteration 1
-    Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_7
-    Merging cluster_4 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.18
-
-Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_1 with cluster_8
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 64.54
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.76
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_6
-•   Merging cluster_2 with cluster_8
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 64.82
-
-Iteration 1
-    Merging cluster_1 with cluster_2
-•   Merging cluster_1 with cluster_5
+    Merging cluster_1 with cluster_6
     Merging cluster_3 with cluster_4
 Iteration 2
-    Splitting cluster cluster_5
-Iteration 3
 
-Inferred cutoff angle: 65.04
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_1 with cluster_4
-•   Merging cluster_1 with cluster_8
-    Merging cluster_4 with cluster_5
-•   Merging cluster_4 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.95
+Inferred cutoff angle: 68.5
 
 Iteration 1
     Splitting cluster cluster_7
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_4
-•   Merging cluster_1 with cluster_5
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+    Merging cluster_2 with cluster_3
     Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.86
+Inferred cutoff angle: 68.1
 
 Iteration 1
-    Merging cluster_1 with cluster_2
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_7
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 64.96
-
-Iteration 1
-    Splitting cluster cluster_8
-    Merging cluster_1 with cluster_4
-•   Merging cluster_1 with cluster_5
-    Merging cluster_3 with cluster_6
-    Merging cluster_4 with cluster_5
-Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 64.21
-
-Iteration 1
-    Merging cluster_1 with cluster_2
-•   Merging cluster_1 with cluster_6
-    Merging cluster_1 with cluster_3
-    Merging cluster_2 with cluster_4
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.86
-
-Iteration 1
-    Splitting cluster cluster_8
-    Merging cluster_2 with cluster_5
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_5
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.47
-
-Iteration 1
-    Splitting cluster cluster_8
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_6
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 64.5
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_6
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.66
-
-Iteration 1
-    Merging cluster_1 with cluster_5
-•   Merging cluster_1 with cluster_8
-    Merging cluster_1 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.93
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_6
-•   Merging cluster_2 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.88
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_7
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.1
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_6
-•   Merging cluster_2 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 63.73
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
     Splitting cluster cluster_1
     Merging cluster_2 with cluster_3
 •   Merging cluster_2 with cluster_4
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.4
-
-Iteration 1
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
-•   Merging cluster_3 with cluster_8
-Iteration 2
-
-Inferred cutoff angle: 65.21
-
-Iteration 1
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_4
-    Merging cluster_1 with cluster_2
-Iteration 2
-
-Inferred cutoff angle: 64.82
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.25
-
-Iteration 1
-    Splitting cluster cluster_8
-    Merging cluster_1 with cluster_2
-•   Merging cluster_1 with cluster_5
-    Merging cluster_2 with cluster_5
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.03
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_1 with cluster_9
-    Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_8
+    Merging cluster_2 with cluster_6
     Merging cluster_5 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 65.35
+Inferred cutoff angle: 68.52
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_8
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.5
 
 Iteration 1
     Merging cluster_1 with cluster_2
+•   Merging cluster_1 with cluster_3
 •   Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.58
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_2
-    Merging cluster_2 with cluster_7
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
+•   Merging cluster_1 with cluster_8
 Iteration 2
 
-Inferred cutoff angle: 65.25
-
-Iteration 1
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.1
-
-Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-    Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_6
-•   Merging cluster_2 with cluster_7
-•   Merging cluster_2 with cluster_8
-Iteration 2
-
-Inferred cutoff angle: 64.4
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 63.83
-
-Iteration 1
-    Splitting cluster cluster_5
-    Splitting cluster cluster_5
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_8
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.24
-
-Iteration 1
-    Splitting cluster cluster_7
-    Splitting cluster cluster_8
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_6
-    Merging cluster_1 with cluster_4
-    Merging cluster_2 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.55
-
-Iteration 1
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_8
-    Merging cluster_2 with cluster_3
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.12
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_9
-    Merging cluster_3 with cluster_6
-•   Merging cluster_3 with cluster_8
-    Merging cluster_4 with cluster_5
-•   Merging cluster_4 with cluster_6
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 65.18
-
-Iteration 1
-    Splitting cluster cluster_2
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-•   Merging cluster_3 with cluster_7
-    Merging cluster_3 with cluster_5
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 64.6
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_1 with cluster_6
-    Merging cluster_2 with cluster_7
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.33
-
-Iteration 1
-    Splitting cluster cluster_7
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_6
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
-Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 65.41
+Inferred cutoff angle: 68.09
 
 Iteration 1
     Splitting cluster cluster_1
     Merging cluster_2 with cluster_3
 •   Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_7
-    Merging cluster_2 with cluster_3
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 65.41
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_7
+•   Merging cluster_2 with cluster_5
     Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 64.44
+Inferred cutoff angle: 68.46
 
 Iteration 1
-    Merging cluster_2 with cluster_3
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.76
-
-Iteration 1
-    Merging cluster_2 with cluster_6
-•   Merging cluster_2 with cluster_8
-    Merging cluster_2 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.32
-
-Iteration 1
-    Splitting cluster cluster_1
+    Splitting cluster cluster_5
     Merging cluster_1 with cluster_2
-    Merging cluster_2 with cluster_5
+•   Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_6
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.46
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
 •   Merging cluster_2 with cluster_6
-    Merging cluster_4 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.66
-
-Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.35
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_7
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_7
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 63.85
-
-Iteration 1
-    Merging cluster_2 with cluster_6
-    Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.7
-
-Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_1 with cluster_3
-•   Merging cluster_1 with cluster_7
-•   Merging cluster_1 with cluster_8
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.78
-
-Iteration 1
-    Merging cluster_1 with cluster_4
-•   Merging cluster_1 with cluster_5
-•   Merging cluster_1 with cluster_6
-    Merging cluster_2 with cluster_3
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.09
-
-Iteration 1
-    Merging cluster_1 with cluster_2
-•   Merging cluster_1 with cluster_5
-    Merging cluster_2 with cluster_5
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 64.41
-
-Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_7
-    Merging cluster_3 with cluster_6
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 64.07
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_1 with cluster_6
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_7
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.29
-
-Iteration 1
-    Merging cluster_2 with cluster_8
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-    Splitting cluster cluster_4
-Iteration 4
-
-Inferred cutoff angle: 65.06
-
-Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_1 with cluster_4
-•   Merging cluster_1 with cluster_8
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.14
-
-Iteration 1
-    Merging cluster_4 with cluster_7
-    Merging cluster_5 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.04
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_7
-•   Merging cluster_2 with cluster_8
-Iteration 2
-
-Inferred cutoff angle: 64.16
-
-Iteration 1
-    Merging cluster_6 with cluster_7
-•   Merging cluster_6 with cluster_8
-Iteration 2
-
-Inferred cutoff angle: 64.74
-
-Iteration 1
-    Merging cluster_1 with cluster_5
-•   Merging cluster_1 with cluster_7
-    Merging cluster_1 with cluster_2
-Iteration 2
-
-Inferred cutoff angle: 65.6
-
-Iteration 1
-    Merging cluster_1 with cluster_6
-•   Merging cluster_1 with cluster_8
-    Merging cluster_5 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.59
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_7
-•   Merging cluster_2 with cluster_8
-    Merging cluster_5 with cluster_6
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.56
-
-Iteration 1
-    Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.02
+Inferred cutoff angle: 68.22
 
 Iteration 1
     Splitting cluster cluster_2
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
-•   Merging cluster_3 with cluster_8
-Iteration 2
-
-Inferred cutoff angle: 64.58
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_8
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_6
-•   Merging cluster_2 with cluster_7
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.21
-
-Iteration 1
-    Merging cluster_2 with cluster_5
-    Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.61
-
-Iteration 1
-    Splitting cluster cluster_7
-    Merging cluster_1 with cluster_5
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-•   Merging cluster_2 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.82
-
-Iteration 1
-    Merging cluster_2 with cluster_3
     Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.07
-
-Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_7
-•   Merging cluster_3 with cluster_8
-Iteration 2
-
-Inferred cutoff angle: 65.35
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.29
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_2
-•   Merging cluster_1 with cluster_6
-•   Merging cluster_1 with cluster_8
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.02
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_1 with cluster_5
-•   Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.43
-
-Iteration 1
-    Merging cluster_1 with cluster_4
-•   Merging cluster_1 with cluster_8
-    Merging cluster_1 with cluster_3
-    Merging cluster_2 with cluster_3
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.16
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_1 with cluster_5
-    Merging cluster_2 with cluster_6
-    Merging cluster_4 with cluster_5
-•   Merging cluster_4 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 63.53
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_7
-    Merging cluster_4 with cluster_6
-•   Merging cluster_4 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.98
-
-Iteration 1
-    Splitting cluster cluster_2
-    Merging cluster_1 with cluster_5
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 65.12
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_5
-•   Merging cluster_3 with cluster_6
-    Merging cluster_3 with cluster_4
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.56
-
-Iteration 1
-    Splitting cluster cluster_6
-    Merging cluster_1 with cluster_7
-    Merging cluster_2 with cluster_7
-    Merging cluster_3 with cluster_5
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.93
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_2 with cluster_6
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_6
-•   Merging cluster_3 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 64.98
-
-Iteration 1
-    Merging cluster_2 with cluster_8
+    Merging cluster_4 with cluster_8
     Merging cluster_5 with cluster_6
 •   Merging cluster_5 with cluster_7
 Iteration 2
 
-Inferred cutoff angle: 64.82
+Inferred cutoff angle: 69.1
 
 Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
+    Splitting cluster cluster_6
+    Merging cluster_1 with cluster_5
+    Merging cluster_2 with cluster_3
 •   Merging cluster_2 with cluster_6
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_5
+    Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.57
+Inferred cutoff angle: 68.14
+
+Iteration 1
+    Merging cluster_1 with cluster_8
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 67.62
+
+Iteration 1
+    Merging cluster_2 with cluster_5
+    Merging cluster_3 with cluster_6
+•   Merging cluster_3 with cluster_7
+    Merging cluster_3 with cluster_5
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.71
+
+Iteration 1
+    Merging cluster_1 with cluster_6
+•   Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.74
 
 Iteration 1
     Splitting cluster cluster_1
-    Merging cluster_1 with cluster_2
+    Merging cluster_3 with cluster_6
+•   Merging cluster_3 with cluster_7
+•   Merging cluster_3 with cluster_8
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.37
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_6
+    Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
+
+Inferred cutoff angle: 68.76
+
+Iteration 1
+    Merging cluster_1 with cluster_7
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+Iteration 2
+    Splitting cluster cluster_2
+Iteration 3
+
+Inferred cutoff angle: 68.44
+
+Iteration 1
+    Splitting cluster cluster_7
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.18
+
+Iteration 1
+    Merging cluster_3 with cluster_6
+•   Merging cluster_3 with cluster_8
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.29
+
+Iteration 1
+    Merging cluster_1 with cluster_6
+•   Merging cluster_1 with cluster_7
+•   Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_5
+Iteration 2
+    Splitting cluster cluster_3
+Iteration 3
+
+Inferred cutoff angle: 68.73
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.38
+
+Iteration 1
+    Merging cluster_1 with cluster_8
     Merging cluster_2 with cluster_3
 •   Merging cluster_2 with cluster_4
     Merging cluster_2 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 64.89
+Inferred cutoff angle: 68.81
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_9
+    Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 67.79
+
+Iteration 1
+    Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+•   Merging cluster_3 with cluster_7
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.38
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_6
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.71
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_7
+•   Merging cluster_2 with cluster_8
+Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
+
+Inferred cutoff angle: 68.28
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_3 with cluster_9
+    Merging cluster_4 with cluster_6
+•   Merging cluster_4 with cluster_7
+•   Merging cluster_4 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.04
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_7
+•   Merging cluster_2 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.43
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_7
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.65
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.46
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_7
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_8
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.35
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+    Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+    Merging cluster_4 with cluster_5
+Iteration 2
+    Splitting cluster cluster_2
+Iteration 3
+
+Inferred cutoff angle: 68.02
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_7
+•   Merging cluster_3 with cluster_8
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.93
+
+Iteration 1
+    Splitting cluster cluster_8
+    Merging cluster_1 with cluster_4
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 67.79
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.83
+
+Iteration 1
+    Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_6
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.55
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+    Merging cluster_3 with cluster_6
+•   Merging cluster_3 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.82
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.6
+
+Iteration 1
+    Merging cluster_2 with cluster_8
+    Merging cluster_4 with cluster_6
+    Merging cluster_5 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.92
+
+Iteration 1
+    Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.33
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.99
+
+Iteration 1
+    Merging cluster_1 with cluster_4
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_7
+    Merging cluster_4 with cluster_5
+Iteration 2
+    Splitting cluster cluster_3
+Iteration 3
+
+Inferred cutoff angle: 68.08
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_1 with cluster_5
+•   Merging cluster_1 with cluster_7
+•   Merging cluster_1 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.57
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_1 with cluster_6
+•   Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.66
+
+Iteration 1
+    Splitting cluster cluster_6
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_7
+•   Merging cluster_3 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 69.04
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.6
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_6
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.49
+
+Iteration 1
+    Splitting cluster cluster_3
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_6
+•   Merging cluster_4 with cluster_7
+•   Merging cluster_4 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.53
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_6
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 69.2
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_8
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 67.98
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.45
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_6
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 67.91
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.29
+
+Iteration 1
+    Splitting cluster cluster_8
+    Merging cluster_2 with cluster_6
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.43
+
+Iteration 1
+    Merging cluster_1 with cluster_2
+    Merging cluster_2 with cluster_5
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.6
 
 Iteration 1
     Splitting cluster cluster_7
+    Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_6
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.91
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.99
+
+Iteration 1
+    Splitting cluster cluster_1
     Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_7
 •   Merging cluster_2 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.6
+
+Iteration 1
+    Merging cluster_1 with cluster_4
+•   Merging cluster_1 with cluster_7
+    Merging cluster_2 with cluster_3
+Iteration 2
+    Splitting cluster cluster_5
+Iteration 3
+
+Inferred cutoff angle: 68.41
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_6
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.07
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_1 with cluster_5
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.57
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_8
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.41
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_7
+    Merging cluster_2 with cluster_4
     Merging cluster_4 with cluster_5
 Iteration 2
     Splitting cluster cluster_1
 Iteration 3
 
-Inferred cutoff angle: 64.32
+Inferred cutoff angle: 68.65
 
 Iteration 1
     Splitting cluster cluster_3
-    Merging cluster_1 with cluster_5
+    Merging cluster_1 with cluster_8
+    Merging cluster_2 with cluster_5
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.31
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.42
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_7
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_6
+Iteration 2
+    Splitting cluster cluster_3
+Iteration 3
+
+Inferred cutoff angle: 68.55
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_2 with cluster_4
     Merging cluster_4 with cluster_5
 •   Merging cluster_4 with cluster_7
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.5
+
+Iteration 1
+    Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_7
+Iteration 2
+    Splitting cluster cluster_5
+Iteration 3
+
+Inferred cutoff angle: 68.68
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_1 with cluster_4
+    Merging cluster_3 with cluster_6
+•   Merging cluster_3 with cluster_7
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.42
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_1 with cluster_8
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.37
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_6
+    Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.47
+
+Iteration 1
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_8
+    Merging cluster_4 with cluster_5
+Iteration 2
+    Splitting cluster cluster_2
+Iteration 3
+
+Inferred cutoff angle: 68.47
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+•   Merging cluster_1 with cluster_5
+•   Merging cluster_1 with cluster_7
+Iteration 2
+    Splitting cluster cluster_2
+Iteration 3
+
+Inferred cutoff angle: 68.36
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_7
+    Merging cluster_4 with cluster_5
+Iteration 2
+    Splitting cluster cluster_3
+Iteration 3
+
+Inferred cutoff angle: 68.69
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.15
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_6
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_4
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.63
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.34
+
+Iteration 1
+    Splitting cluster cluster_6
+    Merging cluster_1 with cluster_4
+•   Merging cluster_1 with cluster_7
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.35
+
+Iteration 1
+    Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.41
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.08
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.4
+
+Iteration 1
+    Splitting cluster cluster_8
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.44
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_1 with cluster_4
+•   Merging cluster_1 with cluster_8
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.01
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_7
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.06
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_6
+•   Merging cluster_2 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 68.33
+
+Iteration 1
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_7
+•   Merging cluster_3 with cluster_8
+Iteration 2
+
+Inferred cutoff angle: 67.81
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_7
+•   Merging cluster_2 with cluster_8
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.14
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_7
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.08
+
+Iteration 1
+    Merging cluster_3 with cluster_6
+•   Merging cluster_3 with cluster_8
+    Merging cluster_4 with cluster_6
+Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
+
+Inferred cutoff angle: 68.71
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_6
+    Merging cluster_4 with cluster_5
+•   Merging cluster_4 with cluster_6
+Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
+
+Inferred cutoff angle: 68.74
+
+Iteration 1
+    Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+    Merging cluster_3 with cluster_4
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.68
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.24
+
+Iteration 1
+    Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+    Merging cluster_4 with cluster_6
+Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
+
+Inferred cutoff angle: 68.14
+
+Iteration 1
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+•   Merging cluster_3 with cluster_6
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.65
+
+Iteration 1
+    Merging cluster_1 with cluster_7
+    Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_5
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.38
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.49
+
+Iteration 1
+    Merging cluster_2 with cluster_5
+•   Merging cluster_2 with cluster_8
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.47
+
+Iteration 1
+    Merging cluster_1 with cluster_5
+    Merging cluster_2 with cluster_4
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.5
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_4 with cluster_8
+    Merging cluster_5 with cluster_7
+    Merging cluster_6 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.3
+
+Iteration 1
+    Splitting cluster cluster_7
+    Merging cluster_1 with cluster_3
+    Merging cluster_2 with cluster_3
+    Merging cluster_3 with cluster_6
 Iteration 2</code></pre>
 </div>
 </div>
@@ -2131,41 +2084,41 @@ Iteration 2</code></pre>
 <h3 class="anchored" data-anchor-id="sub-optimal-k">sub-optimal k</h3>
 <section id="kmeans-1" class="level4">
 <h4 class="anchored" data-anchor-id="kmeans-1">kmeans++</h4>
-<div id="ce072fc3" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>sub_kpp <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> nreps)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(nreps)) {</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  cabic <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caobj =</span> ca,</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">5</span>,</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">cutoff =</span> <span class="cn">NULL</span>,</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"random"</span>,</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">apl_quant =</span> <span class="fl">0.99</span>,</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> <span class="cn">NULL</span>,</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_cells =</span> <span class="dv">20</span>,</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="cn">NULL</span>,</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">make_plots =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">qcutoff =</span> <span class="fl">0.8</span>,</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">convergence_thr =</span> <span class="fl">0.001</span>,</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">init =</span> <span class="st">"kmeanspp"</span></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  tdiff <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t, <span class="at">units =</span> <span class="st">"secs"</span>)</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  sce_sub<span class="sc">$</span>cadir <span class="ot">&lt;-</span> cabic<span class="sc">@</span>cell_clusters</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  ari <span class="ot">&lt;-</span> aricode<span class="sc">::</span><span class="fu">clustComp</span>(sce_sub<span class="sc">$</span>cadir, sce_sub<span class="sc">$</span>cell_ontology_class)</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  sub_kpp[i] <span class="ot">&lt;-</span> ari<span class="sc">$</span>ARI</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="30b16b6d" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>sub_kpp <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> nreps)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(nreps)) {</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  cabic <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caobj =</span> ca,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">5</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">cutoff =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"random"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">apl_quant =</span> <span class="fl">0.99</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_cells =</span> <span class="dv">20</span>,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">make_plots =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">qcutoff =</span> <span class="fl">0.8</span>,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">convergence_thr =</span> <span class="fl">0.001</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">init =</span> <span class="st">"kmeanspp"</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  tdiff <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t, <span class="at">units =</span> <span class="st">"secs"</span>)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  sce_sub<span class="sc">$</span>cadir <span class="ot">&lt;-</span> cabic<span class="sc">@</span>cell_clusters</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  ari <span class="ot">&lt;-</span> aricode<span class="sc">::</span><span class="fu">clustComp</span>(sce_sub<span class="sc">$</span>cadir, sce_sub<span class="sc">$</span>cell_ontology_class)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  sub_kpp[i] <span class="ot">&lt;-</span> ari<span class="sc">$</span>ARI</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Inferred cutoff angle: 64.55
+Inferred cutoff angle: 68.31
 
 Iteration 1
     Splitting cluster cluster_3
     Merging cluster_5 with cluster_6
 Iteration 2
 
-Inferred cutoff angle: 64.51
+Inferred cutoff angle: 68.09
 
 Iteration 1
     Splitting cluster cluster_1
@@ -2174,547 +2127,149 @@ Iteration 1
     Merging cluster_3 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 64.7
+Inferred cutoff angle: 67.81
 
 Iteration 1
     Splitting cluster cluster_4
-    Splitting cluster cluster_1
     Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 65.48
+Inferred cutoff angle: 68.65
 
 Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_4
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 65.19
-
-Iteration 1
-    Merging cluster_3 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 64.79
+Inferred cutoff angle: 68.36
 
 Iteration 1
     Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 65.65
-
-Iteration 1
-    Splitting cluster cluster_2
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.32
-
-Iteration 1
-    Splitting cluster cluster_2
-    Merging cluster_2 with cluster_5
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.43
-
-Iteration 1
-    Splitting cluster cluster_4
+    Splitting cluster cluster_5
+    Splitting cluster cluster_3
     Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.08
-
-Iteration 1
     Merging cluster_4 with cluster_5
 Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-    Splitting cluster cluster_2
-Iteration 4
 
-Inferred cutoff angle: 64.46
+Inferred cutoff angle: 68.4
 
 Iteration 1
-    Merging cluster_3 with cluster_4
+    Splitting cluster cluster_5
+    Merging cluster_2 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 65.24
+Inferred cutoff angle: 68.94
 
 Iteration 1
     Splitting cluster cluster_1
     Splitting cluster cluster_6
-    Merging cluster_2 with cluster_6
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.94
-
-Iteration 1
-    Splitting cluster cluster_4
     Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 65.57
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_1 with cluster_2
-Iteration 2
-
-Inferred cutoff angle: 65.61
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_5
-    Merging cluster_2 with cluster_4
-    Merging cluster_3 with cluster_6
-Iteration 2
-    Splitting cluster cluster_5
-Iteration 3
-
-Inferred cutoff angle: 64.06
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 65.46
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.24
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.94
-
-Iteration 1
-Iteration 2
-
-Inferred cutoff angle: 65.13
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_4 with cluster_5
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.75
-
-Iteration 1
-    Splitting cluster cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.89
-
-Iteration 1
-    Splitting cluster cluster_2
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.67
-
-Iteration 1
-Iteration 2
-
-Inferred cutoff angle: 65.28
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_3 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.23
-
-Iteration 1
-    Merging cluster_1 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 64.62
-
-Iteration 1
-    Splitting cluster cluster_4
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.9
-
-Iteration 1
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.37
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_1 with cluster_2
-Iteration 2
-
-Inferred cutoff angle: 64.58
-
-Iteration 1
-    Splitting cluster cluster_5
-    Splitting cluster cluster_2
-    Merging cluster_1 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 64.85
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 64.85
-
-Iteration 1
-    Merging cluster_1 with cluster_2
-Iteration 2
-
-Inferred cutoff angle: 64.91
-
-Iteration 1
-    Merging cluster_1 with cluster_4
-Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 64.46
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.91
-
-Iteration 1
-    Splitting cluster cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.49
-
-Iteration 1
-Iteration 2
-
-Inferred cutoff angle: 64.71
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_6
-    Merging cluster_2 with cluster_4
 •   Merging cluster_2 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.4
+Inferred cutoff angle: 68.95
 
 Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_5
-    Splitting cluster cluster_6
-    Merging cluster_1 with cluster_8
-    Merging cluster_3 with cluster_4
+    Merging cluster_4 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.87
+Inferred cutoff angle: 68.54
 
 Iteration 1
 Iteration 2
 
-Inferred cutoff angle: 65.25
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.7
+Inferred cutoff angle: 68.34
 
 Iteration 1
     Splitting cluster cluster_4
-    Splitting cluster cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.13
+
+Iteration 1
     Merging cluster_2 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.33
+Inferred cutoff angle: 68.22
 
 Iteration 1
-    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.22
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_4
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.15
-
-Iteration 1
-    Splitting cluster cluster_2
-Iteration 2
-
-Inferred cutoff angle: 64.58
-
-Iteration 1
-    Splitting cluster cluster_1
-Iteration 2
-
-Inferred cutoff angle: 64.57
+Inferred cutoff angle: 68.6
 
 Iteration 1
     Merging cluster_4 with cluster_5
 Iteration 2
-    Splitting cluster cluster_1
+
+Inferred cutoff angle: 67.93
+
+Iteration 1
+    Merging cluster_4 with cluster_5
+Iteration 2
     Splitting cluster cluster_3
 Iteration 3
 
-Inferred cutoff angle: 65.39
+Inferred cutoff angle: 68.62
 
 Iteration 1
     Splitting cluster cluster_1
     Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-    Merging cluster_4 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.42
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_5
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.86
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.74
-
-Iteration 1
-    Splitting cluster cluster_4
+    Merging cluster_2 with cluster_3
     Merging cluster_3 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 64.87
+Inferred cutoff angle: 69.02
 
 Iteration 1
     Merging cluster_4 with cluster_5
 Iteration 2
     Splitting cluster cluster_1
 Iteration 3
-    Splitting cluster cluster_2
-Iteration 4
 
-Inferred cutoff angle: 64.21
+Inferred cutoff angle: 68.04
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.88
 
 Iteration 1
     Splitting cluster cluster_1
-    Splitting cluster cluster_6
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.04
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_5
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.42
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.47
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_3 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.17
+
+Iteration 1
+    Splitting cluster cluster_1
     Merging cluster_3 with cluster_4
 •   Merging cluster_3 with cluster_5
 Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
 
-Inferred cutoff angle: 64.78
-
-Iteration 1
-    Merging cluster_1 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.71
-
-Iteration 1
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.9
-
-Iteration 1
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.36
-
-Iteration 1
-    Splitting cluster cluster_1
-Iteration 2
-
-Inferred cutoff angle: 64.49
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.11
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 65.03
-
-Iteration 1
-Iteration 2
-
-Inferred cutoff angle: 65.05
-
-Iteration 1
-Iteration 2
-
-Inferred cutoff angle: 64.55
-
-Iteration 1
-Iteration 2
-
-Inferred cutoff angle: 64.27
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_4
-Iteration 2
-    Splitting cluster cluster_5
-Iteration 3
-
-Inferred cutoff angle: 65.47
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.11
-
-Iteration 1
-    Splitting cluster cluster_2
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.47
-
-Iteration 1
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.19
-
-Iteration 1
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.22
-
-Iteration 1
-Iteration 2
-
-Inferred cutoff angle: 64.82
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_4
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.21
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_5
-    Splitting cluster cluster_6
-    Merging cluster_2 with cluster_3
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.54
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_2
-Iteration 2
-
-Inferred cutoff angle: 64.71
-
-Iteration 1
-    Splitting cluster cluster_4
-    Splitting cluster cluster_2
-Iteration 2
-
-Inferred cutoff angle: 64.88
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 65.16
-
-Iteration 1
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.99
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.86
-
-Iteration 1
-    Splitting cluster cluster_2
-Iteration 2
-
-Inferred cutoff angle: 65.36
-
-Iteration 1
-Iteration 2
-
-Inferred cutoff angle: 64.63
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.28
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 64.51
+Inferred cutoff angle: 68.44
 
 Iteration 1
     Splitting cluster cluster_1
@@ -2723,286 +2278,1082 @@ Iteration 1
 •   Merging cluster_2 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 64.97
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.46
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.77
-
-Iteration 1
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.15
-
-Iteration 1
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.06
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_2
-    Merging cluster_4 with cluster_6
-    Merging cluster_5 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 65.6
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_1 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.32
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.95
-
-Iteration 1
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 64.78
-
-Iteration 1
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.38
+Inferred cutoff angle: 68.67
 
 Iteration 1
 Iteration 2
 
-Inferred cutoff angle: 65.46
+Inferred cutoff angle: 68.61
 
 Iteration 1
     Merging cluster_1 with cluster_2
 Iteration 2
-    Splitting cluster cluster_3
-    Splitting cluster cluster_4
-Iteration 3
 
-Inferred cutoff angle: 64.87
+Inferred cutoff angle: 68.41
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.97
 
 Iteration 1
 Iteration 2
 
-Inferred cutoff angle: 64.88
+Inferred cutoff angle: 67.87
 
 Iteration 1
-    Splitting cluster cluster_4
+    Splitting cluster cluster_1
+    Splitting cluster cluster_2
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_5
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.21
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.71
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.24
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.67
+
+Iteration 1
+    Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.48
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_6
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.77
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_7
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.42
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 67.78
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.37
+
+Iteration 1
+    Merging cluster_3 with cluster_5
+Iteration 2
+    Splitting cluster cluster_2
+Iteration 3
+
+Inferred cutoff angle: 68.15
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_4
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 67.59
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.61
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.61
+
+Iteration 1
+    Splitting cluster cluster_3
     Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.73
+Inferred cutoff angle: 68.76
 
 Iteration 1
     Splitting cluster cluster_1
-    Splitting cluster cluster_1
+    Splitting cluster cluster_2
     Merging cluster_3 with cluster_4
 •   Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.4
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.94
-
-Iteration 1
-    Merging cluster_2 with cluster_4
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.57
-
-Iteration 1
-    Splitting cluster cluster_5
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.69
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.12
-
-Iteration 1
-    Splitting cluster cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.68
+Inferred cutoff angle: 67.93
 
 Iteration 1
     Splitting cluster cluster_2
     Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.79
+Inferred cutoff angle: 68.06
+
+Iteration 1
+    Merging cluster_1 with cluster_3
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 67.64
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_3
+    Merging cluster_2 with cluster_7
+Iteration 2
+
+Inferred cutoff angle: 68.94
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.24
+
+Iteration 1
+    Splitting cluster cluster_3
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.97
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.72
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.07
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.57
+
+Iteration 1
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.92
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.49
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.41
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.05
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_2
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.68
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.02
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_4
+    Splitting cluster cluster_5
+    Merging cluster_1 with cluster_7
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.33
+
+Iteration 1
+    Merging cluster_3 with cluster_5
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.5
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.54
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_1 with cluster_2
+Iteration 2
+
+Inferred cutoff angle: 68.03
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.88
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_1 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.26
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.85
+
+Iteration 1
+    Merging cluster_4 with cluster_5
+Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
+
+Inferred cutoff angle: 68.41
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.28
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.54
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_1 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 69.28
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_3
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.19
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_1 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.73
+
+Iteration 1
+    Splitting cluster cluster_3
+    Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.38
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_1 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.15
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.1
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.51
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.39
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.95
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.5
+
+Iteration 1
+    Merging cluster_4 with cluster_5
+Iteration 2
+    Splitting cluster cluster_3
+Iteration 3
+
+Inferred cutoff angle: 68.5
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.03
+
+Iteration 1
+    Merging cluster_1 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.85
+
+Iteration 1
+    Merging cluster_3 with cluster_5
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.29
+
+Iteration 1
+    Merging cluster_4 with cluster_5
+Iteration 2
+    Splitting cluster cluster_2
+Iteration 3
+
+Inferred cutoff angle: 69.11
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.06
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.24
+
+Iteration 1
+    Splitting cluster cluster_3
+Iteration 2
+
+Inferred cutoff angle: 67.91
 
 Iteration 1
     Splitting cluster cluster_5
     Merging cluster_2 with cluster_3
 Iteration 2
 
-Inferred cutoff angle: 64.98
+Inferred cutoff angle: 68.48
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.33
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 67.46
+
+Iteration 1
+    Merging cluster_2 with cluster_5
+Iteration 2
+    Splitting cluster cluster_3
+Iteration 3
+
+Inferred cutoff angle: 68.78
 
 Iteration 1
     Splitting cluster cluster_1
-    Merging cluster_3 with cluster_5
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.45
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.18
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_3
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.91
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_1 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.35
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.9
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.55
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.51
+
+Iteration 1
+    Splitting cluster cluster_3
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.41
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.25
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.18
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.24
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_2 with cluster_3
 Iteration 2</code></pre>
 </div>
 </div>
 </section>
 <section id="rand-1" class="level4">
 <h4 class="anchored" data-anchor-id="rand-1">rand</h4>
-<div id="0084e65a" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>sub_krnd <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> nreps)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(nreps)) {</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  cabic <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">caobj =</span> ca,</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">5</span>,</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">cutoff =</span> <span class="cn">NULL</span>,</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"random"</span>,</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">apl_quant =</span> <span class="fl">0.99</span>,</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> <span class="cn">NULL</span>,</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_cells =</span> <span class="dv">20</span>,</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="cn">NULL</span>,</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">make_plots =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">qcutoff =</span> <span class="fl">0.8</span>,</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">convergence_thr =</span> <span class="fl">0.001</span>,</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">init =</span> <span class="st">"rand"</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  tdiff <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t, <span class="at">units =</span> <span class="st">"secs"</span>)</span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  sce_sub<span class="sc">$</span>cadir <span class="ot">&lt;-</span> cabic<span class="sc">@</span>cell_clusters</span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  ari <span class="ot">&lt;-</span> aricode<span class="sc">::</span><span class="fu">clustComp</span>(sce_sub<span class="sc">$</span>cadir, sce_sub<span class="sc">$</span>cell_ontology_class)</span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  sub_krnd[i] <span class="ot">&lt;-</span> ari<span class="sc">$</span>ARI</span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="9aab5dd8" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2358</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>sub_krnd <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> nreps)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(nreps)) {</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  cabic <span class="ot">&lt;-</span> <span class="fu">dirclust_splitmerge</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">caobj =</span> ca,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">5</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">cutoff =</span> <span class="cn">NULL</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"random"</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">apl_quant =</span> <span class="fl">0.99</span>,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> <span class="cn">NULL</span>,</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_cells =</span> <span class="dv">20</span>,</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="cn">NULL</span>,</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">make_plots =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">qcutoff =</span> <span class="fl">0.8</span>,</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">convergence_thr =</span> <span class="fl">0.001</span>,</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">init =</span> <span class="st">"rand"</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  tdiff <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t, <span class="at">units =</span> <span class="st">"secs"</span>)</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  sce_sub<span class="sc">$</span>cadir <span class="ot">&lt;-</span> cabic<span class="sc">@</span>cell_clusters</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  ari <span class="ot">&lt;-</span> aricode<span class="sc">::</span><span class="fu">clustComp</span>(sce_sub<span class="sc">$</span>cadir, sce_sub<span class="sc">$</span>cell_ontology_class)</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  sub_krnd[i] <span class="ot">&lt;-</span> ari<span class="sc">$</span>ARI</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Inferred cutoff angle: 64
+Inferred cutoff angle: 67.92
 
 Iteration 1
     Splitting cluster cluster_3
-    Splitting cluster cluster_1
     Merging cluster_2 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.51
+Inferred cutoff angle: 68.51
 
 Iteration 1
     Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
+    Splitting cluster cluster_2
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.44
+Inferred cutoff angle: 68.45
 
 Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.91
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 63.63
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
     Splitting cluster cluster_3
-    Splitting cluster cluster_7
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.71
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_2
     Merging cluster_2 with cluster_4
     Merging cluster_3 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 65.91
+Inferred cutoff angle: 68.18
 
 Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.4
+Inferred cutoff angle: 68.67
 
 Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_5
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 64.47
+Inferred cutoff angle: 68.04
 
 Iteration 1
     Splitting cluster cluster_1
     Splitting cluster cluster_6
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_3
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.56
+
+Iteration 1
+    Splitting cluster cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.72
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 67.96
+
+Iteration 1
+    Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.97
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_4
 •   Merging cluster_2 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.04
+Inferred cutoff angle: 68.19
+
+Iteration 1
+    Merging cluster_3 with cluster_4
+Iteration 2
+    Splitting cluster cluster_2
+Iteration 3
+
+Inferred cutoff angle: 68.14
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 67.64
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.75
 
 Iteration 1
     Merging cluster_2 with cluster_4
 Iteration 2
+
+Inferred cutoff angle: 67.77
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.41
+
+Iteration 1
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.84
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 69.07
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.12
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+Iteration 2
     Splitting cluster cluster_4
 Iteration 3
-    Splitting cluster cluster_1
-Iteration 4
 
-Inferred cutoff angle: 64.54
+Inferred cutoff angle: 68.05
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.39
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_1 with cluster_2
+Iteration 2
+
+Inferred cutoff angle: 68.26
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.54
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.22
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 67.91
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_7
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 69.1
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 69.33
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_3
+    Merging cluster_2 with cluster_4
+    Merging cluster_4 with cluster_6
+Iteration 2
+
+Inferred cutoff angle: 68.09
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.63
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.6
+
+Iteration 1
+    Splitting cluster cluster_3
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.46
 
 Iteration 1
     Splitting cluster cluster_2
     Merging cluster_1 with cluster_3
 Iteration 2
 
-Inferred cutoff angle: 64.72
+Inferred cutoff angle: 67.9
+
+Iteration 1
+    Merging cluster_1 with cluster_5
+Iteration 2
+    Splitting cluster cluster_3
+Iteration 3
+
+Inferred cutoff angle: 68.42
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_1 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.51
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 67.82
+
+Iteration 1
+    Splitting cluster cluster_2
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.19
 
 Iteration 1
     Splitting cluster cluster_1
-    Splitting cluster cluster_6
     Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.83
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
+
+Inferred cutoff angle: 67.86
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.26
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.5
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.34
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.43
+
+Iteration 1
+    Splitting cluster cluster_3
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.93
+
+Iteration 1
+    Splitting cluster cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.54
+
+Iteration 1
+    Splitting cluster cluster_5
     Merging cluster_3 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 65.53
+Inferred cutoff angle: 68.3
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.76
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.25
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_6
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.17
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
+
+Inferred cutoff angle: 68.94
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_6
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.28
+
+Iteration 1
+    Merging cluster_3 with cluster_5
+Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
+
+Inferred cutoff angle: 68.24
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_2
+    Splitting cluster cluster_6
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.59
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.8
+
+Iteration 1
+    Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.58
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.64
+
+Iteration 1
+    Merging cluster_3 with cluster_5
+Iteration 2
+    Splitting cluster cluster_2
+Iteration 3
+
+Inferred cutoff angle: 68.32
+
+Iteration 1
+    Splitting cluster cluster_3
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.53
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.43
+
+Iteration 1
+    Splitting cluster cluster_5
+    Merging cluster_1 with cluster_2
+Iteration 2
+
+Inferred cutoff angle: 67.86
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.92
+
+Iteration 1
+Iteration 2
+
+Inferred cutoff angle: 68.05
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_4
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.2
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_5
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 67.98
+
+Iteration 1
+    Merging cluster_3 with cluster_4
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.01
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_6
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.79
 
 Iteration 1
     Splitting cluster cluster_1
@@ -3010,734 +3361,279 @@ Iteration 1
     Splitting cluster cluster_1
     Merging cluster_2 with cluster_3
 •   Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.89
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
     Merging cluster_2 with cluster_3
 Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
 
-Inferred cutoff angle: 64.82
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 65.24
+Inferred cutoff angle: 68.95
 
 Iteration 1
     Merging cluster_1 with cluster_4
+    Merging cluster_3 with cluster_4
 Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 64.69
-
-Iteration 1
-    Splitting cluster cluster_1
     Splitting cluster cluster_1
     Splitting cluster cluster_4
-    Merging cluster_2 with cluster_3
-    Merging cluster_4 with cluster_7
-Iteration 2
-
-Inferred cutoff angle: 65.68
-
-Iteration 1
-    Merging cluster_4 with cluster_5
-Iteration 2
-    Splitting cluster cluster_2
 Iteration 3
 
-Inferred cutoff angle: 65.05
+Inferred cutoff angle: 69.18
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 67.95
 
 Iteration 1
     Splitting cluster cluster_1
-    Merging cluster_3 with cluster_5
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.96
+Inferred cutoff angle: 68.47
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_1 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.09
+
+Iteration 1
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.59
 
 Iteration 1
     Splitting cluster cluster_1
     Splitting cluster cluster_6
-    Splitting cluster cluster_5
-    Merging cluster_2 with cluster_5
     Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 65.12
+Inferred cutoff angle: 68.67
 
 Iteration 1
     Splitting cluster cluster_3
     Merging cluster_1 with cluster_2
 Iteration 2
 
-Inferred cutoff angle: 65.62
+Inferred cutoff angle: 68.58
 
 Iteration 1
-    Splitting cluster cluster_2
     Splitting cluster cluster_1
-    Merging cluster_3 with cluster_4
+    Splitting cluster cluster_6
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 64.41
+Inferred cutoff angle: 68.39
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_1 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.39
 
 Iteration 1
     Merging cluster_2 with cluster_5
 Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
 
-Inferred cutoff angle: 65.46
+Inferred cutoff angle: 68.24
+
+Iteration 1
+    Merging cluster_2 with cluster_4
+Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
+
+Inferred cutoff angle: 68.45
 
 Iteration 1
     Splitting cluster cluster_1
+    Splitting cluster cluster_3
     Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
+    Merging cluster_2 with cluster_4
 •   Merging cluster_2 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.3
+Inferred cutoff angle: 68.05
 
 Iteration 1
     Splitting cluster cluster_2
-    Merging cluster_3 with cluster_5
+    Merging cluster_4 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.61
+Inferred cutoff angle: 68.18
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_3
+    Merging cluster_2 with cluster_4
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.99
+
+Iteration 1
+    Splitting cluster cluster_4
+    Merging cluster_2 with cluster_3
+Iteration 2
+
+Inferred cutoff angle: 68.15
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_2
+    Merging cluster_3 with cluster_4
+•   Merging cluster_3 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.48
+
+Iteration 1
+    Merging cluster_3 with cluster_4
+Iteration 2
+    Splitting cluster cluster_1
+Iteration 3
+
+Inferred cutoff angle: 67.73
+
+Iteration 1
+    Merging cluster_3 with cluster_5
+Iteration 2
+    Splitting cluster cluster_4
+Iteration 3
+
+Inferred cutoff angle: 68.01
 
 Iteration 1
     Splitting cluster cluster_3
     Merging cluster_1 with cluster_6
 Iteration 2
+
+Inferred cutoff angle: 68.62
+
+Iteration 1
+    Merging cluster_3 with cluster_4
+Iteration 2
     Splitting cluster cluster_4
 Iteration 3
 
-Inferred cutoff angle: 65.26
+Inferred cutoff angle: 68.71
 
 Iteration 1
     Splitting cluster cluster_1
+    Merging cluster_4 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 67.97
+
+Iteration 1
+    Splitting cluster cluster_1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_5
+    Merging cluster_3 with cluster_4
+Iteration 2
+
+Inferred cutoff angle: 68.34
+
+Iteration 1
+    Splitting cluster cluster_3
+    Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.48
+
+Iteration 1
     Splitting cluster cluster_1
     Merging cluster_2 with cluster_4
 •   Merging cluster_2 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.57
+Inferred cutoff angle: 68.42
 
 Iteration 1
-    Splitting cluster cluster_2
-    Merging cluster_1 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 64.69
-
-Iteration 1
-    Splitting cluster cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.66
-
-Iteration 1
-    Splitting cluster cluster_5
+    Splitting cluster cluster_1
     Merging cluster_3 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 65.02
+Inferred cutoff angle: 68.05
 
 Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_5
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.57
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.87
-
-Iteration 1
-    Merging cluster_3 with cluster_5
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.99
-
-Iteration 1
-    Splitting cluster cluster_2
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.4
-
-Iteration 1
-Iteration 2
-
-Inferred cutoff angle: 65.24
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.29
-
-Iteration 1
-    Splitting cluster cluster_1
     Splitting cluster cluster_1
     Merging cluster_3 with cluster_4
 •   Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 65.3
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 64.68
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_1 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 65.66
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_2
-    Merging cluster_3 with cluster_8
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.97
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_2
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.1
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_4
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 65.23
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.19
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.75
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.77
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_5 with cluster_6
-Iteration 2
-
-Inferred cutoff angle: 64.99
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_1 with cluster_3
-Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 65.38
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.85
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-Iteration 2
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 64.98
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-    Merging cluster_3 with cluster_4
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 65.16
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_7
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 65.19
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.71
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 65.48
-
-Iteration 1
-    Splitting cluster cluster_4
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.95
-
-Iteration 1
-    Merging cluster_1 with cluster_2
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-    Splitting cluster cluster_2
-Iteration 4
-
-Inferred cutoff angle: 64.62
-
-Iteration 1
-    Merging cluster_4 with cluster_5
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 64.34
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.95
-
-Iteration 1
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.66
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_4 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.95
-
-Iteration 1
-Iteration 2
-
-Inferred cutoff angle: 64.92
-
-Iteration 1
-    Merging cluster_4 with cluster_5
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-
-Inferred cutoff angle: 64.13
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.07
+Inferred cutoff angle: 69.35
 
 Iteration 1
     Splitting cluster cluster_1
     Splitting cluster cluster_6
+    Merging cluster_2 with cluster_3
+•   Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.74
+
+Iteration 1
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_5
+Iteration 2
+
+Inferred cutoff angle: 68.44
+
+Iteration 1
+    Splitting cluster cluster_1
     Splitting cluster cluster_4
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
+    Merging cluster_2 with cluster_7
+    Merging cluster_3 with cluster_5
 Iteration 2
 
-Inferred cutoff angle: 64.85
+Inferred cutoff angle: 68.02
 
 Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.34
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.74
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.11
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 65.48
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_6
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.19
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-    Merging cluster_3 with cluster_4
-Iteration 2
     Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.96
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
+    Merging cluster_3 with cluster_5
 Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
 
-Inferred cutoff angle: 65.22
+Inferred cutoff angle: 68.18
 
 Iteration 1
-    Splitting cluster cluster_1
     Merging cluster_4 with cluster_5
 Iteration 2
-
-Inferred cutoff angle: 64.87
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.6
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_5
-Iteration 2
     Splitting cluster cluster_1
 Iteration 3
 
-Inferred cutoff angle: 65.51
+Inferred cutoff angle: 68.33
 
 Iteration 1
     Splitting cluster cluster_5
-    Splitting cluster cluster_2
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.18
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.28
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_5
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.62
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.03
-
-Iteration 1
-    Merging cluster_2 with cluster_4
-Iteration 2
-    Splitting cluster cluster_3
-Iteration 3
-
-Inferred cutoff angle: 65.41
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.65
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_6
-    Merging cluster_2 with cluster_4
-    Merging cluster_3 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.23
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 65.27
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_6
-    Merging cluster_2 with cluster_4
-•   Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.11
-
-Iteration 1
-    Splitting cluster cluster_5
-    Splitting cluster cluster_3
     Merging cluster_1 with cluster_4
 Iteration 2
 
-Inferred cutoff angle: 65.07
-
-Iteration 1
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.37
+Inferred cutoff angle: 68.59
 
 Iteration 1
     Splitting cluster cluster_1
-    Merging cluster_3 with cluster_4
-•   Merging cluster_3 with cluster_5
-Iteration 2
-    Splitting cluster cluster_4
-    Splitting cluster cluster_2
-Iteration 3
-
-Inferred cutoff angle: 65.84
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_5
+    Splitting cluster cluster_6
     Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.93
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.62
-
-Iteration 1
-    Merging cluster_3 with cluster_5
-Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
-
-Inferred cutoff angle: 64.51
-
-Iteration 1
-    Splitting cluster cluster_1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
 •   Merging cluster_2 with cluster_5
 Iteration 2
-    Splitting cluster cluster_4
-Iteration 3
 
-Inferred cutoff angle: 64.59
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.65
-
-Iteration 1
-    Splitting cluster cluster_4
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 65.13
-
-Iteration 1
-    Splitting cluster cluster_3
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.66
+Inferred cutoff angle: 69.29
 
 Iteration 1
     Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
+    Splitting cluster cluster_1
+    Merging cluster_2 with cluster_5
     Merging cluster_3 with cluster_4
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3
-    Splitting cluster cluster_4
-Iteration 4
-
-Inferred cutoff angle: 65.08
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_2 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.42
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 64.58
-
-Iteration 1
-    Splitting cluster cluster_5
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-•   Merging cluster_2 with cluster_4
-Iteration 2
-
-Inferred cutoff angle: 65.38
-
-Iteration 1
-    Splitting cluster cluster_4
-    Merging cluster_1 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 64.91
-
-Iteration 1
-    Splitting cluster cluster_1
-    Merging cluster_2 with cluster_3
-Iteration 2
-
-Inferred cutoff angle: 65.42
-
-Iteration 1
-    Splitting cluster cluster_2
-    Merging cluster_3 with cluster_5
-Iteration 2
-
-Inferred cutoff angle: 64.36
-
-Iteration 1
-Iteration 2
-    Splitting cluster cluster_5
-Iteration 3
-
-Inferred cutoff angle: 65.09
-
-Iteration 1
-    Merging cluster_2 with cluster_3
-Iteration 2
-    Splitting cluster cluster_1
-Iteration 3</code></pre>
+Iteration 2</code></pre>
 </div>
 </div>
 </section>
@@ -3746,26 +3642,26 @@ Iteration 3</code></pre>
 </section>
 <section id="evaluate" class="level1">
 <h1>Evaluate</h1>
-<div id="2e0f8b3b" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"kmeanspp"</span> <span class="ot">=</span> kpp,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"kmeanspp_sub"</span> <span class="ot">=</span> sub_kpp,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"rand"</span> <span class="ot">=</span> krnd,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"rand_sub"</span> <span class="ot">=</span> sub_krnd</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">colnames</span>(df), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"ARI"</span>)</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> ARI, <span class="at">fill =</span> method)) <span class="sc">+</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.7</span>)) <span class="sc">+</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_mpimg</span>() <span class="sc">+</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> <span class="fu">file.path</span>(imgdir, <span class="st">"init_bench_boxplot.pdf"</span>), <span class="at">plot =</span> p)</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> <span class="fu">file.path</span>(imgdir, <span class="st">"init_bench_boxplot.png"</span>), <span class="at">plot =</span> p)</span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> <span class="fu">file.path</span>(imgdir, <span class="st">"init_bench_boxplot.tiff"</span>), <span class="at">plot =</span> p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="ff25e90e" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"kmeanspp"</span> <span class="ot">=</span> kpp,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"kmeanspp_sub"</span> <span class="ot">=</span> sub_kpp,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"rand"</span> <span class="ot">=</span> krnd,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"rand_sub"</span> <span class="ot">=</span> sub_krnd</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">colnames</span>(df), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"ARI"</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> ARI, <span class="at">fill =</span> method)) <span class="sc">+</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.7</span>)) <span class="sc">+</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_mpimg</span>() <span class="sc">+</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> <span class="fu">file.path</span>(imgdir, <span class="st">"init_bench_boxplot.pdf"</span>), <span class="at">plot =</span> p)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> <span class="fu">file.path</span>(imgdir, <span class="st">"init_bench_boxplot.png"</span>), <span class="at">plot =</span> p)</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> <span class="fu">file.path</span>(imgdir, <span class="st">"init_bench_boxplot.tiff"</span>), <span class="at">plot =</span> p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 6.67 x 6.67 in image
 Warning message:
@@ -3784,8 +3680,8 @@ Warning message:
 </section>
 <section id="environment" class="level1">
 <h1>Environment</h1>
-<div id="a3eb85d4" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="6c0424c3" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>R version 4.4.1 (2024-06-14)
 Platform: x86_64-pc-linux-gnu
@@ -3834,7 +3730,7 @@ loaded via a namespace (and not attached):
  [21] metapod_1.12.0            httpuv_1.6.15            
  [23] Seurat_5.0.1              sctransform_0.4.1        
  [25] spam_2.10-0               sp_2.1-4                 
- [27] spatstat.sparse_3.0-3     reticulate_1.37.0        
+ [27] spatstat.sparse_3.0-3     reticulate_1.46.0        
  [29] cowplot_1.1.3             pbapply_1.7-2            
  [31] DBI_1.2.2                 RColorBrewer_1.1-3       
  [33] abind_1.4-5               zlibbioc_1.50.0          
@@ -3852,7 +3748,7 @@ loaded via a namespace (and not attached):
  [57] base64enc_0.1-3           spatstat.explore_3.2-5   
  [59] jsonlite_1.8.8            BiocNeighbors_1.22.0     
  [61] progressr_0.14.0          ggridges_0.5.6           
- [63] survival_3.6-4            systemfonts_1.1.0        
+ [63] survival_3.6-4            systemfonts_1.3.2        
  [65] tools_4.4.1               ragg_1.3.2               
  [67] ica_1.0-3                 Rcpp_1.0.12              
  [69] glue_1.7.0                gridExtra_2.3            
@@ -3891,7 +3787,7 @@ loaded via a namespace (and not attached):
 [135] locfit_1.5-9.9            cli_3.6.2                
 [137] compiler_4.4.1            rlang_1.1.3              
 [139] crayon_1.5.2              future.apply_1.11.2      
-[141] labeling_0.4.3            ggbeeswarm_0.7.2         
+[141] labeling_0.4.3            ggbeeswarm_0.7.3         
 [143] plyr_1.8.9                stringi_1.8.4            
 [145] BiocParallel_1.38.0       viridisLite_0.4.2        
 [147] deldir_2.0-4              munsell_0.5.1            

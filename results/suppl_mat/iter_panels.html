@@ -98,7 +98,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div id="31cd0bc8" class="cell" data-execution_count="1">
+<div id="e1f24961" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Working directory should be the root directory of repository.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("./")</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">load</span>()</span>
@@ -134,12 +134,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="split-merge" class="level1">
 <h1>SPLIT MERGE</h1>
-<div id="8b2069db" class="cell" data-execution_count="2">
+<div id="d644324a" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>resdir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir, <span class="st">"out/suppl_mat/iter_bench/"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>res_list_sim <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(resdir, <span class="st">"sim_res_list.rds"</span>))</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>res_list_real <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(resdir, <span class="st">"real_res_list.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="f2677956" class="cell" data-execution_count="3">
+<div id="84ad6bf2" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dfr <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, res_list_real)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"FreytagGold"</span>] <span class="ot">&lt;-</span> <span class="st">"Freytag Gold"</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"PBMC_10X"</span>] <span class="ot">&lt;-</span> <span class="st">"PBMC10x"</span></span>
@@ -150,12 +150,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"tabula_sapiens_tissue"</span>] <span class="ot">&lt;-</span> <span class="st">"Tabula Sapiens"</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"brain_organoids"</span>] <span class="ot">&lt;-</span> <span class="st">"Brain Organoids"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="189516a7" class="cell" data-execution_count="4">
+<div id="309191ab" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dfs <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, res_list_sim)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dfs<span class="sc">$</span>base <span class="ot">&lt;-</span> <span class="fu">sapply</span>(dfs<span class="sc">$</span>dataset, <span class="cf">function</span>(x) stringr<span class="sc">::</span><span class="fu">str_split</span>(x, <span class="st">"_"</span>)[[<span class="dv">1</span>]][<span class="dv">1</span>])</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>dfs<span class="sc">$</span>params <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"zeisel_|pbmc3k_"</span>, <span class="st">""</span>, dfs<span class="sc">$</span>dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="65589c32" class="cell" data-execution_count="5">
+<div id="90d87767" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: make panels for results</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>pr <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
@@ -209,12 +209,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="dirclust" class="level1">
 <h1>DIRCLUST</h1>
-<div id="ac0f3c9d" class="cell" data-execution_count="6">
+<div id="d5de51cf" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>resdir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir, <span class="st">"out/suppl_mat/iter_bench_dircl/"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sim_res_list_dircl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(resdir, <span class="st">"sim_res_list_dircl.rds"</span>))</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>res_list_real_dircl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(resdir, <span class="st">"real_res_list_dircl.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="339690dc" class="cell" data-execution_count="7">
+<div id="ec601abb" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dfr <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, res_list_real_dircl)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"FreytagGold"</span>] <span class="ot">&lt;-</span> <span class="st">"Freytag Gold"</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"PBMC_10X"</span>] <span class="ot">&lt;-</span> <span class="st">"PBMC10x"</span></span>
@@ -225,12 +225,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"tabula_sapiens_tissue"</span>] <span class="ot">&lt;-</span> <span class="st">"Tabula Sapiens"</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>dfr<span class="sc">$</span>dataset[dfr<span class="sc">$</span>dataset <span class="sc">==</span> <span class="st">"brain_organoids"</span>] <span class="ot">&lt;-</span> <span class="st">"Brain Organoids"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="287fee4e" class="cell" data-execution_count="8">
+<div id="fcc336d6" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dfs <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, sim_res_list_dircl)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>dfs<span class="sc">$</span>base <span class="ot">&lt;-</span> <span class="fu">sapply</span>(dfs<span class="sc">$</span>dataset, <span class="cf">function</span>(x) stringr<span class="sc">::</span><span class="fu">str_split</span>(x, <span class="st">"_"</span>)[[<span class="dv">1</span>]][<span class="dv">1</span>])</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>dfs<span class="sc">$</span>params <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"zeisel_|pbmc3k_"</span>, <span class="st">""</span>, dfs<span class="sc">$</span>dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="7366d72b" class="cell" data-execution_count="9">
+<div id="51983581" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pr_dircl <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  dfr,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> n_iters, <span class="at">y =</span> ARI, <span class="at">color =</span> dataset, <span class="at">group =</span> dataset)</span>
@@ -282,12 +282,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="panels" class="level1">
 <h1>PANELS</h1>
-<div id="02790cb0" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>left_panel <span class="ot">&lt;-</span> ((pr <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">"a"</span>)) <span class="sc">/</span> (pr_dircl <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">"c"</span>))) <span class="sc">+</span></span>
+<div id="5d3267c0" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>left_panel <span class="ot">&lt;-</span> ((pr <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">"A"</span>)) <span class="sc">/</span> (pr_dircl <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">"C"</span>))) <span class="sc">+</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">"collect"</span>) <span class="sc">&amp;</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, <span class="at">legend.margin =</span> <span class="fu">margin</span>())</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>right_panel <span class="ot">&lt;-</span> ((ps <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">"b"</span>)) <span class="sc">/</span> (ps_dircl <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">"d"</span>))) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>right_panel <span class="ot">&lt;-</span> ((ps <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">"B"</span>)) <span class="sc">/</span> (ps_dircl <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">"D"</span>))) <span class="sc">+</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">"collect"</span>) <span class="sc">&amp;</span></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
@@ -326,7 +326,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="session-info" class="level1">
 <h1>session info</h1>
-<div id="15111816" class="cell" data-execution_count="11">
+<div id="392c337d" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>R version 4.4.1 (2024-06-14)
